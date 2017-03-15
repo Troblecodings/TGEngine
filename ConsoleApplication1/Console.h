@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <vector>
 #include <chrono>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
@@ -97,4 +98,5 @@ namespace GLVV {
 	VkDevice cdevice = {};
 	GLFWwindow* window;
 	VkSurfaceKHR KHR = {};
+	std::vector<VkSurfaceFormatKHR> KHRFormatsValid = {};
 }

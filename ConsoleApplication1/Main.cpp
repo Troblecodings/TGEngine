@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Console.h"
-#include <vector>
 #include "vulkan\vulkan.h"
 
 using namespace std;
@@ -166,7 +165,7 @@ void initVulkan() {
 		}
 	}
 
-	cout << endl;
+	if(debug)cout << endl;
 
 	debugLayerAndExtensions();
 
@@ -211,6 +210,26 @@ void initVulkan() {
 		cout << "Max Image Size supported " << khrcaps.maxImageExtent.width << "|" << khrcaps.maxImageExtent.height << endl << endl;
 	}
 
+	uint32_t suf_form_cout = 0;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(c_div,KHR,&suf_form_cout,nullptr);
+	
+	vector<VkSurfaceFormatKHR> formats = {};
+	formats.resize(suf_form_cout);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(c_div, KHR, &suf_form_cout, formats.data());
+
+	if (debug) {
+		cout << "Formats Provided: " << endl;
+
+		for (size_t foc = 0; foc < suf_form_cout; foc++)
+		{
+			VkSurfaceFormatKHR c_form = formats[foc];
+			cout << endl << "Format: " << c_form.format << endl;
+			cout << "Color Space " << c_form.colorSpace << endl;
+		}
+		cout << endl;
+	}
+	KHRFormatsValid = formats;
+
 	VkPhysicalDeviceFeatures features = {};
 
 	float arra[] = { 1.0F ,1.0F ,1.0F ,1.0F };
@@ -239,14 +258,18 @@ void initFrame() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 	
-	window = glfwCreateWindow(800, 800, "Frame",nullptr,nullptr);
+	GLFWmonitor* mon = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(mon);
+	if(debug)cout << mode->width << " - " << mode->height << endl;
+	window = glfwCreateWindow(mode->width, mode->height, "Frame",nullptr,nullptr);
+	glfwSetWindowPos(window, 0, 0);
 }
 
 int draw() {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window))return 1;
+
 	return 0;
 }
 
