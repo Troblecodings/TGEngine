@@ -3,9 +3,8 @@
 
 #include "stdafx.h"
 #include "Console.h"
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW\glfw3.h>
 #include <vector>
+#include "vulkan\vulkan.h"
 
 using namespace std;
 using namespace GLVV;
@@ -127,8 +126,7 @@ void debugLayerAndExtensions() {
 	}
 }
 
-int main()
-{
+void initVulkan() {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "Vulkan Engine Test";
@@ -139,42 +137,83 @@ int main()
 
 	vector<char*> pon = {
 		"VK_LAYER_LUNARG_standard_validation",
-		"VK_LAYER_VALVE_steam_overlay"
+		"VK_LAYER_VALVE_steam_overlay",
 	};
 
-	for (size_t gh = 0; gh < sizeof(pon); gh++)
-	{
+	vector<VkLayerProperties> lay_props;
+	uint32_t layprop_cou = 0;
+	vkEnumerateInstanceLayerProperties(&layprop_cou, nullptr);
+	lay_props.resize(layprop_cou);
+	vkEnumerateInstanceLayerProperties(&layprop_cou, lay_props.data());
 
+	int xc = 0;
+
+	vector<char*> val_pon = {};
+
+	for (size_t gh = 0; gh < pon.size(); gh++)
+	{
+		string point = pon[gh];
+		for (size_t cf = 0; cf < layprop_cou; cf++)
+		{
+			string name = lay_props[cf].layerName;
+			if (name == point) {
+				val_pon.resize(xc + 1);
+				val_pon[xc] = pon[gh];
+				cout << "Found valid layer " << pon[gh] << endl;
+				xc++;
+				break;
+			}
+		}
 	}
 
+	cout << endl;
+
 	debugLayerAndExtensions();
+
+	uint32_t exten_cout_used = 0;
+	const char** exts = glfwGetRequiredInstanceExtensions(&exten_cout_used);
 
 	VkInstanceCreateInfo InscreatInfo = {};
 	InscreatInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	InscreatInfo.pApplicationInfo = &appInfo;
-	InscreatInfo.enabledLayerCount = pon.size();
-	InscreatInfo.ppEnabledLayerNames = pon.data();
+	if (val_pon.size() > 0) {
+		InscreatInfo.enabledLayerCount = val_pon.size();
+		InscreatInfo.ppEnabledLayerNames = val_pon.data();
+	}
+	if (exten_cout_used > 0) {
+		InscreatInfo.enabledExtensionCount = exten_cout_used;
+		InscreatInfo.ppEnabledExtensionNames = exts;
+	}
 
-	handel("Creating Instance", vkCreateInstance(&InscreatInfo,nullptr,&instance));
+	handel("Creating Instance", vkCreateInstance(&InscreatInfo, nullptr, &instance));
+
+	handel("Creating Surface", glfwCreateWindowSurface(instance,window,nullptr,&KHR));
 
 	uint32_t div_cou = 0;
 	handel("Get graphic card count", vkEnumeratePhysicalDevices(instance, &div_cou, nullptr));
 
-	if(debug)cout << "Found " << div_cou << " graphic card(s)" << endl;
+	if (debug)cout << "Found " << div_cou << " graphic card(s)" << endl;
 
 	vector<VkPhysicalDevice> graka_phy = {};
 	graka_phy.resize(div_cou);
 
-	handel("Get physical graphic card", vkEnumeratePhysicalDevices(instance,&div_cou,graka_phy.data()));
+	handel("Get physical graphic card", vkEnumeratePhysicalDevices(instance, &div_cou, graka_phy.data()));
 
-	debugOut(div_cou,graka_phy.data());
+	debugOut(div_cou, graka_phy.data());
 
-	
+
 	VkPhysicalDevice c_div = graka_phy[0];
-		
+
+	VkSurfaceCapabilitiesKHR khrcaps;
+	handel("Get Surface capabilities",vkGetPhysicalDeviceSurfaceCapabilitiesKHR(c_div, KHR, &khrcaps));
+
+	if (debug) {
+		cout << "Max Image Size supported " << khrcaps.maxImageExtent.width << "|" << khrcaps.maxImageExtent.height << endl << endl;
+	}
+
 	VkPhysicalDeviceFeatures features = {};
 
-	float arra[] = {1.0F ,1.0F ,1.0F ,1.0F};
+	float arra[] = { 1.0F ,1.0F ,1.0F ,1.0F };
 
 	VkDeviceQueueCreateInfo queue_create_info = {};
 	queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -188,23 +227,52 @@ int main()
 	div_create_info.queueCreateInfoCount = 1;
 	div_create_info.pEnabledFeatures = &features;
 
-	handel("Create Device",vkCreateDevice(c_div, &div_create_info, nullptr, &cdevice));
+	handel("Create Device", vkCreateDevice(c_div, &div_create_info, nullptr, &cdevice));
 
-	if(debug)featuresPrint(features);
+	if (debug)featuresPrint(features);
 
 	VkQueue queue;
-	vkGetDeviceQueue(cdevice,0,0,&queue);
+	vkGetDeviceQueue(cdevice, 0, 0, &queue);
+}
 
+void initFrame() {
+	glfwInit();
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+	
+	window = glfwCreateWindow(800, 800, "Frame",nullptr,nullptr);
+}
+
+int draw() {
+	glfwPollEvents();
+	if (glfwWindowShouldClose(window))return 1;
+	return 0;
+}
+
+void shutdown(int i) {
 	vkDeviceWaitIdle(cdevice);
 
 	vkDestroyDevice(cdevice, nullptr);
+	vkDestroySurfaceKHR(instance,KHR,nullptr);
 	vkDestroyInstance(instance, nullptr);
 
-	while (true)
-	{
-		char ths = {};
-		cin >> ths;
-	}
+	glfwDestroyWindow(window);
 
+	exit(i);
+}
+
+int main()
+{
+	initFrame();
+	initVulkan();
+	int xcv;
+	while (true) {
+		xcv = draw();
+		if (xcv != 0) {
+			break;
+		}
+	}
+	shutdown(xcv);
 	return 0;
 }

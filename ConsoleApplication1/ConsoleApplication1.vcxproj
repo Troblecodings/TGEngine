@@ -94,6 +94,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,6 +127,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

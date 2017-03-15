@@ -1,9 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "vulkan\vulkan.h"
 #include <time.h>
 #include <chrono>
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW\glfw3.h>
 
 using namespace std;
 
@@ -94,4 +95,6 @@ void printVersion(int av) {
 namespace GLVV {
 	VkInstance instance = {};
 	VkDevice cdevice = {};
+	GLFWwindow* window;
+	VkSurfaceKHR KHR = {};
 }
