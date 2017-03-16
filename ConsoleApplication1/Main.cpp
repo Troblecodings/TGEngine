@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Console.h"
 #include "Preferences.h"
+#include <fstream>
 
 using namespace std;
 using namespace GLVV;
@@ -125,7 +126,34 @@ void debugLayerAndExtensions() {
 	}
 }
 
+vector<char> getBinarys(const string &name) {
+	ifstream stream(name,ios::binary | ios::ate);
+	vector<char> retun;
+	if (stream) {
+		size_t siz = stream.tellg();
+		retun.resize(siz);
+		stream.seekg(0);
+		stream.read(retun.data(), siz);
+		stream.close();
+	} else {
+		ERROR("Can't load shader files", -4);
+	}
+	return retun;
+}
+
 using namespace InitPrefs;
+
+void creatModule(vector<char> file,VkShaderModule* modul) {
+	VkShaderModuleCreateInfo ver_creatinfo = {};
+	ver_creatinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+	ver_creatinfo.codeSize = file.size();
+	ver_creatinfo.pCode = (uint32_t*)file.data();
+
+	handel("Creating Shader Module",vkCreateShaderModule(cdevice, &ver_creatinfo, nullptr, modul));
+	if (!modul) {
+		ERROR("Can't creat Shader Module", -5);
+	}
+}
 
 void initVulkan() {
 	VkApplicationInfo appInfo = {};
@@ -377,6 +405,22 @@ void initVulkan() {
 
 	VkQueue queue;
 	vkGetDeviceQueue(cdevice, 0, 0, &queue);
+
+	auto binVer = getBinarys("vert.spv");
+	auto binFrag = getBinarys("frag.spv");
+
+	creatModule(binVer,&vermodule);
+	creatModule(binFrag,&fragmodule);
+
+	VkPipelineShaderStageCreateInfo creat_info = {};
+	creat_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	creat_info.module = vermodule;
+	creat_info.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	creat_info.pName = "main";
+
+	VkSpecializationInfo secinfo = {};
+	//secinfo.
+	creat_info.pSpecializationInfo = nullptr;
 }
 
 void initFrame() {
@@ -405,6 +449,8 @@ int draw() {
 void shutdown(int i) {
 	handel("Finished waiting",vkDeviceWaitIdle(cdevice));
 
+	vkDestroyShaderModule(cdevice, vermodule, nullptr);
+	vkDestroyShaderModule(cdevice, fragmodule, nullptr);
 	for each (VkImageView var in currentImage)
 	{
 		vkDestroyImageView(cdevice, var, nullptr);

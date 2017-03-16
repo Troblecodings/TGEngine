@@ -105,5 +105,7 @@ namespace GLVV {
 	VkSurfaceKHR KHR = {};
 	VkSwapchainKHR SwapChain = {};
 	vector<VkImageView> currentImage = {};
+	VkShaderModule vermodule;
+	VkShaderModule fragmodule;
 	int actual_image_count = 0;
 }
