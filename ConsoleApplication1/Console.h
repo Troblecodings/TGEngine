@@ -6,6 +6,11 @@
 #include <chrono>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
+#include <thread>
+
+#define ERROR(ch, erx) cout << "Error occured (" << erx  << ")" << endl << ch << endl;\
+_sleep(2000);\
+exit(erx);
 
 using namespace std;
 
@@ -98,5 +103,6 @@ namespace GLVV {
 	VkDevice cdevice = {};
 	GLFWwindow* window;
 	VkSurfaceKHR KHR = {};
-	std::vector<VkSurfaceFormatKHR> KHRFormatsValid = {};
+	VkSwapchainKHR SwapChain = {};
+	int actual_image_count = 0;
 }

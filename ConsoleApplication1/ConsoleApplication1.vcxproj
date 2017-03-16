@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Preferences.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

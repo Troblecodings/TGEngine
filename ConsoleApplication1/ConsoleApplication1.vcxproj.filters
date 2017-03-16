@@ -27,6 +27,9 @@
     <ClInclude Include="Console.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Preferences.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

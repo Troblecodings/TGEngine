@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Console.h"
-#include "vulkan\vulkan.h"
+#include "Preferences.h"
 
 using namespace std;
 using namespace GLVV;
@@ -125,6 +125,8 @@ void debugLayerAndExtensions() {
 	}
 }
 
+using namespace InitPrefs;
+
 void initVulkan() {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -217,18 +219,71 @@ void initVulkan() {
 	formats.resize(suf_form_cout);
 	vkGetPhysicalDeviceSurfaceFormatsKHR(c_div, KHR, &suf_form_cout, formats.data());
 
-	if (debug) {
-		cout << "Formats Provided: " << endl;
+	if (debug) cout << "Formats Provided: " << endl;
 
-		for (size_t foc = 0; foc < suf_form_cout; foc++)
-		{
-			VkSurfaceFormatKHR c_form = formats[foc];
+	VkSurfaceFormatKHR form;
+	bool validformat = false;
+
+	for (size_t foc = 0; foc < suf_form_cout; foc++)
+	{
+		VkSurfaceFormatKHR c_form = formats[foc];
+		if (c_form.format == PREFERRED_FORMAT) {
+			validformat = true;
+			form = c_form;
+			break;
+		}
+		if (debug) {
 			cout << endl << "Format: " << c_form.format << endl;
 			cout << "Color Space " << c_form.colorSpace << endl;
 		}
-		cout << endl;
 	}
-	KHRFormatsValid = formats;
+	if (!validformat) {
+		ERROR("Format not Valid", -2)
+	}
+	cout << endl;
+
+	uint32_t Present_mode_count = 0;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(c_div,KHR,&Present_mode_count,nullptr);
+
+	vector<VkPresentModeKHR> khr_present_mode = {};
+	khr_present_mode.resize(Present_mode_count);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(c_div,KHR,&Present_mode_count, khr_present_mode.data());
+
+	bool ismodevalid = false;
+
+	for (size_t prm = 0; prm < Present_mode_count; prm++)
+	{
+		VkPresentModeKHR cpm = khr_present_mode[prm];
+		if (cpm == PRESENT_MODE_USED) {
+			ismodevalid = true;
+			if(!debug)break;
+		}
+		if(debug)cout << "Present Mode " << cpm << endl;
+	}
+
+	if (!ismodevalid) {
+		ERROR("Present mode not available", -1)
+	}
+
+	VkSwapchainCreateInfoKHR swap_chain_creat_info = {};
+	swap_chain_creat_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	swap_chain_creat_info.surface = KHR;
+	if (khrcaps.minImageCount > PREFERRED_MINIMAL_FRAME_COUNT) {
+		swap_chain_creat_info.minImageCount = khrcaps.minImageCount;
+	} else {
+		swap_chain_creat_info.minImageCount = PREFERRED_MINIMAL_FRAME_COUNT;
+	}
+	actual_image_count = swap_chain_creat_info.minImageCount;
+	swap_chain_creat_info.imageFormat = PREFERRED_FORMAT;
+	swap_chain_creat_info.imageColorSpace = form.colorSpace;
+	swap_chain_creat_info.imageExtent = WINDOW_SIZE;
+	swap_chain_creat_info.imageSharingMode = PREFERRED_SHARING_MODE;
+	swap_chain_creat_info.imageArrayLayers = 1;
+	swap_chain_creat_info.imageUsage = IMAGE_USAGE;
+	swap_chain_creat_info.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	swap_chain_creat_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	swap_chain_creat_info.presentMode = PRESENT_MODE_USED;
+    swap_chain_creat_info.clipped = VK_NULL_HANDLE;
 
 	VkPhysicalDeviceFeatures features = {};
 
@@ -262,7 +317,10 @@ void initFrame() {
 	GLFWmonitor* mon = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(mon);
 	if(debug)cout << mode->width << " - " << mode->height << endl;
-	window = glfwCreateWindow(mode->width, mode->height, "Frame",nullptr,nullptr);
+	if (AUTO_SIZE) {
+		WINDOW_SIZE = { static_cast<uint32_t>(mode->width),static_cast<uint32_t>(mode->height)};
+	}
+	window = glfwCreateWindow(WINDOW_SIZE.width, WINDOW_SIZE.height, FRAME_TITEL,nullptr,nullptr);
 	glfwSetWindowPos(window, 0, 0);
 }
 
