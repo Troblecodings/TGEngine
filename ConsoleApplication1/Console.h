@@ -104,5 +104,6 @@ namespace GLVV {
 	GLFWwindow* window;
 	VkSurfaceKHR KHR = {};
 	VkSwapchainKHR SwapChain = {};
+	vector<VkImageView> currentImage = {};
 	int actual_image_count = 0;
 }

@@ -301,9 +301,79 @@ void initVulkan() {
 	div_create_info.queueCreateInfoCount = 1;
 	div_create_info.pEnabledFeatures = &features;
 
+	vector<char*> extlays = {
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME
+	};
+
+	uint32_t extcout = 0;
+	vkEnumerateDeviceExtensionProperties(c_div, nullptr, &extcout, nullptr);
+	vector<VkExtensionProperties> current_valid_ext = {};
+	current_valid_ext.resize(extcout);
+	vkEnumerateDeviceExtensionProperties(c_div, nullptr, &extcout, current_valid_ext.data());
+
+	int vc = 0;
+
+	vector<char*> val_ext = {};
+
+	for (size_t gh = 0; gh < extlays.size(); gh++)
+	{
+		string point = extlays[gh];
+		for (size_t cf = 0; cf < extcout; cf++)
+		{
+			string name = current_valid_ext[cf].extensionName;
+			if (name == point) {
+				val_ext.resize(vc + 1);
+				val_ext[vc] = extlays[gh];
+				cout << "Found valid device extension " << extlays[gh] << endl;
+				vc++;
+				break;
+			}
+		}
+	}
+	div_create_info.enabledExtensionCount = val_ext.size();
+	div_create_info.ppEnabledExtensionNames = val_ext.data();
+
+	VkBool32 isSupported = false;
+	handel("Check is supporting swapchain ", vkGetPhysicalDeviceSurfaceSupportKHR(c_div,0,KHR,&isSupported));
+	if (!isSupported) {
+		ERROR("Swapchain not supported", -3);
+	}
+
 	handel("Create Device", vkCreateDevice(c_div, &div_create_info, nullptr, &cdevice));
 
 	if (debug)featuresPrint(features);
+
+	handel("Creating swapchain ",vkCreateSwapchainKHR(cdevice,&swap_chain_creat_info,nullptr,&SwapChain));
+
+	uint32_t image_count = 0;
+	handel("Getting Image count",vkGetSwapchainImagesKHR(cdevice, SwapChain, &image_count, nullptr));
+	vector<VkImage> image_array = {};
+	image_array.resize(image_count);
+	handel("Getting Image(s)", vkGetSwapchainImagesKHR(cdevice, SwapChain, &image_count, image_array.data()));
+
+	currentImage.resize(image_count);
+	for (size_t d = 0; d < image_count; d++)
+	{
+		VkImageViewCreateInfo imview_create_info = {};
+		imview_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imview_create_info.image = image_array[d];
+		imview_create_info.format = PREFERRED_FORMAT;
+		imview_create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imview_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imview_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imview_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imview_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+		VkImageSubresourceRange range = {};
+		range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		range.baseMipLevel = 0;
+		range.levelCount = 1;
+		range.baseArrayLayer = 0;
+		range.layerCount = 1;
+
+		imview_create_info.subresourceRange = range;
+
+		handel("Create Image View", vkCreateImageView(cdevice, &imview_create_info, nullptr, &(currentImage[d])));
+	}
 
 	VkQueue queue;
 	vkGetDeviceQueue(cdevice, 0, 0, &queue);
@@ -313,6 +383,7 @@ void initFrame() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 	
 	GLFWmonitor* mon = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(mon);
@@ -332,8 +403,13 @@ int draw() {
 }
 
 void shutdown(int i) {
-	vkDeviceWaitIdle(cdevice);
+	handel("Finished waiting",vkDeviceWaitIdle(cdevice));
 
+	for each (VkImageView var in currentImage)
+	{
+		vkDestroyImageView(cdevice, var, nullptr);
+	}
+	vkDestroySwapchainKHR(cdevice,SwapChain,nullptr);
 	vkDestroyDevice(cdevice, nullptr);
 	vkDestroySurfaceKHR(instance,KHR,nullptr);
 	vkDestroyInstance(instance, nullptr);
