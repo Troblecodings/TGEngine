@@ -7,6 +7,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
 #include <thread>
+#include "Window.cpp"
 
 #define ERROR(ch, erx) cout << "Error occured (" << erx  << ")" << endl << ch << endl;\
 _sleep(2000);\
@@ -22,15 +23,11 @@ void printTime() {
 	cout << "[" << point.tm_hour << ":" << point.tm_min << ":" << point.tm_sec << "]:";
 }
 
-void handel(char* str, VkResult rs) {
-	cout << str << ": ";
-	if (rs == VK_SUCCESS) {
-		cout << "SUCCESSFULLY";
-	}
-	else {
+void handel(VkResult rs) {
+	if (rs != VK_SUCCESS) {
 		cout << "FAILED WITH ERROR: " << rs;
+		throw new exception;
 	}
-	cout << endl;
 }
 
 void featuresPrint(VkPhysicalDeviceFeatures fet) {
@@ -98,14 +95,73 @@ void printVersion(int av) {
 	cout << VK_VERSION_MAJOR(av) << "." << VK_VERSION_MINOR(av) << "." << VK_VERSION_PATCH(av);
 }
 
+void debugOut(uint32_t div_cou, VkPhysicalDevice graka_phy[]) {
+		for (size_t i = 0; i < div_cou; i++)
+		{
+			cout << endl;
+			cout << "==================================" << endl;
+			cout << endl;
+			VkPhysicalDevice cdevice = graka_phy[i];
+			VkPhysicalDeviceProperties cdivprops;
+
+			vkGetPhysicalDeviceProperties(cdevice, &cdivprops);
+
+			uint32_t av = cdivprops.apiVersion;
+			uint32_t dv = cdivprops.driverVersion;
+
+			cout << i + 1 << ". Card " << cdivprops.deviceName << endl;
+			cout << "Api version ";
+			printVersion(av);
+			cout << endl;
+			cout << "Driver version ";
+			printVersion(dv);
+			cout << endl;
+			cout << "Type " << cdivprops.deviceType << endl;
+			cout << "ID " << cdivprops.deviceID << endl;
+
+			uint32_t div_qu_prop_count = 0;
+			vkGetPhysicalDeviceQueueFamilyProperties(cdevice, &div_qu_prop_count, nullptr);
+
+			VkPhysicalDeviceFeatures features;
+			vkGetPhysicalDeviceFeatures(cdevice, &features);
+
+			featuresPrint(features);
+
+			vector<VkQueueFamilyProperties> mem_props = {};
+			mem_props.resize(div_qu_prop_count);
+			vkGetPhysicalDeviceQueueFamilyProperties(cdevice, &div_qu_prop_count, mem_props.data());
+
+			for (size_t s = 0; s < div_qu_prop_count; s++)
+			{
+				cout << endl;
+				VkQueueFamilyProperties prop_mem = mem_props[s];
+				cout << s + 1 << ". Queue Family " << prop_mem.queueCount << endl;
+				cout << "Flag " << prop_mem.queueFlags << endl;
+				cout << "Image transf W" << prop_mem.minImageTransferGranularity.width << " - H" << prop_mem.minImageTransferGranularity.height << " - D" << prop_mem.minImageTransferGranularity.depth << endl;
+				cout << "Valid Bits " << prop_mem.timestampValidBits << endl;
+			}
+
+		}
+		cout << endl;
+		cout << "==================================" << endl;
+		cout << endl;
+}
+
+
 namespace GLVV {
-	VkInstance instance = {};
 	VkDevice cdevice = {};
-	GLFWwindow* window;
-	VkSurfaceKHR KHR = {};
 	VkSwapchainKHR SwapChain = {};
 	vector<VkImageView> currentImage = {};
 	VkShaderModule vermodule;
 	VkShaderModule fragmodule;
+	VkPipelineLayout pipline_layout;
+	VkRenderPass render_pass;
+	VkPipeline pipeline;
+	vector<VkFramebuffer> framebuffers = {};
+	VkCommandPool commandpool = {};
+	vector<VkCommandBuffer> commandbuffers = {};
+	VkSemaphore renderAvailable;
+	VkSemaphore renderEnd;
+	VkQueue queue;
 	int actual_image_count = 0;
 }

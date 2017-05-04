@@ -3,10 +3,12 @@
 
 layout(location = 0)out vec4 color;
 
-layout(constant_id = 1) const int arraySize = 12;
-in vec3 colors[arraySize];
-flat in int vert;
+vec3 colors[3] = vec3[](
+vec3(1.0f,1.0f,1.0f),
+vec3(1.0f,0.0f,1.0f),
+vec3(0.0f,1.0f,1.0f)
+);
 
 void main(){
-   color = vec4(colors[vert],1.0);
+   color = vec4(colors[0],1.0);
 }

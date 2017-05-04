@@ -2,13 +2,9 @@
 
 #include "vulkan\vulkan.h"
 
-namespace InitPrefs {
+namespace Options {
 	VkPresentModeKHR PRESENT_MODE_USED = VK_PRESENT_MODE_MAILBOX_KHR;
 	int PREFERRED_MINIMAL_FRAME_COUNT = 3;
-	VkFormat PREFERRED_FORMAT = VK_FORMAT_B8G8R8A8_UNORM;
 	VkSharingMode PREFERRED_SHARING_MODE = VK_SHARING_MODE_EXCLUSIVE;
-	bool AUTO_SIZE = true;
-	VkExtent2D WINDOW_SIZE = {};
-	char* FRAME_TITEL = "TEngine";
 	VkImageUsageFlags IMAGE_USAGE = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 }

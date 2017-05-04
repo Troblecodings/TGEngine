@@ -1,4 +1,4 @@
 @echo off
-D:\Vulcan\Bin32\glslangValidator -V vertexshader.vert
-D:\Vulcan\Bin32\glslangValidator -V shader.frag
+D:\Vulcan\Bin32\glslangValidator -H vertexshader.vert
+D:\Vulcan\Bin32\glslangValidator -H shader.frag
 pause
