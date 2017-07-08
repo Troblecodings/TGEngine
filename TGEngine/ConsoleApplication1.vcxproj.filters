@@ -21,23 +21,20 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Preferences.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="stdbase.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -51,6 +48,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Swapchain.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

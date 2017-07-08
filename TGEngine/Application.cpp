@@ -1,7 +1,8 @@
-#include "stdafx.h"
-#include "Console.h"
+#include "stdbase.h"
+#include "Debug.h"
 
 namespace APP {
+
 	struct Application {
 		char* title;
 		uint32_t version;

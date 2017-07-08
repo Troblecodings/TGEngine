@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdbase.h"
 #include "Console.h"
 #include "Application.cpp"
 

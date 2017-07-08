@@ -24,7 +24,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
-    <ProjectName>TEngine</ProjectName>
+    <ProjectName>TGEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -89,11 +89,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\include;D:\Vulcan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.49.0\Include;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.49.0\Bin32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
@@ -104,11 +104,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\include;D:\Vulcan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.49.0\Include;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.49.0\Bin32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -120,13 +120,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\include;D:\Vulcan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.49.0\Include;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.49.0\Bin32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
@@ -139,13 +139,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\include;D:\Vulcan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.49.0\Include;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;D:\Vulcan\Bin32;D:\Vulcan\Lib32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.49.0\Bin32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -155,21 +155,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="Preferences.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="stdbase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Swapchain.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

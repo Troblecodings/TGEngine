@@ -1,7 +1,7 @@
 // ConsoleApplication1.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
 //
 
-#include "stdafx.h"
+#include "stdbase.h"
 #include "Console.h"
 #include "Preferences.h"
 #include <fstream>
