@@ -47,7 +47,7 @@ void createDevice(DEVICE::Device dev) {
 		}
 	}
 	if (!validformat) {
-		ERROR("Format not Valid", -2)
+		error("Format not Valid", -2);
 	}
 
 	uint32_t Present_mode_count = 0;
@@ -65,7 +65,7 @@ void createDevice(DEVICE::Device dev) {
 	}
 
 	if (!ismodevalid) {
-		ERROR("Present mode not available", -1)
+		error("Present mode not available", -1);
 	}
 
 	VkPhysicalDeviceFeatures features = {};
@@ -119,7 +119,7 @@ void createDevice(DEVICE::Device dev) {
 	VkBool32 isSupported = false;
 	handel(vkGetPhysicalDeviceSurfaceSupportKHR(dev.currentPhysicalDevice, 0, *dev.app.KHR, &isSupported));
 	if (!isSupported) {
-		ERROR("Swapchain not supported", -3);
+		error("Swapchain not supported", -3);
 	}
 
 	handel(vkCreateDevice(dev.currentPhysicalDevice, &div_create_info, nullptr, dev.device));

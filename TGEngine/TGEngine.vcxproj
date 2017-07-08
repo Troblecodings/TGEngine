@@ -153,10 +153,14 @@
     <Text Include="shader.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Preferences.h" />
     <ClInclude Include="stdbase.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
