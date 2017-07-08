@@ -15,7 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
     <Text Include="shader.frag">
       <Filter>Quelldateien</Filter>
     </Text>
