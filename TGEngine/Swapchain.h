@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Device.cpp"
+#include "stdbase.h"
+#include "Device.h"
+#include "Window.h"
 
 namespace Pipeline {
 
@@ -11,9 +13,19 @@ namespace Pipeline {
 		VkPresentModeKHR present_mode;
 		VkSwapchainKHR* swapchain;
 		vector<VkImageView> image_view_swapchain;
-		Application app;
-		Device dev;
+		Application* app;
+		Device* device;
+		Window* window;
 	};
 
+	/*
+	 * Creates a Swapchain
+	 */
+	void createSwapchain(Swapchain chain);
+
+	/*
+	 * Destroys the Swapchain
+	 */
+	void destroySwapchain(Swapchain chain);
 
 }

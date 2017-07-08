@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Application.h"
 
 namespace Pipeline {
@@ -5,15 +7,14 @@ namespace Pipeline {
 	using namespace std;
 
 	void createApplication(Application app) {
+
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pApplicationName = app.title;
 		appInfo.applicationVersion = app.version;
-		appInfo.pEngineName = "TEngine";
+		appInfo.pEngineName = "TGEngine";
 		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
-
-
 
 		vector<VkLayerProperties> lay_props;
 		uint32_t layprop_cou = 0;
@@ -56,7 +57,7 @@ namespace Pipeline {
 
 		handel(vkCreateInstance(&InscreatInfo, nullptr, app.instance));
 
-		handel(glfwCreateWindowSurface(*app.instance, GLVV::window.window, nullptr, app.KHR));
+		handel(glfwCreateWindowSurface(*app.instance, (*app.window).window, nullptr, app.KHR));
 	}
 
 	void destroyApplictaion(Application app) {

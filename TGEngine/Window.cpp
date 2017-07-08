@@ -1,10 +1,10 @@
-#include "stdbase.h"
-#include "Console.h"
+#pragma once
+
 #include "Window.h"
 
 namespace Pipeline {
 
-	void creatWindow(Window window) {
+	void createWindow(Window window) {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);

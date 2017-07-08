@@ -2,6 +2,7 @@
 
 #include "stdbase.h"
 #include "Debug.h"
+#include "Window.h"
 
 namespace Pipeline {
 
@@ -13,6 +14,7 @@ namespace Pipeline {
 		vector<char*> layers_to_enable;
 		VkInstance* instance;
 		VkSurfaceKHR* KHR;
+		Window* window;
 	};
 
 	/*

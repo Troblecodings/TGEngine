@@ -1,6 +1,6 @@
+#pragma once
+
 #include "Debug.h"
-#include <time.h>
-#include <chrono>
 
 using namespace std;
 

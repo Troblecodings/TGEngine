@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stdbase.h"
+
 namespace Pipeline {
 
 	struct Window {
@@ -12,7 +14,7 @@ namespace Pipeline {
 	/*
 	 * Creates a Window
 	 */
-	void creatWindow(Window window);
+	void createWindow(Window window);
 
 	/*
 	 * Destroys the Window

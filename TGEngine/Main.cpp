@@ -5,19 +5,11 @@
 #include "Console.h"
 #include "Preferences.h"
 #include <fstream>
-#include "Vector.h"
-#include "Window.cpp"
-#include "Application.cpp"
-#include "Device.cpp"
-#include "Swapchain.cpp"
+#include "Debug.h"
+#include "Device.h"
+#include "Swapchain.h"
 
 using namespace std;
-using namespace WINDOW;
-using namespace APP;
-using namespace DEVICE;
-using namespace CHAIN;
-
-bool debug = true;
 
 
 void debugLayerAndExtensions() {
@@ -28,45 +20,24 @@ void debugLayerAndExtensions() {
 	props.resize(layer_count);
 	vkEnumerateInstanceLayerProperties(&layer_count, props.data());	
 
-	if (debug) {
-		for (int i = 0; i < layer_count; i++)
-		{
-			VkLayerProperties cprop = props[i];
-			cout << "Found layer property " << cprop.layerName << " - " << cprop.description << endl;
-			cout << "Impl_Version ";
-			printVersion(cprop.implementationVersion);
-			cout << endl;
-			cout << "Spec_Version ";
-			printVersion(cprop.specVersion);
-			cout << endl;
-
-			uint32_t ext_count = 0;
-			vkEnumerateInstanceExtensionProperties(cprop.layerName,&ext_count, nullptr);
-
-			vector<VkExtensionProperties> extns = {};
-			extns.resize(ext_count);
-			vkEnumerateInstanceExtensionProperties(cprop.layerName,&ext_count, extns.data());
-
-			for (int g = 0; g < ext_count; g++)
-			{
-				cout << endl;
-				VkExtensionProperties ex = extns[g];
-				cout << g + 1 << ". " << ex.extensionName << " - Version: ";
-				printVersion(ex.specVersion);
-				cout << endl;
-			}
-
-			cout << endl;
-		}
-
-		cout << "Extensions: " << endl;
+	
+	for (int i = 0; i < layer_count; i++)
+	{
+		VkLayerProperties cprop = props[i];
+		cout << "Found layer property " << cprop.layerName << " - " << cprop.description << endl;
+		cout << "Impl_Version ";
+		printVersion(cprop.implementationVersion);
+		cout << endl;
+		cout << "Spec_Version ";
+		printVersion(cprop.specVersion);
+		cout << endl;
 
 		uint32_t ext_count = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, nullptr);
+		vkEnumerateInstanceExtensionProperties(cprop.layerName,&ext_count, nullptr);
 
 		vector<VkExtensionProperties> extns = {};
 		extns.resize(ext_count);
-		vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, extns.data());
+		vkEnumerateInstanceExtensionProperties(cprop.layerName,&ext_count, extns.data());
 
 		for (int g = 0; g < ext_count; g++)
 		{
@@ -79,6 +50,26 @@ void debugLayerAndExtensions() {
 
 		cout << endl;
 	}
+
+	cout << "Extensions: " << endl;
+
+	uint32_t ext_count = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, nullptr);
+
+	vector<VkExtensionProperties> extns = {};
+	extns.resize(ext_count);
+	vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, extns.data());
+
+	for (int g = 0; g < ext_count; g++)
+	{
+		cout << endl;
+		VkExtensionProperties ex = extns[g];
+		cout << g + 1 << ". " << ex.extensionName << " - Version: ";
+		printVersion(ex.specVersion);
+		cout << endl;
+	}
+
+	cout << endl;
 }
 
 vector<char> getBinarys(const string &name) {
@@ -91,48 +82,59 @@ vector<char> getBinarys(const string &name) {
 		stream.read(retun.data(), siz);
 		stream.close();
 	} else {
-		ERROR("Can't load shader files", -4);
+		error("Can't load shader files", -4);
 	}
 	return retun;
 }
 
 using namespace Options;
+using namespace Pipeline;
 
-void creatModule(vector<char> file,VkShaderModule* modul) {
+void createModule(vector<char> file,VkShaderModule* modul,Device* device) {
+
 	VkShaderModuleCreateInfo ver_creatinfo = {};
 	ver_creatinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	ver_creatinfo.codeSize = file.size();
 	ver_creatinfo.pCode = (uint32_t*)file.data();
 
-	handel("Creating Shader Module",vkCreateShaderModule(cdevice, &ver_creatinfo, nullptr, modul));
+	handel(vkCreateShaderModule(*(*device).device, &ver_creatinfo, nullptr, modul));
 	if (!modul) {
-		ERROR("Can't creat Shader Module", -5);
+		error("Can't creat Shader Module", -5);
 	}
 }
 
-void initVulkan() {
+void initTGEngine() {
+
 	vector<char*> layers = {
 		"VK_LAYER_LUNARG_standard_validation",
 		"VK_LAYER_VALVE_steam_overlay",
 		"VK_LAYER_NV_optimus"
 	};
 
+	Window window;
+	window.autosize = true;
+	window.title = "title";
+	createWindow(window);
+
+	Application application;
 	application.layers_to_enable = layers;
 	application.title = window.title;
 	application.version = VK_MAKE_VERSION(0, 0, 1);
 	createApplication(application);
 
-	current_device.prefered_format = VK_FORMAT_B8G8R8A8_UNORM;
-	current_device.app = application;
-	createDevice(current_device);
+	Device main_device;
+	main_device.prefered_format = VK_FORMAT_B8G8R8A8_UNORM;
+	main_device.app = application;
+	createDevice(main_device);
 
-	chain.app = application;
-	chain.dev = current_device;
-	chain.image_count = 3;
-	chain.image_usage_flag = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	chain.sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
-	chain.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
-	createSwapchain(chain);
+	Swapchain swapchain;
+	swapchain.app = &application;
+	swapchain.device = &main_device;
+	swapchain.image_count = 3;
+	swapchain.image_usage_flag = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	swapchain.sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
+	swapchain.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
+	createSwapchain(swapchain);
 
 	vkGetDeviceQueue(cdevice, 0, 0, &queue);
 
