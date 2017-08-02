@@ -10,7 +10,7 @@ namespace Pipeline {
 
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = app.title;
+		appInfo.pApplicationName = app.window->title;
 		appInfo.applicationVersion = app.version;
 		appInfo.pEngineName = "TGEngine";
 		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);

@@ -90,19 +90,6 @@ vector<char> getBinarys(const string &name) {
 using namespace Options;
 using namespace Pipeline;
 
-void createModule(vector<char> file,VkShaderModule* modul,Device* device) {
-
-	VkShaderModuleCreateInfo ver_creatinfo = {};
-	ver_creatinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	ver_creatinfo.codeSize = file.size();
-	ver_creatinfo.pCode = (uint32_t*)file.data();
-
-	handel(vkCreateShaderModule(*(*device).device, &ver_creatinfo, nullptr, modul));
-	if (!modul) {
-		error("Can't creat Shader Module", -5);
-	}
-}
-
 void initTGEngine() {
 
 	vector<char*> layers = {
@@ -117,8 +104,8 @@ void initTGEngine() {
 	createWindow(window);
 
 	Application application;
+	application.window = &window;
 	application.layers_to_enable = layers;
-	application.title = window.title;
 	application.version = VK_MAKE_VERSION(0, 0, 1);
 	createApplication(application);
 

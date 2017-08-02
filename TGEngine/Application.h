@@ -9,7 +9,6 @@ namespace Pipeline {
 	using namespace std;
 
 	struct Application {
-		char* title;
 		uint32_t version;
 		vector<char*> layers_to_enable;
 		VkInstance* instance;

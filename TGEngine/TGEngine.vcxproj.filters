@@ -19,6 +19,18 @@
     <Filter Include="Quelldateien\Pipeline">
       <UniqueIdentifier>{21f3ea49-aeaa-4450-89db-0e93d6a94065}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\TStorage">
+      <UniqueIdentifier>{6b7f4ffd-4b63-414b-8e95-cae0f4da6385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\TBase">
+      <UniqueIdentifier>{6f91d985-dc27-4e42-b1cc-e0ea1733c232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\TBase">
+      <UniqueIdentifier>{98079e1f-71de-42f9-b09a-e503104dbc7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\TStorage">
+      <UniqueIdentifier>{a140e7d1-d274-4c7c-b816-2635858404dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader.frag">
@@ -50,6 +62,24 @@
     <ClInclude Include="Device.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="TJson.h">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="TPointer.h">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="TStorage.h">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="TOSC.h">
+      <Filter>Headerdateien\TBase</Filter>
+    </ClInclude>
+    <ClInclude Include="TString.h">
+      <Filter>Headerdateien\TBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -69,6 +99,24 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="TString.cpp">
+      <Filter>Quelldateien\TBase</Filter>
+    </ClCompile>
+    <ClCompile Include="TOSC.cpp">
+      <Filter>Quelldateien\TBase</Filter>
+    </ClCompile>
+    <ClCompile Include="TStorage.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="TPointer.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="TJson.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
