@@ -8,11 +8,12 @@
 
 #include "TPointer.h"
 
-struct TJson{
-	TPointer* pointer;
-	char* name;
+class TJson
+{
+public:
+	TJson();
+	~TJson();
+
+private:
+
 };
-
-void json_init(TJson* json);
-
-void json_add(TJson* json,char* name, void* value);

@@ -1,6 +1,3 @@
-// ConsoleApplication1.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
-//
-
 #include "stdbase.h"
 #include "Console.h"
 #include "Preferences.h"
@@ -8,6 +5,8 @@
 #include "Debug.h"
 #include "Device.h"
 #include "Swapchain.h"
+#include "Shader.h"
+#include "RenderPass.h"
 
 using namespace std;
 
@@ -72,21 +71,6 @@ void debugLayerAndExtensions() {
 	cout << endl;
 }
 
-vector<char> getBinarys(const string &name) {
-	ifstream stream(name,ios::binary | ios::ate);
-	vector<char> retun;
-	if (stream) {
-		size_t siz = stream.tellg();
-		retun.resize(siz);
-		stream.seekg(0);
-		stream.read(retun.data(), siz);
-		stream.close();
-	} else {
-		error("Can't load shader files", -4);
-	}
-	return retun;
-}
-
 using namespace Options;
 using namespace Pipeline;
 
@@ -123,148 +107,22 @@ void initTGEngine() {
 	swapchain.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
 	createSwapchain(swapchain);
 
-	vkGetDeviceQueue(cdevice, 0, 0, &queue);
+	Shader vertex_shader = {};
+	vertex_shader.bits = VK_SHADER_STAGE_VERTEX_BIT;
+	vertex_shader.name = "vert.spv";
+	vertex_shader.device = main_device.device;
+	createShader(vertex_shader);
 
-	auto binVer = getBinarys("vert.spv");
-	auto binFrag = getBinarys("frag.spv");
+	Shader fragment_shader = {};
+	fragment_shader.bits = VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragment_shader.name = "frag.spv";
+	fragment_shader.device = main_device.device;
+	createShader(fragment_shader);
 
-	creatModule(binVer, &vermodule);
-	creatModule(binFrag, &fragmodule);
-
-	VkPipelineShaderStageCreateInfo ver_creat_info = {};
-	ver_creat_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	ver_creat_info.module = vermodule;
-	ver_creat_info.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	ver_creat_info.pName = "main";
-	ver_creat_info.pSpecializationInfo = nullptr;
-
-	VkPipelineShaderStageCreateInfo frag_creat_info = {};
-	frag_creat_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	frag_creat_info.module = fragmodule;
-	frag_creat_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	frag_creat_info.pName = "main";
-	frag_creat_info.pSpecializationInfo = nullptr;
-
-	vector<VkPipelineShaderStageCreateInfo> shader_array = { ver_creat_info, frag_creat_info };
-
-	VkPipelineVertexInputStateCreateInfo vert_inp_info = {};
-	vert_inp_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vert_inp_info.vertexBindingDescriptionCount = 0;
-	vert_inp_info.vertexAttributeDescriptionCount = 0;
-	vert_inp_info.pVertexBindingDescriptions = nullptr;
-	vert_inp_info.pVertexAttributeDescriptions = nullptr;
-
-	VkPipelineInputAssemblyStateCreateInfo in_ass_info = {};
-	in_ass_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	in_ass_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	in_ass_info.primitiveRestartEnable = VK_FALSE;
-
-	VkViewport viewport;
-	viewport.x = 0;
-	viewport.y = 0;
-	viewport.width = window.size.width;
-	viewport.height = window.size.height;
-	viewport.maxDepth = 1;
-	viewport.minDepth = 0;
-
-	VkRect2D rect;
-	rect.offset = { 0,0 };
-	rect.extent = window.size;
-
-	VkPipelineViewportStateCreateInfo viewport_create_info = {};
-	viewport_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewport_create_info.pScissors = &rect;
-	viewport_create_info.pViewports = &viewport;
-	viewport_create_info.scissorCount = 1;
-	viewport_create_info.viewportCount = 1;
-
-	VkPipelineRasterizationStateCreateInfo rastera_info = {};
-	rastera_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-	rastera_info.depthClampEnable = VK_FALSE;
-	rastera_info.rasterizerDiscardEnable = VK_FALSE;
-	rastera_info.polygonMode = VK_POLYGON_MODE_FILL;
-	rastera_info.cullMode = VK_CULL_MODE_NONE;
-	rastera_info.frontFace = VK_FRONT_FACE_CLOCKWISE;
-	rastera_info.depthBiasEnable = VK_FALSE;
-	rastera_info.depthBiasConstantFactor = 0;
-	rastera_info.depthBiasClamp = 0;
-	rastera_info.depthBiasSlopeFactor = 0;
-	rastera_info.lineWidth = 1;
-
-	VkPipelineMultisampleStateCreateInfo pipl_multisample = {};
-	pipl_multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	pipl_multisample.alphaToCoverageEnable = VK_FALSE;
-	pipl_multisample.alphaToOneEnable = VK_FALSE;
-	pipl_multisample.minSampleShading = 1;
-	pipl_multisample.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-	pipl_multisample.sampleShadingEnable = VK_FALSE;
-	pipl_multisample.pSampleMask = nullptr;
-
-	VkPipelineColorBlendAttachmentState state;
-	state.blendEnable = VK_TRUE;
-	state.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-	state.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
-	state.colorBlendOp = VK_BLEND_OP_ADD;
-	state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-	state.alphaBlendOp = VK_BLEND_OP_ADD;
-	state.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-
-	VkPipelineColorBlendStateCreateInfo color_blend_create_info = {};
-	color_blend_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-	color_blend_create_info.logicOpEnable = VK_FALSE;
-	color_blend_create_info.logicOp = VK_LOGIC_OP_NO_OP;
-	color_blend_create_info.attachmentCount = 1;
-	color_blend_create_info.pAttachments = &state;
-	color_blend_create_info.blendConstants[0] = 0;
-	color_blend_create_info.blendConstants[1] = 0;
-	color_blend_create_info.blendConstants[2] = 0;
-	color_blend_create_info.blendConstants[3] = 0;
-
-	VkPipelineLayoutCreateInfo layout_create_info = {};
-	layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-
-	handel(vkCreatePipelineLayout(cdevice,&layout_create_info,nullptr, &pipline_layout));
-
-	VkAttachmentDescription att_desc;
-	att_desc.flags = 0;
-	att_desc.format = PREFERRED_FORMAT;
-	att_desc.samples = VK_SAMPLE_COUNT_1_BIT;
-	att_desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	att_desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	att_desc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	att_desc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	att_desc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	att_desc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-	VkAttachmentReference reference_att;
-	reference_att.attachment = 0;
-	reference_att.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-	VkSubpassDescription subpass_desc = {};
-	subpass_desc.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass_desc.colorAttachmentCount = 1;
-	subpass_desc.pColorAttachments = &reference_att;
-
-	VkSubpassDependency subpass = {};
-	subpass.srcSubpass = VK_SUBPASS_EXTERNAL;
-	subpass.dstSubpass = 0;
-	subpass.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpass.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpass.srcAccessMask = 0;
-	subpass.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	subpass.dependencyFlags = 0;
-
-	VkRenderPassCreateInfo render_pass_create_info = {};
-	render_pass_create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	render_pass_create_info.attachmentCount = 1;
-	render_pass_create_info.pAttachments = &att_desc;
-	render_pass_create_info.subpassCount = 1;
-	render_pass_create_info.pSubpasses = &subpass_desc;
-	render_pass_create_info.dependencyCount = 1;
-	render_pass_create_info.pDependencies = &subpass;
-
-	handel(vkCreateRenderPass(cdevice, &render_pass_create_info, nullptr, &render_pass));
+	RenderPass render_pass = {};
+	render_pass.device = &main_device;
+	render_pass.window = &window;
+	createRenderPass(render_pass);
 
 	VkGraphicsPipelineCreateInfo pipline_create_info = {};
 	pipline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -356,6 +214,17 @@ void initTGEngine() {
 
 	handel(vkCreateSemaphore(cdevice, &semaphore_create_info, nullptr, &renderAvailable));
 	handel(vkCreateSemaphore(cdevice, &semaphore_create_info, nullptr, &renderEnd));
+
+	destroyShader(vertex_shader);
+	destroyShader(fragment_shader);
+
+	destroySwapchain(swapchain);
+
+	destroyDevice(main_device);
+
+	destroyApplictaion(application);
+
+	destroyWindow(window);
 }
 
 int draw() {
@@ -391,40 +260,8 @@ int draw() {
 	return 0;
 }
 
-void shutdown(int i) {
-	handel(vkDeviceWaitIdle(cdevice));
-
-	vkDestroySemaphore(cdevice, renderEnd, nullptr);
-	vkDestroySemaphore(cdevice, renderAvailable, nullptr);
-	vkFreeCommandBuffers(cdevice,commandpool, commandbuffers.size(), commandbuffers.data());
-	vkDestroyCommandPool(cdevice, commandpool, nullptr);
-	for each (VkFramebuffer buff in framebuffers)
-	{
-		vkDestroyFramebuffer(cdevice, buff, nullptr);
-	}
-	vkDestroyPipeline(cdevice, pipeline, nullptr);
-	vkDestroyRenderPass(cdevice, render_pass, nullptr);
-	vkDestroyPipelineLayout(cdevice, pipline_layout, nullptr);
-	vkDestroyShaderModule(cdevice, vermodule, nullptr);
-	vkDestroyShaderModule(cdevice, fragmodule, nullptr);
-	for each (VkImageView var in currentImage)
-	{
-		vkDestroyImageView(cdevice, var, nullptr);
-	}
-	vkDestroySwapchainKHR(cdevice,SwapChain,nullptr);
-	vkDestroyDevice(cdevice, nullptr);
-
-	destroyApplictaion(application);
-	destroyWindow(window);
-
-	exit(i);
-}
-
 int main()
 {
-	window.autosize = true;
-	window.title = "TEngine";
-	creatWindow(window);
 
 	initVulkan();
 	int xcv;

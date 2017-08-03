@@ -14,6 +14,7 @@ namespace Pipeline {
 		VkInstance* instance;
 		VkSurfaceKHR* KHR;
 		Window* window;
+		VkAllocationCallbacks* allocator;
 	};
 
 	/*

@@ -157,6 +157,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Preferences.h" />
@@ -165,7 +166,6 @@
     <ClInclude Include="TOSC.h" />
     <ClInclude Include="TPointer.h" />
     <ClInclude Include="TStorage.h" />
-    <ClInclude Include="TString.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -173,13 +173,13 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="TJson.cpp" />
     <ClCompile Include="TOSC.cpp" />
     <ClCompile Include="TPointer.cpp" />
     <ClCompile Include="TStorage.cpp" />
-    <ClCompile Include="TString.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

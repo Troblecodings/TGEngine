@@ -3,7 +3,7 @@
 #include "stdbase.h"
 #include "Debug.h"
 #include "TPointer.h"
-#include "TStorage.h"
+#include <fstream>
 
 namespace Pipeline {
 
@@ -11,7 +11,18 @@ namespace Pipeline {
 		char* name;
 		VkShaderModule* module;
 		VkDevice* device;
-		IStorage* files;
+		VkPipelineShaderStageCreateInfo* createInfo;
+		VkShaderStageFlagBits bits;
+		VkAllocationCallbacks* allocator;
 	};
 
+	/*
+	 * Creates a Shader 
+	 */
+	void createShader(Shader sh);
+
+	/*
+	* Destroys the Shader
+	*/
+	void destroyShader(Shader sh);
 }

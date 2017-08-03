@@ -77,8 +77,8 @@
     <ClInclude Include="TOSC.h">
       <Filter>Headerdateien\TBase</Filter>
     </ClInclude>
-    <ClInclude Include="TString.h">
-      <Filter>Headerdateien\TBase</Filter>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +103,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="TString.cpp">
-      <Filter>Quelldateien\TBase</Filter>
-    </ClCompile>
     <ClCompile Include="TOSC.cpp">
       <Filter>Quelldateien\TBase</Filter>
     </ClCompile>
@@ -117,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="TJson.cpp">
       <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

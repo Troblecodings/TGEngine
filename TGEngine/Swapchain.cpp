@@ -43,6 +43,14 @@ namespace Pipeline {
 		handel(vkGetSwapchainImagesKHR(*(*chain.device).device, *chain.swapchain, &image_count, image_array.data()));
 
 		chain.image_view_swapchain.resize(image_count);
+
+		VkImageSubresourceRange range = {};
+		range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		range.baseMipLevel = 0;
+		range.levelCount = 1;
+		range.baseArrayLayer = 0;
+		range.layerCount = 1;
+
 		for (size_t d = 0; d < image_count; d++)
 		{
 			VkImageViewCreateInfo imview_create_info = {};
@@ -54,22 +62,19 @@ namespace Pipeline {
 			imview_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 			imview_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 			imview_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-
-			VkImageSubresourceRange range = {};
-			range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			range.baseMipLevel = 0;
-			range.levelCount = 1;
-			range.baseArrayLayer = 0;
-			range.layerCount = 1;
-
 			imview_create_info.subresourceRange = range;
 
 			handel(vkCreateImageView(*(*chain.device).device, &imview_create_info, nullptr, &(chain.image_view_swapchain[d])));
 		}
+		vkGetDeviceQueue(*(*chain.device).device, 0, 0, chain.queue);
 	}
 
 	void destroySwapchain(Swapchain chain) {
-		vkDestroySwapchainKHR(*(chain.device)->device, *chain.swapchain, nullptr);
+		for (size_t i = 0; i < chain.image_view_swapchain.size; i++)
+		{
+			vkDestroyImageView(*chain.device->device, chain.image_view_swapchain[i], nullptr);
+		}
+		vkDestroySwapchainKHR(*chain.device->device, *chain.swapchain, nullptr);
 	}
 
 }

@@ -55,14 +55,14 @@ namespace Pipeline {
 			InscreatInfo.ppEnabledExtensionNames = exts;
 		}
 
-		handel(vkCreateInstance(&InscreatInfo, nullptr, app.instance));
+		handel(vkCreateInstance(&InscreatInfo, app.allocator, app.instance));
 
-		handel(glfwCreateWindowSurface(*app.instance, (*app.window).window, nullptr, app.KHR));
+		handel(glfwCreateWindowSurface(*app.instance, (*app.window).window, app.allocator, app.KHR));
 	}
 
 	void destroyApplictaion(Application app) {
-		vkDestroySurfaceKHR(*app.instance, *app.KHR, nullptr);
-		vkDestroyInstance(*app.instance, nullptr);
+		vkDestroySurfaceKHR(*app.instance, *app.KHR, app.allocator);
+		vkDestroyInstance(*app.instance, app.allocator);
 	}
 
 }

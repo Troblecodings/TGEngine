@@ -16,6 +16,7 @@ namespace Pipeline {
 		Application* app;
 		Device* device;
 		Window* window;
+		VkQueue* queue;
 	};
 
 	/*
