@@ -7,6 +7,7 @@
 #include "Swapchain.h"
 #include "Shader.h"
 #include "RenderPass.h"
+#include "Pipeline.h"
 
 using namespace std;
 
@@ -124,96 +125,44 @@ void initTGEngine() {
 	render_pass.window = &window;
 	createRenderPass(render_pass);
 
-	VkGraphicsPipelineCreateInfo pipline_create_info = {};
-	pipline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipline_create_info.stageCount = 2;
-	pipline_create_info.pStages = shader_array.data();
-	pipline_create_info.pVertexInputState = &vert_inp_info;
-	pipline_create_info.pInputAssemblyState = &in_ass_info;
-	pipline_create_info.pTessellationState = nullptr;
-	pipline_create_info.pViewportState = &viewport_create_info;
-	pipline_create_info.pRasterizationState = &rastera_info;
-	pipline_create_info.pMultisampleState = &pipl_multisample;
-	pipline_create_info.pDepthStencilState = nullptr;
-	pipline_create_info.pColorBlendState = &color_blend_create_info;
-	pipline_create_info.pDynamicState = nullptr;
-	pipline_create_info.layout = pipline_layout;
-	pipline_create_info.renderPass = render_pass;
-	pipline_create_info.subpass = 0;
-	pipline_create_info.basePipelineHandle = VK_NULL_HANDLE;
-	pipline_create_info.basePipelineIndex = -1;
+	Pipe line = {};
+	line.shader = { vertex_shader.createInfo, fragment_shader.createInfo };
+	line.device = main_device.device;
+	line.window = &window;
+	line.render_pass = &render_pass;
 
-	handel(vkCreateGraphicsPipelines(cdevice,VK_NULL_HANDLE,1,&pipline_create_info,nullptr,&pipeline));
-	
-	framebuffers.resize(image_count);
-	for (size_t i = 0; i < image_count; i++)
+	while (!glfwWindowShouldClose(window.window))
 	{
-		VkFramebufferCreateInfo framebuffer_create_info = {};
-		framebuffer_create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebuffer_create_info.renderPass = render_pass;
-		framebuffer_create_info.attachmentCount = 1;
-		framebuffer_create_info.pAttachments = &(currentImage[i]);
-		framebuffer_create_info.width = window.size.width;
-		framebuffer_create_info.height = window.size.height;
-		framebuffer_create_info.layers = 1;
+		glfwPollEvents();
+		uint32_t nextimage = 0;
+		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint64_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
 
-		cout << i + 1 << ". ";
-		handel(vkCreateFramebuffer(cdevice, &framebuffer_create_info, nullptr, &(framebuffers[i])));
+		VkSubmitInfo submit_info = {};
+		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submit_info.waitSemaphoreCount = 1;
+		submit_info.pWaitSemaphores = line.available;
+		vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		submit_info.pWaitDstStageMask = stage_flags.data();
+		submit_info.commandBufferCount = 1;
+		submit_info.pCommandBuffers = &(line.command_buffer[nextimage]);
+		submit_info.signalSemaphoreCount = 1;
+		submit_info.pSignalSemaphores = line.end;
+
+		handel(vkQueueSubmit(*swapchain.queue, nextimage, &submit_info, VK_NULL_HANDLE));
+
+		VkPresentInfoKHR present_info = {};
+		present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		present_info.waitSemaphoreCount = 1;
+		present_info.pWaitSemaphores = line.end;
+		present_info.swapchainCount = 1;
+		present_info.pSwapchains = swapchain.swapchain;
+		present_info.pImageIndices = &nextimage;
+		present_info.pResults = nullptr;
+
+		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
 	}
 
-	VkCommandPoolCreateInfo command_pool_create = {};
-	command_pool_create.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	command_pool_create.queueFamilyIndex = 0;
-
-	handel(vkCreateCommandPool(cdevice, &command_pool_create, nullptr, &commandpool));
-
-	VkCommandBufferAllocateInfo commandbuffer_allocate_info = {};
-	commandbuffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	commandbuffer_allocate_info.commandPool = commandpool;
-	commandbuffer_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	commandbuffer_allocate_info.commandBufferCount = currentImage.size();
-
-	commandbuffers.resize(currentImage.size());
-	handel(vkAllocateCommandBuffers(cdevice,&commandbuffer_allocate_info, commandbuffers.data()));
-
-	VkCommandBufferBeginInfo command_begin_info = {};
-	command_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	command_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-
-	for (size_t i = 0; i < commandbuffers.size(); i++)
-	{
-		cout << i + 1 << "." << endl;
-
-		handel(vkBeginCommandBuffer(commandbuffers[i], &command_begin_info));
-
-		VkRenderPassBeginInfo begin_render_pass = {};
-		begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		begin_render_pass.renderPass = render_pass;
-		begin_render_pass.framebuffer = framebuffers[i];
-		begin_render_pass.renderArea = rect;
-
-		VkClearValue clear_color = { 0,0,0,0 };
-		begin_render_pass.clearValueCount = 1;
-		begin_render_pass.pClearValues = &clear_color;
-
-		vkCmdBeginRenderPass(commandbuffers[i],&begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
-
-		vkCmdBindPipeline(commandbuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,pipeline);
-
-		vkCmdDraw(commandbuffers[i],3,1,0,0);
-
-		vkCmdEndRenderPass(commandbuffers[i]);
-
-		handel(vkEndCommandBuffer(commandbuffers[i]));
-	}
-
-	VkSemaphoreCreateInfo semaphore_create_info = {};
-	semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-	semaphore_create_info.flags = 0;
-	semaphore_create_info.pNext = nullptr;
-
-	handel(vkCreateSemaphore(cdevice, &semaphore_create_info, nullptr, &renderAvailable));
-	handel(vkCreateSemaphore(cdevice, &semaphore_create_info, nullptr, &renderEnd));
+	destroyPipeline(line);
 
 	destroyShader(vertex_shader);
 	destroyShader(fragment_shader);
@@ -227,50 +176,9 @@ void initTGEngine() {
 	destroyWindow(window);
 }
 
-int draw() {
-	glfwPollEvents();
-	if (glfwWindowShouldClose(window.window))return 1;
-	uint32_t nextimage = 0;
-	handel(vkAcquireNextImageKHR(cdevice, SwapChain, numeric_limits<uint64_t>::max(), renderAvailable, VK_NULL_HANDLE, &nextimage));
-
-	VkSubmitInfo submit_info = {};
-	submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submit_info.waitSemaphoreCount = 1;
-	submit_info.pWaitSemaphores = &renderAvailable;
-	vector<VkPipelineStageFlags> stage_flags = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-	submit_info.pWaitDstStageMask = stage_flags.data();
-	submit_info.commandBufferCount = 1;
-	submit_info.pCommandBuffers = &(commandbuffers[nextimage]);
-	submit_info.signalSemaphoreCount = 1;
-	submit_info.pSignalSemaphores = &renderEnd;
-
-	handel(vkQueueSubmit(queue, nextimage, &submit_info, VK_NULL_HANDLE));
-
-	VkPresentInfoKHR present_info = {};
-	present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	present_info.waitSemaphoreCount = 1;
-	present_info.pWaitSemaphores = &renderEnd;
-	present_info.swapchainCount = 1;
-	present_info.pSwapchains = &SwapChain;
-	present_info.pImageIndices = &nextimage;
-	present_info.pResults = nullptr;
-
-	handel(vkQueuePresentKHR(queue, &present_info));
-
-	return 0;
-}
-
 int main()
 {
 
-	initVulkan();
-	int xcv;
-	while (true) {
-		xcv = draw();
-		if (xcv != -1) {
-			break;
-		}
-	}
-	shutdown(xcv);
+	initTGEngine();
 	return 0;
 }

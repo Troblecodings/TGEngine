@@ -157,6 +157,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="Pipeline.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Swapchain.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />

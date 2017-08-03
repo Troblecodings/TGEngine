@@ -80,6 +80,9 @@
     <ClInclude Include="RenderPass.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -116,6 +119,9 @@
       <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
     <ClCompile Include="RenderPass.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
