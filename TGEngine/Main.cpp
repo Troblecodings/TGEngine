@@ -83,57 +83,60 @@ void initTGEngine() {
 		"VK_LAYER_NV_optimus"
 	};
 
-	Window window;
+	Window window = {};
 	window.autosize = true;
 	window.title = "title";
-	createWindow(window);
+	createWindow(&window);
 
-	Application application;
+	Application application = {};
 	application.window = &window;
 	application.layers_to_enable = layers;
 	application.version = VK_MAKE_VERSION(0, 0, 1);
-	createApplication(application);
+	createApplication(&application);
 
-	Device main_device;
+	Device main_device = {};
 	main_device.prefered_format = VK_FORMAT_B8G8R8A8_UNORM;
-	main_device.app = application;
-	createDevice(main_device);
+	main_device.app = &application;
+	main_device.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
+	createDevice(&main_device);
 
-	Swapchain swapchain;
+	Swapchain swapchain = {};
 	swapchain.app = &application;
 	swapchain.device = &main_device;
 	swapchain.image_count = 3;
 	swapchain.image_usage_flag = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	swapchain.sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
 	swapchain.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
-	createSwapchain(swapchain);
+	swapchain.window = &window;
+	createSwapchain(&swapchain);
 
 	Shader vertex_shader = {};
 	vertex_shader.bits = VK_SHADER_STAGE_VERTEX_BIT;
 	vertex_shader.name = "vert.spv";
 	vertex_shader.device = main_device.device;
-	createShader(vertex_shader);
+	createShader(&vertex_shader);
 
 	Shader fragment_shader = {};
 	fragment_shader.bits = VK_SHADER_STAGE_FRAGMENT_BIT;
 	fragment_shader.name = "frag.spv";
 	fragment_shader.device = main_device.device;
-	createShader(fragment_shader);
+	createShader(&fragment_shader);
 
 	RenderPass render_pass = {};
 	render_pass.device = &main_device;
 	render_pass.window = &window;
-	createRenderPass(render_pass);
+	createRenderPass(&render_pass);
 
 	Pipe line = {};
 	line.shader = { vertex_shader.createInfo, fragment_shader.createInfo };
 	line.device = main_device.device;
 	line.window = &window;
 	line.render_pass = &render_pass;
+	createPipeline(&line);
 
-	while (!glfwWindowShouldClose(window.window))
-	{
+	while (true) {
 		glfwPollEvents();
+		if (glfwWindowShouldClose(window.window))break;
 		uint32_t nextimage = 0;
 		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint64_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
 
@@ -162,18 +165,18 @@ void initTGEngine() {
 		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
 	}
 
-	destroyPipeline(line);
+	destroyPipeline(&line);
 
-	destroyShader(vertex_shader);
-	destroyShader(fragment_shader);
+	destroyShader(&vertex_shader);
+	destroyShader(&fragment_shader);
 
-	destroySwapchain(swapchain);
+	destroySwapchain(&swapchain);
 
-	destroyDevice(main_device);
+	destroyDevice(&main_device);
 
-	destroyApplictaion(application);
+	destroyApplictaion(&application);
 
-	destroyWindow(window);
+	destroyWindow(&window);
 }
 
 int main()

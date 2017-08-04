@@ -25,10 +25,10 @@ namespace Pipeline {
 	/*
 	 * Creates a Pipeline
 	 */
-	void createPipeline(Pipe pipeline);
+	void createPipeline(Pipe* pipeline);
 
 	/*
 	 * Destroys the Pipeline
 	 */
-	void destroyPipeline(Pipe pipeline);
+	void destroyPipeline(Pipe* pipeline);
 }

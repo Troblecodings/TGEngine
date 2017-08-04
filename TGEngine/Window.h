@@ -14,10 +14,10 @@ namespace Pipeline {
 	/*
 	 * Creates a Window
 	 */
-	void createWindow(Window window);
+	void createWindow(Window* window);
 
 	/*
 	 * Destroys the Window
 	 */
-	void destroyWindow(Window window);
+	void destroyWindow(Window* window);
 }

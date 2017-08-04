@@ -6,31 +6,32 @@ namespace Pipeline {
 
 	using namespace std;
 
-	void createDevice(Device dev) {
+	void createDevice(Device* dev) {
 		uint32_t div_cou = 0;
-		handel(vkEnumeratePhysicalDevices(*dev.app.instance, &div_cou, nullptr));
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_cou, nullptr));
 
-		dev.physical_devices.resize(div_cou);
+		dev->physical_devices.resize(div_cou);
 
-		handel(vkEnumeratePhysicalDevices(*dev.app.instance, &div_cou, dev.physical_devices.data()));
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_cou, dev->physical_devices.data()));
 
-		dev.currentPhysicalDevice = dev.getGraphicCard();
+		dev->currentPhysicalDevice = &dev->physical_devices[0];
 
-		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dev.currentPhysicalDevice, *dev.app.KHR, dev.khr_capabilities));
+		dev->khr_capabilities = new VkSurfaceCapabilitiesKHR;
+		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, dev->khr_capabilities));
 
 		uint32_t suf_form_cout = 0;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(dev.currentPhysicalDevice, *dev.app.KHR, &suf_form_cout, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, nullptr);
 
 		vector<VkSurfaceFormatKHR> formats = {};
 		formats.resize(suf_form_cout);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(dev.currentPhysicalDevice, *dev.app.KHR, &suf_form_cout, formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, formats.data());
 
 		bool validformat = false;
 
 		for (size_t foc = 0; foc < suf_form_cout; foc++)
 		{
-			if ((validformat = (formats[foc].format == dev.prefered_format))) {
-				dev.color_space = formats[foc].colorSpace;
+			if ((validformat = (formats[foc].format == dev->prefered_format))) {
+				dev->color_space = formats[foc].colorSpace;
 				break;
 			}
 		}
@@ -39,17 +40,18 @@ namespace Pipeline {
 		}
 
 		uint32_t Present_mode_count = 0;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(dev.currentPhysicalDevice, *dev.app.KHR, &Present_mode_count, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, nullptr);
 
 		vector<VkPresentModeKHR> khr_present_mode = {};
 		khr_present_mode.resize(Present_mode_count);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(dev.currentPhysicalDevice, *dev.app.KHR, &Present_mode_count, khr_present_mode.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, khr_present_mode.data());
 
 		bool ismodevalid = false;
 
 		for (size_t prm = 0; prm < Present_mode_count; prm++)
 		{
-			if ((ismodevalid = (khr_present_mode[prm] == dev.prefered_format)))break;
+			cout << khr_present_mode[prm] << endl;
+			if ((ismodevalid = (khr_present_mode[prm] == dev->present_mode)))break;
 		}
 
 		if (!ismodevalid) {
@@ -77,10 +79,10 @@ namespace Pipeline {
 		};
 
 		uint32_t extcout = 0;
-		vkEnumerateDeviceExtensionProperties(dev.currentPhysicalDevice, nullptr, &extcout, nullptr);
+		vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, nullptr);
 		vector<VkExtensionProperties> current_valid_ext = {};
 		current_valid_ext.resize(extcout);
-		vkEnumerateDeviceExtensionProperties(dev.currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data());
+		vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data());
 
 		int vc = 0;
 
@@ -105,16 +107,17 @@ namespace Pipeline {
 		div_create_info.ppEnabledExtensionNames = val_ext.data();
 
 		VkBool32 isSupported = false;
-		handel(vkGetPhysicalDeviceSurfaceSupportKHR(dev.currentPhysicalDevice, 0, *dev.app.KHR, &isSupported));
+		handel(vkGetPhysicalDeviceSurfaceSupportKHR(*dev->currentPhysicalDevice, 0, *dev->app->KHR, &isSupported));
 		if (!isSupported) {
 			error("Swapchain not supported", -3);
 		}
 
-		handel(vkCreateDevice(dev.currentPhysicalDevice, &div_create_info, nullptr, dev.device));
+		dev->device = new VkDevice;
+		handel(vkCreateDevice(*dev->currentPhysicalDevice, &div_create_info, nullptr, dev->device));
 	}
 
-	void destroyDevice(Device dev) {
-		vkDestroyDevice(*dev.device, nullptr);
+	void destroyDevice(Device* dev) {
+		vkDestroyDevice(*dev->device, nullptr);
 	}
 
 }

@@ -9,22 +9,22 @@ namespace Pipeline {
 
 	struct Device {
 		VkFormat prefered_format;
+		VkPresentModeKHR present_mode;
 		vector<VkPhysicalDevice> physical_devices;
 		VkSurfaceCapabilitiesKHR* khr_capabilities;
-		virtual VkPhysicalDevice getGraphicCard() { return physical_devices[0]; }
-		VkPhysicalDevice currentPhysicalDevice;
+		VkPhysicalDevice* currentPhysicalDevice;
 		VkColorSpaceKHR color_space;
 		VkDevice* device;
-		Application app;
+		Application* app;
 	};
 
 	/*
 	 * Creates a Device
 	 */
-	void createDevice(Device dev);
+	void createDevice(Device* dev);
 
 	/*
 	 * Destroys the Device
 	 */
-	void destroyDevice(Device dev);
+	void destroyDevice(Device* dev);
 }

@@ -65,15 +65,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="TJson.h">
-      <Filter>Headerdateien\TStorage</Filter>
-    </ClInclude>
-    <ClInclude Include="TPointer.h">
-      <Filter>Headerdateien\TStorage</Filter>
-    </ClInclude>
-    <ClInclude Include="TStorage.h">
-      <Filter>Headerdateien\TStorage</Filter>
-    </ClInclude>
     <ClInclude Include="TOSC.h">
       <Filter>Headerdateien\TBase</Filter>
     </ClInclude>
@@ -108,15 +99,6 @@
     </ClCompile>
     <ClCompile Include="TOSC.cpp">
       <Filter>Quelldateien\TBase</Filter>
-    </ClCompile>
-    <ClCompile Include="TStorage.cpp">
-      <Filter>Quelldateien\TStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="TPointer.cpp">
-      <Filter>Quelldateien\TStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="TJson.cpp">
-      <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
     <ClCompile Include="RenderPass.cpp">
       <Filter>Quelldateien\Pipeline</Filter>

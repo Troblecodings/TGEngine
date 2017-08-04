@@ -18,11 +18,11 @@ namespace Pipeline {
 	/*
 	 * Creates a RenderPass and a PipelineLayout
 	 */
-	void createRenderPass(RenderPass render_pass);
+	void createRenderPass(RenderPass* render_pass);
 
 	/*
 	 * Destroys the RenderPass and the PipelineLayout
 	 */
-	void destroyRenderPass(RenderPass render_pass);
+	void destroyRenderPass(RenderPass* render_pass);
 
 }

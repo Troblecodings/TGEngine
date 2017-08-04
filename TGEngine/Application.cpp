@@ -6,12 +6,12 @@ namespace Pipeline {
 
 	using namespace std;
 
-	void createApplication(Application app) {
+	void createApplication(Application* app) {
 
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = app.window->title;
-		appInfo.applicationVersion = app.version;
+		appInfo.pApplicationName = app->window->title;
+		appInfo.applicationVersion = app->version;
 		appInfo.pEngineName = "TGEngine";
 		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
@@ -26,15 +26,15 @@ namespace Pipeline {
 
 		vector<char*> val_pon = {};
 
-		for (size_t gh = 0; gh < app.layers_to_enable.size(); gh++)
+		for (size_t gh = 0; gh < app->layers_to_enable.size(); gh++)
 		{
-			string point = app.layers_to_enable[gh];
+			string point = app->layers_to_enable[gh];
 			for (size_t cf = 0; cf < layprop_cou; cf++)
 			{
 				string name = lay_props[cf].layerName;
 				if (name == point) {
 					val_pon.resize(xc + 1);
-					val_pon[xc] = app.layers_to_enable[gh];
+					val_pon[xc] = app->layers_to_enable[gh];
 					xc++;
 					break;
 				}
@@ -55,14 +55,16 @@ namespace Pipeline {
 			InscreatInfo.ppEnabledExtensionNames = exts;
 		}
 
-		handel(vkCreateInstance(&InscreatInfo, app.allocator, app.instance));
+		app->instance = new VkInstance;
+		handel(vkCreateInstance(&InscreatInfo, nullptr, app->instance));
 
-		handel(glfwCreateWindowSurface(*app.instance, (*app.window).window, app.allocator, app.KHR));
+		app->KHR = new VkSurfaceKHR;
+		handel(glfwCreateWindowSurface(*app->instance, app->window->window, nullptr, app->KHR));
 	}
 
-	void destroyApplictaion(Application app) {
-		vkDestroySurfaceKHR(*app.instance, *app.KHR, app.allocator);
-		vkDestroyInstance(*app.instance, app.allocator);
+	void destroyApplictaion(Application* app) {
+		vkDestroySurfaceKHR(*app->instance, *app->KHR, nullptr);
+		vkDestroyInstance(*app->instance, nullptr);
 	}
 
 }

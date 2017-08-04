@@ -2,16 +2,16 @@
 
 namespace Pipeline {
 
-	void createRenderPass(RenderPass render_pass) {
+	void createRenderPass(RenderPass* render_pass) {
 
 		VkPipelineLayoutCreateInfo layout_create_info = {};
 		layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
-		handel(vkCreatePipelineLayout(*render_pass.device->device, &layout_create_info, nullptr, render_pass.layout));
+		handel(vkCreatePipelineLayout(*render_pass->device->device, &layout_create_info, nullptr, render_pass->layout));
 
 		VkAttachmentDescription att_desc;
 		att_desc.flags = 0;
-		att_desc.format = render_pass.device->prefered_format;
+		att_desc.format = render_pass->device->prefered_format;
 		att_desc.samples = VK_SAMPLE_COUNT_1_BIT;
 		att_desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		att_desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -47,12 +47,12 @@ namespace Pipeline {
 		render_pass_create_info.dependencyCount = 1;
 		render_pass_create_info.pDependencies = &subpass;
 
-		handel(vkCreateRenderPass(*render_pass.device->device, &render_pass_create_info, nullptr, render_pass.render_pass));
+		handel(vkCreateRenderPass(*render_pass->device->device, &render_pass_create_info, nullptr, render_pass->render_pass));
 	}
 
-	void destroyRenderPass(RenderPass render_pass) {
-		vkDestroyPipelineLayout(*render_pass.device->device, *render_pass.layout, nullptr);
-		vkDestroyRenderPass(*render_pass.device->device, *render_pass.render_pass, nullptr);
+	void destroyRenderPass(RenderPass* render_pass) {
+		vkDestroyPipelineLayout(*render_pass->device->device, *render_pass->layout, nullptr);
+		vkDestroyRenderPass(*render_pass->device->device, *render_pass->render_pass, nullptr);
 	}
 
 }

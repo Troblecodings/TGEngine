@@ -17,16 +17,17 @@ namespace Pipeline {
 		Device* device;
 		Window* window;
 		VkQueue* queue;
+		uint32_t image_count_khr;
 	};
 
 	/*
 	 * Creates a Swapchain
 	 */
-	void createSwapchain(Swapchain chain);
+	void createSwapchain(Swapchain* chain);
 
 	/*
 	 * Destroys the Swapchain
 	 */
-	void destroySwapchain(Swapchain chain);
+	void destroySwapchain(Swapchain* chain);
 
 }

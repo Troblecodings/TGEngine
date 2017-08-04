@@ -19,10 +19,10 @@ namespace Pipeline {
 	/*
 	 * Creates a Shader 
 	 */
-	void createShader(Shader sh);
+	void createShader(Shader* sh);
 
 	/*
 	* Destroys the Shader
 	*/
-	void destroyShader(Shader sh);
+	void destroyShader(Shader* sh);
 }
