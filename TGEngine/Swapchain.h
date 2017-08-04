@@ -17,7 +17,6 @@ namespace Pipeline {
 		Device* device;
 		Window* window;
 		VkQueue* queue;
-		uint32_t image_count_khr;
 	};
 
 	/*

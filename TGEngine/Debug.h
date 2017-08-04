@@ -29,3 +29,5 @@ void handel(VkResult result);
  * Throws a critical error 
  */
 void error(char* errorname, int errorcode);
+
+void debugLayerAndExtensions();

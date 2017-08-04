@@ -50,7 +50,6 @@ namespace Pipeline {
 
 		for (size_t prm = 0; prm < Present_mode_count; prm++)
 		{
-			cout << khr_present_mode[prm] << endl;
 			if ((ismodevalid = (khr_present_mode[prm] == dev->present_mode)))break;
 		}
 
@@ -97,7 +96,6 @@ namespace Pipeline {
 				if (name == point) {
 					val_ext.resize(vc + 1);
 					val_ext[vc] = extlays[gh];
-					cout << "Found valid device extension " << extlays[gh] << endl;
 					vc++;
 					break;
 				}

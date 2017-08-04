@@ -114,6 +114,67 @@ cout << "Valid Bits " << prop_mem.timestampValidBits << endl;
 }
 */
 
+void debugLayerAndExtensions() {
+	uint32_t layer_count = 0;
+	vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+
+	vector<VkLayerProperties> props = {};
+	props.resize(layer_count);
+	vkEnumerateInstanceLayerProperties(&layer_count, props.data());
+
+
+	for (int i = 0; i < layer_count; i++)
+	{
+		VkLayerProperties cprop = props[i];
+		cout << "Found layer property " << cprop.layerName << " - " << cprop.description << endl;
+		cout << "Impl_Version ";
+		printVersion(cprop.implementationVersion);
+		cout << endl;
+		cout << "Spec_Version ";
+		printVersion(cprop.specVersion);
+		cout << endl;
+
+		uint32_t ext_count = 0;
+		vkEnumerateInstanceExtensionProperties(cprop.layerName, &ext_count, nullptr);
+
+		vector<VkExtensionProperties> extns = {};
+		extns.resize(ext_count);
+		vkEnumerateInstanceExtensionProperties(cprop.layerName, &ext_count, extns.data());
+
+		for (int g = 0; g < ext_count; g++)
+		{
+			cout << endl;
+			VkExtensionProperties ex = extns[g];
+			cout << g + 1 << ". " << ex.extensionName << " - Version: ";
+			printVersion(ex.specVersion);
+			cout << endl;
+		}
+
+		cout << endl;
+	}
+
+	cout << "Extensions: " << endl;
+
+	uint32_t ext_count = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, nullptr);
+
+	vector<VkExtensionProperties> extns = {};
+	extns.resize(ext_count);
+	vkEnumerateInstanceExtensionProperties(nullptr, &ext_count, extns.data());
+
+	for (int g = 0; g < ext_count; g++)
+	{
+		cout << endl;
+		VkExtensionProperties ex = extns[g];
+		cout << g + 1 << ". " << ex.extensionName << " - Version: ";
+		printVersion(ex.specVersion);
+		cout << endl;
+	}
+
+	cout << endl;
+}
+
+
 void printTime() {
 	time_t tim;
 	time(&tim);

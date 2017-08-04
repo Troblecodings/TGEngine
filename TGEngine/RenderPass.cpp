@@ -6,7 +6,14 @@ namespace Pipeline {
 
 		VkPipelineLayoutCreateInfo layout_create_info = {};
 		layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		layout_create_info.pNext = nullptr;
+		layout_create_info.flags;
+		layout_create_info.setLayoutCount;
+		layout_create_info.pSetLayouts;
+		layout_create_info.pushConstantRangeCount;
+		layout_create_info.pPushConstantRanges;
 
+		render_pass->layout = new VkPipelineLayout;
 		handel(vkCreatePipelineLayout(*render_pass->device->device, &layout_create_info, nullptr, render_pass->layout));
 
 		VkAttachmentDescription att_desc;
@@ -47,6 +54,7 @@ namespace Pipeline {
 		render_pass_create_info.dependencyCount = 1;
 		render_pass_create_info.pDependencies = &subpass;
 
+		render_pass->render_pass = new VkRenderPass;
 		handel(vkCreateRenderPass(*render_pass->device->device, &render_pass_create_info, nullptr, render_pass->render_pass));
 	}
 

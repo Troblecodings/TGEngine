@@ -17,6 +17,7 @@ namespace Pipeline {
 		shader_creatinfo.codeSize = size_of_file;
 		shader_creatinfo.pCode = (uint32_t*)binary_file.data();
 
+		sh->module = new VkShaderModule;
 		handel(vkCreateShaderModule(*(sh->device), &shader_creatinfo, nullptr, sh->module));
 
 		VkPipelineShaderStageCreateInfo shader_stage_create_info = {};
@@ -25,7 +26,7 @@ namespace Pipeline {
 		shader_stage_create_info.stage = sh->bits;
 		shader_stage_create_info.pName = "main";
 		shader_stage_create_info.pSpecializationInfo = nullptr;
-		sh->createInfo = &shader_stage_create_info;
+		sh->createInfo = shader_stage_create_info;
 	}
 
 	void destroyShader(Shader* sh) {

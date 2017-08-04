@@ -154,14 +154,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Console.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Swapchain.h" />
-    <ClInclude Include="Preferences.h" />
     <ClInclude Include="stdbase.h" />
     <ClInclude Include="TOSC.h" />
     <ClInclude Include="Window.h" />

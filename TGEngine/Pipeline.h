@@ -8,10 +8,10 @@ namespace Pipeline {
 
 	struct Pipe
 	{
-		std::vector<VkPipelineShaderStageCreateInfo> shader;
-		std::vector<VkFramebuffer> frame_buffer;
-		std::vector<VkCommandBuffer> command_buffer;
-		std::vector<VkImageView> image_views;
+		std::vector<VkPipelineShaderStageCreateInfo>* shader;
+		std::vector<VkFramebuffer>* frame_buffer;
+		std::vector<VkCommandBuffer>* command_buffer;
+		std::vector<VkImageView>* image_views;
 		VkCommandPool* command_pool;
 		Window* window;
 		VkPipeline* pipeline;

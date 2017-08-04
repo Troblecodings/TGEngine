@@ -38,12 +38,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Console.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Preferences.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

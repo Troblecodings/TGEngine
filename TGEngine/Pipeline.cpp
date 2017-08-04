@@ -4,6 +4,9 @@ namespace Pipeline {
 
 	void createPipeline(Pipe* pipeline) {
 
+		pipeline->command_buffer = new vector<VkCommandBuffer>;
+		pipeline->frame_buffer = new vector<VkFramebuffer>;
+
 		VkPipelineMultisampleStateCreateInfo pipl_multisample = {};
 		pipl_multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		pipl_multisample.alphaToCoverageEnable = VK_FALSE;
@@ -54,10 +57,10 @@ namespace Pipeline {
 		vert_inp_info.pVertexBindingDescriptions = nullptr;
 		vert_inp_info.pVertexAttributeDescriptions = nullptr;
 
-		VkPipelineInputAssemblyStateCreateInfo in_ass_info = {};
-		in_ass_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		in_ass_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-		in_ass_info.primitiveRestartEnable = VK_FALSE;
+		VkPipelineInputAssemblyStateCreateInfo in_asm_info = {};
+		in_asm_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		in_asm_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		in_asm_info.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport;
 		viewport.x = 0;
@@ -80,12 +83,12 @@ namespace Pipeline {
 
 		VkGraphicsPipelineCreateInfo pipline_create_info = {};
 		pipline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipline_create_info.stageCount = 2;
-		pipline_create_info.pStages = pipeline->shader.data();
+		pipline_create_info.stageCount = pipeline->shader->size();
+		pipline_create_info.pStages = pipeline->shader->data();
 		pipline_create_info.pVertexInputState = &vert_inp_info;
-		pipline_create_info.pInputAssemblyState = &in_ass_info;
+		pipline_create_info.pInputAssemblyState = &in_asm_info;
 		pipline_create_info.pTessellationState = nullptr;
-		pipline_create_info.pViewportState = &viewport_create_info;
+	    pipline_create_info.pViewportState = &viewport_create_info;
 		pipline_create_info.pRasterizationState = &rastera_info;
 		pipline_create_info.pMultisampleState = &pipl_multisample;
 		pipline_create_info.pDepthStencilState = nullptr;
@@ -97,22 +100,24 @@ namespace Pipeline {
 		pipline_create_info.basePipelineHandle = VK_NULL_HANDLE;
 		pipline_create_info.basePipelineIndex = -1;
 
-		pipeline->pipeline = new VkPipeline;
-		handel(vkCreateGraphicsPipelines(*pipeline->device, VK_NULL_HANDLE, 1, &pipline_create_info, nullptr, pipeline->pipeline));
 
-		pipeline->frame_buffer.resize(pipeline->image_count);
+
+		pipeline->pipeline = new VkPipeline;
+    	handel(vkCreateGraphicsPipelines(*pipeline->device, VK_NULL_HANDLE, 1, &pipline_create_info, nullptr, pipeline->pipeline));
+
+		pipeline->frame_buffer->resize(pipeline->image_count);
 		for (size_t i = 0; i < pipeline->image_count; i++)
 		{
 			VkFramebufferCreateInfo framebuffer_create_info = {};
 			framebuffer_create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			framebuffer_create_info.renderPass = *pipeline->render_pass->render_pass;
 			framebuffer_create_info.attachmentCount = 1;
-			framebuffer_create_info.pAttachments = &(pipeline->image_views[i]);
+			framebuffer_create_info.pAttachments = &((*pipeline->image_views)[i]);
 			framebuffer_create_info.width = pipeline->window->size.width;
 			framebuffer_create_info.height = pipeline->window->size.height;
 			framebuffer_create_info.layers = 1;
 
-			handel(vkCreateFramebuffer(*pipeline->device, &framebuffer_create_info, nullptr, &(pipeline->frame_buffer[i])));
+			handel(vkCreateFramebuffer(*pipeline->device, &framebuffer_create_info, nullptr, &((*pipeline->frame_buffer)[i])));
 		}
 
 		VkCommandPoolCreateInfo command_pool_create = {};
@@ -126,38 +131,38 @@ namespace Pipeline {
 		commandbuffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		commandbuffer_allocate_info.commandPool = *pipeline->command_pool;
 		commandbuffer_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		commandbuffer_allocate_info.commandBufferCount = pipeline->image_views.size();
+		commandbuffer_allocate_info.commandBufferCount = pipeline->image_views->size();
 
-		pipeline->command_buffer.resize(pipeline->image_views.size());
-		handel(vkAllocateCommandBuffers(*pipeline->device, &commandbuffer_allocate_info, pipeline->command_buffer.data()));
+		pipeline->command_buffer->resize(pipeline->image_views->size());
+		handel(vkAllocateCommandBuffers(*pipeline->device, &commandbuffer_allocate_info, pipeline->command_buffer->data()));
 
 		VkCommandBufferBeginInfo command_begin_info = {};
 		command_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		command_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 
-		for (size_t i = 0; i < pipeline->command_buffer.size(); i++)
+		for (size_t i = 0; i < pipeline->command_buffer->size(); i++)
 		{
-			handel(vkBeginCommandBuffer(pipeline->command_buffer[i], &command_begin_info));
+			handel(vkBeginCommandBuffer((*pipeline->command_buffer)[i], &command_begin_info));
 
 			VkRenderPassBeginInfo begin_render_pass = {};
 			begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			begin_render_pass.renderPass = *pipeline->render_pass->render_pass;
-			begin_render_pass.framebuffer = pipeline->frame_buffer[i];
+			begin_render_pass.framebuffer = (*pipeline->frame_buffer)[i];
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { 0,0,0,0 };
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
 
-			vkCmdBeginRenderPass(pipeline->command_buffer[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass((*pipeline->command_buffer)[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdBindPipeline(pipeline->command_buffer[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
+			vkCmdBindPipeline((*pipeline->command_buffer)[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
 
-			vkCmdDraw(pipeline->command_buffer[i], 3, 1, 0, 0);
+			vkCmdDraw((*pipeline->command_buffer)[i], 3, 1, 0, 0);
 
-			vkCmdEndRenderPass(pipeline->command_buffer[i]);
+			vkCmdEndRenderPass((*pipeline->command_buffer)[i]);
 
-			handel(vkEndCommandBuffer(pipeline->command_buffer[i]));
+			handel(vkEndCommandBuffer((*pipeline->command_buffer)[i]));
 		}
 
 		VkSemaphoreCreateInfo semaphore_create_info = {};
