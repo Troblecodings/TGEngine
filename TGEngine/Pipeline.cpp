@@ -150,7 +150,8 @@ namespace Pipeline {
 			begin_render_pass.framebuffer = (*pipeline->frame_buffer)[i];
 			begin_render_pass.renderArea = rect;
 
-			VkClearValue clear_color = { 0,0,0,0 };
+			VkClearValue clear_color = { };
+
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
 

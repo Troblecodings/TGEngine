@@ -17,7 +17,8 @@ void initTGEngine() {
 	vector<char*> layers = {
 		"VK_LAYER_LUNARG_standard_validation",
 		"VK_LAYER_VALVE_steam_overlay",
-		"VK_LAYER_NV_optimus"
+		"VK_LAYER_NV_optimus",
+		"VK_LAYER_LUNARG_object_tracker"
 	};
 
 	Window window = {};
@@ -49,7 +50,6 @@ void initTGEngine() {
 	swapchain.image_count = 3;
 	swapchain.image_usage_flag = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	swapchain.sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
-	swapchain.present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
 	swapchain.window = &window;
 	createSwapchain(&swapchain);
 
@@ -99,27 +99,34 @@ void initTGEngine() {
 			break;
 		}
 		uint32_t nextimage = 0;
+		cout << main_device.device << endl;
 		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint64_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
-
+		cout << "Next Image " << nextimage << endl;
 		VkSubmitInfo submit_info = {};
 		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submit_info.waitSemaphoreCount = 1;
-		submit_info.pWaitSemaphores = line.available;
+		vector<VkSemaphore> semaphores = { *line.available };
+		submit_info.waitSemaphoreCount = semaphores.size();
+		submit_info.pWaitSemaphores = semaphores.data();
 		vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submit_info.pWaitDstStageMask = stage_flags.data();
-		submit_info.commandBufferCount = 1;
-		submit_info.pCommandBuffers = &(*line.command_buffer)[nextimage];
-		submit_info.signalSemaphoreCount = 1;
-		submit_info.pSignalSemaphores = line.end;
+		vector<VkCommandBuffer> buffers = { line.command_buffer->data()[nextimage] };
+		submit_info.commandBufferCount = buffers.size();
+		submit_info.pCommandBuffers = buffers.data();
+		cout << submit_info.pCommandBuffers << endl;
+		semaphores = { *line.end };
+		submit_info.signalSemaphoreCount = semaphores.size();
+		submit_info.pSignalSemaphores = semaphores.data();
 
-		handel(vkQueueSubmit(*swapchain.queue, nextimage, &submit_info, VK_NULL_HANDLE));
+		vector<VkSubmitInfo> submitinfos = { submit_info };
+		handel(vkQueueSubmit(*swapchain.queue, 1, submitinfos.data(), VK_NULL_HANDLE));
 
 		VkPresentInfoKHR present_info = {};
 		present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		present_info.waitSemaphoreCount = 1;
 		present_info.pWaitSemaphores = line.end;
-		present_info.swapchainCount = 1;
-		present_info.pSwapchains = swapchain.swapchain;
+		vector<VkSwapchainKHR> swapchains = { *swapchain.swapchain };
+		present_info.swapchainCount = swapchains.size();
+		present_info.pSwapchains = swapchains.data();
 		present_info.pImageIndices = &nextimage;
 		present_info.pResults = nullptr;
 

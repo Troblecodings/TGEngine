@@ -18,9 +18,14 @@ namespace Pipeline {
 
 		vector<VkLayerProperties> lay_props;
 		uint32_t layprop_cou = 0;
-		vkEnumerateInstanceLayerProperties(&layprop_cou, nullptr);
+		handel(vkEnumerateInstanceLayerProperties(&layprop_cou, nullptr));
 		lay_props.resize(layprop_cou);
-		vkEnumerateInstanceLayerProperties(&layprop_cou, lay_props.data());
+		handel(vkEnumerateInstanceLayerProperties(&layprop_cou, lay_props.data()));
+
+		for (size_t cf = 0; cf < layprop_cou; cf++)
+		{
+			cout << "Valid layer " << lay_props[cf].layerName << endl;
+		}
 
 		int xc = 0;
 
@@ -33,6 +38,7 @@ namespace Pipeline {
 			{
 				string name = lay_props[cf].layerName;
 				if (name == point) {
+					cout << "Added Layer " << name << endl;
 					val_pon.resize(xc + 1);
 					val_pon[xc] = app->layers_to_enable[gh];
 					xc++;

@@ -190,7 +190,7 @@ void printVersion(int version) {
 void handel(VkResult result) {
 	if (result != VK_SUCCESS) {
 		cout << "FAILED WITH ERROR: " << result;
-		throw new exception;
+		_sleep(100000);
 	}
 }
 

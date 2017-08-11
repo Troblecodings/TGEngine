@@ -13,11 +13,9 @@ namespace Pipeline {
 		if (chain->device->khr_capabilities->minImageCount > chain->image_count) {
 			swap_chain_creat_info.minImageCount = chain->device->khr_capabilities->minImageCount;
 			chain->image_count = swap_chain_creat_info.minImageCount;
-		}
-		else if (chain->device->khr_capabilities->maxImageCount > chain->image_count) {
+		} else if (chain->device->khr_capabilities->maxImageCount > chain->image_count) {
 			swap_chain_creat_info.minImageCount = chain->image_count;
-		}
-		else {
+		} else {
 			swap_chain_creat_info.minImageCount = chain->device->khr_capabilities->maxImageCount;
 			chain->image_count = swap_chain_creat_info.minImageCount;
 		}
@@ -30,17 +28,17 @@ namespace Pipeline {
 		swap_chain_creat_info.imageUsage = chain->image_usage_flag;
 		swap_chain_creat_info.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 		swap_chain_creat_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-		swap_chain_creat_info.presentMode = chain->present_mode;
+		swap_chain_creat_info.presentMode = chain->device->present_mode;
 		swap_chain_creat_info.clipped = VK_NULL_HANDLE;
 
 		chain->swapchain = new VkSwapchainKHR;
 		handel(vkCreateSwapchainKHR(*chain->device->device, &swap_chain_creat_info, nullptr, chain->swapchain));
 
-		handel(vkGetSwapchainImagesKHR(*(*chain->device).device, *chain->swapchain, &chain->image_count, nullptr));
+		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, nullptr));
 
 		vector<VkImage> image_array = {};
 		image_array.resize(chain->image_count);
-		handel(vkGetSwapchainImagesKHR(*(*chain->device).device, *chain->swapchain, &chain->image_count, image_array.data()));
+		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, image_array.data()));
 
 		chain->image_view_swapchain.resize(chain->image_count);
 
@@ -56,7 +54,7 @@ namespace Pipeline {
 			VkImageViewCreateInfo imview_create_info = {};
 			imview_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			imview_create_info.image = image_array[d];
-			imview_create_info.format = (*chain->device).prefered_format;
+			imview_create_info.format = chain->device->prefered_format;
 			imview_create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
 			imview_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 			imview_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -64,11 +62,11 @@ namespace Pipeline {
 			imview_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 			imview_create_info.subresourceRange = range;
 
-			handel(vkCreateImageView(*(*chain->device).device, &imview_create_info, nullptr, &(chain->image_view_swapchain[d])));
+			handel(vkCreateImageView(*chain->device->device, &imview_create_info, nullptr, &(chain->image_view_swapchain[d])));
 
 		}
 		chain->queue = new VkQueue;
-		vkGetDeviceQueue(*(*chain->device).device, 0, 0, chain->queue);
+		vkGetDeviceQueue(*chain->device->device, 0, 0, chain->queue);
 	}
 
 	void destroySwapchain(Swapchain* chain) {
