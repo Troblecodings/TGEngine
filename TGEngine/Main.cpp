@@ -91,6 +91,14 @@ void initTGEngine() {
 
 	cout << "Loaded pipeline" << endl;
 
+	/*
+	 * 
+	 * ===================================================================
+	 * FFS THIS AREA IS DEPRECATED
+	 * ===================================================================
+	 *
+	 */
+
 	while (true) {
 		cout << "POOL EVENTS" << endl;
 		glfwPollEvents();
@@ -133,6 +141,14 @@ void initTGEngine() {
 		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
 	}
 
+	/*
+	 *
+	 * ===================================================================
+	 * DEPRECTAION MARK END
+	 * ===================================================================
+	 *
+	 */
+
 	destroyPipeline(&line);
 
 	destroyShader(&vertex_shader);
@@ -149,7 +165,6 @@ void initTGEngine() {
 
 int main()
 {
-
 	initTGEngine();
 	return 0;
 }

@@ -189,13 +189,14 @@ void printVersion(int version) {
 
 void handel(VkResult result) {
 	if (result != VK_SUCCESS) {
-		cout << "FAILED WITH ERROR: " << result;
+		cout << "FAILED WITH ERROR: " << result << endl;
 		_sleep(100000);
+		exit(result);
 	}
 }
 
 void error(char* errorname, int errorcode) {
 	cout << "Error occured (" << errorcode << ")" << endl << errorname << endl;
-	_sleep(10000);
+	_sleep(100000);
 	exit(errorcode);
 }
