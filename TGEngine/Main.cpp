@@ -85,8 +85,7 @@ void initTGEngine() {
 	line.device = main_device.device;
 	line.window = &window;
 	line.render_pass = &render_pass;
-	line.image_views = &swapchain.image_view_swapchain;
-	line.image_count = swapchain.image_count;
+	line.swapchain = &swapchain;
 	createPipeline(&line);
 
 	cout << "Loaded pipeline" << endl;
@@ -108,7 +107,7 @@ void initTGEngine() {
 		}
 		uint32_t nextimage = 0;
 		cout << main_device.device << endl;
-		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint64_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
+		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
 		cout << "Next Image " << nextimage << endl;
 		VkSubmitInfo submit_info = {};
 		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

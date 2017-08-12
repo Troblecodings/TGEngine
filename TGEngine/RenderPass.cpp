@@ -7,11 +7,19 @@ namespace Pipeline {
 		VkPipelineLayoutCreateInfo layout_create_info = {};
 		layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		layout_create_info.pNext = nullptr;
-		layout_create_info.flags;
-		layout_create_info.setLayoutCount;
-		layout_create_info.pSetLayouts;
-		layout_create_info.pushConstantRangeCount;
-		layout_create_info.pPushConstantRanges;
+		layout_create_info.flags = 0;
+		vector<VkDescriptorSetLayout> descriptors = { };
+		layout_create_info.setLayoutCount = descriptors.size();
+		layout_create_info.pSetLayouts = descriptors.data();
+
+		VkPushConstantRange range = {};
+		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		range.offset = 0;
+		range.size = render_pass->device->property->limits.maxPushConstantsSize;
+
+		vector<VkPushConstantRange> push = {};
+		layout_create_info.pushConstantRangeCount = push.size();
+		layout_create_info.pPushConstantRanges = push.data();
 
 		render_pass->layout = new VkPipelineLayout;
 		handel(vkCreatePipelineLayout(*render_pass->device->device, &layout_create_info, nullptr, render_pass->layout));

@@ -3,6 +3,7 @@
 #include "stdbase.h"
 #include "Window.h"
 #include "RenderPass.h"
+#include "Swapchain.h"
 
 namespace Pipeline {
 
@@ -11,15 +12,14 @@ namespace Pipeline {
 		std::vector<VkPipelineShaderStageCreateInfo>* shader;
 		std::vector<VkFramebuffer>* frame_buffer;
 		std::vector<VkCommandBuffer>* command_buffer;
-		std::vector<VkImageView>* image_views;
 		VkCommandPool* command_pool;
 		Window* window;
 		VkPipeline* pipeline;
 		VkDevice* device;
 		RenderPass* render_pass;
-		uint32_t image_count;
 		VkSemaphore* available;
 		VkSemaphore* end;
+		Swapchain* swapchain;
 	};
 
 	/*

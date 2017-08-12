@@ -105,19 +105,19 @@ namespace Pipeline {
 		pipeline->pipeline = new VkPipeline;
     	handel(vkCreateGraphicsPipelines(*pipeline->device, VK_NULL_HANDLE, 1, &pipline_create_info, nullptr, pipeline->pipeline));
 
-		pipeline->frame_buffer->resize(pipeline->image_count);
-		for (size_t i = 0; i < pipeline->image_count; i++)
+		pipeline->frame_buffer->resize(pipeline->swapchain->image_count);
+		for (size_t i = 0; i < pipeline->swapchain->image_count; i++)
 		{
 			VkFramebufferCreateInfo framebuffer_create_info = {};
 			framebuffer_create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			framebuffer_create_info.renderPass = *pipeline->render_pass->render_pass;
 			framebuffer_create_info.attachmentCount = 1;
-			framebuffer_create_info.pAttachments = &((*pipeline->image_views)[i]);
+			framebuffer_create_info.pAttachments = &pipeline->swapchain->image_view_swapchain[i];
 			framebuffer_create_info.width = pipeline->window->size.width;
 			framebuffer_create_info.height = pipeline->window->size.height;
 			framebuffer_create_info.layers = 1;
 
-			handel(vkCreateFramebuffer(*pipeline->device, &framebuffer_create_info, nullptr, &((*pipeline->frame_buffer)[i])));
+			handel(vkCreateFramebuffer(*pipeline->device, &framebuffer_create_info, nullptr, &pipeline->frame_buffer->data()[i]));
 		}
 
 		VkCommandPoolCreateInfo command_pool_create = {};
@@ -131,9 +131,9 @@ namespace Pipeline {
 		commandbuffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		commandbuffer_allocate_info.commandPool = *pipeline->command_pool;
 		commandbuffer_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		commandbuffer_allocate_info.commandBufferCount = pipeline->image_views->size();
+		commandbuffer_allocate_info.commandBufferCount = pipeline->swapchain->image_view_swapchain.size();
 
-		pipeline->command_buffer->resize(pipeline->image_views->size());
+		pipeline->command_buffer->resize(pipeline->swapchain->image_view_swapchain.size());
 		handel(vkAllocateCommandBuffers(*pipeline->device, &commandbuffer_allocate_info, pipeline->command_buffer->data()));
 
 		VkCommandBufferBeginInfo command_begin_info = {};
@@ -142,12 +142,12 @@ namespace Pipeline {
 
 		for (size_t i = 0; i < pipeline->command_buffer->size(); i++)
 		{
-			handel(vkBeginCommandBuffer((*pipeline->command_buffer)[i], &command_begin_info));
+			handel(vkBeginCommandBuffer(pipeline->command_buffer->data()[i], &command_begin_info));
 
 			VkRenderPassBeginInfo begin_render_pass = {};
 			begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			begin_render_pass.renderPass = *pipeline->render_pass->render_pass;
-			begin_render_pass.framebuffer = (*pipeline->frame_buffer)[i];
+			begin_render_pass.framebuffer = pipeline->frame_buffer->data()[i];
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { };
@@ -155,15 +155,15 @@ namespace Pipeline {
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
 
-			vkCmdBeginRenderPass((*pipeline->command_buffer)[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass(pipeline->command_buffer->data()[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdBindPipeline((*pipeline->command_buffer)[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
+			vkCmdBindPipeline(pipeline->command_buffer->data()[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
 
-			vkCmdDraw((*pipeline->command_buffer)[i], 3, 1, 0, 0);
+			vkCmdDraw(pipeline->command_buffer->data()[i], 3, 1, 0, 0);
 
-			vkCmdEndRenderPass((*pipeline->command_buffer)[i]);
+			vkCmdEndRenderPass(pipeline->command_buffer->data()[i]);
 
-			handel(vkEndCommandBuffer((*pipeline->command_buffer)[i]));
+			handel(vkEndCommandBuffer(pipeline->command_buffer->data()[i]));
 		}
 
 		VkSemaphoreCreateInfo semaphore_create_info = {};

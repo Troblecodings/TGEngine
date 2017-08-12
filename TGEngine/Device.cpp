@@ -16,15 +16,18 @@ namespace Pipeline {
 
 		dev->currentPhysicalDevice = &dev->physical_devices[0];
 
+		dev->property = new VkPhysicalDeviceProperties;
+	    vkGetPhysicalDeviceProperties(*dev->currentPhysicalDevice, dev->property);
+
 		dev->khr_capabilities = new VkSurfaceCapabilitiesKHR;
 		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, dev->khr_capabilities));
 
 		uint32_t suf_form_cout = 0;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, nullptr);
+		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, nullptr));
 
 		vector<VkSurfaceFormatKHR> formats = {};
 		formats.resize(suf_form_cout);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, formats.data());
+		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, formats.data()));
 
 		bool validformat = false;
 
@@ -40,11 +43,11 @@ namespace Pipeline {
 		}
 
 		uint32_t Present_mode_count = 0;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, nullptr);
+		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, nullptr));
 
 		vector<VkPresentModeKHR> khr_present_mode = {};
 		khr_present_mode.resize(Present_mode_count);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, khr_present_mode.data());
+		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, khr_present_mode.data()));
 
 		bool ismodevalid = false;
 
@@ -78,10 +81,10 @@ namespace Pipeline {
 		};
 
 		uint32_t extcout = 0;
-		vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, nullptr);
+		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, nullptr));
 		vector<VkExtensionProperties> current_valid_ext = {};
 		current_valid_ext.resize(extcout);
-		vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data());
+		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data()));
 
 		int vc = 0;
 
