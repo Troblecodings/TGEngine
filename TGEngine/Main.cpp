@@ -99,16 +99,14 @@ void initTGEngine() {
 	 */
 
 	while (true) {
-		cout << "POOL EVENTS" << endl;
 		glfwPollEvents();
 		if (glfwWindowShouldClose(window.window)) {
-			cout << "SHOULD CLOSE" << endl;
+			cout << "CLOSE" << endl;
 			break;
 		}
 		uint32_t nextimage = 0;
 		cout << main_device.device << endl;
 		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
-		cout << "Next Image " << nextimage << endl;
 		VkSubmitInfo submit_info = {};
 		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		vector<VkSemaphore> semaphores = { *line.available };
@@ -119,7 +117,6 @@ void initTGEngine() {
 		vector<VkCommandBuffer> buffers = { line.command_buffer->data()[nextimage] };
 		submit_info.commandBufferCount = buffers.size();
 		submit_info.pCommandBuffers = buffers.data();
-		cout << submit_info.pCommandBuffers << endl;
 		semaphores = { *line.end };
 		submit_info.signalSemaphoreCount = semaphores.size();
 		submit_info.pSignalSemaphores = semaphores.data();

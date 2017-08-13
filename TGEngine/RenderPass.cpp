@@ -8,16 +8,31 @@ namespace Pipeline {
 		layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		layout_create_info.pNext = nullptr;
 		layout_create_info.flags = 0;
-		vector<VkDescriptorSetLayout> descriptors = { };
-		layout_create_info.setLayoutCount = descriptors.size();
-		layout_create_info.pSetLayouts = descriptors.data();
 
-		VkPushConstantRange range = {};
-		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		range.offset = 0;
-		range.size = render_pass->device->property->limits.maxPushConstantsSize;
+		VkDescriptorSetLayoutBinding binding = {};
+		binding.binding = 0;
+		binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		binding.descriptorCount = 1;
+		binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		binding.pImmutableSamplers = nullptr;
 
-		vector<VkPushConstantRange> push = {};
+		vector<VkDescriptorSetLayoutBinding> bindings = {binding};
+
+		VkDescriptorSetLayoutCreateInfo create_info = {};
+		create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		create_info.pNext = nullptr;
+		create_info.flags = 0;
+		create_info.bindingCount = bindings.size();
+		create_info.pBindings = bindings.data();
+
+		vector<VkDescriptorSetLayoutCreateInfo> create_infos = { create_info };
+		vector<VkDescriptorSetLayout> layout(create_infos.size());
+		handel(vkCreateDescriptorSetLayout(*render_pass->device->device, create_infos.data(), nullptr, layout.data()));
+
+		layout_create_info.setLayoutCount = layout.size();
+		layout_create_info.pSetLayouts = layout.data();
+
+		vector<VkPushConstantRange> push(0);
 		layout_create_info.pushConstantRangeCount = push.size();
 		layout_create_info.pPushConstantRanges = push.data();
 

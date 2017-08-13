@@ -17,6 +17,8 @@ namespace Pipeline {
 		VkColorSpaceKHR color_space;
 		VkDevice* device;
 		Application* app;
+		VkQueueFamilyProperties* properties;
+		uint32_t queuindex;
 	};
 
 	/*

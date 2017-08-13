@@ -52,10 +52,14 @@ namespace Pipeline {
 
 		VkPipelineVertexInputStateCreateInfo vert_inp_info = {};
 		vert_inp_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vert_inp_info.vertexBindingDescriptionCount = 0;
-		vert_inp_info.vertexAttributeDescriptionCount = 0;
-		vert_inp_info.pVertexBindingDescriptions = nullptr;
-		vert_inp_info.pVertexAttributeDescriptions = nullptr;
+		
+		vector<VkVertexInputBindingDescription> bindings = {};
+		vert_inp_info.vertexBindingDescriptionCount = bindings.size();
+		vert_inp_info.pVertexBindingDescriptions = bindings.data();
+
+		vector<VkVertexInputAttributeDescription> atributs = {};
+		vert_inp_info.vertexAttributeDescriptionCount = atributs.size();
+		vert_inp_info.pVertexAttributeDescriptions = atributs.data();
 
 		VkPipelineInputAssemblyStateCreateInfo in_asm_info = {};
 		in_asm_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

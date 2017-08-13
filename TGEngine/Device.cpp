@@ -14,10 +14,57 @@ namespace Pipeline {
 
 		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_cou, dev->physical_devices.data()));
 
-		dev->currentPhysicalDevice = &dev->physical_devices[0];
+		uint32_t device_in_array = -1;
+		uint32_t max_tex_size = 0;
+
+		/*
+		 * Auto graphic card detection in beta state
+		 */
+
+		for (int i = 0; i < div_cou; i++) {
+			cout << "Found ";
+			VkPhysicalDeviceProperties* cprops = new VkPhysicalDeviceProperties;
+			vkGetPhysicalDeviceProperties(dev->physical_devices[0], cprops);
+			cout << i << ". " << cprops->deviceName << endl << "of type ";
+			switch (cprops->deviceType) {
+			case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU: {
+				cout << "Discrete GPU" << endl;
+				if (max_tex_size < cprops->limits.maxImageDimension2D) {
+					device_in_array = i;
+					max_tex_size = cprops->limits.maxImageDimension2D + 1000;
+					cout << "Size of texture " << max_tex_size << " using device" << endl;
+				}
+				else {
+					cout << "Found a better one befor" << endl;
+					continue;
+				}
+				cout << "Supported and recommended" << endl;
+				continue;
+			}
+			case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU: {
+				cout << "Integrated GPU" << endl;
+				if (max_tex_size < cprops->limits.maxImageDimension2D) {
+					device_in_array = i;
+					max_tex_size = cprops->limits.maxImageDimension2D;
+					cout << "Size of texture" << max_tex_size << " using device" << endl;
+				}
+				else {
+					cout << "Found a better one befor" << endl;
+					continue;
+				}
+				cout << "Supported but not recommended, searching for a better one" << endl;
+				continue;
+			}
+			}
+			cout << "Not supported type";
+		}
+
+		if (device_in_array < 0)error("No supported device found", -5);
+
+		dev->currentPhysicalDevice = &dev->physical_devices[device_in_array];
 
 		dev->property = new VkPhysicalDeviceProperties;
-	    vkGetPhysicalDeviceProperties(*dev->currentPhysicalDevice, dev->property);
+		vkGetPhysicalDeviceProperties(*dev->currentPhysicalDevice, dev->property);
 
 		dev->khr_capabilities = new VkSurfaceCapabilitiesKHR;
 		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, dev->khr_capabilities));
@@ -64,26 +111,13 @@ namespace Pipeline {
 
 		float arra[] = { 1.0F ,1.0F ,1.0F ,1.0F };
 
-		VkDeviceQueueCreateInfo queue_create_info = {};
-		queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queue_create_info.queueFamilyIndex = 0;
-		queue_create_info.queueCount = 1;
-		queue_create_info.pQueuePriorities = arra;
-
-		VkDeviceCreateInfo div_create_info = {};
-		div_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		div_create_info.pQueueCreateInfos = &queue_create_info;
-		div_create_info.queueCreateInfoCount = 1;
-		div_create_info.pEnabledFeatures = &features;
-
 		vector<char*> extlays = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 
 		uint32_t extcout = 0;
 		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, nullptr));
-		vector<VkExtensionProperties> current_valid_ext = {};
-		current_valid_ext.resize(extcout);
+		vector<VkExtensionProperties> current_valid_ext(extcout);
 		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data()));
 
 		int vc = 0;
@@ -104,13 +138,52 @@ namespace Pipeline {
 				}
 			}
 		}
+
+		/*
+		 * Code for finding Queuefamily beta state
+		 */
+
+		uint32_t queue = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(*dev->currentPhysicalDevice, &queue, nullptr);
+
+		if (queue < 0)error("No queue family found", -6);
+
+		vector<VkQueueFamilyProperties> properties(queue);
+		vkGetPhysicalDeviceQueueFamilyProperties(*dev->currentPhysicalDevice, &queue, properties.data());
+		dev->queuindex = -1;
+
+		for (size_t i = 0; i < queue; i++)
+		{
+			VkQueueFamilyProperties prop = properties[i];
+			cout << "Found queue family " << prop.queueFlags << endl;
+			if (prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+				dev->queuindex = i;
+				cout << "Found valide" << endl;
+				break;
+			}
+		}
+
+		if (dev->queuindex < 0)error("No valide queue family found", -7);
+
+		VkDeviceQueueCreateInfo queue_create_info = {};
+		queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queue_create_info.queueFamilyIndex = 0;
+		queue_create_info.queueCount = 1;
+		queue_create_info.pQueuePriorities = arra;
+
+		VkDeviceCreateInfo div_create_info = {};
+		div_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		div_create_info.pQueueCreateInfos = &queue_create_info;
+		div_create_info.queueCreateInfoCount = 1;
+		div_create_info.pEnabledFeatures = &features;
 		div_create_info.enabledExtensionCount = val_ext.size();
 		div_create_info.ppEnabledExtensionNames = val_ext.data();
 
+
 		VkBool32 isSupported = false;
-		handel(vkGetPhysicalDeviceSurfaceSupportKHR(*dev->currentPhysicalDevice, 0, *dev->app->KHR, &isSupported));
+		handel(vkGetPhysicalDeviceSurfaceSupportKHR(*dev->currentPhysicalDevice, dev->queuindex, *dev->app->KHR, &isSupported));
 		if (!isSupported) {
-			error("Swapchain not supported", -3);
+			error("Presentation  not supported", -3);
 		}
 
 		dev->device = new VkDevice;
