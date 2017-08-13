@@ -53,11 +53,27 @@ namespace Pipeline {
 		VkPipelineVertexInputStateCreateInfo vert_inp_info = {};
 		vert_inp_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		
+		VkVertexInputBindingDescription BindingDescriptions = {};
+		BindingDescriptions.binding = 0;
+		BindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
 		vector<VkVertexInputBindingDescription> bindings = {};
 		vert_inp_info.vertexBindingDescriptionCount = bindings.size();
 		vert_inp_info.pVertexBindingDescriptions = bindings.data();
 
-		vector<VkVertexInputAttributeDescription> atributs = {};
+		VkVertexInputAttributeDescription colorin = {};
+		colorin.binding = 0;
+		colorin.location = 0;
+		colorin.offset = 0;
+		colorin.format = pipeline->device->prefered_format;
+
+		VkVertexInputAttributeDescription pos = {};
+		pos.binding = 0;
+		pos.location = 1;
+		pos.offset = 0;
+		pos.format = pipeline->device->prefered_format;
+
+		vector<VkVertexInputAttributeDescription> atributs = { colorin, pos };
 		vert_inp_info.vertexAttributeDescriptionCount = atributs.size();
 		vert_inp_info.pVertexAttributeDescriptions = atributs.data();
 
@@ -107,7 +123,7 @@ namespace Pipeline {
 
 
 		pipeline->pipeline = new VkPipeline;
-    	handel(vkCreateGraphicsPipelines(*pipeline->device, VK_NULL_HANDLE, 1, &pipline_create_info, nullptr, pipeline->pipeline));
+    	handel(vkCreateGraphicsPipelines(*pipeline->device->device, VK_NULL_HANDLE, 1, &pipline_create_info, nullptr, pipeline->pipeline));
 
 		pipeline->frame_buffer->resize(pipeline->swapchain->image_count);
 		for (size_t i = 0; i < pipeline->swapchain->image_count; i++)
@@ -121,7 +137,7 @@ namespace Pipeline {
 			framebuffer_create_info.height = pipeline->window->size.height;
 			framebuffer_create_info.layers = 1;
 
-			handel(vkCreateFramebuffer(*pipeline->device, &framebuffer_create_info, nullptr, &pipeline->frame_buffer->data()[i]));
+			handel(vkCreateFramebuffer(*pipeline->device->device, &framebuffer_create_info, nullptr, &pipeline->frame_buffer->data()[i]));
 		}
 
 		VkCommandPoolCreateInfo command_pool_create = {};
@@ -129,7 +145,7 @@ namespace Pipeline {
 		command_pool_create.queueFamilyIndex = 0;
 
 		pipeline->command_pool = new VkCommandPool;
-		handel(vkCreateCommandPool(*pipeline->device, &command_pool_create, nullptr, pipeline->command_pool));
+		handel(vkCreateCommandPool(*pipeline->device->device, &command_pool_create, nullptr, pipeline->command_pool));
 
 		VkCommandBufferAllocateInfo commandbuffer_allocate_info = {};
 		commandbuffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -138,7 +154,7 @@ namespace Pipeline {
 		commandbuffer_allocate_info.commandBufferCount = pipeline->swapchain->image_view_swapchain.size();
 
 		pipeline->command_buffer->resize(pipeline->swapchain->image_view_swapchain.size());
-		handel(vkAllocateCommandBuffers(*pipeline->device, &commandbuffer_allocate_info, pipeline->command_buffer->data()));
+		handel(vkAllocateCommandBuffers(*pipeline->device->device, &commandbuffer_allocate_info, pipeline->command_buffer->data()));
 
 		VkCommandBufferBeginInfo command_begin_info = {};
 		command_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -177,17 +193,17 @@ namespace Pipeline {
 
 		pipeline->available = new VkSemaphore;
 		pipeline->end = new VkSemaphore;
-		handel(vkCreateSemaphore(*pipeline->device, &semaphore_create_info, nullptr, pipeline->available));
-		handel(vkCreateSemaphore(*pipeline->device, &semaphore_create_info, nullptr, pipeline->end));
+		handel(vkCreateSemaphore(*pipeline->device->device, &semaphore_create_info, nullptr, pipeline->available));
+		handel(vkCreateSemaphore(*pipeline->device->device, &semaphore_create_info, nullptr, pipeline->end));
 	}
 
 	void destroyPipeline(Pipe* pipeline) {
-		vkDestroySemaphore(*pipeline->device, *pipeline->end, nullptr);
-		vkDestroySemaphore(*pipeline->device, *pipeline->available, nullptr);
+		vkDestroySemaphore(*pipeline->device->device, *pipeline->end, nullptr);
+		vkDestroySemaphore(*pipeline->device->device, *pipeline->available, nullptr);
 
-		vkDestroyCommandPool(*pipeline->device, *pipeline->command_pool, nullptr);
+		vkDestroyCommandPool(*pipeline->device->device, *pipeline->command_pool, nullptr);
 
-		vkDestroyPipeline(*pipeline->device, *pipeline->pipeline, nullptr);
+		vkDestroyPipeline(*pipeline->device->device, *pipeline->pipeline, nullptr);
 	}
 
 }

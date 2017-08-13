@@ -15,7 +15,7 @@ namespace Pipeline {
 		VkCommandPool* command_pool;
 		Window* window;
 		VkPipeline* pipeline;
-		VkDevice* device;
+		Device* device;
 		RenderPass* render_pass;
 		VkSemaphore* available;
 		VkSemaphore* end;

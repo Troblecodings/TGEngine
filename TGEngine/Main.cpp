@@ -82,7 +82,7 @@ void initTGEngine() {
 
 	Pipe line = {};
 	line.shader = &infos;
-	line.device = main_device.device;
+	line.device = &main_device;
 	line.window = &window;
 	line.render_pass = &render_pass;
 	line.swapchain = &swapchain;
@@ -105,19 +105,18 @@ void initTGEngine() {
 			break;
 		}
 		uint32_t nextimage = 0;
-		cout << main_device.device << endl;
-		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), *line.available, VK_NULL_HANDLE, &nextimage));
+		vector<VkSemaphore> availablepho = { *line.available };
+		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), availablepho[0], VK_NULL_HANDLE, &nextimage));
 		VkSubmitInfo submit_info = {};
 		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		vector<VkSemaphore> semaphores = { *line.available };
-		submit_info.waitSemaphoreCount = semaphores.size();
-		submit_info.pWaitSemaphores = semaphores.data();
+		submit_info.waitSemaphoreCount = availablepho.size();
+		submit_info.pWaitSemaphores = availablepho.data();
 		vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submit_info.pWaitDstStageMask = stage_flags.data();
 		vector<VkCommandBuffer> buffers = { line.command_buffer->data()[nextimage] };
 		submit_info.commandBufferCount = buffers.size();
 		submit_info.pCommandBuffers = buffers.data();
-		semaphores = { *line.end };
+		vector<VkSemaphore> semaphores = { *line.end };
 		submit_info.signalSemaphoreCount = semaphores.size();
 		submit_info.pSignalSemaphores = semaphores.data();
 
@@ -126,8 +125,8 @@ void initTGEngine() {
 
 		VkPresentInfoKHR present_info = {};
 		present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-		present_info.waitSemaphoreCount = 1;
-		present_info.pWaitSemaphores = line.end;
+		present_info.waitSemaphoreCount = semaphores.size();
+		present_info.pWaitSemaphores = semaphores.data();
 		vector<VkSwapchainKHR> swapchains = { *swapchain.swapchain };
 		present_info.swapchainCount = swapchains.size();
 		present_info.pSwapchains = swapchains.data();
