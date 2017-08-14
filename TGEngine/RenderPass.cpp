@@ -16,7 +16,7 @@ namespace Pipeline {
 		binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		binding.pImmutableSamplers = nullptr;
 
-		vector<VkDescriptorSetLayoutBinding> bindings = {binding};
+		vector<VkDescriptorSetLayoutBinding> bindings = {};
 
 		VkDescriptorSetLayoutCreateInfo create_info = {};
 		create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

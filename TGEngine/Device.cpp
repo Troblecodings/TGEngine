@@ -66,6 +66,9 @@ namespace Pipeline {
 		dev->property = new VkPhysicalDeviceProperties;
 		vkGetPhysicalDeviceProperties(*dev->currentPhysicalDevice, dev->property);
 
+		dev->memoryprops = new VkPhysicalDeviceMemoryProperties;
+		vkGetPhysicalDeviceMemoryProperties(*dev->currentPhysicalDevice, dev->memoryprops);
+
 		dev->khr_capabilities = new VkSurfaceCapabilitiesKHR;
 		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, dev->khr_capabilities));
 

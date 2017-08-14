@@ -53,27 +53,28 @@ namespace Pipeline {
 		VkPipelineVertexInputStateCreateInfo vert_inp_info = {};
 		vert_inp_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		
-		VkVertexInputBindingDescription BindingDescriptions = {};
-		BindingDescriptions.binding = 0;
-		BindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		VkVertexInputBindingDescription colorinBinding = {};
+		colorinBinding.binding = 0;
+		colorinBinding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		colorinBinding.stride = sizeof(Vertex);
 
-		vector<VkVertexInputBindingDescription> bindings = {};
+		vector<VkVertexInputBindingDescription> bindings = { colorinBinding };
 		vert_inp_info.vertexBindingDescriptionCount = bindings.size();
 		vert_inp_info.pVertexBindingDescriptions = bindings.data();
 
 		VkVertexInputAttributeDescription colorin = {};
 		colorin.binding = 0;
 		colorin.location = 0;
-		colorin.offset = 0;
+		colorin.offset = offsetof(Vertex, pos);
 		colorin.format = pipeline->device->prefered_format;
 
 		VkVertexInputAttributeDescription pos = {};
 		pos.binding = 0;
 		pos.location = 1;
-		pos.offset = 0;
+		pos.offset = offsetof(Vertex, color);
 		pos.format = pipeline->device->prefered_format;
 
-		vector<VkVertexInputAttributeDescription> atributs = { colorin, pos };
+		vector<VkVertexInputAttributeDescription> atributs = { pos, colorin };
 		vert_inp_info.vertexAttributeDescriptionCount = atributs.size();
 		vert_inp_info.pVertexAttributeDescriptions = atributs.data();
 
@@ -175,15 +176,21 @@ namespace Pipeline {
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
 
-			vkCmdBeginRenderPass(pipeline->command_buffer->data()[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
+			VkCommandBuffer buffer = pipeline->command_buffer->data()[i];
 
-			vkCmdBindPipeline(pipeline->command_buffer->data()[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
+			vkCmdBeginRenderPass(buffer, &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdDraw(pipeline->command_buffer->data()[i], 3, 1, 0, 0);
+			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
 
-			vkCmdEndRenderPass(pipeline->command_buffer->data()[i]);
+			vector<VkBuffer> buffers = { *pipeline->buffer->buffer };
+			vector<VkDeviceSize> sizes = { 0 };
+			vkCmdBindVertexBuffers(buffer,0,1, buffers.data(), sizes.data());
 
-			handel(vkEndCommandBuffer(pipeline->command_buffer->data()[i]));
+			vkCmdDraw(buffer, pipeline->buffer->vertecies->size(), 1, 0, 0);
+
+			vkCmdEndRenderPass(buffer);
+
+			handel(vkEndCommandBuffer(buffer));
 		}
 
 		VkSemaphoreCreateInfo semaphore_create_info = {};

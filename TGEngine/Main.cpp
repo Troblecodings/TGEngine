@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "RenderPass.h"
 #include "Pipeline.h"
+#include "VertexBuffer.h"
 
 using namespace std;
 using namespace Pipeline;
@@ -78,6 +79,19 @@ void initTGEngine() {
 
 	cout << "Loaded render pass" << endl;
 
+	VertexBuffer buffer = {};
+	buffer.device = &main_device;
+	vector<Vertex> vertecies = {
+		{ { 0.0f, -0.5f, 0.0f, 0.0f }, {1.0f,0.0f,0.0f,1.0f} },
+		{ { 0.5f, 0.5f, 0.0f, 0.0f }, { 1.0f,0.0f,0.0f,1.0f } },
+		{ { -0.5f, 0.5f, 0.0f, 0.0f},{ 1.0f,0.0f,0.0f,1.0f } }
+	};
+	buffer.vertecies = &vertecies;
+	createVertexBuffer(&buffer);
+	fillBuffer(&buffer);
+
+	cout << "Loaded vertex buffer" << endl;
+
 	vector<VkPipelineShaderStageCreateInfo> infos = { vertex_shader.createInfo, fragment_shader.createInfo };
 
 	Pipe line = {};
@@ -86,6 +100,7 @@ void initTGEngine() {
 	line.window = &window;
 	line.render_pass = &render_pass;
 	line.swapchain = &swapchain;
+	line.buffer = &buffer;
 	createPipeline(&line);
 
 	cout << "Loaded pipeline" << endl;
@@ -145,6 +160,8 @@ void initTGEngine() {
 	 */
 
 	destroyPipeline(&line);
+
+	destroyVertexBuffer(&buffer);
 
 	destroyShader(&vertex_shader);
 	destroyShader(&fragment_shader);

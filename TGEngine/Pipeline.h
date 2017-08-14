@@ -4,6 +4,8 @@
 #include "Window.h"
 #include "RenderPass.h"
 #include "Swapchain.h"
+#include "Vertex.h"
+#include "VertexBuffer.h"
 
 namespace Pipeline {
 
@@ -20,6 +22,7 @@ namespace Pipeline {
 		VkSemaphore* available;
 		VkSemaphore* end;
 		Swapchain* swapchain;
+		VertexBuffer* buffer;
 	};
 
 	/*

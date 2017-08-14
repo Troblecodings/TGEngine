@@ -14,6 +14,7 @@ namespace Pipeline {
 		vector<VkPhysicalDevice> physical_devices;
 		VkSurfaceCapabilitiesKHR* khr_capabilities;
 		VkPhysicalDevice* currentPhysicalDevice;
+		VkPhysicalDeviceMemoryProperties* memoryprops;
 		VkColorSpaceKHR color_space;
 		VkDevice* device;
 		Application* app;
