@@ -53,12 +53,12 @@ namespace Pipeline {
 		VkPipelineVertexInputStateCreateInfo vert_inp_info = {};
 		vert_inp_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		
-		VkVertexInputBindingDescription colorinBinding = {};
-		colorinBinding.binding = 0;
-		colorinBinding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-		colorinBinding.stride = sizeof(Vertex);
+		VkVertexInputBindingDescription binding = {};
+		binding.binding = 0;
+		binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		binding.stride = sizeof(Vertex);
 
-		vector<VkVertexInputBindingDescription> bindings = { colorinBinding };
+		vector<VkVertexInputBindingDescription> bindings = { binding };
 		vert_inp_info.vertexBindingDescriptionCount = bindings.size();
 		vert_inp_info.pVertexBindingDescriptions = bindings.data();
 
@@ -163,7 +163,9 @@ namespace Pipeline {
 
 		for (size_t i = 0; i < pipeline->command_buffer->size(); i++)
 		{
-			handel(vkBeginCommandBuffer(pipeline->command_buffer->data()[i], &command_begin_info));
+			VkCommandBuffer buffer = pipeline->command_buffer->data()[i];
+
+			handel(vkBeginCommandBuffer(buffer, &command_begin_info));
 
 			VkRenderPassBeginInfo begin_render_pass = {};
 			begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -172,11 +174,10 @@ namespace Pipeline {
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { };
+			clear_color.color = { 0,0,0,0 };
 
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
-
-			VkCommandBuffer buffer = pipeline->command_buffer->data()[i];
 
 			vkCmdBeginRenderPass(buffer, &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -184,7 +185,7 @@ namespace Pipeline {
 
 			vector<VkBuffer> buffers = { *pipeline->buffer->buffer };
 			vector<VkDeviceSize> sizes = { 0 };
-			vkCmdBindVertexBuffers(buffer,0,1, buffers.data(), sizes.data());
+			vkCmdBindVertexBuffers(buffer, 0, buffers.size(), buffers.data(), sizes.data());
 
 			vkCmdDraw(buffer, pipeline->buffer->vertecies->size(), 1, 0, 0);
 
@@ -205,10 +206,18 @@ namespace Pipeline {
 	}
 
 	void destroyPipeline(Pipe* pipeline) {
+		vkDeviceWaitIdle(*pipeline->device->device);
+
 		vkDestroySemaphore(*pipeline->device->device, *pipeline->end, nullptr);
 		vkDestroySemaphore(*pipeline->device->device, *pipeline->available, nullptr);
 
+		vkFreeCommandBuffers(*pipeline->device->device, *pipeline->command_pool, pipeline->command_buffer->size(), pipeline->command_buffer->data());
+
 		vkDestroyCommandPool(*pipeline->device->device, *pipeline->command_pool, nullptr);
+
+		for (VkFramebuffer buffer : *pipeline->frame_buffer) {
+			vkDestroyFramebuffer(*pipeline->device->device, buffer, nullptr);
+		}
 
 		vkDestroyPipeline(*pipeline->device->device, *pipeline->pipeline, nullptr);
 	}

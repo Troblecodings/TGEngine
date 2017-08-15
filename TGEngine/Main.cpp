@@ -82,15 +82,18 @@ void initTGEngine() {
 	VertexBuffer buffer = {};
 	buffer.device = &main_device;
 	vector<Vertex> vertecies = {
-		{ { 0.0f, -0.5f, 0.0f, 0.0f }, {1.0f,0.0f,0.0f,1.0f} },
-		{ { 0.5f, 0.5f, 0.0f, 0.0f }, { 1.0f,0.0f,0.0f,1.0f } },
-		{ { -0.5f, 0.5f, 0.0f, 0.0f},{ 1.0f,0.0f,0.0f,1.0f } }
+		{ { 0.0f, -0.5f, 1.0f, 1.0f }, {1.0f,0.0f,0.0f,1.0f} },
+		{ { 0.5f, 0.5f, 1.0f, 1.0f }, { 1.0f,0.0f,0.0f,1.0f } },
+		{ { -0.5f, 0.5f, 1.0f, 1.0f},{ 1.0f,0.0f,0.0f,1.0f } }
 	};
 	buffer.vertecies = &vertecies;
 	createVertexBuffer(&buffer);
-	fillBuffer(&buffer);
 
 	cout << "Loaded vertex buffer" << endl;
+
+	fillBuffer(&buffer);
+
+	cout << "Fill vertex buffer" << endl;
 
 	vector<VkPipelineShaderStageCreateInfo> infos = { vertex_shader.createInfo, fragment_shader.createInfo };
 
@@ -136,7 +139,7 @@ void initTGEngine() {
 		submit_info.pSignalSemaphores = semaphores.data();
 
 		vector<VkSubmitInfo> submitinfos = { submit_info };
-		handel(vkQueueSubmit(*swapchain.queue, 1, submitinfos.data(), VK_NULL_HANDLE));
+		handel(vkQueueSubmit(*swapchain.queue, submitinfos.size(), submitinfos.data(), VK_NULL_HANDLE));
 
 		VkPresentInfoKHR present_info = {};
 		present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -145,7 +148,8 @@ void initTGEngine() {
 		vector<VkSwapchainKHR> swapchains = { *swapchain.swapchain };
 		present_info.swapchainCount = swapchains.size();
 		present_info.pSwapchains = swapchains.data();
-		present_info.pImageIndices = &nextimage;
+		vector<uint32_t> indices = { nextimage };
+		present_info.pImageIndices = indices.data();
 		present_info.pResults = nullptr;
 
 		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
@@ -160,6 +164,8 @@ void initTGEngine() {
 	 */
 
 	destroyPipeline(&line);
+
+	destroyRenderPass(&render_pass);
 
 	destroyVertexBuffer(&buffer);
 

@@ -12,10 +12,8 @@ namespace Pipeline {
 		buffer_create_info.size = buffer->vertecies->size() * sizeof(Vertex);
 		buffer_create_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 		buffer_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		vector<uint32_t> queueFamilys = { buffer->device->queuindex };
-		buffer_create_info.queueFamilyIndexCount = queueFamilys.size();
-		buffer_create_info.pQueueFamilyIndices = queueFamilys.data();
+		buffer_create_info.queueFamilyIndexCount = 0;
+		buffer_create_info.pQueueFamilyIndices = nullptr;
         
 		buffer->buffer = new VkBuffer;
 		handel(vkCreateBuffer(*buffer->device->device, &buffer_create_info, nullptr, buffer->buffer));
@@ -34,11 +32,7 @@ namespace Pipeline {
 		VkMemoryAllocateInfo allocate_info = {};
 		allocate_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocate_info.pNext = nullptr;
-		if (buffer->requirements->size > buffer_create_info.size) {
-			allocate_info.allocationSize = buffer->requirements->size;
-		} else {
-			allocate_info.allocationSize = buffer_create_info.size;
-		}
+		allocate_info.allocationSize = buffer->requirements->size;
 		allocate_info.memoryTypeIndex = index;
 
 		buffer->memory = new VkDeviceMemory;
