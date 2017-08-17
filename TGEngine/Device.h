@@ -19,7 +19,8 @@ namespace Pipeline {
 		VkDevice* device;
 		Application* app;
 		VkQueueFamilyProperties* properties;
-		uint32_t queuindex;
+		uint32_t queuFamalieindex;
+		uint32_t queueCount;
 	};
 
 	/*

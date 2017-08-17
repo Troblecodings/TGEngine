@@ -23,7 +23,7 @@ namespace Pipeline {
 		att_desc.format = render_pass->device->prefered_format;
 		att_desc.samples = VK_SAMPLE_COUNT_1_BIT;
 		att_desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		att_desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		att_desc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		att_desc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		att_desc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		att_desc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;

@@ -13,7 +13,7 @@ namespace Pipeline {
 		if (window->autosize) {
 			GLFWmonitor* mon = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(mon);
-			window->size = { static_cast<uint32_t>(mode->width),static_cast<uint32_t>(mode->height) };
+			window->size = { static_cast<uint32_t>(mode->width), static_cast<uint32_t>(mode->height) };
 		}
 		window->window = glfwCreateWindow(window->size.width, window->size.height, window->title, nullptr, nullptr);
 		glfwSetWindowPos(window->window, 0, 0);

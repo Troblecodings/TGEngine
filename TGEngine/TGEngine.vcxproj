@@ -150,7 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="shader.frag" />
+    <Text Include="fragmentshader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -180,7 +180,9 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexshader.vert" />
+    <None Include="frag.spv" />
+    <None Include="vert.spv" />
+    <None Include="vertexshader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

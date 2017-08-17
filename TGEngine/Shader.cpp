@@ -11,6 +11,7 @@ namespace Pipeline {
 		binary_file.resize(size_of_file);
 		inputstream.seekg(0);
 		inputstream.read(binary_file.data(), size_of_file);
+		inputstream.close();
 
 		VkShaderModuleCreateInfo shader_creatinfo = {};
 		shader_creatinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

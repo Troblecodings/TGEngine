@@ -82,9 +82,9 @@ void initTGEngine() {
 	VertexBuffer buffer = {};
 	buffer.device = &main_device;
 	vector<Vertex> vertecies = {
-		{ { 0.0f, -0.5f, 1.0f, 1.0f }, {1.0f,0.0f,0.0f,1.0f} },
-		{ { 0.5f, 0.5f, 1.0f, 1.0f }, { 1.0f,0.0f,0.0f,1.0f } },
-		{ { -0.5f, 0.5f, 1.0f, 1.0f},{ 1.0f,0.0f,0.0f,1.0f } }
+		{ { 0.0f, -0.5f, 0.0f, 1.0f }, { 1.0f, 0, 0, 1.0f} },
+		{ { 0.5f, 0.5f, 0.0f, 1.0f }, { 1.0f, 0, 0, 1.0f } },
+		{ { -0.5f, 0.5f, 0.0f, 1.0f },{ 1.0f, 0, 0, 1.0f } }
 	};
 	buffer.vertecies = &vertecies;
 	createVertexBuffer(&buffer);
@@ -131,7 +131,7 @@ void initTGEngine() {
 		submit_info.pWaitSemaphores = availablepho.data();
 		vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submit_info.pWaitDstStageMask = stage_flags.data();
-		vector<VkCommandBuffer> buffers = { line.command_buffer->data()[nextimage] };
+		vector<VkCommandBuffer> buffers = { (*line.command_buffer)[nextimage] };
 		submit_info.commandBufferCount = buffers.size();
 		submit_info.pCommandBuffers = buffers.data();
 		vector<VkSemaphore> semaphores = { *line.end };

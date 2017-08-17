@@ -66,13 +66,13 @@ namespace Pipeline {
 		colorin.binding = 0;
 		colorin.location = 0;
 		colorin.offset = offsetof(Vertex, pos);
-		colorin.format = pipeline->device->prefered_format;
+		colorin.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		VkVertexInputAttributeDescription pos = {};
 		pos.binding = 0;
 		pos.location = 1;
 		pos.offset = offsetof(Vertex, color);
-		pos.format = pipeline->device->prefered_format;
+		pos.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		vector<VkVertexInputAttributeDescription> atributs = { pos, colorin };
 		vert_inp_info.vertexAttributeDescriptionCount = atributs.size();
@@ -84,12 +84,12 @@ namespace Pipeline {
 		in_asm_info.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport;
-		viewport.x = 0;
-		viewport.y = 0;
-		viewport.width = pipeline->window->size.width;
-		viewport.height = pipeline->window->size.height;
-		viewport.maxDepth = 1;
-		viewport.minDepth = 0;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float) pipeline->window->size.width;
+		viewport.height = (float) pipeline->window->size.height;
+		viewport.maxDepth = 1.0f;
+		viewport.minDepth = 0.0f;
 
 		VkRect2D rect;
 		rect.offset = { 0,0 };
@@ -183,9 +183,9 @@ namespace Pipeline {
 
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
 
-			vector<VkBuffer> buffers = { *pipeline->buffer->buffer };
-			vector<VkDeviceSize> sizes = { 0 };
-			vkCmdBindVertexBuffers(buffer, 0, buffers.size(), buffers.data(), sizes.data());
+			vector<VkBuffer> vertexbuffers = { *pipeline->buffer->buffer };
+			vector<VkDeviceSize> offsets = { 0 };
+			vkCmdBindVertexBuffers(buffer, 0, vertexbuffers.size(), vertexbuffers.data(), offsets.data());
 
 			vkCmdDraw(buffer, pipeline->buffer->vertecies->size(), 1, 0, 0);
 

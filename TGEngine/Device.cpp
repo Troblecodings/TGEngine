@@ -24,7 +24,7 @@ namespace Pipeline {
 		for (int i = 0; i < div_cou; i++) {
 			cout << "Found ";
 			VkPhysicalDeviceProperties* cprops = new VkPhysicalDeviceProperties;
-			vkGetPhysicalDeviceProperties(dev->physical_devices[0], cprops);
+			vkGetPhysicalDeviceProperties(dev->physical_devices[i], cprops);
 			cout << i << ". " << cprops->deviceName << endl << "of type ";
 			switch (cprops->deviceType) {
 			case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU: {
@@ -75,8 +75,7 @@ namespace Pipeline {
 		uint32_t suf_form_cout = 0;
 		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, nullptr));
 
-		vector<VkSurfaceFormatKHR> formats = {};
-		formats.resize(suf_form_cout);
+		vector<VkSurfaceFormatKHR> formats(suf_form_cout);
 		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, formats.data()));
 
 		bool validformat = false;
@@ -95,8 +94,7 @@ namespace Pipeline {
 		uint32_t Present_mode_count = 0;
 		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, nullptr));
 
-		vector<VkPresentModeKHR> khr_present_mode = {};
-		khr_present_mode.resize(Present_mode_count);
+		vector<VkPresentModeKHR> khr_present_mode(Present_mode_count);
 		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, khr_present_mode.data()));
 
 		bool ismodevalid = false;
@@ -109,10 +107,6 @@ namespace Pipeline {
 		if (!ismodevalid) {
 			error("Present mode not available", -1);
 		}
-
-		VkPhysicalDeviceFeatures features = {};
-
-		float arra[] = { 1.0F ,1.0F ,1.0F ,1.0F };
 
 		vector<char*> extlays = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -153,38 +147,47 @@ namespace Pipeline {
 
 		vector<VkQueueFamilyProperties> properties(queue);
 		vkGetPhysicalDeviceQueueFamilyProperties(*dev->currentPhysicalDevice, &queue, properties.data());
-		dev->queuindex = -1;
+		dev->queuFamalieindex = -1;
 
 		for (size_t i = 0; i < queue; i++)
 		{
 			VkQueueFamilyProperties prop = properties[i];
 			cout << "Found queue family " << prop.queueFlags << endl;
-			if (prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-				dev->queuindex = i;
+			if ((prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
+				dev->queuFamalieindex = i;
+				dev->queueCount = prop.queueCount;
 				cout << "Found valide" << endl;
 				break;
 			}
 		}
 
-		if (dev->queuindex < 0)error("No valide queue family found", -7);
+		if (dev->queuFamalieindex < 0 || dev->queueCount <= 0)error("No valide queue family found or queue count 0", -7);
 
 		VkDeviceQueueCreateInfo queue_create_info = {};
 		queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queue_create_info.queueFamilyIndex = 0;
-		queue_create_info.queueCount = 1;
-		queue_create_info.pQueuePriorities = arra;
+		queue_create_info.queueFamilyIndex = dev->queuFamalieindex;
+		vector<float> queues(dev->queueCount);
+		for (size_t i = 0; i < queues.size(); i++)
+		{
+			queues[i] = 1.0f;
+		}
+		queue_create_info.queueCount = queues.size();
+		queue_create_info.pQueuePriorities = queues.data();
+
+		VkPhysicalDeviceFeatures features = {};
 
 		VkDeviceCreateInfo div_create_info = {};
 		div_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		div_create_info.pQueueCreateInfos = &queue_create_info;
-		div_create_info.queueCreateInfoCount = 1;
+		vector<VkDeviceQueueCreateInfo> queue_create_infos = { queue_create_info };
+		div_create_info.pQueueCreateInfos = queue_create_infos.data();
+		div_create_info.queueCreateInfoCount = queue_create_infos.size();
 		div_create_info.pEnabledFeatures = &features;
 		div_create_info.enabledExtensionCount = val_ext.size();
 		div_create_info.ppEnabledExtensionNames = val_ext.data();
 
 
 		VkBool32 isSupported = false;
-		handel(vkGetPhysicalDeviceSurfaceSupportKHR(*dev->currentPhysicalDevice, dev->queuindex, *dev->app->KHR, &isSupported));
+		handel(vkGetPhysicalDeviceSurfaceSupportKHR(*dev->currentPhysicalDevice, dev->queuFamalieindex, *dev->app->KHR, &isSupported));
 		if (!isSupported) {
 			error("Presentation  not supported", -3);
 		}

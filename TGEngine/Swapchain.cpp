@@ -34,10 +34,7 @@ namespace Pipeline {
 		chain->swapchain = new VkSwapchainKHR;
 		handel(vkCreateSwapchainKHR(*chain->device->device, &swap_chain_creat_info, nullptr, chain->swapchain));
 
-		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, nullptr));
-
-		vector<VkImage> image_array = {};
-		image_array.resize(chain->image_count);
+		vector<VkImage> image_array(chain->image_count);
 		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, image_array.data()));
 
 		chain->image_view_swapchain.resize(chain->image_count);
@@ -66,7 +63,7 @@ namespace Pipeline {
 
 		}
 		chain->queue = new VkQueue;
-		vkGetDeviceQueue(*chain->device->device, 0, 0, chain->queue);
+		vkGetDeviceQueue(*chain->device->device, chain->device->queuFamalieindex, 0, chain->queue);
 	}
 
 	void destroySwapchain(Swapchain* chain) {

@@ -9,11 +9,12 @@ namespace Pipeline {
 		buffer_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		buffer_create_info.pNext = nullptr;
 		buffer_create_info.flags = 0;
-		buffer_create_info.size = buffer->vertecies->size() * sizeof(Vertex);
+		buffer_create_info.size = buffer->vertecies->size() * sizeof((*buffer->vertecies)[0]);
 		buffer_create_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 		buffer_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		buffer_create_info.queueFamilyIndexCount = 0;
-		buffer_create_info.pQueueFamilyIndices = nullptr;
+		vector<uint32_t> queuefamalieIndeces = {buffer->device->queuFamalieindex};
+		buffer_create_info.queueFamilyIndexCount = queuefamalieIndeces.size();
+		buffer_create_info.pQueueFamilyIndices = queuefamalieIndeces.data();
         
 		buffer->buffer = new VkBuffer;
 		handel(vkCreateBuffer(*buffer->device->device, &buffer_create_info, nullptr, buffer->buffer));
@@ -24,9 +25,8 @@ namespace Pipeline {
 		uint32_t index = 0;
 		uint32_t properties = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 		for (index = 0; index < buffer->device->memoryprops->memoryTypeCount; index++) {
-			if ((buffer->requirements->memoryTypeBits & (1 << index)) && (buffer->device->memoryprops->memoryTypes[index].propertyFlags & properties) == properties) {
-				break;
-			}
+
+			if ((buffer->requirements->memoryTypeBits & (1 << index)) && (buffer->device->memoryprops->memoryTypes[index].propertyFlags & properties) == properties) break;
 		}
 
 		VkMemoryAllocateInfo allocate_info = {};
@@ -39,13 +39,16 @@ namespace Pipeline {
 		handel(vkAllocateMemory(*buffer->device->device, &allocate_info, nullptr, buffer->memory));
 
 		handel(vkBindBufferMemory(*buffer->device->device, *buffer->buffer, *buffer->memory, 0));
+
+		size_t size = buffer_create_info.size;
+		void* data;
+		handel(vkMapMemory(*buffer->device->device, *buffer->memory, 0, size, 0, &data));
+		memcpy(data, buffer->vertecies->data(), size);
+		vkUnmapMemory(*buffer->device->device, *buffer->memory);
 	}
 
 	void fillBuffer(VertexBuffer* buffer){
-		void* data;
-		handel(vkMapMemory(*buffer->device->device, *buffer->memory, 0, buffer->vertecies->size(), 0, &data));
-		memcpy(data, buffer->vertecies->data(), buffer->vertecies->size());
-	    vkUnmapMemory(*buffer->device->device, *buffer->memory);
+		
 	}
 
 	void destroyVertexBuffer(VertexBuffer* buffer) {

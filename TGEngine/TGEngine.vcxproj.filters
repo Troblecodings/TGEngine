@@ -33,11 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="shader.frag">
-      <Filter>Quelldateien</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Debug.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -111,8 +106,19 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexshader.vert">
-      <Filter>Quelldateien</Filter>
+    <None Include="vertexshader.glsl">
+      <Filter>Ressourcendateien</Filter>
     </None>
+    <None Include="frag.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="vert.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="fragmentshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </Text>
   </ItemGroup>
 </Project>
