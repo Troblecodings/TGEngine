@@ -12,11 +12,11 @@ still working on it...
 
 I am using [GLFW library](http://www.glfw.org/) and the, in [LunarG' Vulkan-SDK](https://vulkan.lunarg.com/sdk/home) intigrated, GLM Library 
 
-<h3>License<h3>
+<h3>License</h3>
 
 Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/master/LICENSE)
 
-<h3>Wanna contribute?<h3>
+<h3>Wanna contribute?</h3>
 
 Everyone is welcome to help in development!<br>
 I am thankfull for every improvment, addition or fix.
