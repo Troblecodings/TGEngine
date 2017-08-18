@@ -21,7 +21,7 @@ namespace Pipeline {
 		rastera_info.depthClampEnable = VK_FALSE;
 		rastera_info.rasterizerDiscardEnable = VK_FALSE;
 		rastera_info.polygonMode = VK_POLYGON_MODE_FILL;
-		rastera_info.cullMode = VK_CULL_MODE_NONE;
+		rastera_info.cullMode = VK_CULL_MODE_FRONT_AND_BACK;
 		rastera_info.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rastera_info.depthBiasEnable = VK_FALSE;
 		rastera_info.depthBiasConstantFactor = 0;
@@ -64,13 +64,13 @@ namespace Pipeline {
 
 		VkVertexInputAttributeDescription colorin = {};
 		colorin.binding = 0;
-		colorin.location = 0;
+		colorin.location = 1;
 		colorin.offset = offsetof(Vertex, pos);
 		colorin.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		VkVertexInputAttributeDescription pos = {};
 		pos.binding = 0;
-		pos.location = 1;
+		pos.location = 0;
 		pos.offset = offsetof(Vertex, color);
 		pos.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
@@ -143,7 +143,7 @@ namespace Pipeline {
 
 		VkCommandPoolCreateInfo command_pool_create = {};
 		command_pool_create.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		command_pool_create.queueFamilyIndex = 0;
+		command_pool_create.queueFamilyIndex = pipeline->device->queuFamalieindex;
 
 		pipeline->command_pool = new VkCommandPool;
 		handel(vkCreateCommandPool(*pipeline->device->device, &command_pool_create, nullptr, pipeline->command_pool));
@@ -174,7 +174,7 @@ namespace Pipeline {
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { };
-			clear_color.color = { 0,0,0,0 };
+			clear_color.color = { 1,1,1, 1 };
 
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;

@@ -16,7 +16,7 @@ namespace Pipeline {
 			window->size = { static_cast<uint32_t>(mode->width), static_cast<uint32_t>(mode->height) };
 		}
 		window->window = glfwCreateWindow(window->size.width, window->size.height, window->title, nullptr, nullptr);
-		glfwSetWindowPos(window->window, 0, 0);
+		glfwSetWindowPos(window->window, window->pos.width, window->pos.height);
 	};
 
 	void destroyWindow(Window* window) {

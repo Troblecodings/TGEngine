@@ -65,55 +65,6 @@ void printFeatures(VkPhysicalDeviceFeatures device_features) {
 	cout << endl << "-------------------------------------------" << endl << endl;
 }
 
-/*
-for (size_t i = 0; i < div_cou; i++)
-{
-cout << endl;
-cout << "==================================" << endl;
-cout << endl;
-VkPhysicalDevice cdevice = device_list[i];
-VkPhysicalDeviceProperties cdivprops;
-
-vkGetPhysicalDeviceProperties(cdevice, &cdivprops);
-
-uint32_t av = cdivprops.apiVersion;
-uint32_t dv = cdivprops.driverVersion;
-
-cout << i + 1 << ". Card " << cdivprops.deviceName << endl;
-cout << "Api version ";
-printVersion(av);
-cout << endl;
-cout << "Driver version ";
-printVersion(dv);
-cout << endl;
-cout << "Type " << cdivprops.deviceType << endl;
-cout << "ID " << cdivprops.deviceID << endl;
-
-uint32_t div_qu_prop_count = 0;
-vkGetPhysicalDeviceQueueFamilyProperties(cdevice, &div_qu_prop_count, nullptr);
-
-VkPhysicalDeviceFeatures features;
-vkGetPhysicalDeviceFeatures(cdevice, &features);
-
-printFeature(features);
-
-vector<VkQueueFamilyProperties> mem_props = {};
-mem_props.resize(div_qu_prop_count);
-vkGetPhysicalDeviceQueueFamilyProperties(cdevice, &div_qu_prop_count, mem_props.data());
-
-for (size_t s = 0; s < div_qu_prop_count; s++)
-{
-cout << endl;
-VkQueueFamilyProperties prop_mem = mem_props[s];
-cout << s + 1 << ". Queue Family " << prop_mem.queueCount << endl;
-cout << "Flag " << prop_mem.queueFlags << endl;
-cout << "Image transf W" << prop_mem.minImageTransferGranularity.width << " - H" << prop_mem.minImageTransferGranularity.height << " - D" << prop_mem.minImageTransferGranularity.depth << endl;
-cout << "Valid Bits " << prop_mem.timestampValidBits << endl;
-}
-
-}
-*/
-
 void debugLayerAndExtensions() {
 	uint32_t layer_count = 0;
 	vkEnumerateInstanceLayerProperties(&layer_count, nullptr);

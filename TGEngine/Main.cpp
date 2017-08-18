@@ -23,7 +23,9 @@ void initTGEngine() {
 	};
 
 	Window window = {};
-	window.autosize = true;
+	window.autosize = false;
+	window.size = { 800,600 };
+	window.pos = { 200, 200 };
 	window.title = "title";
 	createWindow(&window);
 
@@ -82,9 +84,9 @@ void initTGEngine() {
 	VertexBuffer buffer = {};
 	buffer.device = &main_device;
 	vector<Vertex> vertecies = {
-		{ { 0.0f, -0.5f, 0.0f, 1.0f }, { 1.0f, 0, 0, 1.0f} },
-		{ { 0.5f, 0.5f, 0.0f, 1.0f }, { 1.0f, 0, 0, 1.0f } },
-		{ { -0.5f, 0.5f, 0.0f, 1.0f },{ 1.0f, 0, 0, 1.0f } }
+		{ { 0.0f, -0.5f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
+		{ { 0.5f, 0.5f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+		{ { -0.5f, 0.5f, 0.0f, 0.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } }
 	};
 	buffer.vertecies = &vertecies;
 	createVertexBuffer(&buffer);
@@ -117,41 +119,63 @@ void initTGEngine() {
 	 */
 
 	while (true) {
+		//Window
 		glfwPollEvents();
 		if (glfwWindowShouldClose(window.window)) {
 			cout << "CLOSE" << endl;
 			break;
 		}
+		//Image Index
 		uint32_t nextimage = 0;
-		vector<VkSemaphore> availablepho = { *line.available };
-		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), availablepho[0], VK_NULL_HANDLE, &nextimage));
+		//Semaphore if Picture is avalaible
+		vector<VkSemaphore> availabl_semaphor = { *line.available };
+		//Gets the next Image
+		handel(vkAcquireNextImageKHR(*main_device.device, *swapchain.swapchain, numeric_limits<uint32_t>::max(), availabl_semaphor[0], VK_NULL_HANDLE, &nextimage));
+		
 		VkSubmitInfo submit_info = {};
 		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submit_info.waitSemaphoreCount = availablepho.size();
-		submit_info.pWaitSemaphores = availablepho.data();
+		//Add Semaphores
+		submit_info.waitSemaphoreCount = availabl_semaphor.size();
+		submit_info.pWaitSemaphores = availabl_semaphor.data();
+		//Set Stage FLAG
 		vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submit_info.pWaitDstStageMask = stage_flags.data();
+
+		//Command Buffers
 		vector<VkCommandBuffer> buffers = { (*line.command_buffer)[nextimage] };
 		submit_info.commandBufferCount = buffers.size();
 		submit_info.pCommandBuffers = buffers.data();
-		vector<VkSemaphore> semaphores = { *line.end };
-		submit_info.signalSemaphoreCount = semaphores.size();
-		submit_info.pSignalSemaphores = semaphores.data();
 
+		//Add end semaphor 
+		vector<VkSemaphore> end_semaphores = { *line.end };
+		submit_info.signalSemaphoreCount = end_semaphores.size();
+		submit_info.pSignalSemaphores = end_semaphores.data();
+
+		//Submit queue
 		vector<VkSubmitInfo> submitinfos = { submit_info };
 		handel(vkQueueSubmit(*swapchain.queue, submitinfos.size(), submitinfos.data(), VK_NULL_HANDLE));
 
+		//Present Info
 		VkPresentInfoKHR present_info = {};
 		present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-		present_info.waitSemaphoreCount = semaphores.size();
-		present_info.pWaitSemaphores = semaphores.data();
+
+		//Add end semaphor
+		present_info.waitSemaphoreCount = end_semaphores.size();
+		present_info.pWaitSemaphores = end_semaphores.data();
+		//Adding Swapchaines
 		vector<VkSwapchainKHR> swapchains = { *swapchain.swapchain };
 		present_info.swapchainCount = swapchains.size();
 		present_info.pSwapchains = swapchains.data();
+
+		//Adding index data
 		vector<uint32_t> indices = { nextimage };
 		present_info.pImageIndices = indices.data();
-		present_info.pResults = nullptr;
 
+		//Adding result
+		vector<VkResult> results = { VK_SUCCESS };
+		present_info.pResults = results.data();
+
+		//Present everything
 		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
 	}
 

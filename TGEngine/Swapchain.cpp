@@ -29,11 +29,13 @@ namespace Pipeline {
 		swap_chain_creat_info.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 		swap_chain_creat_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 		swap_chain_creat_info.presentMode = chain->device->present_mode;
-		swap_chain_creat_info.clipped = VK_NULL_HANDLE;
+		swap_chain_creat_info.clipped = VK_TRUE;
+		swap_chain_creat_info.oldSwapchain = VK_NULL_HANDLE;
 
 		chain->swapchain = new VkSwapchainKHR;
 		handel(vkCreateSwapchainKHR(*chain->device->device, &swap_chain_creat_info, nullptr, chain->swapchain));
 
+		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, nullptr));
 		vector<VkImage> image_array(chain->image_count);
 		handel(vkGetSwapchainImagesKHR(*chain->device->device, *chain->swapchain, &chain->image_count, image_array.data()));
 

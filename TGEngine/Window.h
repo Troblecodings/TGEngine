@@ -9,6 +9,7 @@ namespace Pipeline {
 		char* title;
 		GLFWwindow* window;
 		VkExtent2D size;
+		VkExtent2D pos;
 	};
 
 	/*
