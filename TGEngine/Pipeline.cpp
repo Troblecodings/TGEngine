@@ -65,13 +65,13 @@ namespace Pipeline {
 		VkVertexInputAttributeDescription colorin = {};
 		colorin.binding = 0;
 		colorin.location = 1;
-		colorin.offset = offsetof(Vertex, pos);
+		colorin.offset = offsetof(Vertex, color);
 		colorin.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		VkVertexInputAttributeDescription pos = {};
 		pos.binding = 0;
 		pos.location = 0;
-		pos.offset = offsetof(Vertex, color);
+		pos.offset = offsetof(Vertex, pos);
 		pos.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		vector<VkVertexInputAttributeDescription> atributs = { pos, colorin };

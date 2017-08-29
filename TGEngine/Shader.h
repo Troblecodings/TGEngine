@@ -2,8 +2,7 @@
 
 #include "stdbase.h"
 #include "Debug.h"
-#include "TPointer.h"
-#include <fstream>
+#include "Files.h"
 
 namespace Pipeline {
 
@@ -19,10 +18,12 @@ namespace Pipeline {
 	/*
 	 * Creates a Shader 
 	 */
+	SINCE(0, 0, 6)
 	void createShader(Shader* sh);
 
 	/*
 	* Destroys the Shader
 	*/
+	SINCE(0, 0, 6)
 	void destroyShader(Shader* sh);
 }

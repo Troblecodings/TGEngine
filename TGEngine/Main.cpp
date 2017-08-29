@@ -9,9 +9,12 @@
 #include "RenderPass.h"
 #include "Pipeline.h"
 #include "VertexBuffer.h"
+#include "Files.h"
 
 using namespace std;
 using namespace Pipeline;
+
+bool btest = true;
 
 void initTGEngine() {
 
@@ -23,9 +26,7 @@ void initTGEngine() {
 	};
 
 	Window window = {};
-	window.autosize = false;
-	window.size = { 800,600 };
-	window.pos = { 200, 200 };
+	window.autosize = true;
 	window.title = "title";
 	createWindow(&window);
 
@@ -84,9 +85,9 @@ void initTGEngine() {
 	VertexBuffer buffer = {};
 	buffer.device = &main_device;
 	vector<Vertex> vertecies = {
-		{ { 0.0f, -0.5f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
-		{ { 0.5f, 0.5f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-		{ { -0.5f, 0.5f, 0.0f, 0.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } }
+		{ { 0.0f, -0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
+		{ { 0.5f, 0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+		{ { -0.5f, 0.5f, 0.0f, 1.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } }
 	};
 	buffer.vertecies = &vertecies;
 	createVertexBuffer(&buffer);
@@ -110,13 +111,7 @@ void initTGEngine() {
 
 	cout << "Loaded pipeline" << endl;
 
-	/*
-	 * 
-	 * ===================================================================
-	 * FFS THIS AREA IS DEPRECATED
-	 * ===================================================================
-	 *
-	 */
+	DEPRECATED
 
 	while (true) {
 		//Window
@@ -179,13 +174,7 @@ void initTGEngine() {
 		handel(vkQueuePresentKHR(*swapchain.queue, &present_info));
 	}
 
-	/*
-	 *
-	 * ===================================================================
-	 * DEPRECTAION MARK END
-	 * ===================================================================
-	 *
-	 */
+	END_DEPRECATED
 
 	destroyPipeline(&line);
 
@@ -205,8 +194,12 @@ void initTGEngine() {
 	destroyWindow(&window);
 }
 
+void test() {
+
+}
+
 int main()
 {
-	initTGEngine();
+	if (btest) test(); else initTGEngine();
 	return 0;
 }

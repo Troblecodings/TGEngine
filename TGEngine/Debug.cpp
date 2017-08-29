@@ -4,6 +4,7 @@
 
 using namespace std;
 
+DEPRECATED
 void printFeatures(VkPhysicalDeviceFeatures device_features) {
 	cout << endl << "-------------------------------------------" << endl << endl;
 	cout << "Features: " << endl << endl;
@@ -65,6 +66,7 @@ void printFeatures(VkPhysicalDeviceFeatures device_features) {
 	cout << endl << "-------------------------------------------" << endl << endl;
 }
 
+DEPRECATED
 void debugLayerAndExtensions() {
 	uint32_t layer_count = 0;
 	vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
@@ -125,7 +127,7 @@ void debugLayerAndExtensions() {
 	cout << endl;
 }
 
-
+DEPRECATED
 void printTime() {
 	time_t tim;
 	time(&tim);

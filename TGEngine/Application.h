@@ -20,10 +20,12 @@ namespace Pipeline {
 	/*
 	 * Creates an Application
 	 */
+	SINCE(0, 0, 6)
 	void createApplication(Application* app);
 
 	/*
 	 * Destroys the Application
 	 */
+	SINCE(0, 0, 6)
 	void destroyApplictaion(Application* app);
 }

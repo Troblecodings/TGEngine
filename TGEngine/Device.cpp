@@ -7,12 +7,12 @@ namespace Pipeline {
 	using namespace std;
 
 	void createDevice(Device* dev) {
-		uint32_t div_cou = 0;
-		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_cou, nullptr));
+		uint32_t div_count = 0;
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_count, nullptr));
 
-		dev->physical_devices.resize(div_cou);
+		dev->physical_devices.resize(div_count);
 
-		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_cou, dev->physical_devices.data()));
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_count, dev->physical_devices.data()));
 
 		uint32_t device_in_array = -1;
 		uint32_t max_tex_size = 0;
@@ -21,7 +21,7 @@ namespace Pipeline {
 		 * Auto graphic card detection in beta state
 		 */
 
-		for (int i = 0; i < div_cou; i++) {
+		for (int i = 0; i < div_count; i++) {
 			cout << "Found ";
 			VkPhysicalDeviceProperties* cprops = new VkPhysicalDeviceProperties;
 			vkGetPhysicalDeviceProperties(dev->physical_devices[i], cprops);

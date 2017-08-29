@@ -21,11 +21,13 @@ namespace Pipeline {
 	/*
 	 * Creates a Swapchain
 	 */
+	SINCE(0, 0, 6)
 	void createSwapchain(Swapchain* chain);
 
 	/*
 	 * Destroys the Swapchain
 	 */
+	SINCE(0, 0, 6)
 	void destroySwapchain(Swapchain* chain);
 
 }

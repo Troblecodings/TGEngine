@@ -69,6 +69,12 @@
     <ClInclude Include="VertexBuffer.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Files.h">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="Annotations.h">
+      <Filter>Headerdateien\TBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -104,6 +110,9 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Files.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertexshader.glsl">
@@ -120,5 +129,10 @@
     <Text Include="fragmentshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Properties.xml">
+      <Filter>Ressourcendateien</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

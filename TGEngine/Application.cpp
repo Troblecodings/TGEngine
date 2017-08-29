@@ -13,7 +13,7 @@ namespace Pipeline {
 		appInfo.pApplicationName = app->window->title;
 		appInfo.applicationVersion = app->version;
 		appInfo.pEngineName = "TGEngine";
-		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 5);
+		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 6);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
 
 		vector<VkLayerProperties> lay_props;

@@ -156,6 +156,8 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="Files.h" />
+    <ClInclude Include="Annotations.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Shader.h" />
@@ -172,6 +174,7 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="Files.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
@@ -183,6 +186,9 @@
     <None Include="frag.spv" />
     <None Include="vert.spv" />
     <None Include="vertexshader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Properties.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

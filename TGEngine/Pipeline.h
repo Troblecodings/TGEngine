@@ -28,10 +28,12 @@ namespace Pipeline {
 	/*
 	 * Creates a Pipeline
 	 */
+	SINCE(0, 0, 6)
 	void createPipeline(Pipe* pipeline);
 
 	/*
 	 * Destroys the Pipeline
 	 */
+	SINCE(0, 0, 6)
 	void destroyPipeline(Pipe* pipeline);
 }

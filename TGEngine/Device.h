@@ -26,10 +26,12 @@ namespace Pipeline {
 	/*
 	 * Creates a Device
 	 */
+	SINCE(0, 0, 6)
 	void createDevice(Device* dev);
 
 	/*
 	 * Destroys the Device
 	 */
+	SINCE(0, 0, 6)
 	void destroyDevice(Device* dev);
 }

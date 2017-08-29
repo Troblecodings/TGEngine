@@ -5,18 +5,12 @@ namespace Pipeline {
 	using namespace std;
 
 	void createShader(Shader* sh) {
-		ifstream inputstream(sh->name, ios::binary | ios::ate);
-		size_t size_of_file = inputstream.tellg();
-		vector<char> binary_file;
-		binary_file.resize(size_of_file);
-		inputstream.seekg(0);
-		inputstream.read(binary_file.data(), size_of_file);
-		inputstream.close();
+		vector<char> buffer = nio::getBinarys(sh->name);
 
 		VkShaderModuleCreateInfo shader_creatinfo = {};
 		shader_creatinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		shader_creatinfo.codeSize = size_of_file;
-		shader_creatinfo.pCode = (uint32_t*)binary_file.data();
+		shader_creatinfo.codeSize = buffer.size();
+		shader_creatinfo.pCode = (uint32_t*)buffer.data();
 
 		sh->module = new VkShaderModule;
 		handel(vkCreateShaderModule(*(sh->device), &shader_creatinfo, nullptr, sh->module));
