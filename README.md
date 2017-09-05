@@ -17,7 +17,8 @@ I am using [GLFW library](http://www.glfw.org/) and the, in [LunarG' Vulkan-SDK]
 Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/master/LICENSE)
 <br>
 <h4>Library</h4>
-GLFW [License](https://github.com/glfw/glfw/blob/master/LICENSE.md)
+
+GLFW [License](https://github.com/glfw/glfw/blob/master/LICENSE.md) <br>
 Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-Copyright)
 
 
