@@ -159,6 +159,7 @@
     <ClInclude Include="Files.h" />
     <ClInclude Include="Annotations.h" />
     <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="Properties.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Swapchain.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Files.cpp" />
+    <ClCompile Include="Properties.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />

@@ -10,13 +10,16 @@
 #include "Pipeline.h"
 #include "VertexBuffer.h"
 #include "Files.h"
+#include "Properties.h"
 
 using namespace std;
 using namespace Pipeline;
 
-bool btest = true;
 
 void initTGEngine() {
+
+	nio::Properties* buf = new nio::Properties();
+	nio::readProperties("Properties.xml", buf);
 
 	vector<char*> layers = {
 		"VK_LAYER_LUNARG_standard_validation",
@@ -26,8 +29,7 @@ void initTGEngine() {
 	};
 
 	Window window = {};
-	window.autosize = true;
-	window.title = "title";
+	window.properties = buf;
 	createWindow(&window);
 
 	cout << "Loaded window" << endl;
@@ -35,7 +37,7 @@ void initTGEngine() {
 	Application application = {};
 	application.window = &window;
 	application.layers_to_enable = layers;
-	application.version = VK_MAKE_VERSION(0, 0, 1);
+	application.version = buf->getInt("version").rvalue;
 	createApplication(&application);
 
 	cout << "Loaded application" << endl;
@@ -194,12 +196,8 @@ void initTGEngine() {
 	destroyWindow(&window);
 }
 
-void test() {
-
-}
-
 int main()
 {
-	if (btest) test(); else initTGEngine();
+	initTGEngine();
 	return 0;
 }

@@ -75,6 +75,9 @@
     <ClInclude Include="Annotations.h">
       <Filter>Headerdateien\TBase</Filter>
     </ClInclude>
+    <ClInclude Include="Properties.h">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -111,6 +114,9 @@
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Files.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="Properties.cpp">
       <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
   </ItemGroup>

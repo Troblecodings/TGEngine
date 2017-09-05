@@ -1,15 +1,16 @@
 #pragma once
 
 #include "stdbase.h"
+#include "Properties.h"
 
 namespace Pipeline {
 
 	struct Window {
-		bool autosize;
 		char* title;
-		GLFWwindow* window;
+		nio::Properties* properties;
 		VkExtent2D size;
 		VkExtent2D pos;
+		GLFWwindow* window;
 	};
 
 	/*

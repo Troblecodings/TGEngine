@@ -1,1 +1,16 @@
-<boolean name="" value=""/>
+<xml>
+  <app>
+    <string name="app_name" value="TEngine Demo"/>
+    <int name="version" value="1"/>
+  </app>
+  <window>
+    <boolean name="fullscreen" value="true"/>
+    <!--Will be ignored if fullscreen is true-->
+    <int name="height" value="800"/>
+    <int name="width" value="400"/>
+    <boolean name="center" value="false"/>
+    <int name="posx" value="500" />
+    <int name="posy" value="200" />
+    <!--Ignore end-->>
+  </window>
+</xml>
