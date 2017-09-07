@@ -1,6 +1,0 @@
-### GLSlang
-
-## Shader
-
-# Vertex Shader
-
