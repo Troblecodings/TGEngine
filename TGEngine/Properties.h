@@ -65,15 +65,15 @@ namespace nio {
 	};
 
 	/*
-	 * Reads a Property File in XML-Style
-	 *  Example XML:
-	 *  <xml>
-     *    <boolean name="testboolean" value="true"/>
-	 *    <string name="teststring" value="test"/>
-	 *    <int name="testint" value="15"/>
-	 *    <float name="testfloat" value="5.4"/>
-     *  </xml>
-	 */
+	* Reads a Property File in XML-Style
+	*  Example XML:
+	*  <xml>
+	*    <boolean name="testboolean" value="true"/>
+	*    <string name="teststring" value="test"/>
+	*    <int name="testint" value="15"/>
+	*    <float name="testfloat" value="5.4"/>
+	*  </xml>
+	*/
 	SINCE(0, 0, 7)
 	void readProperties(char* path, Properties* prop);
 }

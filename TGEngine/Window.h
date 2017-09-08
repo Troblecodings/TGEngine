@@ -2,6 +2,7 @@
 
 #include "stdbase.h"
 #include "Properties.h"
+#include "Debug.h"
 
 namespace Pipeline {
 

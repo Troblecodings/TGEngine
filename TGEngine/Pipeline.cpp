@@ -32,7 +32,7 @@ namespace Pipeline {
 		VkPipelineColorBlendAttachmentState state;
 		state.blendEnable = VK_TRUE;
 		state.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-		state.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+		state.dstColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
 		state.colorBlendOp = VK_BLEND_OP_ADD;
 		state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
@@ -160,57 +160,40 @@ namespace Pipeline {
 		VkCommandBufferBeginInfo command_begin_info = {};
 		command_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		command_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		command_begin_info.pInheritanceInfo = nullptr;
 
 		for (size_t i = 0; i < pipeline->command_buffer->size(); i++)
 		{
-			VkCommandBuffer buffer = pipeline->command_buffer->data()[i];
-
-			handel(vkBeginCommandBuffer(buffer, &command_begin_info));
+			handel(vkBeginCommandBuffer((*pipeline->command_buffer)[i], &command_begin_info));
 
 			VkRenderPassBeginInfo begin_render_pass = {};
 			begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			begin_render_pass.renderPass = *pipeline->render_pass->render_pass;
-			begin_render_pass.framebuffer = pipeline->frame_buffer->data()[i];
+			begin_render_pass.framebuffer = (*pipeline->frame_buffer)[i];
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { };
-			clear_color.color = { 1,1,1, 1 };
+			clear_color.color = { 1, 1, 1, 1 };
 
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
 
-			vkCmdBeginRenderPass(buffer, &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass((*pipeline->command_buffer)[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
+			vkCmdBindPipeline((*pipeline->command_buffer)[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
 
-			vector<VkBuffer> vertexbuffers = { *pipeline->buffer->buffer };
-			vector<VkDeviceSize> offsets = { 0 };
-			vkCmdBindVertexBuffers(buffer, 0, vertexbuffers.size(), vertexbuffers.data(), offsets.data());
+			VkDeviceSize size[] = { 0 };
+			vkCmdBindVertexBuffers((*pipeline->command_buffer)[i], 0, 1, pipeline->buffer->buffer, size);
 
-			vkCmdDraw(buffer, pipeline->buffer->vertecies->size(), 1, 0, 0);
+			vkCmdDraw((*pipeline->command_buffer)[i], pipeline->buffer->vertecies->size(), 1, 0, 0);
 
-			vkCmdEndRenderPass(buffer);
+			vkCmdEndRenderPass((*pipeline->command_buffer)[i]);
 
-			handel(vkEndCommandBuffer(buffer));
+			handel(vkEndCommandBuffer((*pipeline->command_buffer)[i]));
 		}
-
-		VkSemaphoreCreateInfo semaphore_create_info = {};
-		semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-		semaphore_create_info.flags = 0;
-		semaphore_create_info.pNext = nullptr;
-
-		pipeline->available = new VkSemaphore;
-		pipeline->end = new VkSemaphore;
-		handel(vkCreateSemaphore(*pipeline->device->device, &semaphore_create_info, nullptr, pipeline->available));
-		handel(vkCreateSemaphore(*pipeline->device->device, &semaphore_create_info, nullptr, pipeline->end));
 	}
 
 	void destroyPipeline(Pipe* pipeline) {
-		vkDeviceWaitIdle(*pipeline->device->device);
-
-		vkDestroySemaphore(*pipeline->device->device, *pipeline->end, nullptr);
-		vkDestroySemaphore(*pipeline->device->device, *pipeline->available, nullptr);
-
 		vkFreeCommandBuffers(*pipeline->device->device, *pipeline->command_pool, pipeline->command_buffer->size(), pipeline->command_buffer->data());
 
 		vkDestroyCommandPool(*pipeline->device->device, *pipeline->command_pool, nullptr);

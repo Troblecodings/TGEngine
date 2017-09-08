@@ -4,6 +4,12 @@
 #include <time.h>
 #include <chrono>
 
+SINCE(0, 0, 7)
+#define printExtend(x) cout << "width:" << x.width << " height:" << x.height << endl; 
+
+SINCE(0, 0, 7)
+#define printOffset(v) cout << "x:" << v.x << " y:" << v.y << endl; 
+
 /* 
  * Prints each feature of the prameter VkPhysicalDeviceFeatures device_features
  */

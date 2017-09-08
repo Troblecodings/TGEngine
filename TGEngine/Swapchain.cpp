@@ -55,10 +55,10 @@ namespace Pipeline {
 			imview_create_info.image = image_array[d];
 			imview_create_info.format = chain->device->prefered_format;
 			imview_create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			imview_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-			imview_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-			imview_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-			imview_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+			imview_create_info.components.r = VK_COMPONENT_SWIZZLE_R;
+			imview_create_info.components.g = VK_COMPONENT_SWIZZLE_G;
+			imview_create_info.components.b = VK_COMPONENT_SWIZZLE_B;
+			imview_create_info.components.a = VK_COMPONENT_SWIZZLE_A;
 			imview_create_info.subresourceRange = range;
 
 			handel(vkCreateImageView(*chain->device->device, &imview_create_info, nullptr, &(chain->image_view_swapchain[d])));

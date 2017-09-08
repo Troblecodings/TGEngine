@@ -7,12 +7,13 @@ namespace Pipeline {
 	using namespace std;
 
 	void createDevice(Device* dev) {
-		uint32_t div_count = 0;
-		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_count, nullptr));
+		uint32_t query_count = 0;
 
-		dev->physical_devices.resize(div_count);
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &query_count, nullptr));
 
-		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &div_count, dev->physical_devices.data()));
+		dev->physical_devices.resize(query_count);
+
+		handel(vkEnumeratePhysicalDevices(*dev->app->instance, &query_count, dev->physical_devices.data()));
 
 		uint32_t device_in_array = -1;
 		uint32_t max_tex_size = 0;
@@ -21,7 +22,7 @@ namespace Pipeline {
 		 * Auto graphic card detection in beta state
 		 */
 
-		for (int i = 0; i < div_count; i++) {
+		for (int i = 0; i < query_count; i++) {
 			cout << "Found ";
 			VkPhysicalDeviceProperties* cprops = new VkPhysicalDeviceProperties;
 			vkGetPhysicalDeviceProperties(dev->physical_devices[i], cprops);
@@ -72,15 +73,14 @@ namespace Pipeline {
 		dev->khr_capabilities = new VkSurfaceCapabilitiesKHR;
 		handel(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, dev->khr_capabilities));
 
-		uint32_t suf_form_cout = 0;
-		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, nullptr));
+		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &query_count, nullptr));
 
-		vector<VkSurfaceFormatKHR> formats(suf_form_cout);
-		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &suf_form_cout, formats.data()));
+		vector<VkSurfaceFormatKHR> formats(query_count);
+		handel(vkGetPhysicalDeviceSurfaceFormatsKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &query_count, formats.data()));
 
 		bool validformat = false;
 
-		for (size_t foc = 0; foc < suf_form_cout; foc++)
+		for (size_t foc = 0; foc < query_count; foc++)
 		{
 			if ((validformat = (formats[foc].format == dev->prefered_format))) {
 				dev->color_space = formats[foc].colorSpace;
@@ -91,15 +91,14 @@ namespace Pipeline {
 			error("Format not Valid", -2);
 		}
 
-		uint32_t Present_mode_count = 0;
-		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, nullptr));
+		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &query_count, nullptr));
 
-		vector<VkPresentModeKHR> khr_present_mode(Present_mode_count);
-		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &Present_mode_count, khr_present_mode.data()));
+		vector<VkPresentModeKHR> khr_present_mode(query_count);
+		handel(vkGetPhysicalDeviceSurfacePresentModesKHR(*dev->currentPhysicalDevice, *dev->app->KHR, &query_count, khr_present_mode.data()));
 
 		bool ismodevalid = false;
 
-		for (size_t prm = 0; prm < Present_mode_count; prm++)
+		for (size_t prm = 0; prm < query_count; prm++)
 		{
 			if ((ismodevalid = (khr_present_mode[prm] == dev->present_mode)))break;
 		}
@@ -112,10 +111,9 @@ namespace Pipeline {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 
-		uint32_t extcout = 0;
-		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, nullptr));
-		vector<VkExtensionProperties> current_valid_ext(extcout);
-		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &extcout, current_valid_ext.data()));
+		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &query_count, nullptr));
+		vector<VkExtensionProperties> current_valid_ext(query_count);
+		handel(vkEnumerateDeviceExtensionProperties(*dev->currentPhysicalDevice, nullptr, &query_count, current_valid_ext.data()));
 
 		int vc = 0;
 
@@ -124,12 +122,13 @@ namespace Pipeline {
 		for (size_t gh = 0; gh < extlays.size(); gh++)
 		{
 			string point = extlays[gh];
-			for (size_t cf = 0; cf < extcout; cf++)
+			for (size_t cf = 0; cf < query_count; cf++)
 			{
 				string name = current_valid_ext[cf].extensionName;
-				if (name == point) {
+				if (name.compare(point) == 0) {
 					val_ext.resize(vc + 1);
 					val_ext[vc] = extlays[gh];
+					cout << "Added " << name << endl;
 					vc++;
 					break;
 				}
@@ -163,6 +162,8 @@ namespace Pipeline {
 
 		if (dev->queuFamalieindex < 0 || dev->queueCount <= 0)error("No valide queue family found or queue count 0", -7);
 
+		if(glfwGetPhysicalDevicePresentationSupport(*dev->app->instance, *dev->currentPhysicalDevice, dev->queuFamalieindex) == GLFW_FALSE) error("Device/ Queue Famalie not valide for GLFW", -10);
+
 		VkDeviceQueueCreateInfo queue_create_info = {};
 		queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		queue_create_info.queueFamilyIndex = dev->queuFamalieindex;
@@ -174,14 +175,15 @@ namespace Pipeline {
 		queue_create_info.queueCount = queues.size();
 		queue_create_info.pQueuePriorities = queues.data();
 
-		VkPhysicalDeviceFeatures features = {};
+		dev->features = new VkPhysicalDeviceFeatures;
+		vkGetPhysicalDeviceFeatures(*dev->currentPhysicalDevice, dev->features);
 
 		VkDeviceCreateInfo div_create_info = {};
 		div_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		vector<VkDeviceQueueCreateInfo> queue_create_infos = { queue_create_info };
 		div_create_info.pQueueCreateInfos = queue_create_infos.data();
 		div_create_info.queueCreateInfoCount = queue_create_infos.size();
-		div_create_info.pEnabledFeatures = &features;
+		div_create_info.pEnabledFeatures = dev->features;
 		div_create_info.enabledExtensionCount = val_ext.size();
 		div_create_info.ppEnabledExtensionNames = val_ext.data();
 

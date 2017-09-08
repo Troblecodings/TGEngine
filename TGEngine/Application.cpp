@@ -13,13 +13,13 @@ namespace Pipeline {
 		appInfo.pApplicationName = app->window->title;
 		appInfo.applicationVersion = app->version;
 		appInfo.pEngineName = "TGEngine";
-		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 7);
+		appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 8);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
 
-		vector<VkLayerProperties> lay_props;
 		uint32_t layprop_cou = 0;
 		handel(vkEnumerateInstanceLayerProperties(&layprop_cou, nullptr));
-		lay_props.resize(layprop_cou);
+
+		vector<VkLayerProperties> lay_props(layprop_cou);
 		handel(vkEnumerateInstanceLayerProperties(&layprop_cou, lay_props.data()));
 
 		for (size_t cf = 0; cf < layprop_cou; cf++)
@@ -48,6 +48,7 @@ namespace Pipeline {
 		}
 		uint32_t exten_cout_used = 0;
 		const char** exts = glfwGetRequiredInstanceExtensions(&exten_cout_used);
+		if (exts == nullptr) error("glfw error", -9);
 
 		VkInstanceCreateInfo InscreatInfo = {};
 		InscreatInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

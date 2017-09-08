@@ -8,8 +8,8 @@ namespace Pipeline {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-
+		glfwWindowHint(GLFW_DECORATED, window->properties->getBoolean("decorated").rvalue);
+		if (glfwVulkanSupported() == GLFW_FALSE) error("GLFW No Vulkan Support", -8);
 		/*
 		 * TODO Find best Monitor
 		 * and make it selectable via @Properties

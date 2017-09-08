@@ -19,8 +19,6 @@ namespace Pipeline {
 		VkPipeline* pipeline;
 		Device* device;
 		RenderPass* render_pass;
-		VkSemaphore* available;
-		VkSemaphore* end;
 		Swapchain* swapchain;
 		VertexBuffer* buffer;
 	};

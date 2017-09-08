@@ -54,9 +54,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="TOSC.h">
-      <Filter>Headerdateien\TBase</Filter>
-    </ClInclude>
     <ClInclude Include="RenderPass.h">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>

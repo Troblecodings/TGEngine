@@ -11,6 +11,7 @@ namespace Pipeline {
 		VkFormat prefered_format;
 		VkPresentModeKHR present_mode;
 		VkPhysicalDeviceProperties* property;
+		VkPhysicalDeviceFeatures* features;
 		vector<VkPhysicalDevice> physical_devices;
 		VkSurfaceCapabilitiesKHR* khr_capabilities;
 		VkPhysicalDevice* currentPhysicalDevice;
