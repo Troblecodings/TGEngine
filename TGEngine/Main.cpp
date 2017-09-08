@@ -1,6 +1,4 @@
 #include "stdbase.h"
-#include "Console.h"
-#include "Preferences.h"
 #include <fstream>
 #include "Debug.h"
 #include "Device.h"

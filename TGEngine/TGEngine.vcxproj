@@ -179,7 +179,6 @@
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
-    <ClCompile Include="TOSC.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

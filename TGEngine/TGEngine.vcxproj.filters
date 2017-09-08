@@ -98,9 +98,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="TOSC.cpp">
-      <Filter>Quelldateien\TBase</Filter>
-    </ClCompile>
     <ClCompile Include="RenderPass.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
