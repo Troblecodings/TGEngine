@@ -1,4 +1,6 @@
 #version 460
+#debug(on)
+#optimize(off)
 #extension GL_ARB_separate_shader_objects : enable
 
 layout(location = 1)in vec4 colorin;
