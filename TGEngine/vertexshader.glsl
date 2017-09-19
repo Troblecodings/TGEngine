@@ -12,8 +12,7 @@ out gl_PerVertex{
     vec4 gl_Position;
 };
 
-void main() {
-    posout = vec4(pos, 0.0, 1.0);
-    gl_Position = posout;
-	colorout = vec4(colorin);
+void main(){
+    colorout = colorin;
+    gl_Position = pos;
 }

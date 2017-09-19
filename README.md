@@ -25,6 +25,6 @@ Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-C
 <h3>Wanna contribute?</h3>
 
 Everyone is welcome to help in development!<br>
-I am thankfull for every improvment, addition or fix.
+I am thankful for every improvment, addition or fix.
 
-Additional Information can be found [here](https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md)
+Additional information can be found [here](https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md)
