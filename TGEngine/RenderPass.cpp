@@ -39,7 +39,7 @@ namespace Pipeline {
 		subpass_desc.pColorAttachments = &reference_att;
 
 		VkSubpassDependency subpass = {};
-		subpass.srcSubpass = VK_SUBPASS_EXTERNAL;
+		subpass.srcSubpass = 0;
 		subpass.dstSubpass = 0;
 		subpass.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		subpass.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;

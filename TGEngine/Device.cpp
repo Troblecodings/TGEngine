@@ -155,7 +155,7 @@ namespace Pipeline {
 			if ((prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
 				dev->queuFamalieindex = i;
 				dev->queueCount = prop.queueCount;
-				cout << "Found valide" << endl;
+				cout << "Found valide " << i << endl;
 				break;
 			}
 		}

@@ -13,7 +13,7 @@ namespace Pipeline {
 		pipl_multisample.alphaToOneEnable = VK_FALSE;
 		pipl_multisample.minSampleShading = 1;
 		pipl_multisample.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-		pipl_multisample.sampleShadingEnable = VK_FALSE;
+		pipl_multisample.sampleShadingEnable = VK_TRUE;
 		pipl_multisample.pSampleMask = nullptr;
 
 		VkPipelineRasterizationStateCreateInfo rastera_info = {};
@@ -32,10 +32,10 @@ namespace Pipeline {
 		VkPipelineColorBlendAttachmentState state;
 		state.blendEnable = VK_TRUE;
 		state.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-		state.dstColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+		state.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
 		state.colorBlendOp = VK_BLEND_OP_ADD;
 		state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		state.alphaBlendOp = VK_BLEND_OP_ADD;
 		state.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
@@ -63,20 +63,20 @@ namespace Pipeline {
 		vert_inp_info.pVertexBindingDescriptions = bindings.data();
 
 		VkVertexInputAttributeDescription colorin = {};
-		colorin.binding = 0;
+		colorin.binding = binding.binding;
 		colorin.location = 1;
 		colorin.offset = offsetof(Vertex, color);
 		colorin.format = VK_FORMAT_R32G32B32A32_SFLOAT;
 
-		VkVertexInputAttributeDescription pos = {};
-		pos.binding = 0;
-		pos.location = 0;
-		pos.offset = offsetof(Vertex, pos);
-		pos.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+		VkVertexInputAttributeDescription posd = {};
+		posd.binding = binding.binding;
+		posd.location = 0;
+		posd.offset = offsetof(Vertex, pos);
+		posd.format = VK_FORMAT_R32G32_SFLOAT;
 
-		vector<VkVertexInputAttributeDescription> atributs = { pos, colorin };
-		vert_inp_info.vertexAttributeDescriptionCount = atributs.size();
-		vert_inp_info.pVertexAttributeDescriptions = atributs.data();
+		vector<VkVertexInputAttributeDescription> attributs = { posd, colorin };
+		vert_inp_info.vertexAttributeDescriptionCount = attributs.size();
+		vert_inp_info.pVertexAttributeDescriptions = attributs.data();
 
 		VkPipelineInputAssemblyStateCreateInfo in_asm_info = {};
 		in_asm_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -92,7 +92,8 @@ namespace Pipeline {
 		viewport.minDepth = 0.0f;
 
 		VkRect2D rect;
-		rect.offset = { 0,0 };
+		rect.offset.x = 0;
+		rect.offset.y = 0;
 		rect.extent = pipeline->window->size;
 
 		VkPipelineViewportStateCreateInfo viewport_create_info = {};
@@ -102,10 +103,20 @@ namespace Pipeline {
 		viewport_create_info.scissorCount = 1;
 		viewport_create_info.viewportCount = 1;
 
+		vector<VkPipelineShaderStageCreateInfo> data(pipeline->shader.size());
+		for (size_t i = 0; i < data.size(); i++)
+		{
+			data[i] = {};
+			data[i].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			data[i].pName = "main";
+			data[i].stage = pipeline->shader.data()[i]->bits;
+			data[i].module = *pipeline->shader.data()[i]->module;
+		}
+
 		VkGraphicsPipelineCreateInfo pipline_create_info = {};
 		pipline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipline_create_info.stageCount = pipeline->shader->size();
-		pipline_create_info.pStages = pipeline->shader->data();
+		pipline_create_info.stageCount = data.size();
+		pipline_create_info.pStages = data.data();
 		pipline_create_info.pVertexInputState = &vert_inp_info;
 		pipline_create_info.pInputAssemblyState = &in_asm_info;
 		pipline_create_info.pTessellationState = nullptr;
@@ -129,11 +140,16 @@ namespace Pipeline {
 		pipeline->frame_buffer->resize(pipeline->swapchain->image_count);
 		for (size_t i = 0; i < pipeline->swapchain->image_count; i++)
 		{
+			VkImageView attachments[] = {
+				pipeline->swapchain->image_view_swapchain[i] 
+			};
+
+
 			VkFramebufferCreateInfo framebuffer_create_info = {};
 			framebuffer_create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			framebuffer_create_info.renderPass = *pipeline->render_pass->render_pass;
 			framebuffer_create_info.attachmentCount = 1;
-			framebuffer_create_info.pAttachments = &pipeline->swapchain->image_view_swapchain[i];
+			framebuffer_create_info.pAttachments = attachments;
 			framebuffer_create_info.width = pipeline->window->size.width;
 			framebuffer_create_info.height = pipeline->window->size.height;
 			framebuffer_create_info.layers = 1;
@@ -169,11 +185,11 @@ namespace Pipeline {
 			VkRenderPassBeginInfo begin_render_pass = {};
 			begin_render_pass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			begin_render_pass.renderPass = *pipeline->render_pass->render_pass;
-			begin_render_pass.framebuffer = (*pipeline->frame_buffer)[i];
+			begin_render_pass.framebuffer = pipeline->frame_buffer->data()[i];
 			begin_render_pass.renderArea = rect;
 
 			VkClearValue clear_color = { };
-			clear_color.color = { 1, 1, 1, 1 };
+			clear_color.color = { 0, 1, 1, 1 };
 
 			begin_render_pass.clearValueCount = 1;
 			begin_render_pass.pClearValues = &clear_color;
@@ -181,6 +197,10 @@ namespace Pipeline {
 			vkCmdBeginRenderPass((*pipeline->command_buffer)[i], &begin_render_pass, VK_SUBPASS_CONTENTS_INLINE);
 
 			vkCmdBindPipeline((*pipeline->command_buffer)[i], VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline->pipeline);
+
+			vkCmdSetViewport((*pipeline->command_buffer)[i], 0, 1, &viewport);
+
+			vkCmdSetScissor((*pipeline->command_buffer)[i], 0, 1, &rect);
 
 			VkDeviceSize size[] = { 0 };
 			vkCmdBindVertexBuffers((*pipeline->command_buffer)[i], 0, 1, pipeline->buffer->buffer, size);

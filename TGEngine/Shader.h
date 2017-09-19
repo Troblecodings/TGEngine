@@ -10,7 +10,6 @@ namespace Pipeline {
 		char* name;
 		VkShaderModule* module;
 		VkDevice* device;
-		VkPipelineShaderStageCreateInfo createInfo;
 		VkShaderStageFlagBits bits;
 		VkAllocationCallbacks* allocator;
 	};

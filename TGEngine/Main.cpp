@@ -85,9 +85,9 @@ void initTGEngine() {
 	VertexBuffer buffer = {};
 	buffer.device = &main_device;
 	vector<Vertex> vertecies = {
-		{ { 0.0f, -0.5f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
-		{ { 0.5f, 0.5f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-		{ { -0.5f, 0.5f, 1.0f, 1.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } }
+		{ { 0.0f, -0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
+		{ { 0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+		{ { -0.5f, 0.5f },{ 1.0f, 0.0f, 0.0f, 1.0f } }
 	};
 	buffer.vertecies = &vertecies;
 	createVertexBuffer(&buffer);
@@ -98,10 +98,10 @@ void initTGEngine() {
 
 	cout << "Fill vertex buffer" << endl;
 
-	vector<VkPipelineShaderStageCreateInfo> infos = { vertex_shader.createInfo, fragment_shader.createInfo };
+	vector<Shader*> infos = { &vertex_shader, &fragment_shader };
 
 	Pipe line = {};
-	line.shader = &infos;
+	line.shader = infos;
 	line.device = &main_device;
 	line.window = &window;
 	line.render_pass = &render_pass;

@@ -6,12 +6,13 @@
 #include "Swapchain.h"
 #include "Vertex.h"
 #include "VertexBuffer.h"
+#include "Shader.h"
 
 namespace Pipeline {
 
 	struct Pipe
 	{
-		std::vector<VkPipelineShaderStageCreateInfo>* shader;
+		std::vector<Shader*> shader;
 		std::vector<VkFramebuffer>* frame_buffer;
 		std::vector<VkCommandBuffer>* command_buffer;
 		VkCommandPool* command_pool;
