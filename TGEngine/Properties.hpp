@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdbase.h"
+#include "TGEngine.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -10,13 +10,13 @@ namespace nio {
 
 	using namespace std;
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	enum TagType
 	{
 		BOOLEAN, INT, FLOAT, STRING, NaN
 	};
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	struct Tag
 	{
 		TagType type = STRING;
@@ -26,7 +26,7 @@ namespace nio {
 		Tag(char* iname, char* ivalue);
 	};
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	struct BooleanTag : Tag
 	{
 		bool rvalue;
@@ -34,7 +34,7 @@ namespace nio {
 		BooleanTag(char* iname, char* ivalue);
 	};
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	struct IntTag : Tag
 	{
 		int rvalue;
@@ -42,7 +42,7 @@ namespace nio {
 		IntTag(char* iname, char* ivalue);
 	};
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	struct FloatTag : Tag
 	{
 		float rvalue;
@@ -50,7 +50,7 @@ namespace nio {
 		FloatTag(char* iname, char* ivalue);
 	};
 
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	struct Properties
 	{
 		vector<Tag> strings;
@@ -74,6 +74,6 @@ namespace nio {
 	*    <float name="testfloat" value="5.4"/>
 	*  </xml>
 	*/
-	SINCE(0, 0, 7)
+	SINCE(0, 0, 1)
 	void readProperties(char* path, Properties* prop);
 }

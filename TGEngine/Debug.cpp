@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Debug.h"
+#include "Debug.hpp"
 
 using namespace std;
 
@@ -138,14 +138,6 @@ void printTime() {
 
 void printVersion(int version) {
 	cout << VK_VERSION_MAJOR(version) << "." << VK_VERSION_MINOR(version) << "." << VK_VERSION_PATCH(version);
-}
-
-void handel(VkResult result) {
-	if (result != VK_SUCCESS) {
-		cout << "FAILED WITH ERROR: " << result << endl;
-		_sleep(100000);
-		exit(result);
-	}
 }
 
 void error(char* errorname, int errorcode) {
