@@ -152,24 +152,28 @@ namespace nio {
 		for each (BooleanTag val in this->bools) {
 			if (string(val.name).compare(name) == 0)return val;
 		}
+		return BooleanTag("", false);
 	}
 
 	Tag Properties::getString(char* name) {
 		for each (Tag val in this->strings) {
 			if (string(val.name).compare(name) == 0)return val;
 		}
+		return Tag("", "");
 	}
 
 	IntTag Properties::getInt(char* name) {
 		for each (IntTag val in this->ints) {
 			if (string(val.name).compare(name) == 0)return val;
 		}
+		return IntTag("", 0);
 	}
 
 	FloatTag Properties::getFloat(char* name) {
 		for each (FloatTag val in this->floats) {
 			if (string(val.name).compare(name) == 0)return val;
 		}
+		return FloatTag("", 0);
 	}
 
 }

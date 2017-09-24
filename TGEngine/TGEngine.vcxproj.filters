@@ -54,6 +54,9 @@
     <ClInclude Include="Instance.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Window.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -74,10 +77,18 @@
     <ClCompile Include="Instance.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Properties.xml">
       <Filter>Ressourcendateien</Filter>
     </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Layers.txt">
+      <Filter>Ressourcendateien</Filter>
+    </Text>
   </ItemGroup>
 </Project>

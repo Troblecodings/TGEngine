@@ -19,6 +19,6 @@ SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
 std::cout << "FAILED WITH ERROR: " << result << std::endl;\
-std::this_thread::yield();\
+_sleep(10000);\
 exit(result);\
 }

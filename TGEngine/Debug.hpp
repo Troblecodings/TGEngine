@@ -39,5 +39,8 @@ SINCE(0, 0, 1)
 void error(char* errorname, int errorcode);
 
 SINCE(0, 0, 1)
+void ErrorCallback(int, const char* err_str);
+
+SINCE(0, 0, 1)
 DEPRECATED
 void debugLayerAndExtensions();
