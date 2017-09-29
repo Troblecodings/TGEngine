@@ -6,8 +6,9 @@ static nio::Properties properties;
 void initTGEngine() {
 	nio::readProperties("Properties.xml", &properties);
 	createWindow(properties);
-	createInstance(properties, { "VK_LAYER_LUNARG_parameter_validation" }, { });
+	createInstance(properties, { "VK_LAYER_LUNARG_standard_validation" }, { });
 	createWindowSurface();
+	createDevice({}, {});
 
 	while (true) {
 		glfwPollEvents();
@@ -16,6 +17,7 @@ void initTGEngine() {
 		}
 	}
 
+	destroyDevice();
 	destroyWindow();
 	destroyInstance();
 }

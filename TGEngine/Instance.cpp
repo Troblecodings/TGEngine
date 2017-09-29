@@ -35,6 +35,15 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 				}
 			}
 		}
+		layers_to_enable.clear();
+		usable_layers.clear();
+	}
+
+	//Check for Vulkan Support in GLFW
+	if (!glfwVulkanSupported()) {
+		std::cout << "Vulkan not supported in GLFW make sure you installed everything correctly!" << std::endl;
+		_sleep(10000);
+		exit(-1);
 	}
 
 	//Query GLFW extensions
@@ -63,6 +72,8 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 				}
 			}
 		}
+		extensions_to_enable.clear();
+		usable_extensions.clear();
 	}
 	
 	VkInstanceCreateInfo instance_create_info = {

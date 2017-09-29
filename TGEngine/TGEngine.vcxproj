@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Debug.hpp" />
+    <ClInclude Include="Device.hpp" />
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
     <ClInclude Include="Instance.hpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Properties.cpp" />

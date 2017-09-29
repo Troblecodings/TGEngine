@@ -2,3 +2,4 @@
 
 #include "Instance.hpp"
 #include "Window.hpp"
+#include "Device.hpp"
