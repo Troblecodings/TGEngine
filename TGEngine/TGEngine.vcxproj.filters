@@ -60,6 +60,12 @@
     <ClInclude Include="Device.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPass.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -84,6 +90,12 @@
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Device.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipe.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>

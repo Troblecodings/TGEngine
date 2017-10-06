@@ -1,6 +1,13 @@
 #pragma once
 
-#include "TGEngine.hpp"
+#include <stdio.h>
+#include <iostream>
+#include <vulkan\vulkan.h>
+#include <GLFW\glfw3.h>
+#include <vector>
+#include <string>
+#include "Annotations.hpp"
+#include <thread>
 #include <iostream>
 #include <vector>
 #include <fstream>

@@ -8,6 +8,9 @@
 #include <string>
 #include "Annotations.hpp"
 #include <thread>
+#include "Properties.hpp"
+
+extern nio::Properties properties;
 
 SINCE(0, 0, 1)
 void initTGEngine();

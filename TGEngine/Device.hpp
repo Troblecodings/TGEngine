@@ -9,6 +9,8 @@ extern VkQueueFamilyProperties queue_family;
 extern uint32_t queue_index;
 extern VkDevice device;
 
+SINCE(0, 0, 1)
 void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> layers_to_enable);
 
+SINCE(0, 0, 1)
 void destroyDevice();

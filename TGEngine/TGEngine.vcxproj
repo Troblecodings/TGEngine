@@ -155,8 +155,10 @@
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
     <ClInclude Include="Instance.hpp" />
+    <ClInclude Include="Pipe.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="Properties.hpp" />
+    <ClInclude Include="RenderPass.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
@@ -165,7 +167,9 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Properties.cpp" />
+    <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="Window.cpp" />
