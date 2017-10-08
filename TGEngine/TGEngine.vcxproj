@@ -159,7 +159,9 @@
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="Properties.hpp" />
     <ClInclude Include="RenderPass.hpp" />
+    <ClInclude Include="Shader.hpp" />
     <ClInclude Include="TGEngine.hpp" />
+    <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +172,7 @@
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Properties.cpp" />
     <ClCompile Include="RenderPass.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="Window.cpp" />
