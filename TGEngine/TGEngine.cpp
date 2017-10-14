@@ -10,6 +10,11 @@ void initTGEngine() {
 	createWindowSurface();
 	createDevice({}, {});
 	createRenderpass();
+	createShader("vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	createShader("frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32_SFLOAT);
+	createPipeline();
 
 	while (true) {
 		glfwPollEvents();
@@ -17,7 +22,8 @@ void initTGEngine() {
 			break;
 		}
 	}
-
+	destroyPipeline();
+	destroyShaders();
 	destroyRenderPass();
 	destroyDevice();
 	destroyWindow();

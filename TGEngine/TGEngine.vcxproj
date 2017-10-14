@@ -185,6 +185,12 @@
   <ItemGroup>
     <Text Include="Layers.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="frag.spv" />
+    <None Include="fragmentshader.glsl" />
+    <None Include="vert.spv" />
+    <None Include="vertexshader.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

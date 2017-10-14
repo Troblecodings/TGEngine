@@ -15,3 +15,6 @@ extern VkRect2D scissor;
 
 SINCE(0, 0, 1)
 void createPipeline();
+
+SINCE(0, 0, 1)
+void destroyPipeline();

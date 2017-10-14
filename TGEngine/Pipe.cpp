@@ -7,12 +7,12 @@ VkRect2D scissor;
 
 void createPipeline() {
 	viewport = {
-		0,
-		0,
-		width,
-		height,
-		0,
-		1
+		0.0F,
+		0.0F,
+		static_cast<float>(width),
+		static_cast<float>(height),
+		0.0F,
+		1.0F
 	};
 
 	scissor = {
@@ -89,9 +89,9 @@ void createPipeline() {
 		VK_CULL_MODE_FRONT_AND_BACK,
 		VK_FRONT_FACE_CLOCKWISE,
 	    VK_FALSE,
-	    1,
-	    1,
-	    1,
+	    0,
+	    0,
+	    0,
 	    1
 	};
 
@@ -99,12 +99,38 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
-	rasterizationSamples,
-	sampleShadingEnable,
-	minSampleShading,
-	pSampleMask,
-	alphaToCoverageEnable,
-	alphaToOneEnable
+	    VK_SAMPLE_COUNT_1_BIT,
+	    VK_FALSE,
+	    0,
+	    0,
+	    VK_FALSE,
+	    VK_FALSE
+	};
+
+	VkPipelineDepthStencilStateCreateInfo pDepthStencilState = {
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+	    nullptr,
+	    0,
+	    VK_FALSE,
+	    VK_FALSE,
+	    VK_COMPARE_OP_NEVER,
+	    VK_FALSE,
+	    VK_FALSE,
+		{},
+		{},
+	    0.0F,
+	    1.0F
+	};
+
+	VkPipelineColorBlendStateCreateInfo pColorBlendState = {
+		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+	    nullptr,
+	    0,
+	    VK_FALSE,
+		VK_LOGIC_OP_NO_OP,
+	    0,
+	    nullptr,
+		{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
 	};
 
 	VkGraphicsPipelineCreateInfo graphics_pipeline_create_info = {
@@ -119,8 +145,8 @@ void createPipeline() {
 	    &pViewportState,
 	    &pRasterizationState,
 	    &pMultisampleState,
-	pDepthStencilState,
-	pColorBlendState,
+	    &pDepthStencilState,
+	    &pColorBlendState,
 	    nullptr,
 	    layout,
 	    render_pass,
@@ -130,4 +156,9 @@ void createPipeline() {
 	};
 	last_result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &graphics_pipeline_create_info, nullptr, &pipeline);
 	HANDEL(last_result);
+}
+
+void destroyPipeline() {
+	vkDestroyPipelineLayout(device, layout, nullptr);
+	vkDestroyPipeline(device, pipeline, nullptr);
 }

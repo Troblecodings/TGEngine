@@ -118,4 +118,18 @@
       <Filter>Ressourcendateien</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="vertexshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="fragmentshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="frag.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="vert.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+  </ItemGroup>
 </Project>

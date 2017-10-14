@@ -16,7 +16,7 @@ void createShader(char* shader, VkShaderStageFlagBits flag) {
 	last_result = vkCreateShaderModule(device, &info, nullptr, &shader_module);
 	HANDEL(last_result)
 	size_t size = shaders.size();
-	shaders.resize(size);
+	shaders.resize(size + 1);
 	shaders[size] = {
 		VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 		nullptr,
@@ -30,11 +30,17 @@ void createShader(char* shader, VkShaderStageFlagBits flag) {
 
 void createShaderInput(uint32_t location, uint32_t offset, VkFormat format) {
 	size_t size = description_attributes.size();
-	description_attributes.resize(size);
+	description_attributes.resize(size + 1);
 	description_attributes[size] = {
 		location,
 		0,
 		format,
 		offset
 	};
+}
+
+void destroyShaders() {
+	for (VkPipelineShaderStageCreateInfo stage_info : shaders) {
+		vkDestroyShaderModule(device, stage_info.module, nullptr);
+	}
 }
