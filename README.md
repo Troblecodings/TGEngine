@@ -27,4 +27,6 @@ Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-C
 Everyone is welcome to help in development!<br>
 I am thankful for every improvment, addition or fix.
 
+[Code of Conduct](https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md)
+
 Additional information can be found [here](https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md)
