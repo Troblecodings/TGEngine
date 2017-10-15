@@ -11,6 +11,7 @@
 #include "Properties.hpp"
 
 extern nio::Properties properties;
+extern uint32_t image_count;
 
 SINCE(0, 0, 1)
 void initTGEngine();

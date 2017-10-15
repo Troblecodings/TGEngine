@@ -1,7 +1,9 @@
 #include "TGEngine.hpp"
 #include "Pipeline.hpp"
+#include "Draw.hpp"
 
 nio::Properties properties;
+uint32_t image_count;
 
 void initTGEngine() {
 	nio::readProperties("Properties.xml", &properties);
@@ -21,7 +23,9 @@ void initTGEngine() {
 		if (glfwWindowShouldClose(window)) {
 			break;
 		}
+		draw();
 	}
+
 	destroyPipeline();
 	destroyShaders();
 	destroyRenderPass();

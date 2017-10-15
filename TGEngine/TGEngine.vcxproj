@@ -150,29 +150,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Debug.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
+    <ClInclude Include="Framebuffer.hpp" />
     <ClInclude Include="Instance.hpp" />
     <ClInclude Include="Pipe.hpp" />
     <ClInclude Include="Pipeline.hpp" />
+    <ClInclude Include="Draw.hpp" />
     <ClInclude Include="Properties.hpp" />
     <ClInclude Include="RenderPass.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Files.cpp" />
+    <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Properties.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="Window.cpp" />

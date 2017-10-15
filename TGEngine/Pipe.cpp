@@ -6,6 +6,8 @@ VkViewport viewport;
 VkRect2D scissor;
 
 void createPipeline() {
+
+    //Viewport and so on
 	viewport = {
 		0.0F,
 		0.0F,
@@ -26,6 +28,17 @@ void createPipeline() {
 	    }
 	};
 
+	VkPipelineViewportStateCreateInfo pViewportState = {
+		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		1,
+		&viewport,
+		1,
+		&scissor
+	};
+
+	//Pipeline Layout
 	VkPipelineLayoutCreateInfo layout_info = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 		nullptr,
@@ -38,6 +51,7 @@ void createPipeline() {
 	last_result = vkCreatePipelineLayout(device, &layout_info, nullptr, &layout);
 	HANDEL(last_result);
 
+	// Vertex binding
 	VkVertexInputBindingDescription vertex_buffer_binding = {
 		0,
 		sizeof(Vertex),
@@ -54,6 +68,7 @@ void createPipeline() {
 		description_attributes.data()
 	};
 
+	//Assembly state
 	VkPipelineInputAssemblyStateCreateInfo pInputAssemblyState = {
 		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 	    nullptr,
@@ -62,6 +77,7 @@ void createPipeline() {
 	    VK_FALSE
 	};
 
+	//Tessellation
 	VkPipelineTessellationStateCreateInfo pTessellationState = {
 		VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
 	    nullptr,
@@ -69,16 +85,7 @@ void createPipeline() {
 	    1
 	}; 
 
-	VkPipelineViewportStateCreateInfo pViewportState = {
-		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-	    nullptr,
-	    0,
-	    1,
-	    &viewport,
-	    1,
-	    &scissor
-	};
-
+	//Rasterization
 	VkPipelineRasterizationStateCreateInfo pRasterizationState = {
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 	    nullptr,
@@ -95,6 +102,7 @@ void createPipeline() {
 	    1
 	};
 
+	//Multisample
 	VkPipelineMultisampleStateCreateInfo pMultisampleState = {
 		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
 	    nullptr,
@@ -107,6 +115,7 @@ void createPipeline() {
 	    VK_FALSE
 	};
 
+	//Depth
 	VkPipelineDepthStencilStateCreateInfo pDepthStencilState = {
 		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
 	    nullptr,
@@ -122,6 +131,7 @@ void createPipeline() {
 	    1.0F
 	};
 
+	//Color blend
 	VkPipelineColorBlendStateCreateInfo pColorBlendState = {
 		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
 	    nullptr,
@@ -133,6 +143,7 @@ void createPipeline() {
 		{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
 	};
 
+	//Pipeline
 	VkGraphicsPipelineCreateInfo graphics_pipeline_create_info = {
 		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 	    nullptr,

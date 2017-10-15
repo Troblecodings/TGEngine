@@ -8,6 +8,7 @@
 extern uint32_t x, y, width, height;
 extern GLFWmonitor* monitor;
 extern GLFWwindow* window;
+extern VkSurfaceKHR surface;
 
 /*
  * Creates a window based on the properties

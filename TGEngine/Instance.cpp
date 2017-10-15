@@ -12,7 +12,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 		propertys.getString("app_name").value,
 		propertys.getInt("version").rvalue,
 	    "TGEngine",
-	    VK_MAKE_VERSION(0,0,1),
+	    VK_MAKE_VERSION(0, 0, 1),
 		VK_API_VERSION_1_0
 	};
 
@@ -76,6 +76,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 		usable_extensions.clear();
 	}
 	
+	//Create Instance
 	VkInstanceCreateInfo instance_create_info = {
 		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 	    nullptr,

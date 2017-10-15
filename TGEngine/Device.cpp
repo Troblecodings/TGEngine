@@ -5,6 +5,7 @@ VkPhysicalDeviceProperties device_properties;
 VkDevice device;
 VkQueueFamilyProperties queue_family;
 uint32_t queue_index;
+VkQueue queue;
 
 void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> layers_to_enable) {
 
@@ -61,6 +62,8 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		priorities.data(),
 	};
 
+	uint32_t size = 0;
+
 	//Validation for the device layers
 	std::vector<const char*> enable_layer;
 	if (layers_to_enable.size() > 0) {
@@ -72,7 +75,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		for each(VkLayerProperties layer in usable_layers) {
 			for each(const char* name in layers_to_enable) {
 				if (std::string(layer.layerName).compare(name) == 0) {
-					uint32_t size = enable_layer.size();
+					size = enable_layer.size();
 					enable_layer.resize(size + 1);
 					enable_layer[size] = name;
 					break;
@@ -82,6 +85,10 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		layers_to_enable.clear();
 		usable_layers.clear();
 	}
+
+	size = extensions_to_enable.size();
+	extensions_to_enable.resize(size + 1);
+	extensions_to_enable[size] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
 	//Validation for the device extensions
 	std::vector<const char*> enable_extensions;
@@ -94,7 +101,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		for each(VkExtensionProperties extension in usable_extensions) {
 			for each(const char* name in extensions_to_enable) {
 				if (std::string(extension.extensionName).compare(name) == 0) {
-					uint32_t size = enable_extensions.size();
+					size = enable_extensions.size();
 					enable_extensions.resize(size + 1);
 					enable_extensions[size] = name;
 					break;
@@ -121,6 +128,9 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 
 	last_result = vkCreateDevice(used_physical_device, &device_create_info, nullptr, &device);
 	HANDEL(last_result)
+
+	//Get queue
+	vkGetDeviceQueue(device, queue_index, 0, &queue);
 }
 
 void destroyDevice() {

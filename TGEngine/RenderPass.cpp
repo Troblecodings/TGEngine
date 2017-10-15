@@ -3,6 +3,7 @@
 VkRenderPass render_pass;
 
 void createRenderpass() {
+	//Attachment
 	VkAttachmentDescription attachment_description = {
 		0,
 	    VK_FORMAT_B8G8R8A8_UNORM,
@@ -15,6 +16,7 @@ void createRenderpass() {
 	    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 	};
 
+	//Subpass
 	VkSubpassDescription subpass_description = {
 		0,
 	    VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -38,6 +40,7 @@ void createRenderpass() {
 	    0,
 	};
 
+	//Renderpass
 	VkRenderPassCreateInfo render_pass_create_info = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 	    nullptr,
