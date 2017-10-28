@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Device.hpp"
+#include "PrePipeline.hpp"
 
 extern VkRenderPass render_pass;
 

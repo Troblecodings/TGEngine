@@ -13,10 +13,14 @@ void createWindow(nio::Properties properties) {
 	getMonitor();
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-	if (properties.getBoolean("fullscreen").rvalue) {
+	glfwWindowHint(GLFW_DECORATED, properties.getBoolean("decorated").rvalue);
+	bool fullscreen = properties.getBoolean("fullscreen").rvalue;
+	if (fullscreen) {
 		glfwWindowHint(GLFW_DECORATED, VK_FALSE);
 		width = mode->width;
 		height = mode->height;
+		x = mode->width / 2 - width / 2;
+		y = mode->height / 2 - height / 2;
 	}
 	else if (properties.getBoolean("center").rvalue) {
 		height = properties.getInt("height").rvalue;
@@ -30,7 +34,9 @@ void createWindow(nio::Properties properties) {
 		x = properties.getInt("posx").rvalue;
 		y = properties.getInt("posy").rvalue;
 	}
-	window = glfwCreateWindow(width, height, properties.getString("app_name").value, monitor, nullptr);
+	window = glfwCreateWindow(width, height, properties.getString("app_name").value, 
+		fullscreen ? monitor:nullptr
+		, nullptr);
 	glfwSetWindowPos(window, x, y);
 }
 

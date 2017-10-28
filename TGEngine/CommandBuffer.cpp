@@ -38,13 +38,14 @@ void fillCommandBuffer() {
 		}
 	};
 
+	size_t count = 0;
 	for (VkCommandBuffer buffer : command_buffers) {
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
 			nullptr,
 			render_pass,
 			0,
-			frame_buffer,
+			frame_buffer[count],
 			VK_FALSE,
 			0,
 			0
@@ -63,7 +64,7 @@ void fillCommandBuffer() {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 		    nullptr,
 		    render_pass,
-		    frame_buffer,
+		    frame_buffer[count],
 			{
 				0,
 				0,
@@ -75,5 +76,24 @@ void fillCommandBuffer() {
 		};
 
 		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+		
+		vkCmdSetViewport(buffer, 0, 1, &viewport);
+
+		vkCmdSetScissor(buffer, 0, 1, &scissor);
+
+		vkCmdDraw(buffer, 3, 1, 0, 0);
+
+		vkCmdEndRenderPass(buffer);
+
+		vkEndCommandBuffer(buffer);
+
+		count++;
 	}
+}
+
+void destroyCommandBuffer() {
+	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
+	vkDestroyCommandPool(device, command_pool, nullptr);
 }

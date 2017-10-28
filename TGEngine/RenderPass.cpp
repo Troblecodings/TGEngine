@@ -6,7 +6,7 @@ void createRenderpass() {
 	//Attachment
 	VkAttachmentDescription attachment_description = {
 		0,
-	    VK_FORMAT_B8G8R8A8_UNORM,
+	    used_format.format,
 		VK_SAMPLE_COUNT_1_BIT,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 	    VK_ATTACHMENT_STORE_OP_DONT_CARE,

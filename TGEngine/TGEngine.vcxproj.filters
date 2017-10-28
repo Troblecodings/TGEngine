@@ -84,6 +84,12 @@
     <ClInclude Include="Framebuffer.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="PrePipeline.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -129,6 +135,12 @@
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Framebuffer.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="PrePipeline.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>

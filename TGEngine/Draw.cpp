@@ -26,7 +26,7 @@ void draw() {
 	    &wait_semaphore,
 		((VkPipelineStageFlags*) VK_PIPELINE_STAGE_ALL_COMMANDS_BIT),
 	    1,
-		&command_buffer,
+		&command_buffers[*image_index],
 	    1,
 	    &signal_semaphore
 	};
@@ -47,4 +47,12 @@ void draw() {
 
 	last_result = vkQueuePresentKHR(queue, &present_info);
 	HANDEL(last_result)
+}
+
+void destroySemaphores() {
+	last_result = vkDeviceWaitIdle(device);
+	HANDEL(last_result)
+
+	vkDestroySemaphore(device, wait_semaphore, nullptr);
+	vkDestroySemaphore(device, signal_semaphore, nullptr);
 }

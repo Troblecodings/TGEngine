@@ -7,12 +7,12 @@
     <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
-    <int name="height" value="800"/>
-    <int name="width" value="400"/>
+    <int name="height" value="600"/>
+    <int name="width" value="600"/>
     <boolean name="center" value="true"/>
     <!--Will be ignored if center is true-->
-    <int name="posx" value="500" />
-    <int name="posy" value="200" />
+    <int name="posx" value="0" />
+    <int name="posy" value="0" />
     <!--Ignore end-->>
   </window>
 </xml>

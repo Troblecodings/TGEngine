@@ -3,13 +3,14 @@
 VkSwapchainKHR swapchain;
 
 void createSwapchain() {
+
 	VkSwapchainCreateInfoKHR swapchain_create_info = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 	    nullptr,
 	    0,
 	    surface,
 	    image_count,
-	    VK_FORMAT_B8G8R8A8_UNORM,
+	    used_format.format,
 		VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
 		{
 			width,
@@ -22,7 +23,7 @@ void createSwapchain() {
 		{ &queue_index },
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
 	    VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-	    VK_PRESENT_MODE_MAILBOX_KHR,
+	    used_present_mode,
 	    VK_FALSE,
 	    VK_NULL_HANDLE
 	};

@@ -12,3 +12,6 @@ void draw();
 
 SINCE(0, 0, 1)
 void createSemaphores();
+
+SINCE(0, 0, 1)
+void destroySemaphores();

@@ -6,6 +6,7 @@ VkDevice device;
 VkQueueFamilyProperties queue_family;
 uint32_t queue_index;
 VkQueue queue;
+VkPhysicalDeviceMemoryProperties memory_properties;
 
 void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> layers_to_enable) {
 
@@ -131,6 +132,18 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 
 	//Get queue
 	vkGetDeviceQueue(device, queue_index, 0, &queue);
+
+	VkBool32 isSupported;
+	last_result = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, surface, &isSupported);
+	HANDEL(last_result)
+
+	if (!isSupported) {
+		std::cerr << "Swapchain not Supported with surface" << std::endl;
+		_sleep(1000000);
+		exit(-1000);
+	}
+
+	vkGetPhysicalDeviceMemoryProperties(used_physical_device, &memory_properties);
 }
 
 void destroyDevice() {

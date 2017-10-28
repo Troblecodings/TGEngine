@@ -160,12 +160,14 @@
     <ClInclude Include="Pipe.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="Draw.hpp" />
+    <ClInclude Include="PrePipeline.hpp" />
     <ClInclude Include="Properties.hpp" />
     <ClInclude Include="RenderPass.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Vertex.hpp" />
+    <ClInclude Include="VertexBuffer.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,12 +179,14 @@
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PrePipeline.cpp" />
     <ClCompile Include="Properties.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
