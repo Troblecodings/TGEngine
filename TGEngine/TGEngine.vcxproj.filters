@@ -31,6 +31,12 @@
     <Filter Include="Headerdateien\TStorage">
       <UniqueIdentifier>{a140e7d1-d274-4c7c-b816-2635858404dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Math">
+      <UniqueIdentifier>{cb121666-aba2-454f-96b0-a97292f7e893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Math">
+      <UniqueIdentifier>{1b5db89a-7b3d-4750-af67-7e2b661acca1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Annotations.hpp">
@@ -69,9 +75,6 @@
     <ClInclude Include="Shader.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Draw.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
@@ -90,6 +93,12 @@
     <ClInclude Include="VertexBuffer.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Math.hpp">
+      <Filter>Headerdateien\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.hpp">
+      <Filter>Headerdateien\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -102,9 +111,6 @@
       <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
     <ClCompile Include="TGEngine.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Test.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Instance.cpp">
@@ -142,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Quelldateien\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

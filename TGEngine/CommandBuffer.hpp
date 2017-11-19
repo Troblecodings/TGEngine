@@ -4,6 +4,7 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Framebuffer.hpp"
+#include "VertexBuffer.hpp"
 #include "Pipe.hpp"
 
 extern VkCommandPool command_pool;

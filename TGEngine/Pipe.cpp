@@ -93,12 +93,12 @@ void createPipeline() {
 	    VK_FALSE,
 	    VK_FALSE,
 	    VK_POLYGON_MODE_FILL,
-		VK_CULL_MODE_FRONT_AND_BACK,
+		VK_CULL_MODE_BACK_BIT,
 		VK_FRONT_FACE_CLOCKWISE,
 	    VK_FALSE,
+	    1,
 	    0,
-	    0,
-	    0,
+	    1,
 	    1
 	};
 
@@ -109,37 +109,32 @@ void createPipeline() {
 	    0,
 	    VK_SAMPLE_COUNT_1_BIT,
 	    VK_FALSE,
-	    0,
-	    0,
+	    1.0F,
+	    nullptr,
 	    VK_FALSE,
 	    VK_FALSE
 	};
 
-	//Depth
-	VkPipelineDepthStencilStateCreateInfo pDepthStencilState = {
-		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-	    nullptr,
-	    0,
-	    VK_FALSE,
-	    VK_FALSE,
-	    VK_COMPARE_OP_NEVER,
-	    VK_FALSE,
-	    VK_FALSE,
-		{},
-		{},
-	    0.0F,
-	    1.0F
+	//Color blend
+	VkPipelineColorBlendAttachmentState color_blend_state = {
+		VK_FALSE,
+		VK_BLEND_FACTOR_ONE,
+		VK_BLEND_FACTOR_ZERO,
+		VK_BLEND_OP_ADD,
+		VK_BLEND_FACTOR_ONE,
+		VK_BLEND_FACTOR_ZERO,
+		VK_BLEND_OP_ADD,
+		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
 	};
 
-	//Color blend
 	VkPipelineColorBlendStateCreateInfo pColorBlendState = {
 		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
 	    VK_FALSE,
 		VK_LOGIC_OP_NO_OP,
-	    0,
-	    nullptr,
+	    1,
+		&color_blend_state,
 		{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
 	};
 
@@ -156,7 +151,7 @@ void createPipeline() {
 	    &pViewportState,
 	    &pRasterizationState,
 	    &pMultisampleState,
-	    &pDepthStencilState,
+	    nullptr,
 	    &pColorBlendState,
 	    nullptr,
 	    layout,

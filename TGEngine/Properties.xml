@@ -6,7 +6,7 @@
   <window>
     <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
-    <boolean name="decorated" value="true" />
+    <boolean name="decorated" value="false" />
     <int name="height" value="600"/>
     <int name="width" value="600"/>
     <boolean name="center" value="true"/>

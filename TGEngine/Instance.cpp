@@ -31,6 +31,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 					uint32_t size = enable_layer.size();
 					enable_layer.resize(size + 1);
 					enable_layer[size] = name;
+					OUT_LV_DEBUG(name)
 					break;
 				}
 			}
@@ -68,6 +69,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 					uint32_t size = enable_extensions.size();
 					enable_extensions.resize(size + 1);
 					enable_extensions[size] = name;
+					OUT_LV_DEBUG(name)
 					break;
 				}
 			}

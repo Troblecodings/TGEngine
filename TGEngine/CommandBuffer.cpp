@@ -78,12 +78,13 @@ void fillCommandBuffer() {
 		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-		
-		vkCmdSetViewport(buffer, 0, 1, &viewport);
 
-		vkCmdSetScissor(buffer, 0, 1, &scissor);
+		VkBuffer vertexBuffers[] = { vertex_buffer };
+		VkDeviceSize offsets[] = { 0 };
 
-		vkCmdDraw(buffer, 3, 1, 0, 0);
+		vkCmdBindVertexBuffers(buffer, 0, 1, vertexBuffers, offsets);
+
+		vkCmdDraw(buffer, vertex_count, 1, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 

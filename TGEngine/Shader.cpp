@@ -11,7 +11,7 @@ void createShader(char* shader, VkShaderStageFlagBits flag) {
 		nullptr,
 		0,
 		binarys.size(),
-		(uint32_t*)binarys.data()
+		reinterpret_cast<const uint32_t*>(binarys.data())
 	};
 	last_result = vkCreateShaderModule(device, &info, nullptr, &shader_module);
 	HANDEL(last_result)

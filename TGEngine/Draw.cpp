@@ -2,7 +2,8 @@
 
 VkSemaphore wait_semaphore;
 VkSemaphore signal_semaphore;
-uint32_t* image_index;
+uint32_t image_index;
+std::vector<VkPipelineStageFlags> stage_flags = {VK_PIPELINE_STAGE_ALL_COMMANDS_BIT};
 
 void createSemaphores() {
 	VkSemaphoreCreateInfo semaphore_create_info = {
@@ -16,23 +17,23 @@ void createSemaphores() {
 }
 
 void draw() {
-	last_result = vkAcquireNextImageKHR(device, surface, 1000000, wait_semaphore, VK_NULL_HANDLE, image_index);
-	HANDEL(last_result)
+	last_result = vkAcquireNextImageKHR(device, swapchain, 1000000, wait_semaphore, VK_NULL_HANDLE, &image_index);
+	HANDEL_RECREATE(last_result)
 
 	VkSubmitInfo submit_info = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
 	    nullptr,
 	    1,
 	    &wait_semaphore,
-		((VkPipelineStageFlags*) VK_PIPELINE_STAGE_ALL_COMMANDS_BIT),
+		stage_flags.data(),
 	    1,
-		&command_buffers[*image_index],
+		&command_buffers[image_index],
 	    1,
 	    &signal_semaphore
 	};
 
 	last_result = vkQueueSubmit(queue, 1, &submit_info, VK_NULL_HANDLE);
-	HANDEL(last_result)
+	HANDEL_RECREATE(last_result)
 
 	VkPresentInfoKHR present_info = {
 		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -41,12 +42,12 @@ void draw() {
 		&signal_semaphore,
 	    1,
 	    &swapchain,
-		image_index,
+		&image_index,
 	    nullptr
 	};
 
 	last_result = vkQueuePresentKHR(queue, &present_info);
-	HANDEL(last_result)
+	HANDEL_RECREATE(last_result);
 }
 
 void destroySemaphores() {
