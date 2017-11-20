@@ -7,7 +7,6 @@
 #include "CommandBuffer.hpp"
 
 SINCE(0, 0, 1)
-UNFINISHED
 void draw();
 
 SINCE(0, 0, 1)

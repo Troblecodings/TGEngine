@@ -155,6 +155,9 @@
     <ClCompile Include="Editor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Properties.xml">
@@ -179,5 +182,28 @@
     <None Include="vert.spv">
       <Filter>Ressourcendateien</Filter>
     </None>
+    <None Include="ObjLoader.hpp">
+      <Filter>Headerdateien\TStorage</Filter>
+    </None>
+    <None Include="..\CODE_OF_CONDUCT.md">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="..\CONTRIBUTING.md">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="..\LICENSE">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="text.mtl">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="text.obj">
+      <Filter>Ressourcendateien</Filter>
+    </Object>
   </ItemGroup>
 </Project>

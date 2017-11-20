@@ -180,6 +180,7 @@
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Math.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PrePipeline.cpp" />
     <ClCompile Include="Properties.cpp" />
@@ -194,16 +195,49 @@
   <ItemGroup>
     <Xml Include="Properties.xml">
       <SubType>Designer</SubType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Layers.txt" />
+    <Text Include="Layers.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.spv" />
-    <None Include="fragmentshader.glsl" />
-    <None Include="vert.spv" />
-    <None Include="vertexshader.glsl" />
+    <None Include="..\CODE_OF_CONDUCT.md">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\CONTRIBUTING.md">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\LICENSE">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\README.md">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="frag.spv">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="fragmentshader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="ObjLoader.hpp" />
+    <None Include="text.mtl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="vert.spv">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="vertexshader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="text.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <SubType>Designer</SubType>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

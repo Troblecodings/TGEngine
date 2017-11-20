@@ -6,7 +6,7 @@ uint32_t vertex_count;
 
 void createVertexBuffer(std::vector<Vertex> vertecies) {
 	vertex_count = vertecies.size();
-	
+
 	VkBufferCreateInfo vertex_buffer_create_info = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	    nullptr,

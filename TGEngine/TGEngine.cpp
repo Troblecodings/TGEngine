@@ -1,6 +1,7 @@
 #include "TGEngine.hpp"
 #include "Pipeline.hpp"
 #include "Draw.hpp"
+#include "ObjLoader.hpp"
 #include <cstddef>
 
 nio::Properties properties;
@@ -29,20 +30,12 @@ void initTGEngine() {
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
-	createVertexBuffer({ 
-		{
-			{ 0.0f, -0.5f },
-			{ 1.0f, 0.0f, 0.0f }
-        },
-		{
-			{ 0.5f, 0.5f },
-			{ 0.0f, 1.0f, 0.0f }
-		},
-		{
-			{ -0.5f, 0.5f },
-			{ 0.0f, 0.0f, 1.0f }
-		}
-	});
+
+	vector<Vertex> vrt = {};
+
+
+
+	createVertexBuffer(vrt);
 	createCommandBuffer();
 	fillCommandBuffer();
 	createSemaphores();

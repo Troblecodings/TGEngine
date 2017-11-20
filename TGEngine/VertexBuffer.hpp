@@ -10,7 +10,7 @@ extern VkDeviceMemory device_memory;
 extern uint32_t vertex_count;
 
 SINCE(0, 0, 1)
-void createVertexBuffer(std::vector<Vertex> vertecies);
+void createVertexBuffer(std::vector<Vertex> vt);
 
 SINCE(0, 0, 1)
 void destroyVertexBuffer();
