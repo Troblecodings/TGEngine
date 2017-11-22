@@ -55,7 +55,7 @@ namespace obj {
 					case obj::VERTEX:
 						size = verticies.size();
 						verticies.resize(size + 1);
-						verticies[size].position = { stof(data[0]),  stof(data[1]) };
+						verticies[size].position = { stof(data[0]),  stof(data[1]), stof(data[2])};
 						verticies[size].color = mat.diffuse[material_index];
 						break;
 					case obj::INDEX:
@@ -142,7 +142,7 @@ namespace obj {
 			}
 			}
 		}
-		uint32_t size = 0;
+		size = 0;
 		for each (std::vector<uint32_t> var in index)
 		{
 			for each (uint32_t var2 in var)

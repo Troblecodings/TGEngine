@@ -3,15 +3,14 @@
 VkBuffer vertex_buffer;
 VkDeviceMemory device_memory;
 uint32_t vertex_count;
+VkMemoryRequirements requirements;
 
-void createVertexBuffer(std::vector<Vertex> vertecies) {
-	vertex_count = vertecies.size();
-
+void createVertexBuffer(uint32_t max_vertex_count) {
 	VkBufferCreateInfo vertex_buffer_create_info = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	    nullptr,
 		0,
-	    sizeof(Vertex) * vertex_count,
+	    sizeof(Vertex) * max_vertex_count,
 	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_SHARING_MODE_EXCLUSIVE,
 	    0,
@@ -21,7 +20,6 @@ void createVertexBuffer(std::vector<Vertex> vertecies) {
 	last_result = vkCreateBuffer(device, &vertex_buffer_create_info, nullptr, &vertex_buffer);
 	HANDEL(last_result)
 
-	VkMemoryRequirements requirements;
 	vkGetBufferMemoryRequirements(device, vertex_buffer, &requirements);
 
 	uint32_t index = 0;
@@ -39,12 +37,15 @@ void createVertexBuffer(std::vector<Vertex> vertecies) {
 
 	last_result = vkBindBufferMemory(device, vertex_buffer, device_memory, 0);
 	HANDEL(last_result)
+}
 
+void fillVertexBuffer(std::vector<Vertex> vertecies) {
+	vertex_count = vertecies.size();
 	void* memory;
 	last_result = vkMapMemory(device, device_memory, 0, requirements.size, 0, &memory);
 	HANDEL(last_result)
 
-	memcpy(memory, vertecies.data(), vertex_buffer_create_info.size);
+	memcpy(memory, vertecies.data(), sizeof(Vertex) * vertecies.size());
 
 	vkUnmapMemory(device, device_memory);
 }

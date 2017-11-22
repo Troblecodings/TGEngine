@@ -9,15 +9,13 @@ uint32_t image_count = 3;
 
 using namespace std;
 
-void initTGEngine() {
+void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
 	createWindow(properties);
 	createInstance(properties, { 
 		"VK_LAYER_LUNARG_standard_validation", 
 		"VK_LAYER_VALVE_steam_overlay", 
-		"VK_LAYER_RENDERDOC_Capture", 
 		"VK_LAYER_NV_optimus",
-		"VK_LAYER_LUNARG_screenshot"
 	}, { });
 	createWindowSurface();
 	createDevice({}, {});
@@ -25,17 +23,16 @@ void initTGEngine() {
 	createRenderpass();
 	createShader("vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	createShader("frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
-	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32_SFLOAT);
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
+    
+	vector<Vertex> vertieces = {};
 
-	vector<Vertex> vrt = {};
-
-
-
-	createVertexBuffer(vrt);
+	createVertexBuffer(5000);
+	fillVertexBuffer(vertieces);
 	createCommandBuffer();
 	fillCommandBuffer();
 	createSemaphores();
@@ -45,7 +42,8 @@ void initTGEngine() {
 		if (glfwWindowShouldClose(window)) {
 			break;
 		}
-		draw();
+		app->drawloop(&vertieces);
+		draw(vertieces);
 	}
 
 	destroySemaphores();

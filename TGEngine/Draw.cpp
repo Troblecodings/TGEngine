@@ -16,9 +16,15 @@ void createSemaphores() {
 	vkCreateSemaphore(device, &semaphore_create_info, nullptr, &signal_semaphore);
 }
 
-void draw() {
+void draw(std::vector<Vertex> vrt) {
 	last_result = vkAcquireNextImageKHR(device, swapchain, 1000000, wait_semaphore, VK_NULL_HANDLE, &image_index);
 	HANDEL_RECREATE(last_result)
+
+	if (vrt.size() != vertex_count) {
+		vkDeviceWaitIdle(device);
+		fillVertexBuffer(vrt);
+		fillCommandBuffer();
+	}
 
 	VkSubmitInfo submit_info = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,

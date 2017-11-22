@@ -10,14 +10,22 @@
 #include <thread>
 #include "Properties.hpp"
 #include "Math.hpp"
+#include "Vertex.hpp"
 
 #define DEBUG
 
 extern nio::Properties properties;
 extern uint32_t image_count;
 
+SINCE(0, 0, 2)
+struct App {
+
+	virtual void drawloop(std::vector<Vertex>* verticies) = 0;
+
+};
+
 SINCE(0, 0, 1)
-void initTGEngine();
+void initTGEngine(App *app);
 
 /*
 * Handels a vulkan error

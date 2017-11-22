@@ -7,7 +7,7 @@
 #include "CommandBuffer.hpp"
 
 SINCE(0, 0, 1)
-void draw();
+void draw(std::vector<Vertex> vrt);
 
 SINCE(0, 0, 1)
 void createSemaphores();

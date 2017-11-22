@@ -1,5 +1,12 @@
-#include "TGEngine.hpp"
+#include "Editor.hpp"
+
 
 void main() {
-	initTGEngine();
+	EditorApp app = {};
+	initTGEngine(&app);
+}
+
+void EditorApp::drawloop(std::vector<Vertex>* verticies)
+{
+	
 }

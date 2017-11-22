@@ -10,7 +10,7 @@ void createCommandBuffer() {
 	VkCommandPoolCreateInfo commmand_pool_create_info = {
 		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 	    nullptr,
-	    0,
+		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
 	    queue_index
 	};
 

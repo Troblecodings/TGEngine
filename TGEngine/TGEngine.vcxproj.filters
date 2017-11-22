@@ -37,6 +37,12 @@
     <Filter Include="Headerdateien\Math">
       <UniqueIdentifier>{1b5db89a-7b3d-4750-af67-7e2b661acca1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Editor">
+      <UniqueIdentifier>{53d3f4fa-814f-46d0-8815-46d846c0c8f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Editor">
+      <UniqueIdentifier>{7eac15b0-1b93-4ea9-a354-4cf9769aed6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Annotations.hpp">
@@ -99,6 +105,9 @@
     <ClInclude Include="Vertex.hpp">
       <Filter>Headerdateien\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Editor.hpp">
+      <Filter>Headerdateien\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -152,11 +161,11 @@
     <ClCompile Include="Math.cpp">
       <Filter>Quelldateien\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ObjLoader.cpp">
       <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Quelldateien\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

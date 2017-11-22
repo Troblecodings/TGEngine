@@ -153,6 +153,7 @@
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Debug.hpp" />
     <ClInclude Include="Device.hpp" />
+    <ClInclude Include="Editor.hpp" />
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
     <ClInclude Include="Framebuffer.hpp" />
