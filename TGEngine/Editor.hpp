@@ -2,6 +2,7 @@
 
 #include "TGEngine.hpp"
 #include "Vertex.hpp"
+#include "DrawLib.hpp"
 
 struct EditorApp : App{
 

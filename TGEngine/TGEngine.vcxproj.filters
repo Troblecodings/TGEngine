@@ -43,6 +43,12 @@
     <Filter Include="Headerdateien\Editor">
       <UniqueIdentifier>{7eac15b0-1b93-4ea9-a354-4cf9769aed6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\DrawLib">
+      <UniqueIdentifier>{7e821fcf-e610-42a9-a4f8-f1848954a03d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\DrawLib">
+      <UniqueIdentifier>{4569ad1b-1342-4eb7-b30d-00d697ef19ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Annotations.hpp">
@@ -108,6 +114,18 @@
     <ClInclude Include="Editor.hpp">
       <Filter>Headerdateien\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="Circle.hpp">
+      <Filter>Headerdateien\DrawLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawLib.hpp">
+      <Filter>Headerdateien\DrawLib</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseDrawLib.hpp">
+      <Filter>Headerdateien\DrawLib</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -166,6 +184,15 @@
     </ClCompile>
     <ClCompile Include="Editor.cpp">
       <Filter>Quelldateien\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>Quelldateien\DrawLib</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseDrawLib.cpp">
+      <Filter>Quelldateien\DrawLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -31,7 +31,7 @@ void initTGEngine(App *app) {
     
 	vector<Vertex> vertieces = {};
 
-	createVertexBuffer(5000);
+	createVertexBuffer(50000);
 	fillVertexBuffer(vertieces);
 	createCommandBuffer();
 	fillCommandBuffer();

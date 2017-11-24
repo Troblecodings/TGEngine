@@ -14,7 +14,7 @@ void createVertexBuffer(uint32_t max_vertex_count) {
 	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_SHARING_MODE_EXCLUSIVE,
 	    0,
-	    nullptr,
+	    nullptr
 	};
 
 	last_result = vkCreateBuffer(device, &vertex_buffer_create_info, nullptr, &vertex_buffer);
