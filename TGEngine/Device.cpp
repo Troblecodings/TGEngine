@@ -42,9 +42,6 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		if ((c_queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
 			queue_index = count;
 			queue_family = c_queue_family;
-			OUT_LV_DEBUG(queue_index)
-			OUT_LV_DEBUG(queue_family.queueFlags)
-			OUT_LV_DEBUG(queue_family.queueCount)
 			break;
 		}
 		count++;

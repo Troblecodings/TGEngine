@@ -12,15 +12,22 @@ void EditorApp::drawloop(std::vector<Vertex>* verticies)
 		drawCircle({
 			{ 0, 0, 0 },
 			{ 1.0F, 0,0 }
-		}, 0.5, 100, verticies);
+		}, 0.5, 360, verticies);
 		drawCircle({
-		    {1,0,0},
-		    {1.0F,0,0}
-	    }, 0.5, 100, verticies);
-
+			{ 1, 0, 0 },
+			{ 0, 0, 1 }
+		}, 0.25, 360, verticies);
 		drawCircle({
-			{ 0,1,0 },
-			{ 1.0F,0,0 }
-		}, 0.5, 100, verticies);
+				{ 0, 1, 0 },
+				{ 0, 1,0 }
+		}, 0.25, 360, verticies);
+		drawCircle({
+			{ -1, 0, 0 },
+			{ 0, 0, 1 }
+		}, 0.25, 360, verticies);
+		drawCircle({
+			{ 0, -1, 0 },
+			{ 0, 1,0 }
+		}, 0.25, 360, verticies);
     }
 }

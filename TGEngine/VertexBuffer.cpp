@@ -39,13 +39,13 @@ void createVertexBuffer(uint32_t max_vertex_count) {
 	HANDEL(last_result)
 }
 
-void fillVertexBuffer(std::vector<Vertex> vertecies) {
-	vertex_count = vertecies.size();
+void fillVertexBuffer(std::vector<Vertex>* vertecies) {
+	vertex_count = vertecies->size();
 	void* memory;
 	last_result = vkMapMemory(device, device_memory, 0, requirements.size, 0, &memory);
 	HANDEL(last_result)
 
-	memcpy(memory, vertecies.data(), sizeof(Vertex) * vertecies.size());
+	memcpy(memory, vertecies->data(), sizeof(Vertex) * vertex_count);
 
 	vkUnmapMemory(device, device_memory);
 }

@@ -13,9 +13,13 @@
 #include "Vertex.hpp"
 
 #define DEBUG
+#define USE_INDEX_BUFFER
 
 extern nio::Properties properties;
 extern uint32_t image_count;
+#ifdef USE_INDEX_BUFFER
+extern std::vector<uint32_t> indicies;
+#endif
 
 SINCE(0, 0, 2)
 struct App {
@@ -28,8 +32,8 @@ SINCE(0, 0, 1)
 void initTGEngine(App *app);
 
 /*
-* Handels a vulkan error
-*/
+ * Handels a vulkan error
+ */
 SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\

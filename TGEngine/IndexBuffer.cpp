@@ -38,13 +38,13 @@ void createIndexBuffer(uint32_t size) {
 	HANDEL(last_result)
 }
 
-void fillIndexBuffer(std::vector<uint32_t> indicies) {
-	index_count = indicies.size();
+void fillIndexBuffer(std::vector<uint32_t>* indicies) {
+	index_count = indicies->size();
 	void* memory;
 	last_result = vkMapMemory(device, index_memory, 0, index_buffer_requirements.size, 0, &memory);
 	HANDEL(last_result)
 
-	memccpy(memory, indicies.data(), 0, sizeof(uint32_t) * indicies.size());
+	memccpy(memory, indicies->data(), 0, sizeof(uint32_t) * index_count);
 
 	vkUnmapMemory(device, index_memory);
 }

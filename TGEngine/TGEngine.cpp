@@ -8,6 +8,9 @@ nio::Properties properties;
 uint32_t image_count = 3;
 
 using namespace std;
+#ifdef USE_INDEX_BUFFER
+vector<uint32_t> indicies = {};
+#endif
 
 void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
@@ -30,9 +33,15 @@ void initTGEngine(App *app) {
 	createFramebuffer();
     
 	vector<Vertex> vertieces = {};
-
 	createVertexBuffer(50000);
-	fillVertexBuffer(vertieces);
+	app->drawloop(&vertieces);
+	fillVertexBuffer(&vertieces);
+
+    #ifdef USE_INDEX_BUFFER
+	createIndexBuffer(50000);
+	fillIndexBuffer(&indicies);
+    #endif 
+
 	createCommandBuffer();
 	fillCommandBuffer();
 	createSemaphores();
@@ -43,7 +52,7 @@ void initTGEngine(App *app) {
 			break;
 		}
 		app->drawloop(&vertieces);
-		draw(vertieces);
+		draw(&vertieces);
 	}
 
 	destroySemaphores();

@@ -5,9 +5,10 @@
 #include "Window.hpp"
 #include "Swapchain.hpp"
 #include "CommandBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 SINCE(0, 0, 1)
-void draw(std::vector<Vertex> vrt);
+void draw(std::vector<Vertex>* vrt);
 
 SINCE(0, 0, 1)
 void createSemaphores();

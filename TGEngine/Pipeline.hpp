@@ -7,3 +7,4 @@
 #include "Pipe.hpp"
 #include "Shader.hpp"
 #include "Swapchain.hpp"
+#include "IndexBuffer.hpp"

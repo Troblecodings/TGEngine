@@ -37,12 +37,6 @@
     <Filter Include="Headerdateien\Math">
       <UniqueIdentifier>{1b5db89a-7b3d-4750-af67-7e2b661acca1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\Editor">
-      <UniqueIdentifier>{53d3f4fa-814f-46d0-8815-46d846c0c8f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Editor">
-      <UniqueIdentifier>{7eac15b0-1b93-4ea9-a354-4cf9769aed6c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headerdateien\DrawLib">
       <UniqueIdentifier>{7e821fcf-e610-42a9-a4f8-f1848954a03d}</UniqueIdentifier>
     </Filter>
@@ -111,9 +105,6 @@
     <ClInclude Include="Vertex.hpp">
       <Filter>Headerdateien\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Editor.hpp">
-      <Filter>Headerdateien\Editor</Filter>
-    </ClInclude>
     <ClInclude Include="Circle.hpp">
       <Filter>Headerdateien\DrawLib</Filter>
     </ClInclude>
@@ -124,6 +115,9 @@
       <Filter>Headerdateien\DrawLib</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
@@ -182,9 +176,6 @@
     <ClCompile Include="ObjLoader.cpp">
       <Filter>Quelldateien\TStorage</Filter>
     </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Quelldateien\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="Circle.cpp">
       <Filter>Quelldateien\DrawLib</Filter>
     </ClCompile>
@@ -194,52 +185,39 @@
     <ClCompile Include="BaseDrawLib.cpp">
       <Filter>Quelldateien\DrawLib</Filter>
     </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="Properties.xml">
-      <Filter>Ressourcendateien</Filter>
-    </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Layers.txt">
-      <Filter>Ressourcendateien</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vertexshader.glsl">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="fragmentshader.glsl">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="frag.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="vert.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="ObjLoader.hpp">
       <Filter>Headerdateien\TStorage</Filter>
     </None>
-    <None Include="..\CODE_OF_CONDUCT.md">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="..\CONTRIBUTING.md">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="..\LICENSE">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="..\README.md">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="text.mtl">
-      <Filter>Ressourcendateien</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="text.obj">
+    <Media Include="frag.spv">
       <Filter>Ressourcendateien</Filter>
-    </Object>
+    </Media>
+    <Media Include="fragmentshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="Layers.txt">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="Properties.xml">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="Shader Compiler.bat">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="text.obj">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="vert.spv">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
+    <Media Include="vertexshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </Media>
   </ItemGroup>
 </Project>

@@ -84,7 +84,11 @@ void fillCommandBuffer() {
 
 		vkCmdBindVertexBuffers(buffer, 0, 1, vertexBuffers, offsets);
 
+        #ifdef USE_INDEX_BUFFER
+		vkCmdDrawIndexed(buffer, indicies.size(), 1, 0, 0, 0);
+        #else
 		vkCmdDraw(buffer, vertex_count, 1, 0, 0);
+        #endif
 
 		vkCmdEndRenderPass(buffer);
 
