@@ -20,9 +20,7 @@ Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/mas
 <br>
 <h4>Library</h4>
 
-GLFW [License](https://github.com/glfw/glfw/blob/master/LICENSE.md) <br>
 Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-Copyright)
-
 
 <h3>Wanna contribute?</h3>
 
