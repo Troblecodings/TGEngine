@@ -1,5 +1,6 @@
 #pragma once
 
+#define DEBUG
 #include "TGEngine.hpp"
 #include "DrawLib.hpp"
 

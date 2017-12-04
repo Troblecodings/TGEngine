@@ -23,7 +23,7 @@
     <ProjectGuid>{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConsoleApplication1</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>TGEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include;D:\Vulkan\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -100,10 +100,10 @@
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;D:\Vulkan\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -116,7 +116,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include;D:\Vulkan\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -126,10 +126,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;D:\Vulkan\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -144,7 +144,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include;D:\Vulkan\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -157,10 +157,10 @@
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;D:\Vulkan\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -175,7 +175,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include;D:\Vulkan\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -187,10 +187,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;D:\Vulkan\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>

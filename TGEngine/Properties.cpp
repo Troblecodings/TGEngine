@@ -7,6 +7,10 @@ namespace nio {
 	void readProperties(char* path, Properties* prop) {
 		ifstream input(path, ios::binary);
 
+		if (!input.is_open()) {
+			std::cout << path << " | Can't open file!" << std::endl;
+		}
+
 		TagType tagtype = NaN;
 
 		char* namebuf;

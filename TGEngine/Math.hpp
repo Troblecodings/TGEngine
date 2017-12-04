@@ -7,16 +7,16 @@
 
 namespace math {
 
-	float max(float val1, float val2);
+	float f_max(float val1, float val2);
 
-	int max(int val1, int val2);
+	int i_max(int val1, int val2);
 
-	float min(float val1, float val2);
+	float f_min(float val1, float val2);
 
-	int min(int val1, int val2);
+	int i_min(int val1, int val2);
 
-	std::uint32_t max(std::uint32_t val1, std::uint32_t val2);
+	std::uint32_t u_max(std::uint32_t val1, std::uint32_t val2);
 
-	std::uint32_t min(std::uint32_t val1, std::uint32_t val2);
+	std::uint32_t u_min(std::uint32_t val1, std::uint32_t val2);
 
 }

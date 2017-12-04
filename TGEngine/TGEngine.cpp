@@ -16,9 +16,11 @@ void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
 	createWindow(properties);
 	createInstance(properties, { 
+        #ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation", 
+        #endif
 		"VK_LAYER_VALVE_steam_overlay", 
-		"VK_LAYER_NV_optimus",
+		"VK_LAYER_NV_optimus"
 	}, { });
 	createWindowSurface();
 	createDevice({}, {});
@@ -34,12 +36,9 @@ void initTGEngine(App *app) {
     
 	vector<Vertex> vertieces = {};
 	createVertexBuffer(50000);
-	app->drawloop(&vertieces);
-	fillVertexBuffer(&vertieces);
 
     #ifdef USE_INDEX_BUFFER
 	createIndexBuffer(50000);
-	fillIndexBuffer(&indicies);
     #endif 
 
 	createCommandBuffer();
@@ -47,8 +46,7 @@ void initTGEngine(App *app) {
 	createSemaphores();
 
 	while (true) {
-		glfwPollEvents();
-		if (glfwWindowShouldClose(window)) {
+		if (window.shouldclose()) {
 			break;
 		}
 		app->drawloop(&vertieces);

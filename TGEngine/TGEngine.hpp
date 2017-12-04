@@ -2,8 +2,10 @@
 
 #include <stdio.h>
 #include <iostream>
+#ifdef _WIN32
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
 #include <vulkan\vulkan.h>
-#include <GLFW\glfw3.h>
 #include <vector>
 #include <string>
 #include "Annotations.hpp"
@@ -11,9 +13,6 @@
 #include "Properties.hpp"
 #include "Math.hpp"
 #include "Vertex.hpp"
-
-#define DEBUG
-#define USE_INDEX_BUFFER
 
 extern nio::Properties properties;
 extern uint32_t image_count;
@@ -38,7 +37,6 @@ SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
 std::cout << "FAILED WITH ERROR: " << result << std::endl;\
-_sleep(10000);\
 exit(result);\
 }
 

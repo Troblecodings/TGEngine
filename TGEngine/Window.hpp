@@ -5,9 +5,27 @@
 #include "Properties.hpp"
 #include "Debug.hpp"
 
-extern uint32_t x, y, width, height;
-extern GLFWmonitor* monitor;
-extern GLFWwindow* window;
+#ifdef _WIN32
+
+#include <Windows.h>
+#include <tchar.h>
+
+struct Window {
+	HWND __impl_window;
+
+	bool shouldclose();
+};
+
+#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
+RECT desktop;\
+GetWindowRect(hDesktop, &desktop);\
+x = desktop.right;\
+y = desktop.bottom;
+
+#endif
+
+extern uint32_t x, y, width, height, d_width, d_height;
+extern Window window;
 extern VkSurfaceKHR surface;
 
 /*

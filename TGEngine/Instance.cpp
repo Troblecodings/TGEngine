@@ -40,20 +40,12 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 		usable_layers.clear();
 	}
 
-	//Check for Vulkan Support in GLFW
-	if (!glfwVulkanSupported()) {
-		std::cout << "Vulkan not supported in GLFW make sure you installed everything correctly!" << std::endl;
-		_sleep(10000);
-		exit(-1);
-	}
-
-	//Query GLFW extensions
-	const char** glfw_extensions = glfwGetRequiredInstanceExtensions(&count);
-	uint32_t size_befor = extensions_to_enable.size();
-	extensions_to_enable.resize(size_befor + count);
-	for(int i = 0; i < count; i ++) {
-		extensions_to_enable[size_befor + i] = glfw_extensions[i];
-	}
+    #ifdef _WIN32
+		count = extensions_to_enable.size();
+	    extensions_to_enable.resize(count + 2);
+		extensions_to_enable[count] = "VK_KHR_surface";
+		extensions_to_enable[count + 1] = "VK_KHR_win32_surface";
+    #endif
 
 	//Validation for the intance extensions
 	std::vector<const char*> enable_extensions;
@@ -63,7 +55,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 		std::vector<VkExtensionProperties> usable_extensions(count);
 		last_result = vkEnumerateInstanceExtensionProperties(nullptr, &count, usable_extensions.data());
 		HANDEL(last_result)
-		for each(VkExtensionProperties extension in usable_extensions) {
+		for each(VkExtensionProperties extension in usable_extensions) {			
 			for each(const char* name in extensions_to_enable) {
 				if (std::string(extension.extensionName).compare(name) == 0) {
 					uint32_t size = enable_extensions.size();
