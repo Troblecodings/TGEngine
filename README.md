@@ -10,8 +10,9 @@ still working on it...
 
 <h3>Libraries</h3>
 
-I am using [GLFW library](http://www.glfw.org/) and the, in [LunarG' Vulkan-SDK](https://vulkan.lunarg.com/sdk/home) intigrated, GLM Library.<br>
-And ofcourse [Vulkan](https://www.khronos.org/vulkan/)
+I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
+<br>
+<b>NOTE:</b> GLFW3 was removed because of linker errors
 
 <h3>License</h3>
 
