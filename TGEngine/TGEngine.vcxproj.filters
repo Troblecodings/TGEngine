@@ -43,6 +43,12 @@
     <Filter Include="Quelldateien\DrawLib">
       <UniqueIdentifier>{4569ad1b-1342-4eb7-b30d-00d697ef19ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Pipeline\Windows">
+      <UniqueIdentifier>{148be9cd-54b9-434e-bcbf-be6e3c7d45d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Pipeline\Windows">
+      <UniqueIdentifier>{21760c1f-5591-48f8-80d2-ba910ab49c10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Annotations.hpp">
@@ -120,6 +126,9 @@
     <ClInclude Include="Memory.hpp">
       <Filter>Headerdateien\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Win32Window.hpp">
+      <Filter>Headerdateien\Pipeline\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -188,16 +197,22 @@
     <ClCompile Include="Memory.cpp">
       <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Win32Window.cpp">
+      <Filter>Quelldateien\Pipeline\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ObjLoader.hpp">
       <Filter>Headerdateien\TStorage</Filter>
     </None>
+    <None Include="frag.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="vert.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="frag.spv">
-      <Filter>Ressourcendateien</Filter>
-    </Media>
     <Media Include="fragmentshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </Media>
@@ -211,9 +226,6 @@
       <Filter>Ressourcendateien</Filter>
     </Media>
     <Media Include="text.obj">
-      <Filter>Ressourcendateien</Filter>
-    </Media>
-    <Media Include="vert.spv">
       <Filter>Ressourcendateien</Filter>
     </Media>
     <Media Include="vertexshader.glsl">

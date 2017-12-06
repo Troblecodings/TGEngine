@@ -3,17 +3,22 @@
 #include "TGEngine.hpp"
 #include "Instance.hpp"
 #include "Properties.hpp"
+#include "Device.hpp"
 #include "Debug.hpp"
+#include <string>
 
 #ifdef _WIN32
 
 #include <Windows.h>
 #include <tchar.h>
+#include "Win32Window.hpp"
 
 struct Window {
 	HWND __impl_window;
 
-	bool shouldclose();
+	void pollevents();
+
+	bool close_request = false;
 };
 
 #define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\

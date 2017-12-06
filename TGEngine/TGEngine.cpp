@@ -17,7 +17,8 @@ void initTGEngine(App *app) {
 	createWindow(properties);
 	createInstance(properties, { 
         #ifdef DEBUG 
-		"VK_LAYER_LUNARG_standard_validation", 
+		"VK_LAYER_LUNARG_standard_validation",
+		"VK_LAYER_RENDERDOC_Capture",
         #endif
 		"VK_LAYER_VALVE_steam_overlay", 
 		"VK_LAYER_NV_optimus"
@@ -46,7 +47,8 @@ void initTGEngine(App *app) {
 	createSemaphores();
 
 	while (true) {
-		if (window.shouldclose()) {
+		window.pollevents();
+		if (window.close_request) {
 			break;
 		}
 		app->drawloop(&vertieces);

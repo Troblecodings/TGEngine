@@ -17,10 +17,10 @@ void createSemaphores() {
 }
 
 void draw(std::vector<Vertex>* vrt) {
-	last_result = vkAcquireNextImageKHR(device, swapchain, 1000000, wait_semaphore, VK_NULL_HANDLE, &image_index);
+	last_result = vkAcquireNextImageKHR(device, swapchain, 100000000, wait_semaphore, VK_NULL_HANDLE, &image_index);
 	HANDEL_RECREATE(last_result)
 
-		if (vrt->size() != vertex_count 
+	if (vrt->size() != vertex_count 
         #ifdef USE_INDEX_BUFFER 
 			|| indicies.size() != index_count
         #endif

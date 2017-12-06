@@ -31,8 +31,14 @@ void createWindow(nio::Properties properties) {
 		y = properties.getInt("posy").rvalue;
 	}
     #ifdef _WIN32
-	window = { CreateWindow(L"STATIC",  (LPCWSTR)properties.getString("app_name").value, 0, x, y, width + 16, height + 39, nullptr, nullptr, GetModuleHandle(nullptr),nullptr) };
+	registerWindowClass();
+	char* ch = properties.getString("app_name").value;
+	const size_t cSize = strlen(ch) + 1;
+	std::wstring wc(cSize, L'#');
+	mbstowcs(&wc[0], ch, cSize);
+	window = { CreateWindowEx(WS_EX_APPWINDOW , WINDOW_HANDLE,  (LPCWCHAR)wc.data(), WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, x, y, width + 16, height + 39, nullptr, nullptr, GetModuleHandle(nullptr),nullptr) };
 	ShowWindow(window.__impl_window, SW_SHOW);
+	UpdateWindow(window.__impl_window);
     #endif
 }
 
@@ -60,12 +66,13 @@ void destroyWindow() {
 	vkDestroySurfaceKHR(instance, surface, nullptr);
 }
 
-bool Window::shouldclose() {
+void Window::pollevents() {
     #ifdef _WIN32
 	MSG msg;
-	PeekMessage(&msg, this->__impl_window, 0, 0, PM_REMOVE);
-	return msg.message == WM_QUIT || msg.message == WM_CLOSE;
-    #else
-	return false;
+	while (PeekMessage(&msg, this->__impl_window, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
     #endif
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#define DEBUG
 #include <stdio.h>
 #include <iostream>
 #ifdef _WIN32
@@ -13,6 +14,8 @@
 #include "Properties.hpp"
 #include "Math.hpp"
 #include "Vertex.hpp"
+
+ 
 
 extern nio::Properties properties;
 extern uint32_t image_count;
