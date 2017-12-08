@@ -19,6 +19,7 @@ struct Window {
 	void pollevents();
 
 	bool close_request = false;
+	bool decorated = true;
 };
 
 #define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\

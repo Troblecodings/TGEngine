@@ -2,13 +2,12 @@
 
 #include "TGEngine.hpp"
 #include "Device.hpp"
-#include "Swapchain.hpp"
 #include "Vertex.hpp"
+#include "Memory.hpp"
 
 extern VkBuffer vertex_buffer;
-extern VkDeviceMemory device_memory;
+extern uint32_t vertex_buffer_index;;
 extern uint32_t vertex_count;
-extern VkMemoryRequirements requirements;
 
 SINCE(0, 0, 1)
 void createVertexBuffer(uint32_t max_vertex_count);

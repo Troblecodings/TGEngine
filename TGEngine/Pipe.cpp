@@ -4,6 +4,10 @@ VkPipeline pipeline;
 VkPipelineLayout layout;
 VkViewport viewport;
 VkRect2D scissor;
+VkDescriptorPool descriptor_pool;
+VkDescriptorSetLayout descriptor_set_layout;
+std::vector<VkDescriptorSetLayoutBinding> descriptor_set_layout_bindings;
+std::vector<VkPushConstantRange> push_constant_ranges;
 
 void createPipeline() {
 
@@ -38,15 +42,25 @@ void createPipeline() {
 		&scissor
 	};
 
+	VkDescriptorSetLayoutCreateInfo descriptor_set_layout_create_info = {
+		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+		nullptr,
+		0,
+		descriptor_set_layout_bindings.size(),
+		descriptor_set_layout_bindings.data()
+	};
+    last_result = vkCreateDescriptorSetLayout(device, &descriptor_set_layout_create_info, nullptr, &descriptor_set_layout);
+	HANDEL(last_result)
+
 	//Pipeline Layout
 	VkPipelineLayoutCreateInfo layout_info = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 		nullptr,
 		0,
-		0,
-		nullptr,
-		0,
-		nullptr
+		1,
+		&descriptor_set_layout,
+		push_constant_ranges.size(),
+		push_constant_ranges.data()
 	};
 	last_result = vkCreatePipelineLayout(device, &layout_info, nullptr, &layout);
 	HANDEL(last_result);
@@ -167,4 +181,23 @@ void createPipeline() {
 void destroyPipeline() {
 	vkDestroyPipelineLayout(device, layout, nullptr);
 	vkDestroyPipeline(device, pipeline, nullptr);
+}
+
+void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkShaderStageFlags flags, uint32_t offest, uint32_t size) {
+	uint32_t csize = descriptor_set_layout_bindings.size();
+	descriptor_set_layout_bindings.resize(csize + 1);
+	descriptor_set_layout_bindings[csize] = {
+		binding,
+		type,
+		count,
+		flags,
+		nullptr
+	};
+	csize = push_constant_ranges.size();
+	push_constant_ranges.resize(csize + 1);
+	push_constant_ranges[csize] = {
+		flags,
+		offest,
+		size
+	};
 }

@@ -7,10 +7,9 @@ VkSurfaceKHR surface;
 void createWindow(nio::Properties properties) {
 	// IMPL getMonitor();
 
-	// IMPL: properties.getBoolean("decorated").rvalue);
 	bool fullscreen = properties.getBoolean("fullscreen").rvalue;
+	window.decorated = fullscreen ? false:properties.getBoolean("decorated").rvalue;
 	if (fullscreen) {
-		// IMPL DECORATED
 		GET_SIZE(d_width, d_height)
 		width = d_width;
 		height = d_height;
@@ -36,7 +35,7 @@ void createWindow(nio::Properties properties) {
 	const size_t cSize = strlen(ch) + 1;
 	std::wstring wc(cSize, L'#');
 	mbstowcs(&wc[0], ch, cSize);
-	window = { CreateWindowEx(WS_EX_APPWINDOW , WINDOW_HANDLE,  (LPCWCHAR)wc.data(), WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, x, y, width + 16, height + 39, nullptr, nullptr, GetModuleHandle(nullptr),nullptr) };
+	window = { CreateWindowEx(window.decorated ? WS_EX_APPWINDOW:0 , WINDOW_HANDLE, window.decorated? (LPCWCHAR)wc.data() : nullptr, (window.decorated ? WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX: WS_POPUP | WS_VISIBLE | WS_SYSMENU), x, y, width + (window.decorated ? 16:0), height + (window.decorated ? 39:0), nullptr, nullptr, GetModuleHandle(nullptr),nullptr) };
 	ShowWindow(window.__impl_window, SW_SHOW);
 	UpdateWindow(window.__impl_window);
     #endif

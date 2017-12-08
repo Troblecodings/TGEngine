@@ -2,11 +2,11 @@
 
 #include "TGEngine.hpp"
 #include "Device.hpp"
+#include "Memory.hpp"
 
 extern VkBuffer index_buffer;
-extern VkMemoryRequirements index_buffer_requirements;
-extern VkDeviceMemory index_memory;
 extern uint32_t index_count;
+extern uint32_t index_buffer_index;
 
 SINCE(0, 0, 2)
 void createIndexBuffer(uint32_t size);
