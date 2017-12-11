@@ -1,7 +1,5 @@
 #pragma once
 
-#include "TGEngine.hpp"
-#include "Device.hpp"
 #include "Memory.hpp"
 
 extern VkBuffer index_buffer;

@@ -1,7 +1,6 @@
 #include "Window.hpp"
 
 uint32_t x = 0, y = 0, width = 0, height = 0, d_width = 0, d_height = 0;
-Window window;
 VkSurfaceKHR surface;
 
 void createWindow(nio::Properties properties) {

@@ -18,7 +18,7 @@ void createIndexBuffer(uint32_t size) {
 	last_result = vkCreateBuffer(device, &index_buffer_create_info, nullptr, &index_buffer);
 	HANDEL(last_result)
 
-	index_buffer_index = getMemoryRequirements(index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	index_buffer_index = getMemoryRequirements(&index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
 void fillIndexBuffer(std::vector<uint32_t>* indicies) {

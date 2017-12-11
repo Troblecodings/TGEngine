@@ -19,7 +19,7 @@ void createVertexBuffer(uint32_t max_vertex_count) {
 	last_result = vkCreateBuffer(device, &vertex_buffer_create_info, nullptr, &vertex_buffer);
 	HANDEL(last_result)
 
-	vertex_buffer_index = getMemoryRequirements(vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	vertex_buffer_index = getMemoryRequirements(&vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
 void fillVertexBuffer(std::vector<Vertex>* vertecies) {

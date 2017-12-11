@@ -1,9 +1,8 @@
 #pragma once
 
-#include "TGEngine.hpp"
 #include "Device.hpp"
 
-extern std::vector<VkBuffer> buffers;
+extern std::vector<VkBuffer*> buffers;
 extern std::vector<VkDeviceSize> buffer_sizes;
 extern std::vector<VkDeviceSize> buffer_offsets;
 extern VkDeviceMemory device_memory;
@@ -13,7 +12,7 @@ extern VkDeviceSize _impl_size;
 extern uint32_t memory_flags;
 
 SINCE(0, 0, 2)
-uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags);
+uint32_t getMemoryRequirements(VkBuffer* buffer, uint32_t memoryflags);
 
 SINCE(0, 0, 2)
 void allocateAllBuffers();

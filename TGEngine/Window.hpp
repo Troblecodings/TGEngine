@@ -3,7 +3,6 @@
 #include "TGEngine.hpp"
 #include "Instance.hpp"
 #include "Properties.hpp"
-#include "Device.hpp"
 #include "Debug.hpp"
 #include <string>
 
@@ -13,25 +12,9 @@
 #include <tchar.h>
 #include "Win32Window.hpp"
 
-struct Window {
-	HWND __impl_window;
-
-	void pollevents();
-
-	bool close_request = false;
-	bool decorated = true;
-};
-
-#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
-RECT desktop;\
-GetWindowRect(hDesktop, &desktop);\
-x = desktop.right;\
-y = desktop.bottom;
-
 #endif
 
 extern uint32_t x, y, width, height, d_width, d_height;
-extern Window window;
 extern VkSurfaceKHR surface;
 
 /*
