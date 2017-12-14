@@ -10,5 +10,5 @@ int main() {
 
 void Editor::drawloop(std::vector<Vertex>* verticies)
 {
-	if(verticies->size() < 10)drawCircle({ {0,0,0}, {1,0,1} }, 1, 100, verticies);
+	if(verticies->size() < 10)drawEllipse({ {0,0,0}, {1,1,0} }, 0.8, 2, 100, verticies);
 }

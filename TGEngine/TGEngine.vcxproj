@@ -205,6 +205,7 @@
     <ClInclude Include="Descriptors.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="DrawLib.hpp" />
+    <ClInclude Include="Ellipse.hpp" />
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
     <ClInclude Include="Framebuffer.hpp" />
@@ -228,13 +229,13 @@
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseDrawLib.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Descriptors.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="Ellipse.cpp" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
