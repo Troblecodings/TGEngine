@@ -79,13 +79,14 @@ void fillCommandBuffer() {
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
-		VkBuffer vertexBuffers[] = { vertex_buffer };
 		VkDeviceSize offsets[] = { 0 };
 
-		vkCmdBindVertexBuffers(buffer, 0, 1, vertexBuffers, offsets);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vertex_buffer_index], offsets);
+
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, descriptor_sets.size(), descriptor_sets.data(), 0, nullptr);
 
         #ifdef USE_INDEX_BUFFER
-		vkCmdDrawIndexed(buffer, indicies.size(), 1, 0, 0, 0);
+		vkCmdBindIndexBuffer(buffer, &buffers[index_buffer_index], 0, VK_INDEX_TYPE_UINT32);
         #else
 		vkCmdDraw(buffer, vertex_count, 1, 0, 0);
         #endif

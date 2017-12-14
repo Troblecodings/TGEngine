@@ -202,6 +202,7 @@
     <ClInclude Include="Circle.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Debug.hpp" />
+    <ClInclude Include="Descriptors.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="DrawLib.hpp" />
     <ClInclude Include="Files.hpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="TGEngine.hpp" />
+    <ClInclude Include="UniformBuffer.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="VertexBuffer.hpp" />
     <ClInclude Include="Win32Window.hpp" />
@@ -230,6 +232,7 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Descriptors.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Files.cpp" />
@@ -246,6 +249,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Win32Window.cpp" />
     <ClCompile Include="Window.cpp" />

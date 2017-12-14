@@ -4,7 +4,6 @@ VkPipeline pipeline;
 VkPipelineLayout layout;
 VkViewport viewport;
 VkRect2D scissor;
-VkDescriptorPool descriptor_pool;
 VkDescriptorSetLayout descriptor_set_layout;
 std::vector<VkDescriptorSetLayoutBinding> descriptor_set_layout_bindings;
 std::vector<VkPushConstantRange> push_constant_ranges;
@@ -179,11 +178,12 @@ void createPipeline() {
 }
 
 void destroyPipeline() {
+	vkDestroyDescriptorSetLayout(device, descriptor_set_layout, nullptr);
 	vkDestroyPipelineLayout(device, layout, nullptr);
 	vkDestroyPipeline(device, pipeline, nullptr);
 }
 
-void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkShaderStageFlags flags, uint32_t offest, uint32_t size) {
+void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkShaderStageFlags flags) {
 	uint32_t csize = descriptor_set_layout_bindings.size();
 	descriptor_set_layout_bindings.resize(csize + 1);
 	descriptor_set_layout_bindings[csize] = {
@@ -193,7 +193,10 @@ void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkSh
 		flags,
 		nullptr
 	};
-	csize = push_constant_ranges.size();
+}
+
+void addPushConstant(VkShaderStageFlags flags, uint32_t offest, uint32_t size) {
+	uint32_t csize = push_constant_ranges.size();
 	push_constant_ranges.resize(csize + 1);
 	push_constant_ranges[csize] = {
 		flags,

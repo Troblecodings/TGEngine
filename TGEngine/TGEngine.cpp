@@ -30,6 +30,9 @@ void initTGEngine(App *app) {
 	createShader("frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32_SFLOAT);
+
+	addDescriptor(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT);
+
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
@@ -41,11 +44,32 @@ void initTGEngine(App *app) {
 	createIndexBuffer(50000);
     #endif 
 
+	uint32_t uniform_scale_buffer = createUniformBuffer(sizeof(glm::vec2));
+
 	allocateAllBuffers();
+
+	vector<glm::vec2> scale = { { 1, 1 } };
+	if (height > width) {
+		scale[0] = {
+			1,
+			(float)((float)width / (float)height)
+		};
+	}
+	else if(height < width) {
+		scale[0] = {
+			(float)((float)height / (float)width),
+			1
+		};
+	}
+	fillUniformBuffer(uniform_scale_buffer, scale.data(), sizeof(glm::vec2));
+
+	createDescriptorsForUniformBuffers({uniform_scale_buffer});
+	updateDescriptorSet(uniform_scale_buffer, 0, sizeof(glm::vec2));
 
 	createCommandBuffer();
 	fillCommandBuffer();
 	createSemaphores();
+
 
 	while (true) {
 		window.pollevents();
@@ -58,9 +82,8 @@ void initTGEngine(App *app) {
 
 	destroySemaphores();
 	destroyCommandBuffer();
+	destroyDescriptors();
 	destroyMemory();
-	destroyIndexBuffer();
-	destroyVertexBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyPipeline();

@@ -6,6 +6,7 @@
 #include "Framebuffer.hpp"
 #include "VertexBuffer.hpp"
 #include "Pipe.hpp"
+#include "Descriptors.hpp"
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;

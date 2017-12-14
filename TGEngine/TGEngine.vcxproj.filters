@@ -129,6 +129,12 @@
     <ClInclude Include="Win32Window.hpp">
       <Filter>Headerdateien\Pipeline\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="UniformBuffer.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Descriptors.hpp">
+      <Filter>Headerdateien\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -199,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="Win32Window.cpp">
       <Filter>Quelldateien\Pipeline\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UniformBuffer.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Descriptors.cpp">
+      <Filter>Quelldateien\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

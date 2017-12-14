@@ -1,6 +1,5 @@
 #include "IndexBuffer.hpp"
 
-VkBuffer index_buffer;
 uint32_t index_count;
 uint32_t index_buffer_index;
 
@@ -18,7 +17,7 @@ void createIndexBuffer(uint32_t size) {
 	last_result = vkCreateBuffer(device, &index_buffer_create_info, nullptr, &index_buffer);
 	HANDEL(last_result)
 
-	index_buffer_index = getMemoryRequirements(&index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	index_buffer_index = getMemoryRequirements(index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
 void fillIndexBuffer(std::vector<uint32_t>* indicies) {
@@ -26,11 +25,7 @@ void fillIndexBuffer(std::vector<uint32_t>* indicies) {
 	void* memory;
 	mapMemory(index_buffer_index, &memory);
 
-	memccpy(memory, indicies->data(), 0, sizeof(uint32_t) * index_count);
+	memcpy(memory, indicies->data(), sizeof(uint32_t) * index_count);
 
 	unmapMemory();
-}
-
-void destroyIndexBuffer() {
-	vkDestroyBuffer(device, index_buffer, nullptr);
 }
