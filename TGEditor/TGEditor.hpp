@@ -3,7 +3,8 @@
 #undef DEBUG
 #define DEBUG
 #include <TGEngine.hpp>
-#include "DrawLib.hpp"
+#include <DrawLib.hpp>
+#include <LoadFont.hpp>
 
 struct Editor : App
 {

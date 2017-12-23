@@ -199,6 +199,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BaseDrawLib.hpp" />
+    <ClInclude Include="Beziercurve.hpp" />
     <ClInclude Include="Circle.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Debug.hpp" />
@@ -208,9 +209,11 @@
     <ClInclude Include="Ellipse.hpp" />
     <ClInclude Include="Files.hpp" />
     <ClInclude Include="Annotations.hpp" />
+    <ClInclude Include="FontTables.hpp" />
     <ClInclude Include="Framebuffer.hpp" />
     <ClInclude Include="IndexBuffer.hpp" />
     <ClInclude Include="Instance.hpp" />
+    <ClInclude Include="LoadFont.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="Pipe.hpp" />
@@ -218,6 +221,7 @@
     <ClInclude Include="Draw.hpp" />
     <ClInclude Include="PrePipeline.hpp" />
     <ClInclude Include="Properties.hpp" />
+    <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="RenderPass.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Swapchain.hpp" />
@@ -229,6 +233,7 @@
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Beziercurve.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -237,6 +242,8 @@
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Ellipse.cpp" />
     <ClCompile Include="Files.cpp" />
+    <ClCompile Include="FontTables.cpp" />
+    <ClCompile Include="LoadFont.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Instance.cpp" />
@@ -246,6 +253,7 @@
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PrePipeline.cpp" />
     <ClCompile Include="Properties.cpp" />
+    <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
@@ -325,6 +333,9 @@
       <FileType>Document</FileType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

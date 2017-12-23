@@ -138,6 +138,18 @@
     <ClInclude Include="Ellipse.hpp">
       <Filter>Headerdateien\DrawLib</Filter>
     </ClInclude>
+    <ClInclude Include="Rectangle.hpp">
+      <Filter>Headerdateien\DrawLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Beziercurve.hpp">
+      <Filter>Headerdateien\DrawLib</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadFont.hpp">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="FontTables.hpp">
+      <Filter>Headerdateien\TStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -215,6 +227,18 @@
     <ClCompile Include="Ellipse.cpp">
       <Filter>Quelldateien\DrawLib</Filter>
     </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Quelldateien\DrawLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Beziercurve.cpp">
+      <Filter>Quelldateien\DrawLib</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadFont.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="FontTables.cpp">
+      <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ObjLoader.hpp">
@@ -246,5 +270,10 @@
     <Media Include="vertexshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\arial.ttf">
+      <Filter>Ressourcendateien</Filter>
+    </Font>
   </ItemGroup>
 </Project>
