@@ -1,6 +1,5 @@
 #pragma once
 
-#include "TGEngine.hpp"
 #include "Instance.hpp"
 #include "Window.hpp"
 

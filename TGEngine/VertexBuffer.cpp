@@ -1,16 +1,13 @@
 #include "VertexBuffer.hpp"
 
-uint32_t vertex_count;
-uint32_t vertex_buffer_index;
-
-void createVertexBuffer(uint32_t max_vertex_count) {
+void createVertexBuffer(VertexBuffer* buffer_storage) {
 	VkBuffer vertex_buffer;
 
 	VkBufferCreateInfo vertex_buffer_create_info = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	    nullptr,
 		0,
-	    sizeof(Vertex) * max_vertex_count,
+	    sizeof(Vertex) * buffer_storage->max_vertex_count,
 	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_SHARING_MODE_EXCLUSIVE,
 	    0,
@@ -20,16 +17,25 @@ void createVertexBuffer(uint32_t max_vertex_count) {
 	last_result = vkCreateBuffer(device, &vertex_buffer_create_info, nullptr, &vertex_buffer);
 	HANDEL(last_result)
 
-	vertex_buffer_index = getMemoryRequirements(vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	buffer_storage->vertex_buffer_index = getMemoryRequirements(vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
-void fillVertexBuffer(std::vector<Vertex>* vertecies) {
-	vertex_count = vertecies->size();
+void VertexBuffer::start() {
+	mapMemory(this->vertex_buffer_index, this->memory);
+}
 
-	void* memory;
-	mapMemory(vertex_buffer_index, &memory);
+void VertexBuffer::add(Vertex vert) {
+	memcpy(&this->memory[this->count_of_points * sizeof(vert)], &vert, sizeof(vert));
+	this->count_of_points++;
+}
 
-	memcpy(memory, vertecies->data(), sizeof(Vertex) * vertex_count);
+void VertexBuffer::addAll(Vertex* verts, uint32_t count) {
+	for (size_t i = 0; i < count; i++)
+	{
+		this->add(verts[i]);
+	}
+}
 
+void VertexBuffer::end() {
 	unmapMemory();
 }

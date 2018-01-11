@@ -8,5 +8,5 @@
 
 struct Editor : App
 {
-	virtual void drawloop(std::vector<Vertex>* verticies);
+	virtual void drawloop(VertexBuffer* verticies);
 };

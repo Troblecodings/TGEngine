@@ -85,7 +85,7 @@ struct acntTable : BaseTable {
 	uint8_t secondaryInfoIndex;
 
 	//Format 1
-	uint16_t extensionOffset;
+	uint16_t extensionsOffset;
 
 	//Extension
 	bool components;

@@ -37,8 +37,11 @@ void initTGEngine(App *app) {
 	createSwapchain();
 	createFramebuffer();
     
-	vector<Vertex> vertieces = {};
-	createVertexBuffer(50000);
+	VertexBuffer main_buffer = {
+		50000
+	};
+
+	createVertexBuffer(&main_buffer);
 
     #ifdef USE_INDEX_BUFFER
 	createIndexBuffer(50000);
@@ -76,8 +79,8 @@ void initTGEngine(App *app) {
 		if (window.close_request) {
 			break;
 		}
-		app->drawloop(&vertieces);
-		draw(&vertieces);
+		app->drawloop(&main_buffer);
+		draw(&main_buffer);
 	}
 
 	destroySemaphores();

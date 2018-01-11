@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Device.hpp"
+#include "stdbase.hpp"
 #include "PrePipeline.hpp"
 #include "Swapchain.hpp"
 

@@ -7,6 +7,7 @@
 #define TARGET(enum_target) // TARGET OF ANNOTATION
 #define TARGET_METHODE TARGET("METHODE")
 #define TARGET_CODE TARGET("CODE")
+#define TARGET_PARAMETER TARGET("TARGET_PARAMETER")
 
 USAGE_DOCS
 TARGET_CODE
@@ -29,3 +30,11 @@ TARGET_CODE
 USAGE_DOCS
 TARGET_METHODE
 #define SINCE(major, minor, version) //SINCE
+
+USAGE_DOCS
+TARGET_PARAMETER
+#define INPUT // Defines the parameter to be an Input
+
+USAGE_DOCS
+TARGET_PARAMETER
+#define OUTPUT // Defines the parameter to be an Output

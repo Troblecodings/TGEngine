@@ -49,6 +49,12 @@
     <Filter Include="Headerdateien\Pipeline\Windows">
       <UniqueIdentifier>{21760c1f-5591-48f8-80d2-ba910ab49c10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Material">
+      <UniqueIdentifier>{3e17a34e-55a8-4c82-bd19-399156196a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Material">
+      <UniqueIdentifier>{97ac42fe-4c69-4783-9284-2ff4edd9a3a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Annotations.hpp">
@@ -150,6 +156,15 @@
     <ClInclude Include="FontTables.hpp">
       <Filter>Headerdateien\TStorage</Filter>
     </ClInclude>
+    <ClInclude Include="Texturebuffer.hpp">
+      <Filter>Headerdateien\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="App.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="stdbase.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -238,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="FontTables.cpp">
       <Filter>Quelldateien\TStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="Texturebuffer.cpp">
+      <Filter>Quelldateien\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

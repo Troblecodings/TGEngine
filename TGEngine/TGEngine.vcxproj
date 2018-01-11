@@ -198,6 +198,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="App.hpp" />
     <ClInclude Include="BaseDrawLib.hpp" />
     <ClInclude Include="Beziercurve.hpp" />
     <ClInclude Include="Circle.hpp" />
@@ -224,7 +225,9 @@
     <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="RenderPass.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="stdbase.hpp" />
     <ClInclude Include="Swapchain.hpp" />
+    <ClInclude Include="Texturebuffer.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="UniformBuffer.hpp" />
     <ClInclude Include="Vertex.hpp" />
@@ -257,6 +260,7 @@
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
+    <ClCompile Include="Texturebuffer.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
