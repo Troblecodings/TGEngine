@@ -11,10 +11,18 @@ int main() {
 
 void Editor::drawloop(VertexBuffer* buffer)
 {
-
-	drawCircle({
-		{0, 0, 0},
-		{1, 0, 0}
-	}, 0.5, 500, buffer);
+	
+	buffer->add({
+		{0.5,0,0},
+	    {1,0,0,1}
+	});
+	buffer->add({
+		{ 0.5,0.5,0 },
+		{ 1,0,0,1 }
+	});
+	buffer->add({
+		{ 0,0.5,0 },
+		{ 1,0,0,1 }
+	});
 
 }

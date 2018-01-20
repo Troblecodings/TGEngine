@@ -1,16 +1,10 @@
 #include "TGEngine.hpp"
-#include "Pipeline.hpp"
-#include "Draw.hpp"
-#include "ObjLoader.hpp"
+#include "Pipeline/Pipeline.hpp"
+#include "Pipeline\Draw.hpp"
+#include "IO/ObjLoader.hpp"
 #include <cstddef>
 
-nio::Properties properties;
-uint32_t image_count = 3;
-
 using namespace std;
-#ifdef USE_INDEX_BUFFER
-vector<uint32_t> indicies = {};
-#endif
 
 void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
@@ -29,7 +23,7 @@ void initTGEngine(App *app) {
 	createShader("vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	createShader("frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
-	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32_SFLOAT);
+	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 
 	addDescriptor(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT);
 
@@ -37,15 +31,10 @@ void initTGEngine(App *app) {
 	createSwapchain();
 	createFramebuffer();
     
-	VertexBuffer main_buffer = {
-		50000
-	};
+	VertexBuffer main_buffer = {};
+	main_buffer.max_vertex_count = 500000;
 
 	createVertexBuffer(&main_buffer);
-
-    #ifdef USE_INDEX_BUFFER
-	createIndexBuffer(50000);
-    #endif 
 
 	uint32_t uniform_scale_buffer = createUniformBuffer(sizeof(glm::vec2));
 
@@ -70,7 +59,6 @@ void initTGEngine(App *app) {
 	updateDescriptorSet(uniform_scale_buffer, 0, sizeof(glm::vec2));
 
 	createCommandBuffer();
-	fillCommandBuffer();
 	createSemaphores();
 
 
@@ -79,7 +67,11 @@ void initTGEngine(App *app) {
 		if (window.close_request) {
 			break;
 		}
+		main_buffer.start();
 		app->drawloop(&main_buffer);
+		main_buffer.end();
+		vkDeviceWaitIdle(device);
+		fillCommandBuffer(&main_buffer);
 		draw(&main_buffer);
 	}
 

@@ -18,6 +18,141 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.hpp" />
+    <ClInclude Include="Drawlib\BaseDrawLib.hpp" />
+    <ClInclude Include="Drawlib\Beziercurve.hpp" />
+    <ClInclude Include="Drawlib\Circle.hpp" />
+    <ClInclude Include="Drawlib\DrawLib.hpp" />
+    <ClInclude Include="Drawlib\Ellipse.hpp" />
+    <ClInclude Include="Drawlib\Rectangle.hpp" />
+    <ClInclude Include="IO\Files.hpp" />
+    <ClInclude Include="IO\FontTables.hpp" />
+    <ClInclude Include="IO\LoadFont.hpp" />
+    <ClInclude Include="IO\ObjLoader.hpp" />
+    <ClInclude Include="IO\Properties.hpp" />
+    <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp" />
+    <ClInclude Include="Pipeline\Buffer\Memory.hpp" />
+    <ClInclude Include="Pipeline\Buffer\Texturebuffer.hpp" />
+    <ClInclude Include="Pipeline\Buffer\UniformBuffer.hpp" />
+    <ClInclude Include="Pipeline\Buffer\VertexBuffer.hpp" />
+    <ClInclude Include="Pipeline\CommandBuffer.hpp" />
+    <ClInclude Include="Pipeline\Descriptors.hpp" />
+    <ClInclude Include="Pipeline\Device.hpp" />
+    <ClInclude Include="Pipeline\Draw.hpp" />
+    <ClInclude Include="Pipeline\Framebuffer.hpp" />
+    <ClInclude Include="Pipeline\Instance.hpp" />
+    <ClInclude Include="Pipeline\Pipe.hpp" />
+    <ClInclude Include="Pipeline\Pipeline.hpp" />
+    <ClInclude Include="Pipeline\PrePipeline.hpp" />
+    <ClInclude Include="Pipeline\RenderPass.hpp" />
+    <ClInclude Include="Pipeline\Shader.hpp" />
+    <ClInclude Include="Pipeline\Swapchain.hpp" />
+    <ClInclude Include="Pipeline\Window\Win32Window.hpp" />
+    <ClInclude Include="Pipeline\Window\Window.hpp" />
+    <ClInclude Include="stdbase.hpp" />
+    <ClInclude Include="TGEngine.hpp" />
+    <ClInclude Include="Util\Annotations.hpp" />
+    <ClInclude Include="Util\Debug.hpp" />
+    <ClInclude Include="Util\Math.hpp" />
+    <ClInclude Include="Util\Vertex.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Drawlib\BaseDrawLib.cpp" />
+    <ClCompile Include="Drawlib\Beziercurve.cpp" />
+    <ClCompile Include="Drawlib\Circle.cpp" />
+    <ClCompile Include="Drawlib\Ellipse.cpp" />
+    <ClCompile Include="Drawlib\Rectangle.cpp" />
+    <ClCompile Include="IO\Files.cpp" />
+    <ClCompile Include="IO\FontTables.cpp" />
+    <ClCompile Include="IO\LoadFont.cpp" />
+    <ClCompile Include="IO\ObjLoader.cpp" />
+    <ClCompile Include="IO\Properties.cpp" />
+    <ClCompile Include="Pipeline\Buffer\IndexBuffer.cpp" />
+    <ClCompile Include="Pipeline\Buffer\Memory.cpp" />
+    <ClCompile Include="Pipeline\Buffer\Texturebuffer.cpp" />
+    <ClCompile Include="Pipeline\Buffer\UniformBuffer.cpp" />
+    <ClCompile Include="Pipeline\Buffer\VertexBuffer.cpp" />
+    <ClCompile Include="Pipeline\CommandBuffer.cpp" />
+    <ClCompile Include="Pipeline\Descriptors.cpp" />
+    <ClCompile Include="Pipeline\Device.cpp" />
+    <ClCompile Include="Pipeline\Draw.cpp" />
+    <ClCompile Include="Pipeline\Framebuffer.cpp" />
+    <ClCompile Include="Pipeline\Instance.cpp" />
+    <ClCompile Include="Pipeline\Pipe.cpp" />
+    <ClCompile Include="Pipeline\PrePipeline.cpp" />
+    <ClCompile Include="Pipeline\RenderPass.cpp" />
+    <ClCompile Include="Pipeline\Shader.cpp" />
+    <ClCompile Include="Pipeline\Swapchain.cpp" />
+    <ClCompile Include="Pipeline\Window\Win32Window.cpp" />
+    <ClCompile Include="Pipeline\Window\Window.cpp" />
+    <ClCompile Include="stdbase.cpp" />
+    <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="Util\Debug.cpp" />
+    <ClCompile Include="Util\Math.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Ressources\arial.ttf">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ressources\frag.spv">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Ressources\fragmentshader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Ressources\Shader Compiler.bat">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Ressources\text.mtl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Ressources\vert.spv">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Ressources\vertexshader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Ressources\Layers.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Ressources\text.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Object>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}</ProjectGuid>
@@ -197,150 +332,6 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="App.hpp" />
-    <ClInclude Include="BaseDrawLib.hpp" />
-    <ClInclude Include="Beziercurve.hpp" />
-    <ClInclude Include="Circle.hpp" />
-    <ClInclude Include="CommandBuffer.hpp" />
-    <ClInclude Include="Debug.hpp" />
-    <ClInclude Include="Descriptors.hpp" />
-    <ClInclude Include="Device.hpp" />
-    <ClInclude Include="DrawLib.hpp" />
-    <ClInclude Include="Ellipse.hpp" />
-    <ClInclude Include="Files.hpp" />
-    <ClInclude Include="Annotations.hpp" />
-    <ClInclude Include="FontTables.hpp" />
-    <ClInclude Include="Framebuffer.hpp" />
-    <ClInclude Include="IndexBuffer.hpp" />
-    <ClInclude Include="Instance.hpp" />
-    <ClInclude Include="LoadFont.hpp" />
-    <ClInclude Include="Math.hpp" />
-    <ClInclude Include="Memory.hpp" />
-    <ClInclude Include="Pipe.hpp" />
-    <ClInclude Include="Pipeline.hpp" />
-    <ClInclude Include="Draw.hpp" />
-    <ClInclude Include="PrePipeline.hpp" />
-    <ClInclude Include="Properties.hpp" />
-    <ClInclude Include="Rectangle.hpp" />
-    <ClInclude Include="RenderPass.hpp" />
-    <ClInclude Include="Shader.hpp" />
-    <ClInclude Include="stdbase.hpp" />
-    <ClInclude Include="Swapchain.hpp" />
-    <ClInclude Include="Texturebuffer.hpp" />
-    <ClInclude Include="TGEngine.hpp" />
-    <ClInclude Include="UniformBuffer.hpp" />
-    <ClInclude Include="Vertex.hpp" />
-    <ClInclude Include="VertexBuffer.hpp" />
-    <ClInclude Include="Win32Window.hpp" />
-    <ClInclude Include="Window.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Beziercurve.cpp" />
-    <ClCompile Include="Circle.cpp" />
-    <ClCompile Include="CommandBuffer.cpp" />
-    <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="Descriptors.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="Ellipse.cpp" />
-    <ClCompile Include="Files.cpp" />
-    <ClCompile Include="FontTables.cpp" />
-    <ClCompile Include="LoadFont.cpp" />
-    <ClCompile Include="Framebuffer.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="Instance.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="ObjLoader.cpp" />
-    <ClCompile Include="Pipe.cpp" />
-    <ClCompile Include="PrePipeline.cpp" />
-    <ClCompile Include="Properties.cpp" />
-    <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="RenderPass.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Swapchain.cpp" />
-    <ClCompile Include="Texturebuffer.cpp" />
-    <ClCompile Include="TGEngine.cpp" />
-    <ClCompile Include="UniformBuffer.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="Win32Window.cpp" />
-    <ClCompile Include="Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="frag.spv">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <Media Include="fragmentshader.glsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-    <None Include="ObjLoader.hpp" />
-    <Media Include="Shader Compiler.bat">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-    <None Include="vert.spv">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <Media Include="vertexshader.glsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Layers.txt">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Properties.xml">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="text.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\..\..\..\Desktop\arial.ttf" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

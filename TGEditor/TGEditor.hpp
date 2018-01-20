@@ -3,8 +3,11 @@
 #undef DEBUG
 #define DEBUG
 #include <TGEngine.hpp>
-#include <DrawLib.hpp>
-#include <LoadFont.hpp>
+#include <Drawlib\DrawLib.hpp>
+#include <IO\LoadFont.hpp>
+#include <Pipeline\CommandBuffer.hpp>
+
+extern bool b;
 
 struct Editor : App
 {
