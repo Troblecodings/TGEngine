@@ -162,6 +162,12 @@
     <ClInclude Include="Util\Vertex.hpp">
       <Filter>Headerdateien\Util</Filter>
     </ClInclude>
+    <ClInclude Include="ImagePNG.hpp">
+      <Filter>Headerdateien\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Endian.hpp">
+      <Filter>Headerdateien\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -260,6 +266,12 @@
     <ClCompile Include="stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ImagePNG.cpp">
+      <Filter>Quelldateien\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Endian.cpp">
+      <Filter>Quelldateien\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Ressources\arial.ttf">
@@ -283,6 +295,9 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Ressources\vertexshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="..\README.md">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

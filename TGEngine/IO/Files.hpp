@@ -17,4 +17,9 @@ namespace nio {
 	SINCE(0, 0, 1)
 	vector<char> getBinarys(char* file_path);
 
+	/*
+	 * If size_of_file is not nullptr it returns the filesize 
+	 */
+	SINCE(0, 0, 2)
+	ifstream getBinaryStream(INPUT char* filename, OUTPUT size_t* size_of_file);
 }

@@ -26,6 +26,8 @@
     <ClInclude Include="Drawlib\DrawLib.hpp" />
     <ClInclude Include="Drawlib\Ellipse.hpp" />
     <ClInclude Include="Drawlib\Rectangle.hpp" />
+    <ClInclude Include="Endian.hpp" />
+    <ClInclude Include="ImagePNG.hpp" />
     <ClInclude Include="IO\Files.hpp" />
     <ClInclude Include="IO\FontTables.hpp" />
     <ClInclude Include="IO\LoadFont.hpp" />
@@ -63,6 +65,8 @@
     <ClCompile Include="Drawlib\Circle.cpp" />
     <ClCompile Include="Drawlib\Ellipse.cpp" />
     <ClCompile Include="Drawlib\Rectangle.cpp" />
+    <ClCompile Include="Endian.cpp" />
+    <ClCompile Include="ImagePNG.cpp" />
     <ClCompile Include="IO\Files.cpp" />
     <ClCompile Include="IO\FontTables.cpp" />
     <ClCompile Include="IO\LoadFont.cpp" />
@@ -100,6 +104,7 @@
     </Font>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="Ressources\frag.spv">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -224,7 +229,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -238,7 +243,7 @@
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -251,7 +256,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -264,7 +269,7 @@
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -279,7 +284,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -295,7 +300,7 @@
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -310,7 +315,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\1.0.65.0\Third-Party\Include;D:\Vulkan\1.0.65.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -325,7 +330,7 @@
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Lib32;D:\Vulkan\1.0.65.0\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>

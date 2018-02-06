@@ -5,10 +5,10 @@
 #include "Memory.hpp"
 
 struct VertexBuffer {
-	uint32_t max_vertex_count;
-	uint32_t vertex_buffer_index;
-	uint32_t count_of_points;
-	void* memory;
+	INPUT uint32_t max_vertex_count;
+	OUTPUT uint32_t vertex_buffer_index;
+	OUTPUT uint32_t count_of_points;
+	OUTPUT void* memory;
 
 	SINCE(0, 0, 2)
 	void start();
