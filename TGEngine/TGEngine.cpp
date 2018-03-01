@@ -25,7 +25,11 @@ void initTGEngine(App *app) {
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 
-	addDescriptor(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT);
+	UniformBuffer uniform_scale_buffer = {
+		sizeof(glm::vec2),
+	    {0, 0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	};
+	createUniformBuffer(&uniform_scale_buffer);
 
 	createPipeline();
 	createSwapchain();
@@ -36,9 +40,6 @@ void initTGEngine(App *app) {
 
 	createVertexBuffer(&main_buffer);
 
-	uint32_t uniform_scale_buffer = createUniformBuffer(sizeof(glm::vec2));
-
-	allocateAllBuffers();
 
 	vector<glm::vec2> scale = { { 1, 1 } };
 	if (height > width) {
@@ -53,10 +54,11 @@ void initTGEngine(App *app) {
 			1
 		};
 	}
-	fillUniformBuffer(uniform_scale_buffer, scale.data(), sizeof(glm::vec2));
 
-	createDescriptorsForUniformBuffers({uniform_scale_buffer});
-	updateDescriptorSet(uniform_scale_buffer, 0, sizeof(glm::vec2));
+	allocateAllBuffers();
+	createAllDescriptorSets();
+
+	fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)scale.data(), scale.size());
 
 	createCommandBuffer();
 	createSemaphores();

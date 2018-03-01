@@ -183,18 +183,6 @@ void destroyPipeline() {
 	vkDestroyPipeline(device, pipeline, nullptr);
 }
 
-void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkShaderStageFlags flags) {
-	uint32_t csize = descriptor_set_layout_bindings.size();
-	descriptor_set_layout_bindings.resize(csize + 1);
-	descriptor_set_layout_bindings[csize] = {
-		binding,
-		type,
-		count,
-		flags,
-		nullptr
-	};
-}
-
 void addPushConstant(VkShaderStageFlags flags, uint32_t offest, uint32_t size) {
 	uint32_t csize = push_constant_ranges.size();
 	push_constant_ranges.resize(csize + 1);

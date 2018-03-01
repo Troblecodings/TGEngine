@@ -21,6 +21,3 @@ void createPipeline();
 
 SINCE(0, 0, 1)
 void destroyPipeline();
-
-SINCE(0, 0, 2)
-void addDescriptor(uint32_t binding, VkDescriptorType type, uint32_t count, VkShaderStageFlags flags);

@@ -6,7 +6,7 @@
 #include <Drawlib\DrawLib.hpp>
 #include <IO\LoadFont.hpp>
 #include <Pipeline\CommandBuffer.hpp>
-#include "ImagePNG.hpp"
+#include "IO\ImagePNG.hpp"
 
 extern bool b;
 

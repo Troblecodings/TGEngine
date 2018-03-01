@@ -8,7 +8,7 @@ void loadPNGData(Texture* texture) {
 	//TODO Implement CRC checks
 	uint8_t CRC_32[4] = {};
 
-	std::vector<unsigned char> buffer(8);
+	std::vector<uint8_t> buffer(8);
 	std::vector<Color> PLTE;
 	fread(buffer.data(), sizeof(unsigned char), 8, fileptr);
 	OUT_LV_DEBUG(buffer.data())
@@ -64,11 +64,11 @@ void loadPNGData(Texture* texture) {
 			}
 			else if (BUFFER_COMPARE(buffer, "IDAT")) {
 				uint32_t chunksize = int_from_big_endian(buffer.data(), 0);
-				buffer.resize(2);
-				fread(buffer.data(), sizeof(uint8_t), 2, fileptr);
-				buffer.resize(chunksize - 6);
+				buffer.resize(chunksize - 4);
 				fread(buffer.data(), sizeof(uint8_t), buffer.size(), fileptr);
+				inflate_s(buffer);
 				uint8_t ADLER_32[4] = {};
+				fread(ADLER_32, sizeof(uint8_t), 4, fileptr);
 			}
 			else if (BUFFER_COMPARE(buffer, "IEND")) {
 				OUT_LV_DEBUG("IEND")

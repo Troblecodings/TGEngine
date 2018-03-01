@@ -1,6 +1,6 @@
 #include "UniformBuffer.hpp"
 
-uint32_t createUniformBuffer(uint32_t size) {
+void createUniformBuffer(UniformBuffer* buffer){
 
 	VkBuffer uniform_buffer;
 
@@ -8,7 +8,7 @@ uint32_t createUniformBuffer(uint32_t size) {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 		nullptr,
 		0,
-		size,
+		buffer->size,
 		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		VK_SHARING_MODE_EXCLUSIVE,
 		0,
@@ -18,12 +18,15 @@ uint32_t createUniformBuffer(uint32_t size) {
 	last_result = vkCreateBuffer(device, &uniform_buffer_create_info, nullptr, &uniform_buffer);
 	HANDEL(last_result)
 
-	return getMemoryRequirements(uniform_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	buffer->index = getMemoryRequirements(uniform_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	buffer->descriptor.buffer = buffer->index;
+	addDescriptor(&buffer->descriptor);
+	addUniformBuffer(&buffer->descriptor);
 }
 
-void fillUniformBuffer(uint32_t index, void* input,uint32_t size) {
-	void* memory;
-	mapMemory(index, &memory);
-	memcpy(memory, input, size);
+void fillUniformBuffer(UniformBuffer* buffer, uint8_t* input, uint32_t size) {
+	mapMemory(buffer->index, &buffer->memory);
+	memcpy(buffer->memory, input, size);
 	unmapMemory();
+	updateDescriptorSet(&buffer->descriptor, size);
 }

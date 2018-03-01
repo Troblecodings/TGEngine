@@ -26,10 +26,11 @@
     <ClInclude Include="Drawlib\DrawLib.hpp" />
     <ClInclude Include="Drawlib\Ellipse.hpp" />
     <ClInclude Include="Drawlib\Rectangle.hpp" />
-    <ClInclude Include="Endian.hpp" />
-    <ClInclude Include="ImagePNG.hpp" />
+    <ClInclude Include="GameContent\Camera.hpp" />
+    <ClInclude Include="IO\Deflate.hpp" />
     <ClInclude Include="IO\Files.hpp" />
     <ClInclude Include="IO\FontTables.hpp" />
+    <ClInclude Include="IO\ImagePNG.hpp" />
     <ClInclude Include="IO\LoadFont.hpp" />
     <ClInclude Include="IO\ObjLoader.hpp" />
     <ClInclude Include="IO\Properties.hpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Util\Annotations.hpp" />
     <ClInclude Include="Util\Debug.hpp" />
+    <ClInclude Include="Util\Endian.hpp" />
     <ClInclude Include="Util\Math.hpp" />
     <ClInclude Include="Util\Vertex.hpp" />
   </ItemGroup>
@@ -65,10 +67,11 @@
     <ClCompile Include="Drawlib\Circle.cpp" />
     <ClCompile Include="Drawlib\Ellipse.cpp" />
     <ClCompile Include="Drawlib\Rectangle.cpp" />
-    <ClCompile Include="Endian.cpp" />
-    <ClCompile Include="ImagePNG.cpp" />
+    <ClCompile Include="GameContent\Camera.cpp" />
+    <ClCompile Include="IO\Deflate.cpp" />
     <ClCompile Include="IO\Files.cpp" />
     <ClCompile Include="IO\FontTables.cpp" />
+    <ClCompile Include="IO\ImagePNG.cpp" />
     <ClCompile Include="IO\LoadFont.cpp" />
     <ClCompile Include="IO\ObjLoader.cpp" />
     <ClCompile Include="IO\Properties.cpp" />
@@ -93,6 +96,7 @@
     <ClCompile Include="stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="Util\Debug.cpp" />
+    <ClCompile Include="Util\Endian.cpp" />
     <ClCompile Include="Util\Math.cpp" />
   </ItemGroup>
   <ItemGroup>

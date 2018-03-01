@@ -75,8 +75,8 @@ namespace nio {
 	*  <xml>
 	*    <boolean name="testboolean" value="true"/>
 	*    <string name="teststring" value="test"/>
-	*    <int name="testint" value="15"/>
-	*    <float name="testfloat" value="5.4"/>
+	*    <int name="testint" value="117"/>
+	*    <float name="testfloat" value="0.9"/>
 	*  </xml>
 	*/
 	SINCE(0, 0, 1)
