@@ -73,10 +73,11 @@ void addDescriptor(Descriptor* descriptor) {
 	uint32_t csize = descriptor_set_layout_bindings.size();
 	descriptor_set_layout_bindings.resize(csize + 1);
 	descriptor_set_layout_bindings[csize] = {
-		descriptor->binding,
+		csize,
 		descriptor->type,
 		descriptor->count,
 		descriptor->shader_stage,
 		nullptr
 	};
+	descriptor->binding = csize;
 }

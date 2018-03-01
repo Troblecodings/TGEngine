@@ -27,7 +27,7 @@ void initTGEngine(App *app) {
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
-	    {0, 0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	    {0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
 
@@ -58,7 +58,7 @@ void initTGEngine(App *app) {
 	allocateAllBuffers();
 	createAllDescriptorSets();
 
-	fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)scale.data(), scale.size());
+	fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)scale.data(), sizeof(glm::vec2));
 
 	createCommandBuffer();
 	createSemaphores();

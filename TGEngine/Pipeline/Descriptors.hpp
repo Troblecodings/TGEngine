@@ -11,11 +11,11 @@ extern std::vector<VkDescriptorSet> descriptor_sets;
 struct Descriptor {
 	INPUT  
 	uint32_t buffer;
-	uint32_t binding;
 	uint32_t count;
 	VkDescriptorType type;
 	VkShaderStageFlags shader_stage;
 	OUTPUT 
+    uint32_t binding;
 	uint32_t descriptor;
 };
 
