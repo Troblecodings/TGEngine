@@ -10,7 +10,7 @@
 
 extern VkPipeline pipeline;
 extern VkPipelineLayout layout;
-extern VkDescriptorSetLayout descriptor_set_layout;
+extern std::vector<VkDescriptorSetLayout> descriptor_set_layout;
 extern VkViewport viewport;
 extern VkRect2D scissor;
 extern std::vector<VkDescriptorSetLayoutBinding> descriptor_set_layout_bindings;

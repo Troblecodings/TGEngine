@@ -1,42 +1,43 @@
 #include "Descriptors.hpp"
 
 VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptor_sets;
+std::vector<VkDescriptorSet> descriptor_sets(1);
 std::vector<uint32_t> buffers_for_descriptor = {};
 
 void addUniformBuffer(Descriptor* buffer) {
-	buffer->descriptor = buffers_for_descriptor.size();
-	buffers_for_descriptor.resize(buffer->descriptor + 1);
-	buffers_for_descriptor[buffer->descriptor] = buffer->buffer;
+	buffers_for_descriptor.resize(buffer->binding + 1);
+	buffers_for_descriptor[buffer->binding] = buffer->buffer;
 }
 
 void createAllDescriptorSets() {
+	descriptor_sets.resize(buffers_for_descriptor.size());
+
 	VkDescriptorPoolSize descriptor_pool_size = {
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		buffers_for_descriptor.size()
+		descriptor_sets.size()
 	};
 
 	VkDescriptorPoolCreateInfo descriptor_pool_create_info = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 		nullptr,
 		VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-		1,
+		descriptor_sets.size(),
 		1,
 		&descriptor_pool_size
 	};
-
 	last_result = vkCreateDescriptorPool(device, &descriptor_pool_create_info, nullptr, &descriptor_pool);
 	HANDEL(last_result)
 
-	descriptor_sets.resize(buffers_for_descriptor.size());
 	VkDescriptorSetAllocateInfo allocate_info = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 		nullptr,
 		descriptor_pool,
-		descriptor_sets.size(),
-		&descriptor_set_layout
+		descriptor_set_layout.size(),
+		descriptor_set_layout.data()
 	};
 	last_result = vkAllocateDescriptorSets(device, &allocate_info, descriptor_sets.data());
+	OUT_LV_DEBUG(descriptor_sets[0])
+	OUT_LV_DEBUG(descriptor_sets[1])
 	HANDEL(last_result)
 }
 
@@ -56,7 +57,7 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 	VkWriteDescriptorSet descriptor_writes = {
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 		nullptr,
-		descriptor_sets[desc->descriptor],
+		descriptor_sets[desc->binding],
 		desc->binding,
 		0,
 		1,
@@ -80,4 +81,15 @@ void addDescriptor(Descriptor* descriptor) {
 		nullptr
 	};
 	descriptor->binding = csize;
+	
+	descriptor_set_layout.resize(csize + 1);
+	VkDescriptorSetLayoutCreateInfo descriptor_set_layout_create_info = {
+		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+		nullptr,
+		0,
+		1,
+		&descriptor_set_layout_bindings[csize]
+	};
+	last_result = vkCreateDescriptorSetLayout(device, &descriptor_set_layout_create_info, nullptr, &descriptor_set_layout[csize]);
+	HANDEL(last_result)
 }

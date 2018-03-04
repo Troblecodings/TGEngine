@@ -16,7 +16,6 @@ struct Descriptor {
 	uint32_t buffer;
 	OUTPUT 
     uint32_t binding;
-	uint32_t descriptor;
 };
 
 SINCE(0, 0, 2)

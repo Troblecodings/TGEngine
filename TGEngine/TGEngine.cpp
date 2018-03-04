@@ -25,6 +25,12 @@ void initTGEngine(App *app) {
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 
+	UniformBuffer uniform_scale_buffer = {
+		sizeof(glm::vec2),
+	{ 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	};
+	createUniformBuffer(&uniform_scale_buffer);
+
 	Camera cam = {
 		{
 			0.2,
@@ -36,12 +42,6 @@ void initTGEngine(App *app) {
         }
 	};
 	createCamera(&cam);
-
-	UniformBuffer uniform_scale_buffer = {
-		sizeof(glm::vec2),
-	    {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
-	};
-	createUniformBuffer(&uniform_scale_buffer);
 
 	createPipeline();
 	createSwapchain();
