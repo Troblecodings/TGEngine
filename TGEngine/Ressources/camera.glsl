@@ -20,16 +20,18 @@ out gl_PerVertex{
 };
 
 void main(){
-    posIn = point_for_rotation(posIn.xy, posIn.z, camera_block.z, vec2(camera_block.origin_x, camera_block.origin_y));
-    posIn = point_for_rotation(posIn.xz, posIn.y, camera_block.y, vec2(camera_block.origin_x, camera_block.origin_z));
-    posIn = point_for_rotation(posIn.zy, posIn.x, camera_block.x, vec2(camera_block.origin_z, camera_block.origin_y));
+    float z_radius = distance(posIn.xy, vec2(camera_block.origin_x, camera_block.origin_y));
+    float z_angle = asin(posIn.y - origin.y/radius) + camera_block.z;
+    posIn = vec3(origin.x + z_radius * cos(z_angle), origin.y + z_radius * sin(z_angle), posIn.z);
 
-    gl_Position = vec4(posIn, 0);
+    float y_radius = distance(posIn.xz, vec2(camera_block.origin_x, camera_block.origin_z));
+    float y_angle = asin(posIn.z - origin.z/radius) + camera_block.y;
+    posIn = vec3(origin.x + y_radius * cos(y_angle), posIn.y, origin.z + y_radius * sin(y_angle));
+
+    float x_radius = distance(posIn.zy, vec2(camera_block.origin_z, camera_block.origin_y));
+    float x_angle = asin(posIn.y - origin.y/radius) + camera_block.x;
+    posIn = vec3(posIn.x, origin.y + x_radius * sin(x_angle), origin.z + x_radius * cos(x_angle));
+
+    gl_Position = posIn;
     colorOut = colorIn;  
-}
-
-vec3 point_for_rotation(vec2 xy, float z, float rotation, vec2 origin){
-    radius = length(xy, origin);
-    angle = asin(xy.x - origin.x/radius) + rotation;
-    return vec3(origin.x + radius * cos(angle), origin.y + radius * sin(angle))
 }

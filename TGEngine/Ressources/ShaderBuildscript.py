@@ -11,7 +11,13 @@ finished = 0;
 for name in os.listdir(c_path):
     pth = c_path + "\\" + name;
     if(name.endswith(".spv")):
-        print(os.remove(pth));
+        os.remove(pth);
+        print("Deleted " + name + " due cleanup");
+for name in os.listdir("D:\\Documents\\Visual Studio 2017\\Projects\\TGEngine\\TGEditor\\"):
+    pth = "D:\\Documents\\Visual Studio 2017\\Projects\\TGEngine\\TGEditor\\" + name;
+    if(name.endswith(".spv")):
+        os.remove(pth);
+        print("Deleted " + name + " due cleanup");
 for name in os.listdir(c_path):
     try:
         pth = c_path + "\\" + name;
