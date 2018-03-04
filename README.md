@@ -11,7 +11,7 @@ still working on it...
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current version: <strong>1.0.65.1</strong>
+Current version: <strong>1.0.68.0</strong>
 <br>
 <br>
 <b>NOTE:</b> GLFW3 was removed because of linker errors

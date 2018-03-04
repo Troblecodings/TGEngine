@@ -28,7 +28,6 @@ void prePipeline() {
 			used_format = c_surface_formats;
 		}
 	}
-	OUT_LV_DEBUG(used_format.format)
 
 	used_present_mode = present_mode[0];
 	for (VkPresentModeKHR c_present_mode : present_mode) {
@@ -36,5 +35,4 @@ void prePipeline() {
 			used_present_mode = c_present_mode;
 		}
 	}
-	OUT_LV_DEBUG(used_present_mode);
 }

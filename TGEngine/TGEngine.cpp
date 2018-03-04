@@ -20,14 +20,26 @@ void initTGEngine(App *app) {
 	createDevice({}, {});
 	prePipeline();
 	createRenderpass();
-	createShader("vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-	createShader("frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	createShader("vertexshader.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	createShader("fragmentshader.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 
+	Camera cam = {
+		{
+			0.2,
+			0,
+			0,
+			0,
+			0,
+			0,
+        }
+	};
+	createCamera(&cam);
+
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
-	    {0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	    {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
 
@@ -37,28 +49,22 @@ void initTGEngine(App *app) {
     
 	VertexBuffer main_buffer = {};
 	main_buffer.max_vertex_count = 500000;
-
 	createVertexBuffer(&main_buffer);
-
-
-	vector<glm::vec2> scale = { { 1, 1 } };
-	if (height > width) {
-		scale[0] = {
-			1,
-			(float)((float)width / (float)height)
-		};
-	}
-	else if(height < width) {
-		scale[0] = {
-			(float)((float)height / (float)width),
-			1
-		};
-	}
 
 	allocateAllBuffers();
 	createAllDescriptorSets();
 
-	fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)scale.data(), sizeof(glm::vec2));
+	if (height > width) {		
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, (float)((float)width / (float)height)), sizeof(glm::vec2));
+	}
+	else if (height < width) {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2((float)((float)height / (float)width), 1), sizeof(glm::vec2));
+	}
+	else {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
+	}
+
+	cam.updateCamera();
 
 	createCommandBuffer();
 	createSemaphores();

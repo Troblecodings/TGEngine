@@ -8,8 +8,6 @@
 #include <Pipeline\CommandBuffer.hpp>
 #include "IO\ImagePNG.hpp"
 
-extern bool b;
-
 struct Editor : App
 {
 	virtual void drawloop(VertexBuffer* verticies);
