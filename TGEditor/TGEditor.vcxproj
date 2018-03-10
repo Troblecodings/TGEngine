@@ -25,17 +25,11 @@
     <ClCompile Include="TGEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.spv" />
-    <None Include="vert.spv" />
+    <None Include="fragmentshader.spv" />
+    <None Include="vertexshader.spv" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Properties.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\..\..\..\Desktop\arial.ttf">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-    </Font>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

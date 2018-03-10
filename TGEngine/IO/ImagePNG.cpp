@@ -5,9 +5,6 @@ void loadPNGData(Texture* texture) {
 
 	char PNG_START[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
-	//TODO Implement CRC checks
-	uint8_t CRC_32[4] = {};
-
 	std::vector<uint8_t> buffer(8);
 	std::vector<Color> PLTE;
 	fread(buffer.data(), sizeof(unsigned char), 8, fileptr);
@@ -63,21 +60,26 @@ void loadPNGData(Texture* texture) {
 				}
 			}
 			else if (BUFFER_COMPARE(buffer, "IDAT")) {
+				OUT_LV_DEBUG("Start IDAT png data deflate")
 				uint32_t chunksize = int_from_big_endian(buffer.data(), 0);
-				buffer.resize(chunksize - 4);
+				buffer.resize(chunksize - 6);
+				uint8_t flags, check;
+				fread(&flags, sizeof(uint8_t), 1, fileptr);
+				fread(&check, sizeof(uint8_t), 1, fileptr);
+
 				fread(buffer.data(), sizeof(uint8_t), buffer.size(), fileptr);
 				inflate_s(buffer);
-				uint8_t ADLER_32[4] = {};
-				fread(ADLER_32, sizeof(uint8_t), 4, fileptr);
+				fseek(fileptr, 4, SEEK_CUR);
 			}
 			else if (BUFFER_COMPARE(buffer, "IEND")) {
 				OUT_LV_DEBUG("IEND")
 				break;
 			}
 			else {
-				fseek(fileptr, (int)ftell(fileptr) + int_from_big_endian(buffer.data(), 0), 0);
+				OUT_LV_DEBUG("Skipping chunk as unneccesary")
+				fseek(fileptr, (int)int_from_big_endian(buffer.data(), 0), SEEK_CUR);
 			}
-			fread(CRC_32, sizeof(uint8_t), 4, fileptr);
+			fseek(fileptr, 4, SEEK_CUR);
 		}
 	}
 }

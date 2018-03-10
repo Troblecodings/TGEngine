@@ -25,10 +25,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.spv">
+    <None Include="fragmentshader.spv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vert.spv">
+    <None Include="vertexshader.spv">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -36,10 +36,5 @@
     <Xml Include="Properties.xml">
       <Filter>Resource Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\..\..\..\Desktop\arial.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
   </ItemGroup>
 </Project>

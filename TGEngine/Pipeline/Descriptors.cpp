@@ -1,16 +1,9 @@
 #include "Descriptors.hpp"
 
 VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptor_sets(1);
-std::vector<uint32_t> buffers_for_descriptor = {};
-
-void addUniformBuffer(Descriptor* buffer) {
-	buffers_for_descriptor.resize(buffer->binding + 1);
-	buffers_for_descriptor[buffer->binding] = buffer->buffer;
-}
+std::vector<VkDescriptorSet> descriptor_sets;
 
 void createAllDescriptorSets() {
-	descriptor_sets.resize(buffers_for_descriptor.size());
 
 	VkDescriptorPoolSize descriptor_pool_size = {
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -36,8 +29,6 @@ void createAllDescriptorSets() {
 		descriptor_set_layout.data()
 	};
 	last_result = vkAllocateDescriptorSets(device, &allocate_info, descriptor_sets.data());
-	OUT_LV_DEBUG(descriptor_sets[0])
-	OUT_LV_DEBUG(descriptor_sets[1])
 	HANDEL(last_result)
 }
 
@@ -49,7 +40,7 @@ void destroyDescriptors() {
 void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 
 	VkDescriptorBufferInfo buffer_info = {
-		buffers[desc->buffer],
+		buffers[desc->binding],
 		0,
 		size
 	};
@@ -71,7 +62,8 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 }
 
 void addDescriptor(Descriptor* descriptor) {
-	uint32_t csize = descriptor_set_layout_bindings.size();
+	uint32_t csize = descriptor_sets.size();
+	descriptor_sets.resize(csize + 1);
 	descriptor_set_layout_bindings.resize(csize + 1);
 	descriptor_set_layout_bindings[csize] = {
 		csize,

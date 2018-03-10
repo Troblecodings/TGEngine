@@ -19,9 +19,7 @@ void createUniformBuffer(UniformBuffer* buffer){
 	HANDEL(last_result)
 
 	buffer->index = getMemoryRequirements(uniform_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-	buffer->descriptor.buffer = buffer->index;
 	addDescriptor(&buffer->descriptor);
-	addUniformBuffer(&buffer->descriptor);
 }
 
 void fillUniformBuffer(UniformBuffer* buffer, uint8_t* input, uint32_t size) {

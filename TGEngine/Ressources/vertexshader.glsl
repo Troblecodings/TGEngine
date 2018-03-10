@@ -5,14 +5,14 @@ layout(binding = 0) uniform format_block {
    vec2 multiplier;
 } image_format_block;
 
-layout(binding = 1) uniform camera {
+/*layout(binding = 1) uniform camera {
     float x;
     float y;
     float z;
     float origin_x;
     float origin_y;
     float origin_z;
-} camera_block;
+} camera_block;*/
 
 layout(location = 0) in vec3 posIn;
 layout(location = 1) in vec4 colorIn;

@@ -13,13 +13,9 @@ struct Descriptor {
 	uint32_t count;
 	VkDescriptorType type;
 	VkShaderStageFlags shader_stage;
-	uint32_t buffer;
-	OUTPUT 
+	OUTPUT
     uint32_t binding;
 };
-
-SINCE(0, 0, 2)
-void addUniformBuffer(Descriptor* buffer);
 
 SINCE(0, 0, 2)
 void createAllDescriptorSets();

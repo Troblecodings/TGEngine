@@ -292,30 +292,22 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Ressources\arial.ttf">
-      <Filter>Ressourcendateien</Filter>
-    </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Ressources\frag.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="Ressources\fragmentshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </None>
-    <None Include="Ressources\Shader Compiler.bat">
+    <None Include="Ressources\fragmentshader.spv">
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Ressources\text.mtl">
       <Filter>Ressourcendateien</Filter>
     </None>
-    <None Include="Ressources\vert.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="Ressources\vertexshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </None>
-    <None Include="..\README.md">
+    <None Include="Ressources\vertexshader.spv">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Ressources\text.obj">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>
@@ -323,10 +315,5 @@
     <Text Include="Ressources\Layers.txt">
       <Filter>Ressourcendateien</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Ressources\text.obj">
-      <Filter>Ressourcendateien</Filter>
-    </Object>
   </ItemGroup>
 </Project>
