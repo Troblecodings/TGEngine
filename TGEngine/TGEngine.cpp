@@ -27,9 +27,11 @@ void initTGEngine(App *app) {
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
-	{ 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	    { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
+
+	OUT_LV_DEBUG(uniform_scale_buffer.descriptor.binding)
 
 	Camera cam = {
 		{

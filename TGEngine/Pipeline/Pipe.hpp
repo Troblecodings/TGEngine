@@ -7,14 +7,12 @@
 #include "..\Util\Vertex.hpp"
 #include <vector>
 #include "Window\Window.hpp"
+#include "Descriptors.hpp"
 
 extern VkPipeline pipeline;
 extern VkPipelineLayout layout;
-extern std::vector<VkDescriptorSetLayout> descriptor_set_layout;
 extern VkViewport viewport;
 extern VkRect2D scissor;
-extern std::vector<VkDescriptorSetLayoutBinding> descriptor_set_layout_bindings;
-extern std::vector<VkPushConstantRange> push_constant_ranges;
 
 SINCE(0, 0, 1)
 void createPipeline();
