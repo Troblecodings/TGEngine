@@ -67,9 +67,9 @@ void initAllTextures() {
 		HANDEL(last_result)
 
 		for (index = 0; index < memory_properties.memoryTypeCount; index++) {
-			if (memory_properties.memoryTypes[index].propertyFlags & (VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) break;
+			if (memory_properties.memoryTypes[index].propertyFlags & (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) break;
 		}
-		vkGetImageMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
+		vkGetBufferMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
 
 		VkMemoryAllocateInfo buffer_mem_alloc_info = {
 			VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
