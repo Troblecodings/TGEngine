@@ -15,6 +15,9 @@ I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
 Current version: <strong>1.0.68.0</strong>
 <br>
 <br>
+For Image loading currently use [STB](https://github.com/nothings/stb) this is planned to be repalced in the future
+<br>
+<br>
 <b>NOTE:</b> GLFW3 was removed because of linker errors
 
 <h3>License</h3>
@@ -23,7 +26,8 @@ Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/mas
 <br>
 <h4>Library</h4>
 
-Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-Copyright)
+Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-Copyright)<br>
+STB [Copyright](https://github.com/nothings/stb#if-i-wrap-an-stb-library-in-a-new-library-does-the-new-library-have-to-be-public-domainmit)
 
 <h3>Wanna contribute?</h3>
 

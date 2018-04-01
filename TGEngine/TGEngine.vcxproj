@@ -189,7 +189,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -216,7 +216,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -244,7 +244,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -275,7 +275,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>

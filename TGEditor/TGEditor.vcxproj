@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>true</ShowIncludes>
@@ -133,7 +133,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>true</ShowIncludes>
@@ -161,7 +161,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>true</ShowIncludes>
@@ -191,7 +191,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Ressources\stb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>true</ShowIncludes>

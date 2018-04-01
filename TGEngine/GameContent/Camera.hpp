@@ -1,6 +1,6 @@
 #pragma once
 #include "..\stdbase.hpp"
-#include "..\Pipeline\Buffer\UniformBuffer.hpp"
+#include "..\Pipeline\Buffer\VertexBuffer.hpp"
 
 struct Rotation {
 	float x_rotation,
@@ -17,7 +17,7 @@ struct Rotation {
 struct Camera {
 
 	INPUT Rotation rotation;
-	OUTPUT UniformBuffer buffer;
+	INPUT VertexBuffer buffer;
 
 	SINCE(0, 0, 2)
 	void updateCamera();

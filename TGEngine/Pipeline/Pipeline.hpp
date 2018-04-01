@@ -10,3 +10,4 @@
 #include "Buffer\IndexBuffer.hpp"
 #include "Buffer\UniformBuffer.hpp"
 #include "Descriptors.hpp"
+#include "Buffer\Texturebuffer.hpp"

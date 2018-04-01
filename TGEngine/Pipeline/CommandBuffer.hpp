@@ -7,6 +7,7 @@
 #include "Buffer\VertexBuffer.hpp"
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
+#include "Buffer\Texturebuffer.hpp"
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;

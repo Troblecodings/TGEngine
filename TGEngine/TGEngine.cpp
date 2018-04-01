@@ -31,19 +31,17 @@ void initTGEngine(App *app) {
 	};
 	createUniformBuffer(&uniform_scale_buffer);
 
-	OUT_LV_DEBUG(uniform_scale_buffer.descriptor.binding)
-
 	Camera cam = {
 		{
-			0.2,
 			0,
 			0,
+			0.2F,
 			0,
 			0,
 			0,
         }
 	};
-	//createCamera(&cam);
+	createCamera(&cam);
 
 	createPipeline();
 	createSwapchain();
@@ -54,6 +52,7 @@ void initTGEngine(App *app) {
 	createVertexBuffer(&main_buffer);
 
 	allocateAllBuffers();
+	initAllTextures();
 	createAllDescriptorSets();
 
 	if (height > width) {		
@@ -66,7 +65,7 @@ void initTGEngine(App *app) {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
 
-	//cam.updateCamera();
+	cam.updateCamera();
 
 	createCommandBuffer();
 	createSemaphores();

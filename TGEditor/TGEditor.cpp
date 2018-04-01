@@ -4,9 +4,10 @@
 int main() {
 	Editor editor = {};
 	std::cout << "Starting Editor" << std::endl;
-	Texture tex;
-	tex.texture_path = "ODST_Helmet.png";
-	loadPNGData(&tex);
+	Texture tex = {
+		"ODST_Helmet.png"
+	};
+	createTexture(&tex);
 	initTGEngine(&editor);
 	return 0;
 }

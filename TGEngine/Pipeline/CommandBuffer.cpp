@@ -87,6 +87,9 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 
 		vkCmdDraw(buffer, vbuffer->count_of_points, 1, 0, 0);
 
+		for each(Texture* tex in texture_buffers) {
+		}
+
 		vkCmdEndRenderPass(buffer);
 
 		vkEndCommandBuffer(buffer);
