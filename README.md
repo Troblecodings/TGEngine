@@ -12,7 +12,8 @@ For updates please follow the [official twitter account of Troblecodings](https:
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current version: <strong>1.0.68.0</strong>
+Current built version: <strong>1.1.70.1</strong><br>
+Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>
 For Image loading currently use [STB](https://github.com/nothings/stb) this is planned to be repalced in the future

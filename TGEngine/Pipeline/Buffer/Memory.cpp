@@ -1,7 +1,6 @@
 #include "Memory.hpp"
 
-std::vector<uint64_t> buffers = {};
-std::vector<bool> isImage = {};
+std::vector<VkBuffer> buffers = {};
 std::vector<VkDeviceSize> buffer_sizes = {};
 std::vector<VkDeviceSize> buffer_offsets = { 0 };
 VkDeviceMemory device_memory;
@@ -28,35 +27,6 @@ uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags) {
 
 	buffers.resize(csize + 1);
 	buffers[csize] = buffer;
-
-	isImage.resize(csize + 1);
-	isImage[csize] = false;
-
-	return csize;
-}
-
-uint32_t getImageMemoryRequirements(VkImage buffer, uint32_t memoryflags) {
-	memory_flags |= memoryflags;
-
-	VkMemoryRequirements requirements;
-	vkGetImageMemoryRequirements(device, buffer, &requirements);
-
-	_impl_size += requirements.size;
-
-	uint32_t csize = buffer_offsets.size();
-	buffer_offsets.resize(csize + 1);
-	buffer_offsets[csize] = buffer_offsets[csize - 1] + requirements.size;
-
-	csize = buffer_sizes.size();
-	buffer_sizes.resize(csize + 1);
-	buffer_sizes[csize] = requirements.size;
-
-	buffers.resize(csize + 1);
-	buffers[csize] = buffer;
-
-	isImage.resize(csize + 1);
-	isImage[csize] = true;
-
 	return csize;
 }
  
@@ -76,13 +46,7 @@ void allocateAllBuffers() {
 	HANDEL(last_result)
 	
 	for (int i = 0; i < buffers.size();i++) {
-
-		if (isImage[i]) {
-			last_result = vkBindImageMemory(device, buffers[i], device_memory, buffer_offsets[i]);
-		}
-		else {
-			last_result = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
-		}
+		last_result = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
 		HANDEL(last_result)
 	}
 }
@@ -99,12 +63,7 @@ void unmapMemory() {
 void destroyMemory() {
 	int i = 0;
 	for (VkBuffer buffer : buffers) {
-		if (isImage[i]) {
-			vkDestroyImage(device, buffer, nullptr);
-		}
-		else {
-			vkDestroyBuffer(device, buffer, nullptr);
-		}
+		vkDestroyBuffer(device, buffer, nullptr);
 		i++;
 	}
 	vkFreeMemory(device, device_memory, nullptr);

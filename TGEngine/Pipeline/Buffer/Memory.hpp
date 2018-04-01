@@ -16,9 +16,6 @@ SINCE(0, 0, 2)
 uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags);
 
 SINCE(0, 0, 2)
-uint32_t getImageMemoryRequirements(VkImage buffer, uint32_t memoryflags);
-
-SINCE(0, 0, 2)
 void allocateAllBuffers();
 
 SINCE(0, 0, 2)

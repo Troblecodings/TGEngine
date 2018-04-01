@@ -60,9 +60,6 @@
     <ClInclude Include="App.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="stdbase.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="TGEngine.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>

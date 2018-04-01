@@ -13,7 +13,7 @@ void createInstance(nio::Properties propertys, std::vector<const char*> layers_t
 		propertys.getInt("version").rvalue,
 	    "TGEngine",
 	    VK_MAKE_VERSION(0, 0, 2),
-		VK_API_VERSION_1_0
+		VK_API_VERSION_1_1
 	};
 
 	uint32_t count;
