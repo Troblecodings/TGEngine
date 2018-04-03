@@ -71,17 +71,25 @@ void initTGEngine(App *app) {
 	singleTimeCommand();
 	createSemaphores();
 
+	uint64_t time = 0;
 
 	while (true) {
 		window.pollevents();
 		if (window.close_request) {
 			break;
 		}
-		main_buffer.start();
-		app->drawloop(&main_buffer);
-		main_buffer.end();
-		vkDeviceWaitIdle(device);
-		fillCommandBuffer(&main_buffer);
+		uint64_t c_time = std::clock();
+		if (time + 16 <= c_time) {
+			time = c_time;
+			main_buffer.start();
+			uint32_t old_size = main_buffer.count_of_points;
+			app->drawloop(&main_buffer);
+			main_buffer.end();
+			if (old_size != main_buffer.count_of_points) {
+				vkDeviceWaitIdle(device);
+				fillCommandBuffer(&main_buffer);
+			}
+		}
 		draw(&main_buffer);
 	}
 
