@@ -88,6 +88,53 @@ void initAllTextures() {
 		vkUnmapMemory(device, ptr->buffer_memory);
 
 		stbi_image_free(ptr->image_data);
+
+		VkImageViewCreateInfo image_view_create_info = {
+			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+		    nullptr,
+		    0,
+		    ptr->image,
+			VK_IMAGE_VIEW_TYPE_2D,
+		    VK_FORMAT_R8G8B8A8_UNORM,
+		    {
+			    VK_COMPONENT_SWIZZLE_IDENTITY,
+				VK_COMPONENT_SWIZZLE_IDENTITY,
+				VK_COMPONENT_SWIZZLE_IDENTITY,
+				VK_COMPONENT_SWIZZLE_IDENTITY
+		    },
+		    {
+			    VK_IMAGE_ASPECT_COLOR_BIT,
+			    0,
+			    1,
+			    0,
+			    1
+		    }
+		};
+		last_result = vkCreateImageView(device, &image_view_create_info, nullptr, &ptr->image_view);
+		HANDEL(last_result)
+
+		VkSamplerCreateInfo sampler_create_info = {
+			VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+		    nullptr,
+		    0,
+			VK_FILTER_LINEAR,
+			VK_FILTER_LINEAR,
+			VK_SAMPLER_MIPMAP_MODE_LINEAR,
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+		    0,
+		    VK_TRUE,
+		    16,
+		    VK_FALSE,
+		    VK_COMPARE_OP_ALWAYS,
+		    0,
+		    0,
+			VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,
+		    VK_FALSE
+		};
+		last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &ptr->image_sampler);
+		HANDEL(last_result)
 	}
 }
 
@@ -147,6 +194,8 @@ void destroyBufferofTexture(Texture* tex) {
 
 
 void destroyTexture(Texture* tex) {
+	vkDestroySampler(device, tex->image_sampler, nullptr);
+	vkDestroyImageView(device, tex->image_view, nullptr);
 	vkFreeMemory(device, tex->d_memory, nullptr);
 	vkDestroyImage(device, tex->image, nullptr);
 }

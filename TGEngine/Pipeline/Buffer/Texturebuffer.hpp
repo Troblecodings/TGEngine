@@ -15,6 +15,8 @@ struct Texture {
 	int channel;
 	stbi_uc* image_data;
 	VkImage image;
+	VkImageView image_view;
+	VkSampler image_sampler;
 	VkBuffer buffer;
 	VkDeviceMemory d_memory;
 	VkDeviceMemory buffer_memory;

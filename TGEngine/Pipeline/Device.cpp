@@ -115,6 +115,12 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		usable_extensions.clear();
 	}
 
+	VkPhysicalDeviceFeatures device_features;
+	vkGetPhysicalDeviceFeatures(used_physical_device, &device_features);
+
+	VkPhysicalDeviceFeatures device_features_to_enable = {};
+	device_features_to_enable.samplerAnisotropy = device_features.samplerAnisotropy;
+
 	//Make Device
 	VkDeviceCreateInfo device_create_info = {
 		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
@@ -126,7 +132,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		enable_layer.data(),
 		enable_extensions.size(),
 		enable_extensions.data(),
-	    {}
+	    &device_features_to_enable
 	};
 
 	last_result = vkCreateDevice(used_physical_device, &device_create_info, nullptr, &device);

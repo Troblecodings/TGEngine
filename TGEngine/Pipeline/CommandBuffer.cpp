@@ -37,7 +37,8 @@ void singleTimeCommand() {
 		1
 	};
 	VkCommandBuffer buffer;
-	vkAllocateCommandBuffers(device, &command_buffer_allocate_info, &buffer);
+	last_result = vkAllocateCommandBuffers(device, &command_buffer_allocate_info, &buffer);
+	HANDEL(last_result)
 
 	VkCommandBufferBeginInfo beginInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -45,7 +46,8 @@ void singleTimeCommand() {
 		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
 	    nullptr
 	};
-	vkBeginCommandBuffer(buffer, &beginInfo);
+	last_result = vkBeginCommandBuffer(buffer, &beginInfo);
+	HANDEL(last_result)
 
 	for each(Texture* tex in texture_buffers) {
 		tex->addBarrier(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -84,7 +86,8 @@ void singleTimeCommand() {
 		tex->addBarrier(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
-	vkEndCommandBuffer(buffer);
+	last_result = vkEndCommandBuffer(buffer);
+	HANDEL(last_result)
 
 	VkSubmitInfo submitInfo = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -169,7 +172,8 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 
 		vkCmdEndRenderPass(buffer);
 
-		vkEndCommandBuffer(buffer);
+		last_result = vkEndCommandBuffer(buffer);
+		HANDEL(last_result)
 
 		count++;
 	}
