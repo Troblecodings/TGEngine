@@ -28,6 +28,86 @@ void createCommandBuffer() {
 	HANDEL(last_result)
 }
 
+void singleTimeCommand() {
+	VkCommandBufferAllocateInfo command_buffer_allocate_info = {
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+		nullptr,
+		command_pool,
+		VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		1
+	};
+	VkCommandBuffer buffer;
+	vkAllocateCommandBuffers(device, &command_buffer_allocate_info, &buffer);
+
+	VkCommandBufferBeginInfo beginInfo = {
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+	    nullptr,
+		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+	    nullptr
+	};
+	vkBeginCommandBuffer(buffer, &beginInfo);
+
+	for each(Texture* tex in texture_buffers) {
+		tex->addBarrier(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+		VkBufferImageCopy image_copy = {
+			0,
+			0,
+			0,
+		{
+			VK_IMAGE_ASPECT_COLOR_BIT,
+			0,
+			0,
+			1
+		},
+				{
+					0,
+					0,
+					0
+				},
+				{
+					tex->width,
+					tex->height,
+					1
+				}
+		};
+
+		vkCmdCopyBufferToImage(
+			buffer,
+			tex->buffer,
+			tex->image,
+			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1,
+			&image_copy
+		);
+
+		tex->addBarrier(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	}
+
+	vkEndCommandBuffer(buffer);
+
+	VkSubmitInfo submitInfo = {
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		nullptr,
+	    0,
+	    nullptr,
+		nullptr,
+		1,
+		&buffer,
+	    0,
+		nullptr, 
+	};
+
+	vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(queue);
+
+	vkFreeCommandBuffers(device, command_pool, 1, &buffer);
+
+	for each(Texture* tex in texture_buffers) {
+		destroyBufferofTexture(tex);
+	}
+}
+
 void fillCommandBuffer(VertexBuffer* vbuffer) {
 	VkClearValue clear_color = {
 		{
@@ -86,9 +166,6 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, descriptor_sets.size(), descriptor_sets.data(), 0, nullptr);
 
 		vkCmdDraw(buffer, vbuffer->count_of_points, 1, 0, 0);
-
-		for each(Texture* tex in texture_buffers) {
-		}
 
 		vkCmdEndRenderPass(buffer);
 

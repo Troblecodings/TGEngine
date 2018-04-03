@@ -68,6 +68,7 @@ void initTGEngine(App *app) {
 	cam.updateCamera();
 
 	createCommandBuffer();
+	singleTimeCommand();
 	createSemaphores();
 
 

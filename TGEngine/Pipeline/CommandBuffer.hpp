@@ -16,6 +16,9 @@ SINCE(0, 0, 1)
 void createCommandBuffer();
 
 SINCE(0, 0, 1)
+void singleTimeCommand();
+
+SINCE(0, 0, 1)
 void fillCommandBuffer(VertexBuffer* buffer);
 
 SINCE(0, 0, 1)
