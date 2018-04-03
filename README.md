@@ -16,7 +16,8 @@ Current built version: <strong>1.1.70.1</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>
-For Image loading currently use [STB](https://github.com/nothings/stb) this is planned to be repalced in the future
+For image loading is [STB](https://github.com/nothings/stb) currently being used.<br>
+This is planned to be replaced in the future.
 <br>
 <br>
 <b>NOTE:</b> GLFW3 was removed because of linker errors
