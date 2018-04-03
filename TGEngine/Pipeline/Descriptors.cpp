@@ -4,6 +4,9 @@ VkDescriptorPool descriptor_pool;
 std::vector<VkDescriptorSet> descriptor_sets;
 std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
 
+uint32_t uniform_count;
+uint32_t image_sampler;
+
 void addDescriptor(Descriptor* descriptor) {
 	descriptor->binding = descriptor_set_layouts.size();
 	VkDescriptorSetLayoutBinding binding = {
@@ -13,6 +16,13 @@ void addDescriptor(Descriptor* descriptor) {
 		descriptor->shader_stage,
 		nullptr
 	};
+
+	if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
+		uniform_count++;
+	}
+	else if (descriptor->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
+		image_sampler++;
+	}
 
 	descriptor_set_layouts.resize(descriptor->binding + 1);
 	descriptor_sets.resize(descriptor->binding + 1);
@@ -29,18 +39,36 @@ void addDescriptor(Descriptor* descriptor) {
 
 void createAllDescriptorSets() {
 
-	VkDescriptorPoolSize descriptor_pool_size = {
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		descriptor_sets.size()
-	};
+	std::vector<VkDescriptorPoolSize> sizes;
+
+	uint32_t c_size;
+	if (uniform_count > 0) {
+		VkDescriptorPoolSize descriptor_pool_size = {
+			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			uniform_count
+		};
+		c_size = sizes.size();
+		sizes.resize(c_size + 1);
+		sizes[c_size] = descriptor_pool_size;
+	}
+
+	if (image_sampler > 0) {
+		VkDescriptorPoolSize descriptor_pool_size = {
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			image_sampler
+		};
+		c_size = sizes.size();
+		sizes.resize(c_size + 1);
+		sizes[c_size] = descriptor_pool_size;
+	}
 
 	VkDescriptorPoolCreateInfo descriptor_pool_create_info = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 		nullptr,
 		VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 		descriptor_sets.size(),
-		1,
-		&descriptor_pool_size
+		sizes.size(),
+		sizes.data()
 	};
 	last_result = vkCreateDescriptorPool(device, &descriptor_pool_create_info, nullptr, &descriptor_pool);
 	HANDEL(last_result)
@@ -58,24 +86,47 @@ void createAllDescriptorSets() {
 
 void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 
-	VkDescriptorBufferInfo buffer_info = {
-		buffers[desc->buffer],
-		0,
-		size
-	};
+	VkWriteDescriptorSet descriptor_writes;
 
-	VkWriteDescriptorSet descriptor_writes = {
-		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-		nullptr,
-		descriptor_sets[desc->binding],
-		desc->binding,
-		0,
-		1,
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		nullptr,
-		&buffer_info,
-		nullptr
-	};
+	if (desc->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
+		VkDescriptorBufferInfo buffer_info = {
+			buffers[desc->buffer],
+			0,
+			size
+		};
+
+		descriptor_writes = {
+			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			nullptr,
+			descriptor_sets[desc->binding],
+			desc->binding,
+			0,
+			1,
+			desc->type,
+			nullptr,
+			&buffer_info,
+			nullptr
+		};
+	}
+	else if (desc->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
+		VkDescriptorImageInfo desc_image_info = {
+			desc->image_sampler,
+			desc->image_view,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+		descriptor_writes = {
+			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			nullptr,
+			descriptor_sets[desc->binding],
+			desc->binding,
+			0,
+			1,
+			desc->type,
+			&desc_image_info,
+			nullptr,
+			nullptr
+		};
+	}
 
 	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
 }

@@ -4,6 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
 #include "..\..\..\stb\stb_image.h"
+#include "..\Descriptors.hpp"
 
 struct Texture {
 	INPUT 
@@ -22,6 +23,7 @@ struct Texture {
 	VkDeviceMemory buffer_memory;
 	VkMemoryRequirements buffer_requierments;
 	VkMemoryRequirements requierments;
+	Descriptor desc;
 	void* memory;
 
 	DEPRECATED
@@ -45,6 +47,9 @@ void createTexture(Texture* tex);
 
 SINCE(0, 0, 2)
 void initAllTextures();
+
+SINCE(0, 0, 2)
+void updateShader();
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);

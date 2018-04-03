@@ -135,6 +135,22 @@ void initAllTextures() {
 		};
 		last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &ptr->image_sampler);
 		HANDEL(last_result)
+
+		ptr->desc = {
+			1,
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			VK_SHADER_STAGE_FRAGMENT_BIT,
+			VK_NULL_HANDLE,
+			ptr->image_sampler,
+			ptr->image_view
+		};
+		addDescriptor(&ptr->desc);
+	}
+}
+
+void updateShader() {
+	for each(Texture* tex in texture_buffers) {
+		updateDescriptorSet(&tex->desc, 0);
 	}
 }
 

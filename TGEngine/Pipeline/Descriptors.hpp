@@ -8,12 +8,18 @@ extern VkDescriptorPool descriptor_pool;
 extern std::vector<VkDescriptorSet> descriptor_sets;
 extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
 
+extern uint32_t uniform_count;
+extern uint32_t image_sampler;
+
 struct Descriptor {
 	INPUT  
 	uint32_t count;
 	VkDescriptorType type;
 	VkShaderStageFlags shader_stage;
 	uint32_t buffer;
+
+	VkSampler image_sampler;
+	VkImageView image_view;
 	OUTPUT
     uint32_t binding;
 };

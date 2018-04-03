@@ -24,6 +24,7 @@ void initTGEngine(App *app) {
 	createShader("fragmentshader.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
+	createShaderInput(2, offsetof(Vertex, uv), VK_FORMAT_R32G32_SFLOAT);
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
@@ -42,6 +43,7 @@ void initTGEngine(App *app) {
         }
 	};
 	createCamera(&cam);
+	initAllTextures();
 
 	createPipeline();
 	createSwapchain();
@@ -52,7 +54,6 @@ void initTGEngine(App *app) {
 	createVertexBuffer(&main_buffer);
 
 	allocateAllBuffers();
-	initAllTextures();
 	createAllDescriptorSets();
 
 	if (height > width) {		
