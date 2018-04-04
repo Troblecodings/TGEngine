@@ -28,8 +28,9 @@ Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/mas
 <br>
 <h4>Library</h4>
 
-Vulkan [Copyright](https://www.khronos.org/faq/category/category/Licensing-and-Copyright)<br>
-STB [Copyright](https://github.com/nothings/stb#if-i-wrap-an-stb-library-in-a-new-library-does-the-new-library-have-to-be-public-domainmit)
+Every library used is Open-Source.<br>
+<br>
+STB is published under a Public domain License (or MIT)
 
 <h3>Wanna contribute?</h3>
 
