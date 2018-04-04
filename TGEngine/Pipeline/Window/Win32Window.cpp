@@ -4,8 +4,12 @@
 
 LPCWCHAR lresult;
 Window window;
+HCURSOR cursor;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	if (msg ==  WM_MOUSELEAVE || msg == WM_NCMOUSELEAVE) {
+		SetCursor(cursor);
+	}
 	if (msg == WM_QUIT || msg == WM_CLOSE || msg == WM_DESTROY) {
 		window.close_request = true;
 		return 0;
@@ -24,7 +28,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 void registerWindowClass() {
-	
+	cursor = window.cursor ? LoadCursor(nullptr, IDC_ARROW):NULL;
+
 	WNDCLASSEX  wndclass = {
 		sizeof(WNDCLASSEX),
 		CS_ENABLE | CS_OWNDC | CS_HREDRAW,
@@ -33,7 +38,7 @@ void registerWindowClass() {
 		0,
 		GetModuleHandle(nullptr),
 		NULL,
-		NULL,
+		cursor,
 		NULL,
 		NULL,
 		WINDOW_HANDLE,
@@ -44,6 +49,8 @@ void registerWindowClass() {
 		MessageBox(NULL, L"Window creaton failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
 		return;
 	}
+
+	SetCursor(cursor);
 }
 
 #endif

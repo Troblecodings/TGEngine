@@ -8,6 +8,7 @@ void createWindow(nio::Properties properties) {
 
 	bool fullscreen = properties.getBoolean("fullscreen").rvalue;
 	window.decorated = fullscreen ? false:properties.getBoolean("decorated").rvalue;
+	window.cursor = properties.getBoolean("cursor").rvalue;
 	if (fullscreen) {
 		GET_SIZE(d_width, d_height)
 		width = d_width;

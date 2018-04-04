@@ -4,7 +4,7 @@
     <int name="version" value="1"/>
   </app>
   <window>
-    <boolean name="fullscreen" value="true"/>
+    <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
     <int name="height" value="500"/>
@@ -13,6 +13,7 @@
     <!--Will be ignored if center is true-->
     <int name="posx" value="0" />
     <int name="posy" value="0" />
+    <boolean name="cursor" value="false" />
     <!--Ignore end-->>
   </window>
 </xml>
