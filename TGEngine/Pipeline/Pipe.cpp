@@ -117,7 +117,7 @@ void createPipeline() {
 
 	//Color blend
 	VkPipelineColorBlendAttachmentState color_blend_state = {
-		VK_FALSE,
+		VK_TRUE,
 		VK_BLEND_FACTOR_ONE,
 		VK_BLEND_FACTOR_ZERO,
 		VK_BLEND_OP_ADD,

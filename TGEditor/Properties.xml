@@ -4,7 +4,7 @@
     <int name="version" value="1"/>
   </app>
   <window>
-    <boolean name="fullscreen" value="false"/>
+    <boolean name="fullscreen" value="true"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
     <int name="height" value="500"/>
