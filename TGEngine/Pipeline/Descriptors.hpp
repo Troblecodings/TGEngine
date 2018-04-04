@@ -5,8 +5,9 @@
 #include "..\Pipeline\Buffer\Memory.hpp"
 
 extern VkDescriptorPool descriptor_pool;
-extern std::vector<VkDescriptorSet> descriptor_sets;
-extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
+extern VkDescriptorSet descriptor_set;
+extern VkDescriptorSetLayout desc_layout;
+extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
 
 extern uint32_t uniform_count;
 extern uint32_t image_sampler;
@@ -26,6 +27,9 @@ struct Descriptor {
 
 SINCE(0, 0, 2)
 void addDescriptor(Descriptor* desc);
+
+SINCE(0, 0, 2)
+void createPipelineLayout();
 
 SINCE(0, 0, 2)
 void createAllDescriptorSets();

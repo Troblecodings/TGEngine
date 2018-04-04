@@ -45,6 +45,7 @@ void initTGEngine(App *app) {
 	createCamera(&cam);
 	initAllTextures();
 
+	createPipelineLayout();
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
@@ -70,6 +71,7 @@ void initTGEngine(App *app) {
 
 	createCommandBuffer();
 	singleTimeCommand();
+	updateShader();
 	createSemaphores();
 
 	uint64_t time = 0;

@@ -1,15 +1,17 @@
 #include "Descriptors.hpp"
 
 VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptor_sets;
-std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
+VkDescriptorSet descriptor_set;
+VkDescriptorSetLayout desc_layout;
+std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
 
 uint32_t uniform_count;
 uint32_t image_sampler;
 
 void addDescriptor(Descriptor* descriptor) {
-	descriptor->binding = descriptor_set_layouts.size();
-	VkDescriptorSetLayoutBinding binding = {
+	descriptor->binding = descriptor_bindings.size();
+	descriptor_bindings.resize(descriptor->binding + 1);
+	descriptor_bindings[descriptor->binding] = {
 		descriptor->binding,
 		descriptor->type,
 		descriptor->count,
@@ -23,22 +25,21 @@ void addDescriptor(Descriptor* descriptor) {
 	else if (descriptor->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
 		image_sampler++;
 	}
+}
 
-	descriptor_set_layouts.resize(descriptor->binding + 1);
-	descriptor_sets.resize(descriptor->binding + 1);
+void createPipelineLayout() {
 	VkDescriptorSetLayoutCreateInfo descriptor_set_layout_create_info = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 		nullptr,
 		0,
-		1,
-		&binding
+		descriptor_bindings.size(),
+		descriptor_bindings.data()
 	};
-	last_result = vkCreateDescriptorSetLayout(device, &descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[descriptor->binding]);
+	last_result = vkCreateDescriptorSetLayout(device, &descriptor_set_layout_create_info, nullptr, &desc_layout);
 	HANDEL(last_result)
 }
 
 void createAllDescriptorSets() {
-
 	std::vector<VkDescriptorPoolSize> sizes;
 
 	uint32_t c_size;
@@ -66,7 +67,7 @@ void createAllDescriptorSets() {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 		nullptr,
 		VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-		descriptor_sets.size(),
+		1,
 		sizes.size(),
 		sizes.data()
 	};
@@ -77,10 +78,10 @@ void createAllDescriptorSets() {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 		nullptr,
 		descriptor_pool,
-		descriptor_set_layouts.size(),
-		descriptor_set_layouts.data()
+		1,
+		&desc_layout
 	};
-	last_result = vkAllocateDescriptorSets(device, &allocate_info, descriptor_sets.data());
+	last_result = vkAllocateDescriptorSets(device, &allocate_info, &descriptor_set);
 	HANDEL(last_result)
 }
 
@@ -98,7 +99,7 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 		descriptor_writes = {
 			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 			nullptr,
-			descriptor_sets[desc->binding],
+			descriptor_set,
 			desc->binding,
 			0,
 			1,
@@ -117,7 +118,7 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 		descriptor_writes = {
 			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 			nullptr,
-			descriptor_sets[desc->binding],
+			descriptor_set,
 			desc->binding,
 			0,
 			1,
@@ -132,10 +133,8 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 }
 
 void destroyDescriptors() {
-	for (VkDescriptorSetLayout layout : descriptor_set_layouts) {
-		vkDestroyDescriptorSetLayout(device, layout, nullptr);
-	}
-	last_result = vkFreeDescriptorSets(device, descriptor_pool, descriptor_sets.size(), descriptor_sets.data());
+	vkDestroyDescriptorSetLayout(device, desc_layout, nullptr);
+	last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set);
 	HANDEL(last_result);
 	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 };

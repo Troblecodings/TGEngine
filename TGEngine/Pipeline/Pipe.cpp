@@ -43,8 +43,8 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 		nullptr,
 		0,
-		descriptor_set_layouts.size(),
-		descriptor_set_layouts.data(),
+		1,
+		&desc_layout,
 		0,
 		nullptr
 	};

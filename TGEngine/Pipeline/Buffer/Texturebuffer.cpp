@@ -217,7 +217,8 @@ void destroyTexture(Texture* tex) {
 }
 
 void destroyAllTextures() {
-	vkDeviceWaitIdle(device);
+	last_result = vkDeviceWaitIdle(device);
+	HANDEL(last_result)
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
 	}

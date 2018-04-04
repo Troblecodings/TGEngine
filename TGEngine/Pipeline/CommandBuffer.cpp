@@ -166,7 +166,7 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 
 		vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], offsets);
 
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, descriptor_sets.size(), descriptor_sets.data(), 0, nullptr);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &descriptor_set, 0, nullptr);
 
 		vkCmdDraw(buffer, vbuffer->count_of_points, 1, 0, 0);
 
