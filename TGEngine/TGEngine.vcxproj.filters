@@ -177,6 +177,9 @@
     <ClInclude Include="GameContent\Camera.hpp">
       <Filter>Headerdateien\GameContent</Filter>
     </ClInclude>
+    <ClInclude Include="Ressources\ShaderData.hpp">
+      <Filter>Ressourcendateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -286,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="GameContent\Camera.cpp">
       <Filter>Quelldateien\GameContent</Filter>
+    </ClCompile>
+    <ClCompile Include="Ressources\ShaderData.cpp">
+      <Filter>Ressourcendateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
