@@ -51,7 +51,6 @@ for name in os.listdir(c_path):
                 print(">>> " + line)
             if not b:
                 continue;
-            copyfile(pth.replace(".glsl", "") + ".spv", "D:\\Documents\\Visual Studio 2017\\Projects\\TGEngine\\TGEditor\\" + name.replace(".glsl", "") + ".spv")
             print("Reading " + pth.replace(".glsl", "") + ".spv")
             cshader = open(pth.replace(".glsl", "") + ".spv", "a");
             size = cshader.tell()
@@ -67,7 +66,7 @@ for name in os.listdir(c_path):
                 shader_data.write(", " + str(readtoint(cchar)))
             shader_data.write( " }\n")
             cshader.close();
-            print("Successfully copyed file")
+            print("Successfully added shader")
             finished += 1;
     except(Exception):
         print("Shader " + name + " failed to Compile")

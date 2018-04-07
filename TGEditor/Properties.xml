@@ -13,7 +13,7 @@
     <!--Will be ignored if center is true-->
     <int name="posx" value="0" />
     <int name="posy" value="0" />
-    <boolean name="cursor" value="false" />
+    <boolean name="cursor" value="true" />
     <!--Ignore end-->>
   </window>
 </xml>

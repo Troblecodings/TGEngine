@@ -3,6 +3,7 @@
 #include "..\..\Pipeline\Device.hpp"
 #include "..\..\Util\Vertex.hpp"
 #include "Memory.hpp"
+#include "UniformBuffer.hpp"
 
 struct VertexBuffer {
 	INPUT uint32_t max_vertex_count;
@@ -15,6 +16,12 @@ struct VertexBuffer {
 
 	SINCE(0, 0, 2)
 	void add(Vertex vert);
+
+	SINCE(0, 0, 3)
+	void addColorOnly(Vertex vert);
+
+	SINCE(0, 0, 3)
+	void addTexOnly(Vertex vert);
 
 	SINCE(0, 0, 2)
 	void addAll(Vertex* verts, uint32_t count);

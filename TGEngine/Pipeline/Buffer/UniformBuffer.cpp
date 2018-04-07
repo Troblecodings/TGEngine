@@ -1,6 +1,8 @@
 #include "UniformBuffer.hpp"
 
 void createUniformBuffer(UniformBuffer* buffer){
+	buffer->descriptor.count = 1;
+	buffer->descriptor.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 
 	VkBuffer uniform_buffer;
 

@@ -24,18 +24,13 @@ void initTGEngine(App *app) {
 	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 	createShaderInput(2, offsetof(Vertex, uv), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(3, offsetof(Vertex, only_color), VK_FORMAT_R32_UINT);
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
-	    { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT }
+	    { VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
-
-	UniformBuffer uniform_color_tex_changer = {
-		sizeof(bool),
-	    { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT }
-	};
-	createUniformBuffer(&uniform_color_tex_changer);
 
 	Camera cam = {
 		{
@@ -71,7 +66,6 @@ void initTGEngine(App *app) {
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-	fillUniformBuffer(&uniform_color_tex_changer, (uint8_t*)true, sizeof(bool));
 
 	cam.updateCamera();
 

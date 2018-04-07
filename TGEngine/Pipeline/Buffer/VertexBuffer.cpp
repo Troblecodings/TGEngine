@@ -30,6 +30,17 @@ void VertexBuffer::add(Vertex vert) {
 	this->count_of_points++;
 }
 
+void VertexBuffer::addColorOnly(Vertex vert) {
+	vert.only_color = VK_TRUE;
+	this->add(vert);
+}
+
+void VertexBuffer::addTexOnly(Vertex vert) {
+	vert.only_color = VK_FALSE;
+	vert.color = { 1, 1, 1, 1 };
+	this->add(vert);
+}
+
 void VertexBuffer::addAll(Vertex* verts, uint32_t count) {
 	for (size_t i = 0; i < count; i++)
 	{

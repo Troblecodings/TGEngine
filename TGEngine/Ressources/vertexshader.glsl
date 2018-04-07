@@ -8,9 +8,11 @@ layout(binding = 0) uniform format_block {
 layout(location = 0) in vec3 posIn;
 layout(location = 1) in vec4 colorIn;
 layout(location = 2) in vec2 uv;
+layout(location = 3) in uint color_only;
 
 layout(location = 0) out vec4 colorOut;
 layout(location = 1) out vec2 uvOut;
+layout(location = 2) out uint only_color;
 
 out gl_PerVertex{
    vec4 gl_Position;
@@ -20,4 +22,5 @@ void main(){
     gl_Position = vec4(posIn.x * image_format_block.multiplier.x, posIn.y * image_format_block.multiplier.y, posIn.z, 1);
     colorOut = colorIn;
     uvOut = uv;
+    only_color = color_only;
 }

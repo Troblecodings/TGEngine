@@ -14,9 +14,9 @@ extern uint32_t image_sampler;
 
 struct Descriptor {
 	INPUT  
+	VkShaderStageFlags shader_stage;
 	uint32_t count;
 	VkDescriptorType type;
-	VkShaderStageFlags shader_stage;
 	uint32_t buffer;
 
 	VkSampler image_sampler;

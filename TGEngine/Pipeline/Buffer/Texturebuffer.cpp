@@ -137,9 +137,9 @@ void initAllTextures() {
 		HANDEL(last_result)
 
 		ptr->desc = {
+			VK_SHADER_STAGE_FRAGMENT_BIT,
 			1,
 			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-			VK_SHADER_STAGE_FRAGMENT_BIT,
 			VK_NULL_HANDLE,
 			ptr->image_sampler,
 			ptr->image_view

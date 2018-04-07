@@ -3,19 +3,16 @@
 
 layout(location = 0) in vec4 colorIn;
 layout(location = 1) in vec2 uv;
+layout(location = 2) flat in uint color_only;
 
 layout(binding = 1) uniform sampler2D image_sampler;
-layout(binding = 2) uniform image_color_block{
-    bool color;
-} color_block;
-
 
 layout(location = 0) out vec4 colorOut;
 
 void main(){
-   if(color_block.color){
-       colorOut = colorIn;
-   }else{
-       colorOut = texture(image_sampler, uv);
-   }
+    if(color_only == 1){
+        colorOut = colorIn;
+        return;
+    }
+    colorOut = texture(image_sampler, uv) * colorIn;
 }
