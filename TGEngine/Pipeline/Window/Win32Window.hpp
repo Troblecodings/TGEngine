@@ -3,6 +3,8 @@
 #ifdef _WIN32
 
 #include "..\..\stdbase.hpp"
+#include <windowsx.h>
+#include "..\..\IO\Mouse.hpp"
 
 #define WINDOW_HANDLE L"TGWINDOWHANDLE"
 

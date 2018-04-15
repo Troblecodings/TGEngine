@@ -1,3 +1,4 @@
+#pragma once
 #include "..\stdbase.hpp"
 
 SINCE(0, 0, 2)

@@ -16,9 +16,12 @@ void createSemaphores() {
 	vkCreateSemaphore(device, &semaphore_create_info, nullptr, &signal_semaphore);
 }
 
-void draw(VertexBuffer* vrt) {
-	last_result = vkAcquireNextImageKHR(device, swapchain, 100000000, wait_semaphore, VK_NULL_HANDLE, &image_index);
+void startdraw() {
+	last_result = vkAcquireNextImageKHR(device, swapchain, 10000, wait_semaphore, VK_NULL_HANDLE, &image_index);
 	HANDEL_RECREATE(last_result)
+}
+
+void draw() {
 
 	VkSubmitInfo submit_info = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -34,16 +37,18 @@ void draw(VertexBuffer* vrt) {
 
 	last_result = vkQueueSubmit(queue, 1, &submit_info, VK_NULL_HANDLE);
 	HANDEL_RECREATE(last_result)
+}
 
+void present() {
 	VkPresentInfoKHR present_info = {
 		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-	    nullptr,
-	    1,
+		nullptr,
+		1,
 		&signal_semaphore,
-	    1,
-	    &swapchain,
+		1,
+		&swapchain,
 		&image_index,
-	    nullptr
+		nullptr
 	};
 
 	last_result = vkQueuePresentKHR(queue, &present_info);

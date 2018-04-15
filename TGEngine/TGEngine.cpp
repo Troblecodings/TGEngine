@@ -93,7 +93,9 @@ void initTGEngine(App *app) {
 				fillCommandBuffer(&main_buffer);
 			}
 		}
-		draw(&main_buffer);
+		startdraw();
+		draw();
+		present();
 	}
 
 	destroyAllTextures();

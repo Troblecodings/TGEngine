@@ -32,6 +32,7 @@
     <ClInclude Include="IO\FontTables.hpp" />
     <ClInclude Include="IO\ImagePNG.hpp" />
     <ClInclude Include="IO\LoadFont.hpp" />
+    <ClInclude Include="IO\Mouse.hpp" />
     <ClInclude Include="IO\ObjLoader.hpp" />
     <ClInclude Include="IO\Properties.hpp" />
     <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="IO\FontTables.cpp" />
     <ClCompile Include="IO\ImagePNG.cpp" />
     <ClCompile Include="IO\LoadFont.cpp" />
+    <ClCompile Include="IO\Mouse.cpp" />
     <ClCompile Include="IO\ObjLoader.cpp" />
     <ClCompile Include="IO\Properties.cpp" />
     <ClCompile Include="Pipeline\Buffer\IndexBuffer.cpp" />

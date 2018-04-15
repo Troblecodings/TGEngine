@@ -7,9 +7,6 @@ Window window;
 HCURSOR cursor;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	if (msg ==  WM_MOUSELEAVE || msg == WM_NCMOUSELEAVE) {
-		SetCursor(cursor);
-	}
 	if (msg == WM_QUIT || msg == WM_CLOSE || msg == WM_DESTROY) {
 		window.close_request = true;
 		return 0;
@@ -23,6 +20,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		END_UNFINISHED
 	}
 	else {
+		if (msg == WM_MOUSELEAVE || msg == WM_NCMOUSELEAVE) {
+			SetCursor(cursor);
+		}
+		if (msg == WM_MOUSEMOVE) {
+			inputupdate({ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)});
+		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 }

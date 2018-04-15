@@ -7,8 +7,15 @@
 #include "CommandBuffer.hpp"
 #include "Buffer\IndexBuffer.hpp"
 
+
+SINCE(0, 0, 3)
+void startdraw();
+
+SINCE(0, 0, 3)
+void present();
+
 SINCE(0, 0, 1)
-void draw(VertexBuffer* vrt);
+void draw();
 
 SINCE(0, 0, 1)
 void createSemaphores();

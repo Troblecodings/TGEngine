@@ -114,10 +114,10 @@ void singleTimeCommand() {
 void fillCommandBuffer(VertexBuffer* vbuffer) {
 	VkClearValue clear_color = {
 		{
-			1.0F, 
-		    1.0F, 
-		    1.0F, 
-			1.0F 
+			1, 
+		    0, 
+		    0, 
+			1 
 		}
 	};
 

@@ -180,6 +180,9 @@
     <ClInclude Include="Ressources\ShaderData.hpp">
       <Filter>Ressourcendateien</Filter>
     </ClInclude>
+    <ClInclude Include="IO\Mouse.hpp">
+      <Filter>Headerdateien\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -292,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="Ressources\ShaderData.cpp">
       <Filter>Ressourcendateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\Mouse.cpp">
+      <Filter>Quelldateien\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
