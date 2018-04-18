@@ -115,8 +115,8 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 	VkClearValue clear_color = {
 		{
 			1, 
-		    0, 
-		    0, 
+		    1, 
+		    1, 
 			1 
 		}
 	};

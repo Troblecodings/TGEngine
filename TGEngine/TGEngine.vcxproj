@@ -52,7 +52,6 @@
     <ClInclude Include="Pipeline\RenderPass.hpp" />
     <ClInclude Include="Pipeline\Shader.hpp" />
     <ClInclude Include="Pipeline\Swapchain.hpp" />
-    <ClInclude Include="Pipeline\Window\Win32Window.hpp" />
     <ClInclude Include="Pipeline\Window\Window.hpp" />
     <ClInclude Include="Ressources\ShaderData.hpp" />
     <ClInclude Include="TGEngine.hpp" />
@@ -93,7 +92,6 @@
     <ClCompile Include="Pipeline\RenderPass.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\Swapchain.cpp" />
-    <ClCompile Include="Pipeline\Window\Win32Window.cpp" />
     <ClCompile Include="Pipeline\Window\Window.cpp" />
     <ClCompile Include="Ressources\ShaderData.cpp" />
     <ClCompile Include="stdbase.cpp" />

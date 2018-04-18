@@ -13,7 +13,7 @@ void createPipeline() {
 		0.0F,
 		static_cast<float>(width),
 		static_cast<float>(height),
-		0.0F,
+		0,
 		1.0F
 	};
 
@@ -90,10 +90,10 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
-	    VK_FALSE,
+		VK_FALSE,
 	    VK_FALSE,
 	    VK_POLYGON_MODE_FILL,
-		VK_CULL_MODE_BACK_BIT,
+		VK_CULL_MODE_FRONT_BIT,
 		VK_FRONT_FACE_CLOCKWISE,
 	    VK_FALSE,
 	    1,
@@ -136,6 +136,38 @@ void createPipeline() {
 	    1,
 		&color_blend_state,
 		{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
+	};
+	
+	//Not in use
+	VkPipelineDepthStencilStateCreateInfo depth_stencil = {
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+	    nullptr,
+	    0,
+		VK_TRUE,
+	    VK_TRUE,
+	    VK_COMPARE_OP_LESS_OR_EQUAL,
+	    VK_FALSE,
+	    VK_FALSE,
+	{
+		VK_STENCIL_OP_ZERO,
+	    VK_STENCIL_OP_KEEP,
+	    VK_STENCIL_OP_REPLACE,
+		VK_COMPARE_OP_LESS_OR_EQUAL,
+		0,
+		0,
+		0
+	},
+	{
+		VK_STENCIL_OP_ZERO,
+		VK_STENCIL_OP_KEEP,
+		VK_STENCIL_OP_REPLACE,
+		VK_COMPARE_OP_LESS_OR_EQUAL,
+		0,
+		0,
+		0
+	},
+	0,
+	0
 	};
 
 	//Pipeline

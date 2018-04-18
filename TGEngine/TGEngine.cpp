@@ -31,19 +31,11 @@ void initTGEngine(App *app) {
 	    { VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
-
-	Camera cam = {
-		{
-			0,
-			0,
-			0.2F,
-			0,
-			0,
-			0,
-        }
-	};
-	createCamera(&cam);
 	initAllTextures();
+
+	Camera cam;
+	cam.speed = 0.001;
+	createCamera(&cam);
 
 	createPipelineLayout();
 	createPipeline();
@@ -66,7 +58,7 @@ void initTGEngine(App *app) {
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-
+	cam.applyRotation(1, 0, 0, PI);
 	cam.updateCamera();
 
 	createCommandBuffer();
@@ -88,11 +80,9 @@ void initTGEngine(App *app) {
 			uint32_t old_size = main_buffer.count_of_points;
 			app->drawloop(&main_buffer);
 			main_buffer.end();
-			if (old_size != main_buffer.count_of_points) {
-				vkDeviceWaitIdle(device);
-				fillCommandBuffer(&main_buffer);
-			}
 		}
+		vkDeviceWaitIdle(device);
+		fillCommandBuffer(&main_buffer);
 		startdraw();
 		draw();
 		present();

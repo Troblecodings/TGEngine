@@ -1,10 +1,13 @@
 #include "Mouse.hpp"
 
+glm::vec2 last_pos;
 std::vector<Mouse*> mouse_handler;
 
 void inputupdate(glm::vec2 pos) {
+	glm::vec2 delta_pos = pos - last_pos;
+	last_pos = pos;
 	for each(Mouse* ptr in mouse_handler) {
-		ptr->mouse_move(pos);
+		ptr->mouse_move(pos, delta_pos);
 	}
 }
 

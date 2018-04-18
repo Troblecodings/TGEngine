@@ -5,6 +5,10 @@ layout(binding = 0) uniform format_block {
    vec2 multiplier;
 } image_format_block;
 
+layout(binding = 2) uniform mat_block{
+    mat4 rotation_matrix;
+} matrix_block;
+
 layout(location = 0) in vec3 posIn;
 layout(location = 1) in vec4 colorIn;
 layout(location = 2) in vec2 uv;
@@ -19,7 +23,7 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = vec4(posIn.x * image_format_block.multiplier.x, posIn.y * image_format_block.multiplier.y, posIn.z, 1);
+    gl_Position = vec4(posIn, 1) * matrix_block.rotation_matrix * vec4(image_format_block.multiplier, 1, 1);
     colorOut = colorIn;
     uvOut = uv;
     only_color = color_only;

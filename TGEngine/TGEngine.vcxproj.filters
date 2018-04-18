@@ -147,9 +147,6 @@
     <ClInclude Include="Pipeline\Buffer\VertexBuffer.hpp">
       <Filter>Headerdateien\Pipeline\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\Window\Win32Window.hpp">
-      <Filter>Headerdateien\Pipeline\Window</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\Window\Window.hpp">
       <Filter>Headerdateien\Pipeline\Window</Filter>
     </ClInclude>
@@ -271,9 +268,6 @@
     </ClCompile>
     <ClCompile Include="Pipeline\Buffer\VertexBuffer.cpp">
       <Filter>Quelldateien\Pipeline\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Window\Win32Window.cpp">
-      <Filter>Quelldateien\Pipeline\Window</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Window\Window.cpp">
       <Filter>Quelldateien\Pipeline\Window</Filter>

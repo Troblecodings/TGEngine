@@ -5,10 +5,11 @@
 struct Mouse {
 
 	SINCE(0, 0, 3)
-	virtual void mouse_move(glm::vec2 pos) {};
+	virtual void mouse_move(glm::vec2 pos, glm::vec2 deltapos) {};
 
 };
 
+extern glm::vec2 last_pos;
 extern std::vector<Mouse*> mouse_handler;
 
 SINCE(0, 0, 3)

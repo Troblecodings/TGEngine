@@ -15,4 +15,5 @@ int main() {
 void Editor::drawloop(VertexBuffer* buffer)
 {
 	drawRectangleWithTexture({ {0, 0, 0}, {1,1,1,1} }, 1, 1, buffer);
+	//drawRectangle({ { 0, 0, 0 },{ 1, 1, 1, 1 } }, 1, 1, buffer);
 }

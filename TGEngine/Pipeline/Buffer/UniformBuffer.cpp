@@ -26,6 +26,7 @@ void createUniformBuffer(UniformBuffer* buffer){
 }
 
 void fillUniformBuffer(UniformBuffer* buffer, uint8_t* input, uint32_t size) {
+	vkDeviceWaitIdle(device);
 	mapMemory(buffer->index, &buffer->memory);
 	memcpy(buffer->memory, input, size);
 	unmapMemory();
