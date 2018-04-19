@@ -108,7 +108,7 @@
       <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
-      <ShowIncludes>true</ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <EnableModules>false</EnableModules>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -137,7 +137,7 @@
       <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
-      <ShowIncludes>true</ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -166,7 +166,7 @@
       <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
-      <ShowIncludes>true</ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -197,7 +197,7 @@
       <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
-      <ShowIncludes>true</ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>

@@ -143,7 +143,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	vkGetDeviceQueue(device, queue_index, 0, &queue);
 
 	VkBool32 isSupported;
-	last_result = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, surface, &isSupported);
+	last_result = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, window_list[0]->surface, &isSupported);
 	HANDEL(last_result)
 
 	if (!isSupported) {

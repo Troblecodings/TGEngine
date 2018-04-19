@@ -8,15 +8,17 @@ using namespace std;
 
 void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
-	createWindow(properties);
-	createInstance(properties, { 
+	createWindowClass();
+	createWindow(&app->main_window, &properties);
+	createInstance(&properties, { 
         #ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
         #endif
 		"VK_LAYER_VALVE_steam_overlay", 
 		"VK_LAYER_NV_optimus"
 	}, { });
-	createWindowSurface();
+
+	app->main_window.createWindowSurface();
 	createDevice({}, {});
 	prePipeline();
 	createRenderpass();
@@ -34,7 +36,7 @@ void initTGEngine(App *app) {
 	initAllTextures();
 
 	Camera cam;
-	cam.speed = 0.001;
+	cam.speed = 0.001f;
 	createCamera(&cam);
 
 	createPipelineLayout();
@@ -49,16 +51,16 @@ void initTGEngine(App *app) {
 	allocateAllBuffers();
 	createAllDescriptorSets();
 
-	if (height > width) {		
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, (float)((float)width / (float)height)), sizeof(glm::vec2));
+	if (app->main_window.height > app->main_window.width) {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
 	}
-	else if (height < width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2((float)((float)height / (float)width), 1), sizeof(glm::vec2));
+	else if (app->main_window.height < app->main_window.width) {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
 	}
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-	cam.applyRotation(1, 0, 0, PI);
+	cam.applyRotation(1.0f, 0, 0, PI);
 	cam.updateCamera();
 
 	createCommandBuffer();
@@ -69,8 +71,8 @@ void initTGEngine(App *app) {
 	uint64_t time = 0;
 
 	while (true) {
-		window.pollevents();
-		if (window.close_request) {
+		app->main_window.pollevents();
+		if (app->main_window.close_request) {
 			break;
 		}
 		uint64_t c_time = std::clock();
@@ -99,6 +101,6 @@ void initTGEngine(App *app) {
 	destroyShaders();
 	destroyRenderPass();
 	destroyDevice();
-	destroyWindow();
+	app->main_window.destroy();
 	destroyInstance();
 }

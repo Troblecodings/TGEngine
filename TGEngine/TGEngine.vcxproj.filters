@@ -180,6 +180,9 @@
     <ClInclude Include="IO\Mouse.hpp">
       <Filter>Headerdateien\IO</Filter>
     </ClInclude>
+    <ClInclude Include="stdbase.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">

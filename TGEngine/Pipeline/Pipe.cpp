@@ -7,12 +7,14 @@ VkRect2D scissor;
 
 void createPipeline() {
 
+	Window* win = window_list[0];
+
     //Viewport and so on
 	viewport = {
 		0.0F,
 		0.0F,
-		static_cast<float>(width),
-		static_cast<float>(height),
+		static_cast<float>(win->width),
+		static_cast<float>(win->height),
 		0,
 		1.0F
 	};
@@ -23,8 +25,8 @@ void createPipeline() {
 			0
         },
 	    {
-			width,
-			height
+			static_cast<uint32_t>(win->width),
+			static_cast<uint32_t>(win->height)
 	    }
 	};
 

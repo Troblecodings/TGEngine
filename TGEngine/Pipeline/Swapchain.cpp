@@ -4,8 +4,11 @@ VkSwapchainKHR swapchain;
 VkSurfaceCapabilitiesKHR surface_capabilities;
 
 void createSwapchain() {
+	Window* win = window_list[0];
 
-	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, surface, &surface_capabilities);
+	OUT_LV_DEBUG(win->surface)
+
+	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, win->surface, &surface_capabilities);
 	HANDEL(last_result)
 
 	image_count = math::u_min(math::u_max(image_count, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
@@ -14,13 +17,13 @@ void createSwapchain() {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 	    nullptr,
 	    0,
-	    surface,
+		win->surface,
 	    image_count,
 	    used_format.format,
 		used_format.colorSpace,
 		{
-			width,
-			height
+		    win->width,
+		    win->height
 		},
 	    1,
 		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,

@@ -54,6 +54,7 @@
     <ClInclude Include="Pipeline\Swapchain.hpp" />
     <ClInclude Include="Pipeline\Window\Window.hpp" />
     <ClInclude Include="Ressources\ShaderData.hpp" />
+    <ClInclude Include="stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Util\Annotations.hpp" />
     <ClInclude Include="Util\Debug.hpp" />

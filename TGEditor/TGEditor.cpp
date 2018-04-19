@@ -2,13 +2,13 @@
 
 
 int main() {
-	Editor editor = {};
+	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
 	Texture tex = {
 		"ODST_Helmet.png"
 	};
 	createTexture(&tex);
-	initTGEngine(&editor);
+	initTGEngine((App*) &editor);
 	return 0;
 }
 

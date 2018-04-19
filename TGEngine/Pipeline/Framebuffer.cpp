@@ -5,6 +5,7 @@ std::vector<VkImageView> image_view;
 std::vector<VkImage> image;
 
 void createFramebuffer() {
+	Window* win = window_list[0];
 
 	image.resize(image_count);
 	vkGetSwapchainImagesKHR(device, swapchain, &image_count, image.data());
@@ -47,8 +48,8 @@ void createFramebuffer() {
 		    render_pass,
 		    1,
 		    &image_view[i],
-		    width,
-		    height,
+			win->width,
+			win->height,
 		    1
 		};
 		last_result = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);

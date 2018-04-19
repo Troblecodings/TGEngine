@@ -22,5 +22,5 @@ void Camera::mouse_move(glm::vec2 pos, glm::vec2 delta)
 {
 	this->applyRotation(0, 1, 0, delta.x * -this->speed * PIx2);
 	this->applyRotation(1, 0, 0, delta.y * this->speed * PIx2);
-	//this->updateCamera();
+	this->updateCamera();
 }

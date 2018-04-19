@@ -8,18 +8,18 @@ VkPresentModeKHR used_present_mode;
 void prePipeline() {
 	uint32_t count = 0;
 
-	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, surface, &count, nullptr);
+	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
 	HANDEL(last_result)
 
 	surface_format.resize(count);
-	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, surface, &count, surface_format.data());
+	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, surface_format.data());
 	HANDEL(last_result)
 
-	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, surface, &count, nullptr);
+	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
 	HANDEL(last_result)
 
 	present_mode.resize(count);
-	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, surface, &count, present_mode.data());
+	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, present_mode.data());
 	HANDEL(last_result)
 
 	used_format = surface_format[0];

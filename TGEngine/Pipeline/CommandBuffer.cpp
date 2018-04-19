@@ -120,6 +120,7 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 			1 
 		}
 	};
+	Window* win = window_list[0];
 
 	size_t count = 0;
 	for (VkCommandBuffer buffer : command_buffers) {
@@ -151,8 +152,8 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 			{
 				0,
 				0,
-				width,
-				height
+				win->width,
+				win->height
 			},
 		    1,
 			&clear_color

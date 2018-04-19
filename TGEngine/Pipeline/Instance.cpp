@@ -4,13 +4,13 @@ VkResult last_result;
 VkInstance instance;
 VkAllocationCallbacks allocator;
 
-void createInstance(nio::Properties propertys, std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable) {
+void createInstance(nio::Properties* propertys, std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable) {
 
 	VkApplicationInfo app_info = { 
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
 		nullptr,
-		propertys.getString("app_name").value,
-		propertys.getInt("version").rvalue,
+		propertys->getString("app_name").value,
+		propertys->getInt("version").rvalue,
 	    "TGEngine",
 	    VK_MAKE_VERSION(0, 0, 3),
 		VK_API_VERSION_1_1

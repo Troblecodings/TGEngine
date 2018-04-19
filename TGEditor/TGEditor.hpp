@@ -1,7 +1,8 @@
 #pragma once
 
-#undef DEBUG
 #define DEBUG
+#include <stdbase.hpp>
+
 #include <TGEngine.hpp>
 #include <Drawlib\DrawLib.hpp>
 #include <IO\LoadFont.hpp>
@@ -10,5 +11,7 @@
 
 struct Editor : App
 {
+	Editor() : App() {}
+
 	virtual void drawloop(VertexBuffer* verticies);
 };
