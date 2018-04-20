@@ -120,7 +120,8 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 
 	VkPhysicalDeviceFeatures device_features_to_enable = {};
 	device_features_to_enable.samplerAnisotropy = device_features.samplerAnisotropy;
-	device_features_to_enable.alphaToOne = VK_FALSE;
+	device_features_to_enable.depthClamp = device_features.depthClamp;
+
 
 	//Make Device
 	VkDeviceCreateInfo device_create_info = {

@@ -127,10 +127,10 @@ void initAllTextures() {
 		    VK_TRUE,
 		    16,
 		    VK_FALSE,
-		    VK_COMPARE_OP_ALWAYS,
+		    VK_COMPARE_OP_NEVER,
 		    0,
 		    0,
-			VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,
+			VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		    VK_FALSE
 		};
 		last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &ptr->image_sampler);

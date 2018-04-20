@@ -31,7 +31,7 @@ void createSwapchain() {
 	    0,
 		nullptr,
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-	    VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 	    used_present_mode,
 	    VK_FALSE,
 	    VK_NULL_HANDLE
