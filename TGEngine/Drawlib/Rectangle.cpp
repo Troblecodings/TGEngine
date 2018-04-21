@@ -1,29 +1,41 @@
-#include "Rectangle.hpp"
+                                      #include "Rectangle.hpp"
 
 void drawRectangle(Vertex vert, float xsize, float ysize, VertexBuffer* buffer) {
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x - xsize, vert.position.y - ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x + xsize, vert.position.y + ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
-	buffer->addColorOnly({
+	buffer->add({
 		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
-		vert.color
+		vert.color,
+		vert.uv,
+		vert.only_color
 	});
 }
 

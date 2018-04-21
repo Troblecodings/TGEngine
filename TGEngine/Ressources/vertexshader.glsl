@@ -16,7 +16,7 @@ layout(location = 3) in uint color_only;
 
 layout(location = 0) out vec4 colorOut;
 layout(location = 1) out vec2 uvOut;
-layout(location = 2) out uint only_color;
+layout(location = 2) flat out uint only_color;
 
 out gl_PerVertex{
    vec4 gl_Position;
