@@ -39,6 +39,45 @@ void drawRectangle(Vertex vert, float xsize, float ysize, VertexBuffer* buffer) 
 	});
 }
 
+void drawRectangleZ(Vertex vert, float xsize, float depth, VertexBuffer* buffer) {
+	buffer->add({
+		{ vert.position.x - xsize, vert.position.y, vert.position.z - depth},
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+	buffer->add({
+		{ vert.position.x + xsize, vert.position.y, vert.position.z - depth},
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+	buffer->add({
+		{ vert.position.x - xsize, vert.position.y , vert.position.z + depth },
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+	buffer->add({
+		{ vert.position.x + xsize, vert.position.y, vert.position.z - depth},
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+	buffer->add({
+		{ vert.position.x + xsize, vert.position.y, vert.position.z + depth},
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+	buffer->add({
+		{ vert.position.x - xsize, vert.position.y, vert.position.z + depth},
+		vert.color,
+		vert.uv,
+		vert.only_color
+		});
+}
+
 void drawRectangleWithTexture(Vertex vert, float xsize, float ysize, VertexBuffer* buffer) {
 	buffer->add({
 		{ vert.position.x - xsize, vert.position.y - ysize, 0 },

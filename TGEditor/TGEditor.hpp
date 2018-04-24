@@ -15,3 +15,9 @@ struct Editor : App
 
 	virtual void drawloop(VertexBuffer* verticies);
 };
+
+void drawGrid(VertexBuffer* buffer);
+
+void drawLineH(Vertex start, float length, VertexBuffer* buffer);
+
+void drawLineV(Vertex start, float length, VertexBuffer* buffer);

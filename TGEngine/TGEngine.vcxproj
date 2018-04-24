@@ -35,6 +35,7 @@
     <ClInclude Include="IO\Mouse.hpp" />
     <ClInclude Include="IO\ObjLoader.hpp" />
     <ClInclude Include="IO\Properties.hpp" />
+    <ClInclude Include="Keyboard.hpp" />
     <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp" />
     <ClInclude Include="Pipeline\Buffer\Memory.hpp" />
     <ClInclude Include="Pipeline\Buffer\Texturebuffer.hpp" />
@@ -77,6 +78,7 @@
     <ClCompile Include="IO\Mouse.cpp" />
     <ClCompile Include="IO\ObjLoader.cpp" />
     <ClCompile Include="IO\Properties.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Pipeline\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Pipeline\Buffer\Memory.cpp" />
     <ClCompile Include="Pipeline\Buffer\Texturebuffer.cpp" />

@@ -2,6 +2,10 @@
 
 #include "..\stdbase.hpp"
 
+extern bool FIRST_MOUSE_BUTTON;
+extern bool SECOND_MOUSE_BUTTON;
+extern bool THIRED_MOUSE_BUTTON;
+
 struct Mouse {
 
 	SINCE(0, 0, 3)

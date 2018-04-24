@@ -60,7 +60,6 @@ void initTGEngine(App *app) {
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-	cam.applyRotation(1.0f, 0, 0, PI);
 	cam.updateCamera();
 
 	createCommandBuffer();

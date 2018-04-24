@@ -7,8 +7,8 @@
     <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
-    <int name="height" value="500"/>
-    <int name="width" value="600"/>
+    <int name="height" value="1061"/>
+    <int name="width" value="1920"/>
     <boolean name="center" value="true"/>
     <!--Will be ignored if center is true-->
     <int name="posx" value="0" />

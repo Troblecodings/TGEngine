@@ -47,6 +47,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			GetWindowRect(hwnd, rect);
 			ClipCursor(rect);
 		}
+		else if (msg == WM_LBUTTONDOWN) {
+			FIRST_MOUSE_BUTTON = true;
+		}
+		else if (msg == WM_LBUTTONUP) {
+			FIRST_MOUSE_BUTTON = false;
+		}
+		else if (msg == WM_MBUTTONDOWN) {
+			THIRED_MOUSE_BUTTON = true;
+		}
+		else if (msg == WM_MBUTTONUP) {
+			THIRED_MOUSE_BUTTON = false;
+		}
+		else if (msg == WM_RBUTTONDOWN) {
+			SECOND_MOUSE_BUTTON = true;
+		}
+		else if (msg == WM_RBUTTONUP) {
+			SECOND_MOUSE_BUTTON = false;
+		} 
 		else if (msg == WM_KILLFOCUS) {
 			a_window->focused = false;
 		}
