@@ -40,7 +40,7 @@ struct Texture {
 
 extern std::vector<Texture*> texture_buffers;
 extern Descriptor* texture_descriptor;
-extern VkSampler image_sampler;
+extern VkSampler tex_image_sampler;
 
 SINCE(0, 0, 2)
 void createTexture(Texture* tex);

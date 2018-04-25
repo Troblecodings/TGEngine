@@ -2,7 +2,7 @@
 
 std::vector<Texture*> texture_buffers;
 Descriptor* texture_descriptor;
-VkSampler image_sampler;
+VkSampler tex_image_sampler;
 
 void createTexture(Texture* tex) {
 	uint32_t size = texture_buffers.size();
@@ -31,7 +31,7 @@ void initAllTextures() {
 		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		VK_FALSE
 	};
-	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &image_sampler);
+	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
 	for each(Texture* ptr in texture_buffers) {
@@ -144,7 +144,7 @@ void initAllTextures() {
 		1,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 		VK_NULL_HANDLE,
-		image_sampler,
+		tex_image_sampler,
 		NULL
 	};
 	addDescriptor(texture_descriptor);

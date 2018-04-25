@@ -64,7 +64,6 @@ void initTGEngine(App *app) {
 
 	createCommandBuffer();
 	singleTimeCommand();
-	updateShader();
 	createSemaphores();
 
 	uint64_t time = 0;
