@@ -17,13 +17,11 @@ struct Texture {
 	stbi_uc* image_data;
 	VkImage image;
 	VkImageView image_view;
-	VkSampler image_sampler;
 	VkBuffer buffer;
 	VkDeviceMemory d_memory;
 	VkDeviceMemory buffer_memory;
 	VkMemoryRequirements buffer_requierments;
 	VkMemoryRequirements requierments;
-	Descriptor desc;
 	void* memory;
 
 	DEPRECATED
@@ -41,6 +39,8 @@ struct Texture {
 };
 
 extern std::vector<Texture*> texture_buffers;
+extern Descriptor* texture_descriptor;
+extern VkSampler image_sampler;
 
 SINCE(0, 0, 2)
 void createTexture(Texture* tex);
@@ -48,8 +48,8 @@ void createTexture(Texture* tex);
 SINCE(0, 0, 2)
 void initAllTextures();
 
-SINCE(0, 0, 2)
-void updateShader();
+SINCE(0, 0, 3)
+void setTexture(Texture* tex);
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);

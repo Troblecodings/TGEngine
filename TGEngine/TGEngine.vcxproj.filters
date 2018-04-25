@@ -310,16 +310,10 @@
     <None Include="Ressources\fragmentshader.spv">
       <Filter>Ressourcendateien</Filter>
     </None>
-    <None Include="Ressources\text.mtl">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="Ressources\vertexshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Ressources\vertexshader.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="Ressources\text.obj">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

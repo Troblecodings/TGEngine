@@ -12,7 +12,7 @@ For updates please follow the [official twitter account of Troblecodings](https:
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current built version: <strong>1.1.70.1</strong><br>
+Current built version: <strong>1.1.73.0</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>

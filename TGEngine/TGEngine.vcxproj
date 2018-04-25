@@ -106,21 +106,11 @@
   <ItemGroup>
     <None Include="Ressources\fragmentshader.glsl" />
     <None Include="Ressources\fragmentshader.spv" />
-    <None Include="Ressources\text.mtl" />
     <None Include="Ressources\vertexshader.glsl" />
     <None Include="Ressources\vertexshader.spv" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Ressources\Layers.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Ressources\text.obj">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

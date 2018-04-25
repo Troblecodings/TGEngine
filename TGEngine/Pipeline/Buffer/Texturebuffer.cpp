@@ -1,6 +1,8 @@
 #include "Texturebuffer.hpp"
 
 std::vector<Texture*> texture_buffers;
+Descriptor* texture_descriptor;
+VkSampler image_sampler;
 
 void createTexture(Texture* tex) {
 	uint32_t size = texture_buffers.size();
@@ -9,6 +11,29 @@ void createTexture(Texture* tex) {
 }
 
 void initAllTextures() {
+	VkSamplerCreateInfo sampler_create_info = {
+		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+		nullptr,
+		0,
+		VK_FILTER_LINEAR,
+		VK_FILTER_LINEAR,
+		VK_SAMPLER_MIPMAP_MODE_LINEAR,
+		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+		0,
+		VK_TRUE,
+		16,
+		VK_FALSE,
+		VK_COMPARE_OP_NEVER,
+		0,
+		0,
+		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
+		VK_FALSE
+	};
+	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &image_sampler);
+	HANDEL(last_result)
+
 	for each(Texture* ptr in texture_buffers) {
 		ptr->image_data = stbi_load(ptr->texture_path, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
 		VkImageCreateInfo image_create_info = {
@@ -112,46 +137,22 @@ void initAllTextures() {
 		};
 		last_result = vkCreateImageView(device, &image_view_create_info, nullptr, &ptr->image_view);
 		HANDEL(last_result)
-
-		VkSamplerCreateInfo sampler_create_info = {
-			VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-		    nullptr,
-		    0,
-			VK_FILTER_LINEAR,
-			VK_FILTER_LINEAR,
-			VK_SAMPLER_MIPMAP_MODE_LINEAR,
-			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		    0,
-		    VK_TRUE,
-		    16,
-		    VK_FALSE,
-		    VK_COMPARE_OP_NEVER,
-		    0,
-		    0,
-			VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
-		    VK_FALSE
-		};
-		last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &ptr->image_sampler);
-		HANDEL(last_result)
-
-		ptr->desc = {
-			VK_SHADER_STAGE_FRAGMENT_BIT,
-			1,
-			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-			VK_NULL_HANDLE,
-			ptr->image_sampler,
-			ptr->image_view
-		};
-		addDescriptor(&ptr->desc);
 	}
+
+	texture_descriptor = new Descriptor {
+		VK_SHADER_STAGE_FRAGMENT_BIT,
+		1,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		VK_NULL_HANDLE,
+		image_sampler,
+		NULL
+	};
+	addDescriptor(texture_descriptor);
 }
 
-void updateShader() {
-	for each(Texture* tex in texture_buffers) {
-		updateDescriptorSet(&tex->desc, 0);
-	}
+void setTexture(Texture* tex) {
+	texture_descriptor->image_view = tex->image_view;
+	updateDescriptorSet(texture_descriptor, 0);
 }
 
 void Texture::addBarrier(VkCommandBuffer buffer, VkImageLayout oldLayout, VkImageLayout newLayout) {
@@ -210,7 +211,6 @@ void destroyBufferofTexture(Texture* tex) {
 
 
 void destroyTexture(Texture* tex) {
-	vkDestroySampler(device, tex->image_sampler, nullptr);
 	vkDestroyImageView(device, tex->image_view, nullptr);
 	vkFreeMemory(device, tex->d_memory, nullptr);
 	vkDestroyImage(device, tex->image, nullptr);
@@ -218,6 +218,7 @@ void destroyTexture(Texture* tex) {
 
 void destroyAllTextures() {
 	last_result = vkDeviceWaitIdle(device);
+	vkDestroySampler(device, image_sampler, nullptr);
 	HANDEL(last_result)
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
