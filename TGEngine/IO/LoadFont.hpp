@@ -5,6 +5,8 @@
 #include <fstream>
 #include "..\Util\Debug.hpp"
 #include "FontTables.hpp"
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "..\stb\stb_truetype.h"
 
 #define SHIFT_ADD(chr, chr_array) if(strlen(chr_array) < 4){ chr_array[strlen(chr_array)] = chr; }\
 else { chr_array[0] = chr_array[1];chr_array[1] = chr_array[2];chr_array[2] = chr_array[3];chr_array[3] = chr; }

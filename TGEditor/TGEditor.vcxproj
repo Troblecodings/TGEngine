@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -116,8 +116,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -134,7 +134,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -143,8 +143,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -163,7 +163,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -174,8 +174,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -194,7 +194,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -205,8 +205,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

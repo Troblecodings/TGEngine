@@ -1,6 +1,11 @@
 #include "LoadFont.hpp"
 
+
+
 void loadfont(char* path) {
+	
+
+/*
 	std::ifstream stream(path, std::ios::ate | std::ios::binary);
 
 	if (!stream.is_open()) {
@@ -34,6 +39,7 @@ void loadfont(char* path) {
 			}
 		}
 	}
+*/
 }
 
 uint32_t FontTableEntry::createIfNotExists(char* nm)

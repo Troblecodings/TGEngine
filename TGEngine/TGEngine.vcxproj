@@ -26,6 +26,7 @@
     <ClInclude Include="Drawlib\DrawLib.hpp" />
     <ClInclude Include="Drawlib\Ellipse.hpp" />
     <ClInclude Include="Drawlib\Rectangle.hpp" />
+    <ClInclude Include="FBX_Loader.hpp" />
     <ClInclude Include="GameContent\Camera.hpp" />
     <ClInclude Include="IO\Deflate.hpp" />
     <ClInclude Include="IO\Files.hpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="Drawlib\Circle.cpp" />
     <ClCompile Include="Drawlib\Ellipse.cpp" />
     <ClCompile Include="Drawlib\Rectangle.cpp" />
+    <ClCompile Include="FBX_Loader.cpp" />
     <ClCompile Include="GameContent\Camera.cpp" />
     <ClCompile Include="IO\Deflate.cpp" />
     <ClCompile Include="IO\Files.cpp" />
@@ -183,7 +185,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -194,10 +196,10 @@
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -210,7 +212,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -220,10 +222,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -238,7 +240,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -251,10 +253,10 @@
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -269,7 +271,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -281,10 +283,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
