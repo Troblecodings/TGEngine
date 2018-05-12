@@ -1,9 +1,12 @@
 #include "TGEditor.hpp"
 
-
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
+
+	mesh = load("lul.fbx");
+	OUT_LV_DEBUG(mesh)
+
 	Texture tex = {
 		"ODST_Helmet.png"
 	};
@@ -40,4 +43,5 @@ void drawGrid(VertexBuffer* buffer) {
 void Editor::drawloop(VertexBuffer* buffer)
 {
 	drawGrid(buffer);
+	addToDraw(mesh, buffer);
 }

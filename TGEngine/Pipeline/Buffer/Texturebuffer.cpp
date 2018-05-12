@@ -218,8 +218,9 @@ void destroyTexture(Texture* tex) {
 
 void destroyAllTextures() {
 	last_result = vkDeviceWaitIdle(device);
-	vkDestroySampler(device, image_sampler, nullptr);
 	HANDEL(last_result)
+
+	vkDestroySampler(device, tex_image_sampler, nullptr);
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
 	}

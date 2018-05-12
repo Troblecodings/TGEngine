@@ -4,6 +4,7 @@
 #include <time.h>
 #include <chrono>
 #include <thread>
+#include <fbxsdk.h>
 
 SINCE(0, 0, 1)
 #define printExtend(x) cout << "width:" << x.width << " height:" << x.height << endl; 
@@ -26,3 +27,12 @@ void error(char* errorname, int errorcode);
 
 SINCE(0, 0, 1)
 void ErrorCallback(int, const char* err_str);
+
+SINCE(0, 0, 3)
+void PrintNode(FbxNode* pNode);
+
+SINCE(0, 0, 3)
+void PrintAttribute(FbxNodeAttribute* pAttribute);
+
+SINCE(0, 0, 3)
+FbxString GetAttributeTypeName(FbxNodeAttribute::EType type);

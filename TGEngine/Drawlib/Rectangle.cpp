@@ -2,37 +2,37 @@
 
 void drawRectangle(Vertex vert, float xsize, float ysize, VertexBuffer* buffer) {
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
 	});
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
 	});
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		vert.uv,
 		vert.only_color
