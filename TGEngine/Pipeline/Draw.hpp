@@ -7,6 +7,11 @@
 #include "CommandBuffer.hpp"
 #include "Buffer\IndexBuffer.hpp"
 
+extern VkSemaphoreCreateInfo semaphore_create_info;
+extern VkSemaphore signal_semaphore;
+extern VkSemaphore wait_semaphore;
+extern std::vector<VkPipelineStageFlags> stage_flags;
+extern uint32_t image_index;
 
 SINCE(0, 0, 3)
 void startdraw();

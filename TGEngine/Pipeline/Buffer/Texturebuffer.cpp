@@ -28,14 +28,23 @@ void initAllTextures() {
 		VK_COMPARE_OP_NEVER,
 		0,
 		0,
-		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
+		VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK,
 		VK_FALSE
 	};
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
 	for each(Texture* ptr in texture_buffers) {
-		ptr->image_data = stbi_load(ptr->texture_path, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
+		FILE* file = fopen(ptr->texture_path, "rb");
+
+#ifdef DEBUG
+		if (file == NULL) {
+			OUT_LV_DEBUG("Can not open " << ptr->texture_path << ", that shouldn't happen!")
+			continue;
+		}
+#endif // DEBUG
+
+		ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
 		VkImageCreateInfo image_create_info = {
 			VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			nullptr,
@@ -90,7 +99,7 @@ void initAllTextures() {
 		};
 		last_result = vkCreateBuffer(device, &buffer_create_info, nullptr, &ptr->buffer);
 		HANDEL(last_result)
-
+		
 		for (index = 0; index < memory_properties.memoryTypeCount; index++) {
 			if (memory_properties.memoryTypes[index].propertyFlags & (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) break;
 		}
@@ -150,9 +159,10 @@ void initAllTextures() {
 	addDescriptor(texture_descriptor);
 }
 
-void setTexture(Texture* tex) {
+void setTexture(Texture* tex, VertexBuffer* buffer) {
 	texture_descriptor->image_view = tex->image_view;
 	updateDescriptorSet(texture_descriptor, 0);
+	return;
 }
 
 void Texture::addBarrier(VkCommandBuffer buffer, VkImageLayout oldLayout, VkImageLayout newLayout) {

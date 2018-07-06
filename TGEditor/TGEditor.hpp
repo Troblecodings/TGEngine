@@ -10,7 +10,9 @@
 #include <Pipeline\CommandBuffer.hpp>
 #include "IO\ImagePNG.hpp"
 
-static fbxsdk::FbxNode* mesh;
+extern Texture tex1;
+extern Texture tex2;
+extern fbxsdk::FbxMesh* mesh;
 
 struct Editor : App
 {

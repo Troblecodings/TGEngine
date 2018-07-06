@@ -62,15 +62,16 @@ void initTGEngine(App *app) {
 	}
 	cam.updateCamera();
 
-	setTexture(texture_buffers[0]);
-
 	createCommandBuffer();
 	singleTimeCommand();
 	createSemaphores();
 
+	setTexture(texture_buffers[0], NULL);
+
 	uint64_t time = 0;
 
 	while (true) {
+		startdraw();
 		app->main_window.pollevents();
 		if (app->main_window.close_request) {
 			break;
@@ -83,9 +84,9 @@ void initTGEngine(App *app) {
 			app->drawloop(&main_buffer);
 			main_buffer.end();
 		}
-		vkDeviceWaitIdle(device);
+		last_result = vkDeviceWaitIdle(device);
+		HANDEL(last_result)
 		fillCommandBuffer(&main_buffer);
-		startdraw();
 		draw();
 		present();
 	}

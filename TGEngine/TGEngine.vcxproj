@@ -58,6 +58,7 @@
     <ClInclude Include="Ressources\ShaderData.hpp" />
     <ClInclude Include="stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
+    <ClInclude Include="tgstring.hpp" />
     <ClInclude Include="Util\Annotations.hpp" />
     <ClInclude Include="Util\Debug.hpp" />
     <ClInclude Include="Util\Endian.hpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="Ressources\ShaderData.cpp" />
     <ClCompile Include="stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="tgstring.cpp" />
     <ClCompile Include="Util\Debug.cpp" />
     <ClCompile Include="Util\Endian.cpp" />
     <ClCompile Include="Util\Math.cpp" />

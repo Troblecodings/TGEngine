@@ -189,6 +189,9 @@
     <ClInclude Include="FBX_Loader.hpp">
       <Filter>Headerdateien\IO</Filter>
     </ClInclude>
+    <ClInclude Include="tgstring.hpp">
+      <Filter>Headerdateien\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -306,6 +309,9 @@
       <Filter>Quelldateien\IO</Filter>
     </ClCompile>
     <ClCompile Include="FBX_Loader.cpp">
+      <Filter>Quelldateien\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="tgstring.cpp">
       <Filter>Quelldateien\IO</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,16 +1,23 @@
 #include "TGEditor.hpp"
 
+Texture tex1;
+Texture tex2;
+fbxsdk::FbxMesh* mesh;
+
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
 
 	mesh = load("lul.fbx");
-	OUT_LV_DEBUG(mesh)
 
-	Texture tex = {
+	tex1 = {
 		"ODST_Helmet.png"
 	};
-	createTexture(&tex);
+	tex2 = {
+		"LogoTM.png"
+	};
+	//createTexture(&tex1);
+	//createTexture(&tex2);
 	initTGEngine((App*) &editor);
 	return 0;
 }
@@ -43,5 +50,9 @@ void drawGrid(VertexBuffer* buffer) {
 void Editor::drawloop(VertexBuffer* buffer)
 {
 	drawGrid(buffer);
-	addToDraw(mesh, buffer);
+	FBX_Dictionary::addToDraw(buffer);
+	//setTexture(&tex1, nullptr);
+	//drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_TRUE }, 0.5, 0.5, buffer);
+	//setTexture(&tex2, nullptr);
+	//drawRectangleWithTexture({ { -0.5, -0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_TRUE }, 0.5, 0.5, buffer);
 }

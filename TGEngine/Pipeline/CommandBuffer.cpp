@@ -3,6 +3,7 @@
 
 VkCommandPool command_pool;
 std::vector<VkCommandBuffer> command_buffers;
+std::vector<VkDeviceSize> offsets = { 0 };
 
 void createCommandBuffer() {
 	command_buffers.resize(image_count);
@@ -163,9 +164,7 @@ void fillCommandBuffer(VertexBuffer* vbuffer) {
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
-		VkDeviceSize offsets[] = { 0 };
-
-		vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], offsets);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], offsets.data());
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &descriptor_set, 0, nullptr);
 

@@ -80,32 +80,32 @@ void drawRectangleZ(Vertex vert, float xsize, float depth, VertexBuffer* buffer)
 
 void drawRectangleWithTexture(Vertex vert, float xsize, float ysize, VertexBuffer* buffer) {
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		{0, 0}
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		{1, 0}
 	});
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		{0, 1}
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y - ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
 		{1, 0}
 	});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x + xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		{1, 1}
 	});
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y + ysize, 0 },
+		{ vert.position.x - xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
 		{0, 1}
 	});

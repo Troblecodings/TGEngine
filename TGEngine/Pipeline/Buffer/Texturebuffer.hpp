@@ -5,6 +5,8 @@
 #define STB_IMAGE_STATIC
 #include "..\..\..\stb\stb_image.h"
 #include "..\Descriptors.hpp"
+#include "VertexBuffer.hpp"
+#include "..\Draw.hpp"
 
 struct Texture {
 	INPUT 
@@ -49,7 +51,7 @@ SINCE(0, 0, 2)
 void initAllTextures();
 
 SINCE(0, 0, 3)
-void setTexture(Texture* tex);
+void setTexture(Texture* tex, VertexBuffer* buffer);
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);

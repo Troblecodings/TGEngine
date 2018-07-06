@@ -11,6 +11,7 @@
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;
+extern std::vector<VkDeviceSize> offsets;
 
 SINCE(0, 0, 1)
 void createCommandBuffer();
