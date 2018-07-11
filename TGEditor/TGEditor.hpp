@@ -9,6 +9,7 @@
 #include <IO\LoadFont.hpp>
 #include <Pipeline\CommandBuffer.hpp>
 #include "IO\ImagePNG.hpp"
+#include <Vertex.hpp>
 
 extern Texture tex1;
 extern Texture tex2;

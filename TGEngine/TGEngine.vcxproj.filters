@@ -159,9 +159,6 @@
     <ClInclude Include="Util\Math.hpp">
       <Filter>Headerdateien\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Vertex.hpp">
-      <Filter>Headerdateien\Util</Filter>
-    </ClInclude>
     <ClInclude Include="IO\Deflate.hpp">
       <Filter>Headerdateien\IO</Filter>
     </ClInclude>

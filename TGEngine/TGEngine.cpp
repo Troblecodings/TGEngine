@@ -23,10 +23,10 @@ void initTGEngine(App *app) {
 	prePipeline();
 	createRenderpass();
 	createShader();
-	createShaderInput(0, offsetof(Vertex, position), VK_FORMAT_R32G32B32_SFLOAT);
+	createShaderInput(0, offsetof(Vertex, pos), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 	createShaderInput(2, offsetof(Vertex, uv), VK_FORMAT_R32G32_SFLOAT);
-	createShaderInput(3, offsetof(Vertex, only_color), VK_FORMAT_R32_UINT);
+	createShaderInput(3, offsetof(Vertex, color_only), VK_FORMAT_R32_UINT);
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),
@@ -65,8 +65,6 @@ void initTGEngine(App *app) {
 	createCommandBuffer();
 	singleTimeCommand();
 	createSemaphores();
-
-	setTexture(texture_buffers[0], NULL);
 
 	uint64_t time = 0;
 

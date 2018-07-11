@@ -6,7 +6,7 @@ void loadPNGData(Texture* texture) {
 	char PNG_START[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
 	std::vector<uint8_t> buffer(8);
-	std::vector<Color> PLTE;
+	std::vector<uint8_t*> PLTE;
 	fread(buffer.data(), sizeof(unsigned char), 8, fileptr);
 	OUT_LV_DEBUG(buffer.data())
 	if (memcmp(buffer.data(), PNG_START, 8) == 0) {
@@ -54,9 +54,8 @@ void loadPNGData(Texture* texture) {
 				PLTE.resize(chunksize / 3);
 				for (size_t i = 0; i < PLTE.size(); i++)
 				{
-					fread(&PLTE[i].r, sizeof(uint8_t), 1, fileptr);
-					fread(&PLTE[i].g, sizeof(uint8_t), 1, fileptr);
-					fread(&PLTE[i].b, sizeof(uint8_t), 1, fileptr);
+					PLTE[i] = new uint8_t[3];
+					fread(PLTE[i], sizeof(uint8_t), 3, fileptr);
 				}
 			}
 			else if (BUFFER_COMPARE(buffer, "IDAT")) {

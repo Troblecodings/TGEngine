@@ -10,6 +10,8 @@ namespace FBX_Dictionary {
 		for (size_t r = 0; r < FBX_Dictionary::names.size(); r++)
 		{
 			FbxMesh* mesh = FBX_Dictionary::fbx_meshes[r];
+			FbxStringList lUVNames;
+			mesh->GetUVSetNames(lUVNames);
 			Texture* tex = &FBX_Dictionary::textures[r];
 			FbxVector4* vertexArray = mesh->GetControlPoints();
 			glm::vec4 color = FBX_Dictionary::colors[r];
@@ -24,11 +26,16 @@ namespace FBX_Dictionary {
 					fbxsdk::FbxVector2 vector;
 					glm::vec2 uv = {};
 					bool unmapped;
-					if (mesh->GetPolygonVertexUV(j, i, nullptr, vector, unmapped) && !unmapped) {
-						uv = { (float)vector.mData[0], (float)vector.mData[1] };
+					if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
+						uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
 					}
+#ifdef DEBUG
+					else {
+						OUT_LV_DEBUG(vector.mData[1])
+					}
+#endif
 					FbxDouble* data = vertexArray[index].mData;
-					buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] }, color, uv, !tex });
+					buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] }, { color[0], color[1], color[2], color[3] }, { uv[0], uv[1] }, !tex });
 				}
 			}
 		}

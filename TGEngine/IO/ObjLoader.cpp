@@ -54,8 +54,13 @@ namespace obj {
 					{
 					case obj::VERTEX:
 						size = verticies.size();
-						verticies[size].position = { stof(data[0]),  stof(data[1]), stof(data[2])};
-						verticies[size].color = mat.diffuse[material_index];
+						verticies[size].pos[0] = stof(data[0]);
+						verticies[size].pos[1] = stof(data[1]);
+						verticies[size].pos[2] = stof(data[2]);
+						verticies[size].color[0] = mat.diffuse[material_index].r;
+						verticies[size].color[1] = mat.diffuse[material_index].g;
+						verticies[size].color[2] = mat.diffuse[material_index].b;
+						verticies[size].color[3] = mat.diffuse[material_index].a;
 						break;
 					case obj::INDEX:
 						size = index.size();

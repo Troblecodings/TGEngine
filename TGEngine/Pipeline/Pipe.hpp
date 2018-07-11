@@ -4,7 +4,7 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Shader.hpp"
-#include "..\Util\Vertex.hpp"
+#include <Vertex.hpp>
 #include <vector>
 #include "Window\Window.hpp"
 #include "Descriptors.hpp"

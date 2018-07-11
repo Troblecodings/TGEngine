@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\stdbase.hpp"
-#include "..\Util\Vertex.hpp"
+#include <Vertex.hpp>
 #include "..\Pipeline\Buffer\VertexBuffer.hpp"
 #include <fstream>
 

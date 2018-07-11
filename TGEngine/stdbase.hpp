@@ -13,7 +13,8 @@
 #include <thread>
 #include "IO/Properties.hpp"
 #include "Util/Math.hpp"
-#include "Util/Vertex.hpp"
+#include <glm/glm.hpp>
+#include <Vertex.hpp>
 
 extern nio::Properties properties;
 extern uint32_t image_count;

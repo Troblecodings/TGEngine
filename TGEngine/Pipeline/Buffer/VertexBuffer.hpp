@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\..\Pipeline\Device.hpp"
-#include "..\..\Util\Vertex.hpp"
+#include <Vertex.hpp>
 #include "Memory.hpp"
 #include "UniformBuffer.hpp"
 

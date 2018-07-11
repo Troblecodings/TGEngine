@@ -31,13 +31,16 @@ void VertexBuffer::add(Vertex vert) {
 }
 
 void VertexBuffer::addColorOnly(Vertex vert) {
-	vert.only_color = VK_TRUE;
+	vert.color_only = VK_TRUE;
 	this->add(vert);
 }
 
 void VertexBuffer::addTexOnly(Vertex vert) {
-	vert.only_color = VK_FALSE;
-	vert.color = { 1, 1, 1, 1 };
+	vert.color_only = VK_FALSE;
+	vert.color[0] = 1.0F;
+	vert.color[1] = 1.0F;
+	vert.color[2] = 1.0F;
+	vert.color[3] = 1.0F;
 	this->add(vert);
 }
 
