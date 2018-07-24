@@ -25,26 +25,23 @@ void VertexBuffer::start() {
 	this->count_of_points = 0;
 }
 
-void VertexBuffer::add(Vertex vert) {
+void VertexBuffer::add(TGVertex vert) {
 	memcpy((Vertex*)this->memory + this->count_of_points, &vert, sizeof(Vertex));
 	this->count_of_points++;
 }
 
-void VertexBuffer::addColorOnly(Vertex vert) {
+void VertexBuffer::addColorOnly(TGVertex vert) {
 	vert.color_only = VK_TRUE;
 	this->add(vert);
 }
 
-void VertexBuffer::addTexOnly(Vertex vert) {
+void VertexBuffer::addTexOnly(TGVertex vert) {
 	vert.color_only = VK_FALSE;
-	vert.color[0] = 1.0F;
-	vert.color[1] = 1.0F;
-	vert.color[2] = 1.0F;
-	vert.color[3] = 1.0F;
+	vert.color = { 1.0F, 1.0F, 1.0F, 1.0F } ;
 	this->add(vert);
 }
 
-void VertexBuffer::addAll(Vertex* verts, uint32_t count) {
+void VertexBuffer::addAll(TGVertex* verts, uint32_t count) {
 	for (size_t i = 0; i < count; i++)
 	{
 		this->add(verts[i]);

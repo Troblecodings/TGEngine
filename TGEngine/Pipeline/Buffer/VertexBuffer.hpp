@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\..\Pipeline\Device.hpp"
-#include <Vertex.hpp>
+#include "TGVertex.hpp"
 #include "Memory.hpp"
 #include "UniformBuffer.hpp"
 
@@ -15,16 +15,16 @@ struct VertexBuffer {
 	void start();
 
 	SINCE(0, 0, 2)
-	void add(Vertex vert);
+	void add(TGVertex vert);
 
 	SINCE(0, 0, 3)
-	void addColorOnly(Vertex vert);
+	void addColorOnly(TGVertex vert);
 
 	SINCE(0, 0, 3)
-	void addTexOnly(Vertex vert);
+	void addTexOnly(TGVertex vert);
 
 	SINCE(0, 0, 2)
-	void addAll(Vertex* verts, uint32_t count);
+	void addAll(TGVertex* verts, uint32_t count);
 
 	SINCE(0, 0, 2)
 	void end();

@@ -9,7 +9,7 @@
 #include <IO\LoadFont.hpp>
 #include <Pipeline\CommandBuffer.hpp>
 #include "IO\ImagePNG.hpp"
-#include <Vertex.hpp>
+#include <TGVertex.hpp>
 
 extern Texture tex1;
 extern Texture tex2;
@@ -24,8 +24,8 @@ struct Editor : App
 
 void drawGrid(VertexBuffer* buffer);
 
-void drawLineH(Vertex start, float length, VertexBuffer* buffer);
+void drawLineH(TGVertex start, float length, VertexBuffer* buffer);
 
-void drawLineV(Vertex start, float length, VertexBuffer* buffer);
+void drawLineV(TGVertex start, float length, VertexBuffer* buffer);
 
 int main();

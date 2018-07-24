@@ -5,7 +5,7 @@ namespace obj {
 
 	void load(char* file, VertexBuffer* vert) {
 		OUT_LV_DEBUG("Load OBJ File")
-		vector<Vertex> verticies = {};
+		vector<TGVertex> verticies = {};
 		vector<vector<uint32_t>> index = {};
 		ifstream stream(file, ios::binary | ios::ate);
 		streampos strm_pos = stream.tellg();
@@ -54,13 +54,8 @@ namespace obj {
 					{
 					case obj::VERTEX:
 						size = verticies.size();
-						verticies[size].pos[0] = stof(data[0]);
-						verticies[size].pos[1] = stof(data[1]);
-						verticies[size].pos[2] = stof(data[2]);
-						verticies[size].color[0] = mat.diffuse[material_index].r;
-						verticies[size].color[1] = mat.diffuse[material_index].g;
-						verticies[size].color[2] = mat.diffuse[material_index].b;
-						verticies[size].color[3] = mat.diffuse[material_index].a;
+						verticies[size].position = { stof(data[0]), stof(data[1]), stof(data[2]) };
+						verticies[size].color = mat.diffuse[material_index];
 						break;
 					case obj::INDEX:
 						size = index.size();

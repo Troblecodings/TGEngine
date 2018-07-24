@@ -14,7 +14,7 @@
 #include "IO/Properties.hpp"
 #include "Util/Math.hpp"
 #include <glm/glm.hpp>
-#include <Vertex.hpp>
+#include "TGVertex.hpp"
 
 extern nio::Properties properties;
 extern uint32_t image_count;

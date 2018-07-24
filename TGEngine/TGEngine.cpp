@@ -23,10 +23,10 @@ void initTGEngine(App *app) {
 	prePipeline();
 	createRenderpass();
 	createShader();
-	createShaderInput(0, offsetof(Vertex, pos), VK_FORMAT_R32G32B32_SFLOAT);
-	createShaderInput(1, offsetof(Vertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
-	createShaderInput(2, offsetof(Vertex, uv), VK_FORMAT_R32G32_SFLOAT);
-	createShaderInput(3, offsetof(Vertex, color_only), VK_FORMAT_R32_UINT);
+	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
+	createShaderInput(1, offsetof(TGVertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
+	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R8_UINT);
 
 	UniformBuffer uniform_scale_buffer = {
 		sizeof(glm::vec2),

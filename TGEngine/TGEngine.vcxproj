@@ -63,6 +63,7 @@
     <ClInclude Include="Util\Debug.hpp" />
     <ClInclude Include="Util\Endian.hpp" />
     <ClInclude Include="Util\Math.hpp" />
+    <ClInclude Include="TGVertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Drawlib\BaseDrawLib.cpp" />

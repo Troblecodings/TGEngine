@@ -189,6 +189,9 @@
     <ClInclude Include="tgstring.hpp">
       <Filter>Headerdateien\IO</Filter>
     </ClInclude>
+    <ClInclude Include="TGVertex.hpp">
+      <Filter>Headerdateien\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">

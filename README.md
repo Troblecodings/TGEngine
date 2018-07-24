@@ -18,6 +18,8 @@ Current Vulkan API version: <strong>1.1</strong>
 <br>
 For image loading is [STB](https://github.com/nothings/stb) currently being used.<br>
 This is planned to be replaced in the future.
+
+The file library [TGVL](https://github.com/Troblecodings/TGVertex) is needed to compile newer versions of the TGEngine
 <br>
 <br>
 <b>NOTE:</b> GLFW3 was removed because of linker errors
