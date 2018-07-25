@@ -6,5 +6,5 @@ struct TGVertex {
 	glm::vec3 position;
 	glm::vec4 color;
 	glm::vec2 uv;
-	uint8_t color_only;
+	VkBool32 color_only;
 };

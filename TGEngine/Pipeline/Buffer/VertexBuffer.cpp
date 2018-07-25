@@ -7,7 +7,7 @@ void createVertexBuffer(VertexBuffer* buffer_storage) {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	    nullptr,
 		0,
-	    sizeof(Vertex) * buffer_storage->max_vertex_count,
+	    sizeof(TGVertex) * buffer_storage->max_vertex_count,
 	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_SHARING_MODE_EXCLUSIVE,
 	    0,
@@ -26,7 +26,7 @@ void VertexBuffer::start() {
 }
 
 void VertexBuffer::add(TGVertex vert) {
-	memcpy((Vertex*)this->memory + this->count_of_points, &vert, sizeof(Vertex));
+	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, sizeof(TGVertex));
 	this->count_of_points++;
 }
 
