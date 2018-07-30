@@ -7,7 +7,7 @@ void createVertexBuffer(VertexBuffer* buffer_storage) {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	    nullptr,
 		0,
-	    sizeof(TGVertex) * buffer_storage->max_vertex_count,
+		VERTEX_SIZE * buffer_storage->max_vertex_count,
 	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_SHARING_MODE_EXCLUSIVE,
 	    0,
@@ -26,7 +26,7 @@ void VertexBuffer::start() {
 }
 
 void VertexBuffer::add(TGVertex vert) {
-	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, sizeof(TGVertex));
+	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, VERTEX_SIZE);
 	this->count_of_points++;
 }
 
@@ -37,7 +37,7 @@ void VertexBuffer::addColorOnly(TGVertex vert) {
 
 void VertexBuffer::addTexOnly(TGVertex vert) {
 	vert.color_only = VK_FALSE;
-	vert.color = { 1.0F, 1.0F, 1.0F, 1.0F } ;
+	vert.color = { 1, 1, 1, 1 } ;
 	this->add(vert);
 }
 

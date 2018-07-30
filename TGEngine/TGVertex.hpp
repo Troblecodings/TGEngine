@@ -8,3 +8,5 @@ struct TGVertex {
 	glm::vec2 uv;
 	VkBool32 color_only;
 };
+
+#define VERTEX_SIZE sizeof(TGVertex)

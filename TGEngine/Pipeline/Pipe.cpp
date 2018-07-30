@@ -56,7 +56,7 @@ void createPipeline() {
 	// Vertex binding
 	VkVertexInputBindingDescription vertex_buffer_binding = {
 		0,
-		sizeof(Vertex),
+		VERTEX_SIZE,
 		VK_VERTEX_INPUT_RATE_VERTEX
 	};
 
