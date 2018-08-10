@@ -17,7 +17,7 @@ int main() {
 		"LogoTM.png"
 	};
 	createTexture(&tex1);
-	//createTexture(&tex2);
+	createTexture(&tex2);
 	initTGEngine((App*) &editor);
 	return 0;
 }
@@ -49,8 +49,8 @@ void Editor::drawloop(VertexBuffer* buffer)
 {
 	drawGrid(buffer);
 	//FBX_Dictionary::addToDraw(buffer);
-	//setTexture(&tex1, nullptr);
-	//drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_TRUE }, 0.5, 0.5, buffer);
-	//setTexture(&tex2, nullptr);
-	//drawRectangleWithTexture({ { -0.5, -0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_TRUE }, 0.5, 0.5, buffer);
+	setTexture(&tex1, buffer, image_index);
+	drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_FALSE }, 0.5, 0.5, buffer);
+	setTexture(&tex2, buffer, image_index);
+	drawRectangleWithTexture({ { -0.5, -0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, VK_FALSE }, 0.5, 0.5, buffer);
 }

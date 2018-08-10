@@ -66,26 +66,49 @@ void initTGEngine(App *app) {
 	singleTimeCommand();
 	createSemaphores();
 
-	uint64_t time = 0;
+	uint32_t index = 0;
+	std::vector<VkDescriptorImageInfo> sampler_array(100);
+	for each (Texture* tex in texture_buffers) {
+		sampler_array[index] = {
+			tex_image_sampler,
+			tex->image_view,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+		index++;
+	}
+	for (; index < 100; index++) {
+		sampler_array[index] = {
+			tex_image_sampler,
+			texture_buffers[0]->image_view,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+	}
+	VkWriteDescriptorSet descriptor_writes = {
+		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+		nullptr,
+		descriptor_set,
+		texture_descriptor->binding,
+		0,
+		100,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		sampler_array.data(),
+		nullptr,
+		nullptr
+	};
+	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
 
 	while (true) {
 		startdraw();
+		fillCommandBuffer(&main_buffer, image_index);
 		app->main_window.pollevents();
 		if (app->main_window.close_request) {
 			break;
 		}
-		uint64_t c_time = std::clock();
-		if (time + 16 <= c_time) {
-			time = c_time;
-			main_buffer.start();
-			uint32_t old_size = main_buffer.count_of_points;
-			app->drawloop(&main_buffer);
-			main_buffer.end();
-		}
-		last_result = vkDeviceWaitIdle(device);
-		HANDEL(last_result)
-		fillCommandBuffer(&main_buffer);
-		draw();
+		main_buffer.start();
+		app->drawloop(&main_buffer);
+		main_buffer.end();
+		endCommandBuffer(&main_buffer, image_index);
+		submit();
 		present();
 	}
 

@@ -17,7 +17,7 @@ namespace FBX_Dictionary {
 			glm::vec4 color = FBX_Dictionary::colors[r];
 
 			if (tex) {
-				setTexture(tex, nullptr);
+				setTexture(tex, buffer, image_index);
 			}
 
 			for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {

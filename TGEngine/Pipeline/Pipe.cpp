@@ -40,6 +40,12 @@ void createPipeline() {
 		&scissor
 	};
 
+	VkPushConstantRange range = {
+		VK_SHADER_STAGE_FRAGMENT_BIT,
+		0,
+		sizeof(uint32_t)
+	};
+
 	//Pipeline Layout
 	VkPipelineLayoutCreateInfo layout_info = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
@@ -47,8 +53,8 @@ void createPipeline() {
 		0,
 		1,
 		&desc_layout,
-		0,
-		nullptr
+		1,
+		&range
 	};
 	last_result = vkCreatePipelineLayout(device, &layout_info, nullptr, &layout);
 	HANDEL(last_result);
@@ -145,8 +151,8 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
-		VK_TRUE,
-	    VK_TRUE,
+		VK_FALSE,
+		VK_FALSE,
 	    VK_COMPARE_OP_LESS_OR_EQUAL,
 	    VK_FALSE,
 	    VK_FALSE,

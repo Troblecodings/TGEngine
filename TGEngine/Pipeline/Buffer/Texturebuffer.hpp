@@ -24,6 +24,7 @@ struct Texture {
 	VkDeviceMemory buffer_memory;
 	VkMemoryRequirements buffer_requierments;
 	VkMemoryRequirements requierments;
+	uint32_t index;
 	void* memory;
 
 	DEPRECATED
@@ -43,6 +44,7 @@ struct Texture {
 extern std::vector<Texture*> texture_buffers;
 extern Descriptor* texture_descriptor;
 extern VkSampler tex_image_sampler;
+extern uint32_t tex_array_index;
 
 SINCE(0, 0, 2)
 void createTexture(Texture* tex);
@@ -51,7 +53,10 @@ SINCE(0, 0, 2)
 void initAllTextures();
 
 SINCE(0, 0, 3)
-void setTexture(Texture* tex, VertexBuffer* buffer);
+void setTexture(Texture* tex, VertexBuffer* buffer, uint32_t index);
+
+SINCE(0, 0, 3)
+void addTexture(Texture* tex);
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);

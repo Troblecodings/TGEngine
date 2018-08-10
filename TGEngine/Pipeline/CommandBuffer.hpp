@@ -11,7 +11,8 @@
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;
-extern std::vector<VkDeviceSize> offsets;
+extern VkDeviceSize offsets;
+extern bool started;
 
 SINCE(0, 0, 1)
 void createCommandBuffer();
@@ -20,7 +21,13 @@ SINCE(0, 0, 1)
 void singleTimeCommand();
 
 SINCE(0, 0, 1)
-void fillCommandBuffer(VertexBuffer* buffer);
+void fillCommandBuffer(VertexBuffer* buffer, uint32_t index);
+
+SINCE(0, 0, 3)
+void submitWithoutTexture(VertexBuffer* buffer, uint32_t index);
+
+SINCE(0, 0, 3)
+void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index);
 
 SINCE(0, 0, 1)
 void destroyCommandBuffer();

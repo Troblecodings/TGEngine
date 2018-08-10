@@ -21,6 +21,8 @@ struct Descriptor {
 
 	VkSampler image_sampler;
 	VkImageView image_view;
+	OPT uint32_t array_index = 0;
+
 	OUTPUT
     uint32_t binding;
 };

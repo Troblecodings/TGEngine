@@ -1,48 +1,62 @@
 #include "Draw.hpp"
 
 VkSemaphore wait_semaphore;
-VkSemaphore signal_semaphore;
 uint32_t image_index;
+VkFence fence;
+
 VkSemaphoreCreateInfo semaphore_create_info = {
 	VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
 	nullptr,
 	0
 };
-std::vector<VkPipelineStageFlags> stage_flags = {VK_PIPELINE_STAGE_ALL_COMMANDS_BIT};
+std::vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT };
 
 void createSemaphores() {
-	vkCreateSemaphore(device, &semaphore_create_info, nullptr, &wait_semaphore);
-	vkCreateSemaphore(device, &semaphore_create_info, nullptr, &signal_semaphore);
+	//vkCreateSemaphore(device, &semaphore_create_info, nullptr, &wait_semaphore);
+	VkFenceCreateInfo info = {
+		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		nullptr,
+		0
+	};
+	vkCreateFence(device, &info, nullptr, &fence);
 }
 
 void startdraw() {
-	last_result = vkAcquireNextImageKHR(device, swapchain, 10000, wait_semaphore, VK_NULL_HANDLE, &image_index);
-	HANDEL_RECREATE(last_result)
-	offsets.clear();
+	last_result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
+	HANDEL(last_result)
+	offsets = 0;
 }
 
-void draw() {	
+void submit() {	
+	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
+	HANDEL(last_result)
+	last_result = vkResetFences(device, 1, &fence);
+	HANDEL(last_result)
 	VkSubmitInfo submit_info = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
 		nullptr,
-		1,
-		&wait_semaphore,
+		0,
+	    nullptr,
 		stage_flags.data(),
 		1,
 		&command_buffers[image_index],
-		1,
-		&signal_semaphore
+		0,
+		nullptr
 	};
-	last_result = vkQueueSubmit(queue, 1, &submit_info, VK_NULL_HANDLE);
+	last_result = vkQueueSubmit(queue, 1, &submit_info, fence);
 	HANDEL_RECREATE(last_result)
 }
 
 void present() {
+	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
+	HANDEL(last_result)
+	last_result = vkResetFences(device, 1, &fence);
+	HANDEL(last_result)
 	VkPresentInfoKHR present_info = {
 		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		nullptr,
-		1,
-		&signal_semaphore,
+		0,
+		nullptr,
 		1,
 		&swapchain,
 		&image_index,
@@ -56,6 +70,6 @@ void destroySemaphores() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
-	vkDestroySemaphore(device, wait_semaphore, nullptr);
-	vkDestroySemaphore(device, signal_semaphore, nullptr);
+	vkDestroyFence(device, fence, nullptr);
+	//vkDestroySemaphore(device, wait_semaphore, nullptr);
 }
