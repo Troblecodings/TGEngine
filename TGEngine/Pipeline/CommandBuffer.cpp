@@ -165,22 +165,28 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 
 	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &descriptor_set, 0, nullptr);
 
-	uint32_t max = 101;
-	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &max);
+	vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
+
+	vkCmdDraw(buffer, vbuffer->count_of_points, 1, 0, 0);
+
+	vkCmdEndRenderPass(buffer);
+
+	last_result = vkEndCommandBuffer(buffer);
+	HANDEL(last_result)
 }
 
 void submitWithoutTexture(VertexBuffer* buffer, uint32_t index) {
-	uint32_t max = 101;
+/*	uint32_t max = 101;
 	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &max);
 
 	vkCmdBindVertexBuffers(command_buffers[index], 0, 1, &buffers[buffer->vertex_buffer_index], &offsets);
 
 	vkCmdDraw(command_buffers[index], offsets - buffer->count_of_points, 1, 0, 0);
-	offsets = VERTEX_SIZE * buffer->count_of_points;
+	offsets = VERTEX_SIZE * buffer->count_of_points;*/
 }
 
 void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
-	VkCommandBuffer buffer = command_buffers[index];
+	/*VkCommandBuffer buffer = command_buffers[index];
 	vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
 
 	vkCmdDraw(buffer, offsets - vbuffer->count_of_points, 1, 0, 0);
@@ -188,7 +194,7 @@ void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 	vkCmdEndRenderPass(buffer);
 
 	last_result = vkEndCommandBuffer(buffer);
-	HANDEL(last_result)
+	HANDEL(last_result)*/
 }
 
 void destroyCommandBuffer() {

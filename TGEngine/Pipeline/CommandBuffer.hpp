@@ -24,9 +24,11 @@ SINCE(0, 0, 1)
 void fillCommandBuffer(VertexBuffer* buffer, uint32_t index);
 
 SINCE(0, 0, 3)
+DEPRECATED
 void submitWithoutTexture(VertexBuffer* buffer, uint32_t index);
 
 SINCE(0, 0, 3)
+DEPRECATED
 void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index);
 
 SINCE(0, 0, 1)

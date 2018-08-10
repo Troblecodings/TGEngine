@@ -74,6 +74,9 @@ void initTGEngine(App *app) {
 			tex->image_view,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
+		tex->index = index;
+		OUT_LV_DEBUG(tex->texture_path)
+		OUT_LV_DEBUG(tex->index)
 		index++;
 	}
 	for (; index < 100; index++) {
@@ -99,7 +102,6 @@ void initTGEngine(App *app) {
 
 	while (true) {
 		startdraw();
-		fillCommandBuffer(&main_buffer, image_index);
 		app->main_window.pollevents();
 		if (app->main_window.close_request) {
 			break;
@@ -107,7 +109,9 @@ void initTGEngine(App *app) {
 		main_buffer.start();
 		app->drawloop(&main_buffer);
 		main_buffer.end();
-		endCommandBuffer(&main_buffer, image_index);
+		last_result = vkDeviceWaitIdle(device);
+		HANDEL(last_result)
+		fillCommandBuffer(&main_buffer, image_index);
 		submit();
 		present();
 	}

@@ -28,8 +28,8 @@ void initAllTextures() {
 		VK_FALSE,
 		VK_COMPARE_OP_NEVER,
 		0,
-		0,
-		VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK,
+		1,
+		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		VK_FALSE
 	};
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
@@ -162,17 +162,17 @@ void initAllTextures() {
 }
 
 void setTexture(Texture* tex, VertexBuffer* vbuffer, uint32_t index) {
-	vkCmdBindVertexBuffers(command_buffers[index], 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
+	/*vkCmdBindVertexBuffers(command_buffers[index], 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
 
 	vkCmdDraw(command_buffers[index], offsets - vbuffer->count_of_points, 1, 0, 0);
 
 	offsets = VERTEX_SIZE * vbuffer->count_of_points;
 
-	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &tex->index);
+	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &tex->index);*/
 }
 
 void addTexture(Texture* tex) {
-	if (tex) {
+	/*if (tex) {
 		texture_descriptor->image_view = tex->image_view;
 		texture_descriptor->array_index = tex_array_index;
 		tex->index = tex_array_index;
@@ -184,7 +184,7 @@ void addTexture(Texture* tex) {
 		texture_descriptor->array_index = tex_array_index;
 		tex_array_index++;
 		updateDescriptorSet(texture_descriptor, 0);
-	}
+	}*/
 }
 
 void Texture::addBarrier(VkCommandBuffer buffer, VkImageLayout oldLayout, VkImageLayout newLayout) {

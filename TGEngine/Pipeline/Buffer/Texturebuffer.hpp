@@ -8,6 +8,8 @@
 #include "VertexBuffer.hpp"
 #include "..\Draw.hpp"
 
+#define COLOR_ONLY 101
+
 struct Texture {
 	INPUT 
 	char* texture_path;
@@ -53,9 +55,11 @@ SINCE(0, 0, 2)
 void initAllTextures();
 
 SINCE(0, 0, 3)
+DEPRECATED
 void setTexture(Texture* tex, VertexBuffer* buffer, uint32_t index);
 
 SINCE(0, 0, 3)
+DEPRECATED
 void addTexture(Texture* tex);
 
 SINCE(0, 0, 2)
