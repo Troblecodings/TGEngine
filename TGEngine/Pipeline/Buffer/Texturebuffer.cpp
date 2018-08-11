@@ -64,7 +64,7 @@ void initAllTextures() {
 			nullptr,
 			0,
 			VK_IMAGE_TYPE_2D,
-			VK_FORMAT_R8G8B8A8_UNORM,
+			ptr->image_format,
 		    {
 			    ptr->width,
 			    ptr->height,
@@ -148,7 +148,7 @@ void initAllTextures() {
 		    0,
 		    ptr->image,
 			VK_IMAGE_VIEW_TYPE_2D,
-		    VK_FORMAT_R8G8B8A8_UNORM,
+		    ptr->image_format,
 		    {
 			    VK_COMPONENT_SWIZZLE_IDENTITY,
 				VK_COMPONENT_SWIZZLE_IDENTITY,

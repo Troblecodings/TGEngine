@@ -11,6 +11,8 @@
 #include "..\stb\stb_truetype.h"
 #include "../Drawlib/Rectangle.hpp"
 
+#define MULTIPLAIER * 0.003
+
 struct Font {
 	INPUT
 	char* path;

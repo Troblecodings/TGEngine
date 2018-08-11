@@ -37,9 +37,9 @@ void initTGEngine(App *app) {
 	createUniformBuffer(&uniform_scale_buffer);
 	initAllTextures();
 
-	Camera cam;
-	cam.speed = 0.001f;
-	createCamera(&cam);
+	//Camera cam;
+	//cam.speed = 0.001f;
+	//createCamera(&cam);
 
 	createPipelineLayout();
 	createPipeline();
@@ -62,7 +62,7 @@ void initTGEngine(App *app) {
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-	cam.updateCamera();
+	//cam.updateCamera();
 
 	createCommandBuffer();
 	singleTimeCommand();

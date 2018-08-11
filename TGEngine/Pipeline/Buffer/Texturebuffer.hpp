@@ -13,7 +13,8 @@
 struct Texture {
 	INPUT 
 	char* texture_path;
-	
+	OPT VkFormat image_format = VK_FORMAT_R8G8B8A8_UNORM;
+
 	OUTPUT 
 	int width;
 	int height;
