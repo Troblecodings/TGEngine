@@ -7,6 +7,8 @@
 using namespace std;
 
 void initTGEngine(App *app) {
+	nio::queryCWD();
+	OUT_LV_DEBUG(nio::current_working_dir)
 	nio::readProperties("Properties.xml", &properties);
 	createWindowClass();
 	createWindow(&app->main_window, &properties);
@@ -75,8 +77,6 @@ void initTGEngine(App *app) {
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
 		tex->index = index;
-		OUT_LV_DEBUG(tex->texture_path)
-		OUT_LV_DEBUG(tex->index)
 		index++;
 	}
 	for (; index < 100; index++) {

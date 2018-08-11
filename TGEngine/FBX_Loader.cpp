@@ -17,25 +17,44 @@ namespace FBX_Dictionary {
 			glm::vec4 color = FBX_Dictionary::colors[r];
 
 			if (tex) {
-				setTexture(tex, buffer, image_index);
-			}
 
-			for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {
-				for (size_t i = 0; i < mesh->GetPolygonSize(j); i++) {
-					int index = mesh->GetPolygonVertex(j, i);
-					fbxsdk::FbxVector2 vector;
-					glm::vec2 uv = {};
-					bool unmapped;
-					if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
-						uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
-					}
+				for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {
+					for (size_t i = 0; i < mesh->GetPolygonSize(j); i++) {
+						int index = mesh->GetPolygonVertex(j, i);
+						fbxsdk::FbxVector2 vector;
+						glm::vec2 uv = {};
+						bool unmapped;
+						if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
+							uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
+						}
 #ifdef DEBUG
-					else {
-						OUT_LV_DEBUG(vector.mData[1])
-					}
+						else {
+							OUT_LV_DEBUG(vector.mData[1])
+						}
 #endif
-					FbxDouble* data = vertexArray[index].mData;
-					buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] }, { color[0], color[1], color[2], color[3] }, { uv[0], uv[1] }, !tex });
+						FbxDouble* data = vertexArray[index].mData;
+						buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] }, { color[0], color[1], color[2], color[3] }, { uv[0], uv[1] }, tex->index });
+					}
+				}
+			}
+			else {
+				for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {
+					for (size_t i = 0; i < mesh->GetPolygonSize(j); i++) {
+						int index = mesh->GetPolygonVertex(j, i);
+						fbxsdk::FbxVector2 vector;
+						glm::vec2 uv = {};
+						bool unmapped;
+						if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
+							uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
+						}
+#ifdef DEBUG
+						else {
+							OUT_LV_DEBUG(vector.mData[1])
+						}
+#endif
+						FbxDouble* data = vertexArray[index].mData;
+						buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] },{ color[0], color[1], color[2], color[3] },{ uv[0], uv[1] }, COLOR_ONLY });
+					}
 				}
 			}
 		}

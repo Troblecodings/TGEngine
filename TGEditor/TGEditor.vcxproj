@@ -31,6 +31,11 @@
   <ItemGroup>
     <Xml Include="Properties.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="arial.ttf">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </Font>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0EA5D562-8D37-4B79-B114-DE52512C3005}</ProjectGuid>
@@ -85,6 +90,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>
@@ -112,7 +118,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>TGVertexLibrary.lib;vulkan-1.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
@@ -123,6 +129,10 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>..\TGEngine\Shader Compiler.bat</Command>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

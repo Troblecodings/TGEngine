@@ -5,19 +5,22 @@
 #include <fstream>
 #include "..\Util\Debug.hpp"
 #include "FontTables.hpp"
+#include "../Pipeline/Buffer/Texturebuffer.hpp"
 #define STB_TRUETYPE_IMPLEMENTATION
+#define STBTT_STATIC
 #include "..\stb\stb_truetype.h"
+#include "../Drawlib/Rectangle.hpp"
 
-#define SHIFT_ADD(chr, chr_array) if(strlen(chr_array) < 4){ chr_array[strlen(chr_array)] = chr; }\
-else { chr_array[0] = chr_array[1];chr_array[1] = chr_array[2];chr_array[2] = chr_array[3];chr_array[3] = chr; }
+struct Font {
+	INPUT
+	char* path;
 
-struct FontTableEntry {
-	std::vector<char*> name_entry;
-	std::vector<BaseTable> content;
+	OUTPUT
+	Texture texture = {};
+	stbtt_bakedchar cdata[256];
 
-	uint32_t createIfNotExists(char* name);
+	void drawString(TGVertex vert, char* string, VertexBuffer* buffer);
 };
 
-void loadfont(char* path);
-
-char* getName(FontTable table);
+SINCE(0, 0, 3)
+void loadfont(Font* font);

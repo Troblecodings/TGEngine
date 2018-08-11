@@ -14,6 +14,7 @@
 extern Texture tex1;
 extern Texture tex2;
 extern fbxsdk::FbxMesh* mesh;
+extern Font arial;
 
 struct Editor : App
 {

@@ -4,6 +4,13 @@ namespace nio {
 
 	using namespace std;
 
+	char current_working_dir[FILENAME_MAX];
+
+	void queryCWD()
+	{
+		GetCurrentDir(current_working_dir, sizeof(current_working_dir));
+	}
+
 	vector<char> getBinarys(char* filepath) {
 		size_t size_of_file;
 		ifstream inputstream = getBinaryStream(filepath, &size_of_file);

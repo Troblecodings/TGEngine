@@ -37,4 +37,9 @@
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="arial.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+  </ItemGroup>
 </Project>

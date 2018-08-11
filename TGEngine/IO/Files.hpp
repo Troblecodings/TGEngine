@@ -4,9 +4,28 @@
 #include <fstream>
 #include <string>
 
+#ifdef WIN32
+#include <direct.h>
+#define GetCurrentDir getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
+
 namespace nio {
 
 	using namespace std;
+
+	extern char current_working_dir[];
+
+	/*
+	 * Querys the current working directory 
+	 * 
+	 * Use "current_working_dir" to get the cwd after quereing.
+	 * (Is automatically called in initTGEngine())
+	 */
+	SINCE(0, 0, 3)
+	void queryCWD();
 
 	/*
 	 *  Parameter:

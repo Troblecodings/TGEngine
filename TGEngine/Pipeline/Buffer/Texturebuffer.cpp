@@ -46,16 +46,19 @@ void initAllTextures() {
 	addDescriptor(texture_descriptor);
 
 	for each(Texture* ptr in texture_buffers) {
-		FILE* file = fopen(ptr->texture_path, "rb");
+		if (ptr->texture_path) {
+			FILE* file = fopen(ptr->texture_path, "rb");
 
 #ifdef DEBUG
-		if (file == NULL) {
-			OUT_LV_DEBUG("Can not open " << ptr->texture_path << ", that shouldn't happen!")
-			continue;
-		}
+			if (file == NULL) {
+				OUT_LV_DEBUG("Can not open " << ptr->texture_path << ", that shouldn't happen!")
+					continue;
+			}
 #endif // DEBUG
 
-		ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
+			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
+		}
+
 		VkImageCreateInfo image_create_info = {
 			VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			nullptr,
@@ -132,7 +135,12 @@ void initAllTextures() {
 		memcpy(ptr->memory, ptr->image_data, ptr->width * ptr->height * 4);
 		vkUnmapMemory(device, ptr->buffer_memory);
 
-		stbi_image_free(ptr->image_data);
+		if (ptr->texture_path) {
+			stbi_image_free(ptr->image_data);
+		}
+		else {
+			delete[] ptr->image_data;
+		}
 
 		VkImageViewCreateInfo image_view_create_info = {
 			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,

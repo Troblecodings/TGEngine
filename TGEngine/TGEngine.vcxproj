@@ -171,6 +171,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -207,6 +208,13 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>"Ressources\Shader Compiler.bat"</Command>
+      <Outputs>$(ProjectDir)Ressources\fragmentshader.spv;$(ProjectDir)Ressources\vertexshader.spv;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)Ressources\fragmentshader.glsl;$(ProjectDir)Ressources\vertexshader.glsl;%(Inputs)</Inputs>
+      <Message>Start shader compile step</Message>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

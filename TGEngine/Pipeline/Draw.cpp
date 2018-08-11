@@ -67,6 +67,8 @@ void present() {
 }
 
 void destroySemaphores() {
+	last_result = vkWaitForFences(device, 1, &fence, false, UINT64_MAX);
+	HANDEL(last_result)
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
