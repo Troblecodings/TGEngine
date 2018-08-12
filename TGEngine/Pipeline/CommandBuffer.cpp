@@ -9,17 +9,19 @@ bool started = true;
 void createCommandBuffer() {
 	command_buffers.resize(image_count);
 
-	VkCommandPoolCreateInfo commmand_pool_create_info = {
-		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-		nullptr,
-		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-		queue_index
-	};
+	if (!command_pool) {
+		VkCommandPoolCreateInfo commmand_pool_create_info = {
+			VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+			nullptr,
+			VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+			queue_index
+		};
 
-	last_result = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
-	HANDEL(last_result)
+		last_result = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
+		HANDEL(last_result)
+	}
 
-		VkCommandBufferAllocateInfo command_buffer_allocate_info = {
+	VkCommandBufferAllocateInfo command_buffer_allocate_info = {
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			nullptr,
 			command_pool,

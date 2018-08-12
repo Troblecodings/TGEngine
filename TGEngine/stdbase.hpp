@@ -30,6 +30,10 @@ SINCE(0, 0, 1)
 UNFINISHED
 #define HANDEL_RECREATE(result)\
 if(result == VK_ERROR_OUT_OF_DATE_KHR){\
+if(window_list[0]->minimized){\
+return;\
+}\
+recreateSwapchain();\
 }else if(result != VK_SUCCESS){\
 HANDEL(result)\
 }

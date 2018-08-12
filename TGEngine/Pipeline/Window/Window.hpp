@@ -14,6 +14,8 @@
 
 #define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"
 
+extern HMODULE sys_module;
+
 struct Window {
 
 	SINCE(0, 0, 3)
@@ -23,16 +25,19 @@ struct Window {
 		destroy(),
 		createWindowSurface();
 
-	int x = 0, 
-		y = 0, 
-		width = 0, 
-		height = 0;
+	int x = 0,
+		y = 0,
+		width = 0,
+		height = 0,
+		nwidth = 0,
+		nheight = 0;
 
 	bool close_request = false,
 		decorated = true,
 		cursor = true,
 		consume_input = true,
-		focused = true;
+		focused = true,
+		minimized = false;
 
 	VkSurfaceKHR surface;
 
@@ -46,11 +51,14 @@ RECT desktop;\
 GetWindowRect(hDesktop, &desktop);\
 x = desktop.right;\
 y = desktop.bottom;
+
+
+SINCE(0, 0, 3)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
 extern uint32_t d_width, d_height;
 extern std::vector<Window*> window_list;
-extern HMODULE sys_module;
 
 /*
  * Creates a window based on the properties
@@ -58,8 +66,11 @@ extern HMODULE sys_module;
 SINCE(0, 0, 1)
 void createWindow(Window* window, nio::Properties* properties = nullptr);
 
+/*
+* Reads the window properties from the given property
+*/
 SINCE(0, 0, 3)
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+void setWindowProperties(Window* window, nio::Properties* properties = nullptr);
 
 SINCE(0, 0, 3)
 void createWindowClass();

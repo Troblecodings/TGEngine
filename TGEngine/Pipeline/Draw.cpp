@@ -23,7 +23,7 @@ void createSemaphores() {
 
 void startdraw() {
 	last_result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
-	HANDEL(last_result)
+	HANDEL_RECREATE(last_result)
 	offsets = 0;
 }
 

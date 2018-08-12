@@ -70,11 +70,14 @@ void initTGEngine(App *app) {
 	addTextures();
 
 	while (true) {
-		startdraw();
 		app->main_window.pollevents();
 		if (app->main_window.close_request) {
 			break;
 		}
+		if (app->main_window.minimized) {
+			continue;
+		}
+		startdraw();
 		main_buffer.start();
 		app->drawloop(&main_buffer);
 		main_buffer.end();

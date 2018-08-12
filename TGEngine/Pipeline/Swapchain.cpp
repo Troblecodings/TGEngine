@@ -41,6 +41,23 @@ void createSwapchain() {
 	HANDEL(last_result)
 }
 
+void recreateSwapchain() {
+	last_result = vkDeviceWaitIdle(device);
+	HANDEL(last_result)
+	destroyFrameBuffer();
+	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
+	destroyPipeline();
+	destroyRenderPass();
+	destroySwapchain();
+
+	createRenderpass();
+	createPipelineLayout();
+	createPipeline();
+	createSwapchain();
+	createFramebuffer();
+	createCommandBuffer();
+}
+
 void destroySwapchain() {
 	vkDestroySwapchainKHR(device, swapchain, nullptr);
 }

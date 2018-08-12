@@ -11,6 +11,7 @@ Window::Window(wchar_t* name) {
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	//TDOD performance ?
 	Window* a_window = nullptr;
 	for each (Window* windowptr in window_list) {
 		if (windowptr->__impl_window == hwnd) {
@@ -28,14 +29,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	if (msg == WM_QUIT || msg == WM_CLOSE || msg == WM_DESTROY) {
 		a_window->close_request = true;
 		return NULL;
-	}
-	else if (msg == WM_SYSCOMMAND && wParam == SC_MINIMIZE) {
-		UNFINISHED
-
-		// IMPL: minimize
-		MessageBox(hwnd, L"Feature not usable in the current version!", L"Sorry!", MB_ICONINFORMATION | MB_OK);
-
-		END_UNFINISHED
 	}
 	else {
 		if (msg == WM_MOUSELEAVE || msg == WM_NCMOUSELEAVE) {
@@ -71,28 +64,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		else if (msg == WM_SETFOCUS) {
 			a_window->focused = true;
 		}
+		else if (msg == WM_SYSCOMMAND) {
+			if (wParam == SC_MINIMIZE) {
+				a_window->minimized = true;
+			}
+			else if (wParam == SC_RESTORE) {
+				a_window->minimized = false;
+			}
+		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 }
 #endif
 
-void createWindow(Window* window, nio::Properties* properties) {
-	// IMPL getMonitor();
-
+void setWindowProperties(Window* window, nio::Properties* properties) {
 	if (properties != nullptr) {
 		bool fullscreen = properties->getBoolean("fullscreen").rvalue;
 		window->decorated = fullscreen ? false : properties->getBoolean("decorated").rvalue;
 		window->cursor = properties->getBoolean("cursor").rvalue;
 		if (fullscreen) {
 			GET_SIZE(d_width, d_height)
-			window->width = d_width;
+				window->width = d_width;
 			window->height = d_height;
 			window->x = d_width / 2 - window->width / 2;
 			window->y = d_height / 2 - window->height / 2;
 		}
 		else if (properties->getBoolean("center").rvalue) {
 			GET_SIZE(d_width, d_height)
-			window->height = properties->getInt("height").rvalue;
+				window->height = properties->getInt("height").rvalue;
 			window->width = properties->getInt("width").rvalue;
 			window->x = d_width / 2 - window->width / 2;
 			window->y = d_height / 2 - window->height / 2;
@@ -104,6 +103,13 @@ void createWindow(Window* window, nio::Properties* properties) {
 			window->y = properties->getInt("posy").rvalue;
 		}
 	}
+}
+
+void createWindow(Window* window, nio::Properties* properties) {
+	// IMPL getMonitor();
+
+	setWindowProperties(window, properties);
+
     #ifdef _WIN32 //Windows window createion
 	if (window->decorated) {
 		//Char unicode conversation
