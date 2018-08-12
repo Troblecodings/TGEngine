@@ -37,7 +37,7 @@ void initAllTextures() {
 
 	texture_descriptor = new Descriptor{
 		VK_SHADER_STAGE_FRAGMENT_BIT,
-		100,
+		MAX_TEXTURES,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 		VK_NULL_HANDLE,
 		tex_image_sampler,
@@ -169,30 +169,38 @@ void initAllTextures() {
 
 }
 
-void setTexture(Texture* tex, VertexBuffer* vbuffer, uint32_t index) {
-	/*vkCmdBindVertexBuffers(command_buffers[index], 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
-
-	vkCmdDraw(command_buffers[index], offsets - vbuffer->count_of_points, 1, 0, 0);
-
-	offsets = VERTEX_SIZE * vbuffer->count_of_points;
-
-	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &tex->index);*/
-}
-
-void addTexture(Texture* tex) {
-	/*if (tex) {
-		texture_descriptor->image_view = tex->image_view;
-		texture_descriptor->array_index = tex_array_index;
-		tex->index = tex_array_index;
-		tex_array_index++;
-		updateDescriptorSet(texture_descriptor, 0);
+void addTextures() {
+	uint32_t index = 0;
+	std::vector<VkDescriptorImageInfo> sampler_array(MAX_TEXTURES);
+	for each (Texture* tex in texture_buffers) {
+		sampler_array[index] = {
+			tex_image_sampler,
+			tex->image_view,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+		tex->index = index;
+		index++;
 	}
-	else {
-		texture_descriptor->image_view = VK_NULL_HANDLE;
-		texture_descriptor->array_index = tex_array_index;
-		tex_array_index++;
-		updateDescriptorSet(texture_descriptor, 0);
-	}*/
+	for (; index < MAX_TEXTURES; index++) {
+		sampler_array[index] = {
+			tex_image_sampler,
+			texture_buffers[0]->image_view,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+	}
+	VkWriteDescriptorSet descriptor_writes = {
+		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+		nullptr,
+		descriptor_set,
+		texture_descriptor->binding,
+		0,
+		MAX_TEXTURES,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		sampler_array.data(),
+		nullptr,
+		nullptr
+	};
+	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
 }
 
 void Texture::addBarrier(VkCommandBuffer buffer, VkImageLayout oldLayout, VkImageLayout newLayout) {

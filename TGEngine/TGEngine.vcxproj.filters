@@ -316,13 +316,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ressources\fragmentshader.glsl">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="Ressources\fragmentshader.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="Ressources\vertexshader.glsl">
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Ressources\vertexshader.spv">
@@ -333,5 +327,13 @@
     <Text Include="Ressources\Layers.txt">
       <Filter>Ressourcendateien</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Ressources\fragmentshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Ressources\vertexshader.glsl">
+      <Filter>Ressourcendateien</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

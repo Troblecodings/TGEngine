@@ -14,6 +14,7 @@
 struct Font {
 	INPUT
 	char* path;
+	OPT float height = 30;
 
 	OUTPUT
 	Texture texture = {};

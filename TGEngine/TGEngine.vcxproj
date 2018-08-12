@@ -108,9 +108,14 @@
     <ClCompile Include="Util\Math.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ressources\fragmentshader.glsl" />
+    <CustomBuild Include="Ressources\fragmentshader.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
     <None Include="Ressources\fragmentshader.spv" />
-    <None Include="Ressources\vertexshader.glsl" />
+    <CustomBuild Include="Ressources\vertexshader.glsl">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </CustomBuild>
     <None Include="Ressources\vertexshader.spv" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +176,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Build;Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -209,12 +214,19 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <CustomBuildStep>
-      <Command>"Ressources\Shader Compiler.bat"</Command>
+      <Command>
+      </Command>
       <Outputs>$(ProjectDir)Ressources\fragmentshader.spv;$(ProjectDir)Ressources\vertexshader.spv;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)Ressources\fragmentshader.glsl;$(ProjectDir)Ressources\vertexshader.glsl;%(Inputs)</Inputs>
       <Message>Start shader compile step</Message>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>python Ressources\ShaderBuildscript.py</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Start shader compiler</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

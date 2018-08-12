@@ -25,7 +25,7 @@ int main() {
 	};
 	createTexture(&tex1);
 	createTexture(&tex2);
-	initTGEngine((App*) &editor);
+	initTGEngine((App*)&editor);
 	return 0;
 }
 
@@ -54,9 +54,5 @@ void drawGrid(VertexBuffer* buffer) {
 
 void Editor::drawloop(VertexBuffer* buffer)
 {
-	arial.drawString({ {-1, 0, 0},  { 1, 0, 0, 1} }, "Hallo Welt!", buffer);
-	//drawGrid(buffer);
-	//FBX_Dictionary::addToDraw(buffer);
-	drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, tex1.index }, 0.5, 0.5, buffer);
-	//drawRectangleWithTexture({ { -0.5, -0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, tex2.index }, 0.5, 0.5, buffer);
+	arial.drawString({ {-1, 0, 0},  { 0, 0, 0, 1} }, "Hallo Welt!", buffer);
 }

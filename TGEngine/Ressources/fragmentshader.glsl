@@ -5,12 +5,12 @@ layout(location = 0) in vec4 colorIn;
 layout(location = 1) in vec2 uv;
 layout(location = 2) flat in uint color_only;
 
-layout(binding = 1) uniform sampler2D image_sampler[100];
+layout(binding = 1) uniform sampler2D image_sampler[4094];
 
 layout(location = 0) out vec4 colorOut;
 
 void main(){
-    if(color_only == 101){
+    if(color_only == 4095){
         colorOut = colorIn;
         return;
     }

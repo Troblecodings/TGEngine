@@ -8,7 +8,6 @@ using namespace std;
 
 void initTGEngine(App *app) {
 	nio::queryCWD();
-	OUT_LV_DEBUG(nio::current_working_dir)
 	nio::readProperties("Properties.xml", &properties);
 	createWindowClass();
 	createWindow(&app->main_window, &properties);
@@ -37,9 +36,9 @@ void initTGEngine(App *app) {
 	createUniformBuffer(&uniform_scale_buffer);
 	initAllTextures();
 
-	//Camera cam;
-	//cam.speed = 0.001f;
-	//createCamera(&cam);
+	Camera cam;
+	cam.speed = 0;
+	createCamera(&cam);
 
 	createPipelineLayout();
 	createPipeline();
@@ -62,43 +61,13 @@ void initTGEngine(App *app) {
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
 	}
-	//cam.updateCamera();
+	cam.updateCamera();
 
 	createCommandBuffer();
 	singleTimeCommand();
 	createSemaphores();
 
-	uint32_t index = 0;
-	std::vector<VkDescriptorImageInfo> sampler_array(100);
-	for each (Texture* tex in texture_buffers) {
-		sampler_array[index] = {
-			tex_image_sampler,
-			tex->image_view,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		};
-		tex->index = index;
-		index++;
-	}
-	for (; index < 100; index++) {
-		sampler_array[index] = {
-			tex_image_sampler,
-			texture_buffers[0]->image_view,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		};
-	}
-	VkWriteDescriptorSet descriptor_writes = {
-		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-		nullptr,
-		descriptor_set,
-		texture_descriptor->binding,
-		0,
-		100,
-		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-		sampler_array.data(),
-		nullptr,
-		nullptr
-	};
-	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
+	addTextures();
 
 	while (true) {
 		startdraw();

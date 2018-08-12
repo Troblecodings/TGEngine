@@ -15,15 +15,15 @@ void loadfont(Font* font) {
 	long size_of_file = ftell(file);
 	fseek(file, 0, SEEK_SET);
 	unsigned char * temp_buffer = new unsigned char[size_of_file];
-	font->texture.width = 512;
-	font->texture.height = 512;
+	font->texture.width = font->height * 256;
+	font->texture.height = font->height;
 	font->texture.image_data = new stbi_uc[font->texture.width * font->texture.height * 4];
 
 	stbi_uc* tempbitmap = new stbi_uc[font->texture.width * font->texture.height];
 
 	fread(temp_buffer, sizeof(unsigned char), size_of_file, file);
 
-	stbtt_BakeFontBitmap(temp_buffer, 0, 32, tempbitmap, font->texture.width, font->texture.height, 0, 256, font->cdata);
+	stbtt_BakeFontBitmap(temp_buffer, 0, font->height, tempbitmap, font->texture.width, font->texture.height, 0, 256, font->cdata);
 	delete[] temp_buffer;
 
 	for (size_t i = 0; i < font->texture.width * font->texture.height; i++)

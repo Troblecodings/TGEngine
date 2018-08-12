@@ -8,7 +8,8 @@
 #include "VertexBuffer.hpp"
 #include "..\Draw.hpp"
 
-#define COLOR_ONLY 101
+#define MAX_TEXTURES 4094
+#define COLOR_ONLY MAX_TEXTURES + 1
 
 struct Texture {
 	INPUT 
@@ -56,12 +57,7 @@ SINCE(0, 0, 2)
 void initAllTextures();
 
 SINCE(0, 0, 3)
-DEPRECATED
-void setTexture(Texture* tex, VertexBuffer* buffer, uint32_t index);
-
-SINCE(0, 0, 3)
-DEPRECATED
-void addTexture(Texture* tex);
+void addTextures();
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);
