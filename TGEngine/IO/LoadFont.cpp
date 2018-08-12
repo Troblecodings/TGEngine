@@ -37,44 +37,45 @@ void loadfont(Font* font) {
 	createTexture(&font->texture);
 }
 
-void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer) {
+void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, float multi) {
 	unsigned char* string = reinterpret_cast<unsigned char*>(text);
-
+	vert.position.x /= multi;
+	vert.position.y /= multi;
 	for (; *string; ++string) {
 		stbtt_aligned_quad quad;
 		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *string, &vert.position.x, &vert.position.y, &quad, 0);
 		buffer->add({
-			{ quad.x0 MULTIPLAIER, quad.y0 MULTIPLAIER, vert.position.z},
+			{ quad.x0 * multi, quad.y0 * multi, vert.position.z},
 			vert.color,
 			{ quad.s0, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 MULTIPLAIER, quad.y0 MULTIPLAIER, vert.position.z },
+			{ quad.x1 * multi, quad.y0 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 MULTIPLAIER, quad.y1 MULTIPLAIER, vert.position.z },
+			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t1 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 MULTIPLAIER, quad.y1 MULTIPLAIER, vert.position.z },
+			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t1 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x0 MULTIPLAIER, quad.y1 MULTIPLAIER, vert.position.z },
+			{ quad.x0 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s0, quad.t1 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x0 MULTIPLAIER, quad.y0 MULTIPLAIER, vert.position.z },
+			{ quad.x0 * multi, quad.y0 * multi, vert.position.z },
 			vert.color,
 			{ quad.s0, quad.t0 },
 			this->texture.index

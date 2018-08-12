@@ -54,11 +54,9 @@ void drawGrid(VertexBuffer* buffer) {
 
 void Editor::drawloop(VertexBuffer* buffer)
 {
-	arial.drawString({ {-1, 0, 0},  { 1, 1, 1, 1} }, "Hallo Welt!", buffer);
+	arial.drawString({ {-1, 0, 0},  { 1, 0, 0, 1} }, "Hallo Welt!", buffer);
 	//drawGrid(buffer);
 	//FBX_Dictionary::addToDraw(buffer);
-	//setTexture(&tex1, buffer, image_index);
-	//drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, arial.texture.index }, 0.5, 0.5, buffer);
-	//setTexture(&tex2, buffer, image_index);
+	drawRectangleWithTexture({ { 0.5, 0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, tex1.index }, 0.5, 0.5, buffer);
 	//drawRectangleWithTexture({ { -0.5, -0.5, 0 },{ 1, 1, 1, 1 },{ 0, 0 }, tex2.index }, 0.5, 0.5, buffer);
 }

@@ -11,8 +11,6 @@
 #include "..\stb\stb_truetype.h"
 #include "../Drawlib/Rectangle.hpp"
 
-#define MULTIPLAIER * 0.003
-
 struct Font {
 	INPUT
 	char* path;
@@ -21,7 +19,7 @@ struct Font {
 	Texture texture = {};
 	stbtt_bakedchar cdata[256];
 
-	void drawString(TGVertex vert, char* string, VertexBuffer* buffer);
+	void drawString(TGVertex vert, char* string, VertexBuffer* buffer, float multi = 0.0015);
 };
 
 SINCE(0, 0, 3)
