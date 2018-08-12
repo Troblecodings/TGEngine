@@ -55,4 +55,5 @@ void drawGrid(VertexBuffer* buffer) {
 void Editor::drawloop(VertexBuffer* buffer)
 {
 	arial.drawString({ {-1, 0, 0},  { 0, 0, 0, 1} }, "Hallo Welt!", buffer);
+	FBX_Dictionary::addToDraw(buffer);
 }

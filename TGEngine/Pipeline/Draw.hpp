@@ -7,8 +7,6 @@
 #include "CommandBuffer.hpp"
 #include "Buffer\IndexBuffer.hpp"
 
-extern VkSemaphoreCreateInfo semaphore_create_info;
-extern VkSemaphore wait_semaphore;
 extern std::vector<VkPipelineStageFlags> stage_flags;
 extern uint32_t image_index;
 extern VkFence fence;

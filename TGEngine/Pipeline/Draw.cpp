@@ -1,18 +1,10 @@
 #include "Draw.hpp"
 
-VkSemaphore wait_semaphore;
 uint32_t image_index;
 VkFence fence;
-
-VkSemaphoreCreateInfo semaphore_create_info = {
-	VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-	nullptr,
-	0
-};
 std::vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT };
 
 void createSemaphores() {
-	//vkCreateSemaphore(device, &semaphore_create_info, nullptr, &wait_semaphore);
 	VkFenceCreateInfo info = {
 		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 		nullptr,
@@ -67,11 +59,8 @@ void present() {
 }
 
 void destroySemaphores() {
-	last_result = vkWaitForFences(device, 1, &fence, false, UINT64_MAX);
-	HANDEL(last_result)
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
 	vkDestroyFence(device, fence, nullptr);
-	//vkDestroySemaphore(device, wait_semaphore, nullptr);
 }

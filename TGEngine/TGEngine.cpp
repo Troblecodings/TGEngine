@@ -37,7 +37,7 @@ void initTGEngine(App *app) {
 	initAllTextures();
 
 	Camera cam;
-	cam.speed = 0;
+	cam.speed = 0.001f;
 	createCamera(&cam);
 
 	createPipelineLayout();
@@ -74,7 +74,7 @@ void initTGEngine(App *app) {
 		if (app->main_window.close_request) {
 			break;
 		}
-		if (app->main_window.minimized) {
+		else if (app->main_window.minimized) {
 			continue;
 		}
 		startdraw();
