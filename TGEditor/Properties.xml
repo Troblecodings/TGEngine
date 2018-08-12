@@ -7,13 +7,16 @@
     <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
+    <boolean name="cursor" value="true" />
+    <boolean name="resizeable" value="true" />
+    <boolean name="maximizable" value="true" />
+    <boolean name="minimizeable" value="true" />
     <int name="height" value="1061"/>
     <int name="width" value="1920"/>
     <boolean name="center" value="true"/>
     <!--Will be ignored if center is true-->
     <int name="posx" value="0" />
     <int name="posy" value="0" />
-    <boolean name="cursor" value="true" />
     <!--Ignore end-->>
   </window>
 </xml>

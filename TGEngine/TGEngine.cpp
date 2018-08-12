@@ -11,13 +11,13 @@ void initTGEngine(App *app) {
 	nio::readProperties("Properties.xml", &properties);
 	createWindowClass();
 	createWindow(&app->main_window, &properties);
-	createInstance(&properties, { 
-        #ifdef DEBUG 
+	createInstance(&properties, {
+		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
-        #endif
-		"VK_LAYER_VALVE_steam_overlay", 
+		#endif
+		"VK_LAYER_VALVE_steam_overlay",
 		"VK_LAYER_NV_optimus"
-	}, { });
+		}, { });
 
 	app->main_window.createWindowSurface();
 	createDevice({}, {});
@@ -29,9 +29,9 @@ void initTGEngine(App *app) {
 	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
 
-	UniformBuffer uniform_scale_buffer = {
+	uniform_scale_buffer = {
 		sizeof(glm::vec2),
-	    { VK_SHADER_STAGE_VERTEX_BIT }
+		{ VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&uniform_scale_buffer);
 	initAllTextures();
@@ -44,7 +44,7 @@ void initTGEngine(App *app) {
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
-    
+
 	VertexBuffer main_buffer = {};
 	main_buffer.max_vertex_count = 500000;
 	createVertexBuffer(&main_buffer);
@@ -53,13 +53,13 @@ void initTGEngine(App *app) {
 	createAllDescriptorSets();
 
 	if (app->main_window.height > app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
 	}
 	else if (app->main_window.height < app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
 	}
 	else {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*) &glm::vec2(1, 1), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, 1), sizeof(glm::vec2));
 	}
 	cam.updateCamera();
 

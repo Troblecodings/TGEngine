@@ -84,14 +84,14 @@ void setWindowProperties(Window* window, nio::Properties* properties) {
 		window->cursor = properties->getBoolean("cursor").rvalue;
 		if (fullscreen) {
 			GET_SIZE(d_width, d_height)
-				window->width = d_width;
+			window->width = d_width;
 			window->height = d_height;
 			window->x = d_width / 2 - window->width / 2;
 			window->y = d_height / 2 - window->height / 2;
 		}
 		else if (properties->getBoolean("center").rvalue) {
 			GET_SIZE(d_width, d_height)
-				window->height = properties->getInt("height").rvalue;
+			window->height = properties->getInt("height").rvalue;
 			window->width = properties->getInt("width").rvalue;
 			window->x = d_width / 2 - window->width / 2;
 			window->y = d_height / 2 - window->height / 2;
@@ -118,10 +118,20 @@ void createWindow(Window* window, nio::Properties* properties) {
 			const size_t cSize = strlen(ch) + 1;
 			std::wstring wc(cSize, L'#');
 			mbstowcs(&wc[0], ch, cSize);
-			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc.data(), WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
+			unsigned long style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
+			if (properties->getBoolean("minimizeable").rvalue) {
+				style |= WS_MINIMIZEBOX;
+			}
+			if (properties->getBoolean("maximizable").rvalue) {
+				style |= WS_MAXIMIZEBOX;
+			}
+			if (properties->getBoolean("resizeable").rvalue) {
+				style |= WS_SIZEBOX;
+			}
+			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc.data(), style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
 		}
 		else {
-			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, nullptr, WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
+			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, nullptr, WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
 		}
 	}
 	else {

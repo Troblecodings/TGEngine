@@ -10,6 +10,7 @@
 #include "RenderPass.hpp"
 
 extern VkSwapchainKHR swapchain;
+extern VkSurfaceCapabilitiesKHR surface_capabilities;
 
 SINCE(0, 0, 1)
 void createSwapchain();

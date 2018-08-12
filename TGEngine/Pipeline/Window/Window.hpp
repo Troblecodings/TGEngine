@@ -28,9 +28,7 @@ struct Window {
 	int x = 0,
 		y = 0,
 		width = 0,
-		height = 0,
-		nwidth = 0,
-		nheight = 0;
+		height = 0;
 
 	bool close_request = false,
 		decorated = true,

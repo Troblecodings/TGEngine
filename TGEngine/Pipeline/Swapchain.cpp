@@ -6,8 +6,6 @@ VkSurfaceCapabilitiesKHR surface_capabilities;
 void createSwapchain() {
 	Window* win = window_list[0];
 
-	OUT_LV_DEBUG(win->surface)
-
 	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, win->surface, &surface_capabilities);
 	HANDEL(last_result)
 
@@ -44,6 +42,11 @@ void createSwapchain() {
 void recreateSwapchain() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
+	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, window_list[0]->surface, &surface_capabilities);
+	HANDEL(last_result)
+	window_list[0]->width = surface_capabilities.currentExtent.width;
+	window_list[0]->height = surface_capabilities.currentExtent.height;
+
 	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
 	destroyPipeline();
@@ -51,11 +54,20 @@ void recreateSwapchain() {
 	destroySwapchain();
 
 	createRenderpass();
-	createPipelineLayout();
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
 	createCommandBuffer();
+
+	if (window_list[0]->height > window_list[0]->width) {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, (float)((float)window_list[0]->width / (float)window_list[0]->height)), sizeof(glm::vec2));
+	}
+	else if (window_list[0]->height < window_list[0]->width) {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2((float)((float)window_list[0]->height / (float)window_list[0]->width), 1), sizeof(glm::vec2));
+	}
+	else {
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, 1), sizeof(glm::vec2));
+	}
 }
 
 void destroySwapchain() {
