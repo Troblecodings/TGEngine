@@ -322,6 +322,9 @@
     <None Include="Ressources\vertexshader.spv">
       <Filter>Ressourcendateien</Filter>
     </None>
+    <None Include="..\README.md">
+      <Filter>Ressourcendateien</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Ressources\Layers.txt">

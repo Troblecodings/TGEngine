@@ -12,11 +12,11 @@ For updates please follow the [official twitter account of Troblecodings](https:
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current built version: <strong>1.1.73.0</strong><br>
+Current built version: <strong>1.1.82.0</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>
-For image loading is [STB](https://github.com/nothings/stb) currently being used.<br>
+For image loading and font loading is [STB](https://github.com/nothings/stb) currently being used.<br>
 This is planned to be replaced in the future.
 
 The file library [TGVL](https://github.com/Troblecodings/TGVertex) is needed to compile newer versions of the TGEngine
@@ -32,7 +32,9 @@ Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/mas
 
 Every library used is Open-Source.<br>
 <br>
-STB is published under a Public domain License (or MIT)
+STB is published under a [Public domain](https://github.com/nothings/stb) License (or MIT)<br>
+LunarG's Vulkan-SDK is published under [Creative Commons](https://creativecommons.org/licenses/by-nd/4.0/), see [LunarG.com](https://vulkan.lunarg.com/doc/sdk/1.1.82.0/windows/getting_started.html)<br>
+Vulkan itself is distributed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0), see Vulkan.h
 
 <h3>Wanna contribute?</h3>
 

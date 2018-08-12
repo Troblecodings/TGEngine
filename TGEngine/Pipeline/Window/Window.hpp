@@ -6,7 +6,7 @@
 #include <string>
 #include "..\..\IO\Mouse.hpp"
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 
 #include <Windows.h>
 #include <tchar.h>

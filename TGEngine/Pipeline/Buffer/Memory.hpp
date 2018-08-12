@@ -2,7 +2,7 @@
 
 #include "..\..\Pipeline\Device.hpp"
 
-extern std::vector<uint64_t> buffers;
+extern std::vector<VkBuffer> buffers;
 extern std::vector<bool> isImage;
 extern std::vector<VkDeviceSize> buffer_sizes;
 extern std::vector<VkDeviceSize> buffer_offsets;

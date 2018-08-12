@@ -111,6 +111,7 @@
     <CustomBuild Include="Ressources\fragmentshader.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
+    <None Include="..\README.md" />
     <None Include="Ressources\fragmentshader.spv" />
     <CustomBuild Include="Ressources\vertexshader.glsl">
       <FileType>Document</FileType>
@@ -233,8 +234,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -244,10 +245,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib;D:\Vulkan\Third-Party\Bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -256,13 +257,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -275,10 +276,10 @@
       <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Release;D:\2019.0\lib\vs2015\x86\release;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -292,8 +293,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
@@ -305,10 +306,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib;D:\Vulkan\Third-Party\Bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>

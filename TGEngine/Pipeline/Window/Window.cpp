@@ -4,7 +4,7 @@ uint32_t d_width = 0, d_height = 0;
 std::vector<Window*> window_list;
 HMODULE sys_module;
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 Window::Window(wchar_t* name) {
 	this->__impl_cursor = this->cursor ? LoadCursor(nullptr, IDC_ARROW) : NULL;
 	this->__impl_handle = name;
@@ -220,14 +220,14 @@ void getMonitor() {
 }
 
 void Window::destroy() {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 	DestroyWindow(this->__impl_window);
 #endif 
 	vkDestroySurfaceKHR(instance, this->surface, nullptr);
 }
 
 void Window::pollevents() {
-    #ifdef _WIN32
+	#if defined(_WIN32) || defined(_WIN64)
 	MSG msg;
 	while (PeekMessage(&msg, this->__impl_window, 0, 0, PM_REMOVE))
 	{
