@@ -42,5 +42,4 @@ TARGET_PARAMETER
 
 USAGE_DOCS
 TARGET_PARAMETER
-TARGET(INPUT)
-#define OPT // Defines the parameter to be an optional Input
+#define OPT // Defines the parameter to be an optional input or output

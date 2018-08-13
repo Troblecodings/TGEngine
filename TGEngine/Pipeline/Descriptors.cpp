@@ -90,9 +90,9 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 	VkWriteDescriptorSet descriptor_writes;
 
 	if (desc->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-		VkDescriptorBufferInfo buffer_info = {
+		desc->buffer_info = {
 			buffers[desc->buffer],
-			0,
+			0ULL,
 			size
 		};
 
@@ -105,12 +105,12 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 			1,
 			desc->type,
 			nullptr,
-			&buffer_info,
+			&desc->buffer_info,
 			nullptr
 		};
 	}
 	else if (desc->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-		VkDescriptorImageInfo desc_image_info = {
+		desc->desc_image_info = {
 			desc->image_sampler,
 			desc->image_view,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
@@ -123,7 +123,7 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 			desc->array_index,
 			1,
 			desc->type,
-			&desc_image_info,
+			&desc->desc_image_info,
 			nullptr,
 			nullptr
 		};

@@ -25,6 +25,8 @@ struct Descriptor {
 
 	OUTPUT
     uint32_t binding;
+	OPT VkDescriptorImageInfo desc_image_info;
+	OPT VkDescriptorBufferInfo buffer_info;
 };
 
 SINCE(0, 0, 2)

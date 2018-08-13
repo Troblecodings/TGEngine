@@ -59,7 +59,7 @@ void initTGEngine(App *app) {
 		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
 	}
 	else {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, 1), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1.0f, 1.0f), sizeof(glm::vec2));
 	}
 	cam.updateCamera();
 
