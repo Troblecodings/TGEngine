@@ -66,18 +66,6 @@
     <ClInclude Include="TGEngine.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Files.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\FontTables.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\LoadFont.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Properties.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
     <ClInclude Include="Drawlib\BaseDrawLib.hpp">
       <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
@@ -156,20 +144,11 @@
     <ClInclude Include="Util\Math.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="IO\Deflate.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\ImagePNG.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Endian.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
     <ClInclude Include="GameContent\Camera.hpp">
       <Filter>Headerdateien\game content</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Mouse.hpp">
-      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="stdbase.hpp">
       <Filter>Headerdateien</Filter>
@@ -186,25 +165,34 @@
     <ClInclude Include="model\ObjLoader.hpp">
       <Filter>Headerdateien\model</Filter>
     </ClInclude>
+    <ClInclude Include="io_\Deflate.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\Files.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\FontTables.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\ImagePNG.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\Keyboard.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\LoadFont.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\Mouse.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io_\Properties.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Files.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\FontTables.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\LoadFont.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\ObjLoader.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Properties.cpp">
-      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\BaseDrawLib.cpp">
       <Filter>Quelldateien\drawlib</Filter>
@@ -263,29 +251,11 @@
     <ClCompile Include="stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="IO\Deflate.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\ImagePNG.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
     <ClCompile Include="Util\Endian.cpp">
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="GameContent\Camera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Mouse.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="FBX_Loader.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="tgstring.cpp">
-      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="Resources\ShaderData.cpp">
       <Filter>resources</Filter>
@@ -304,6 +274,30 @@
     </ClCompile>
     <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\Deflate.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\Files.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\FontTables.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\ImagePNG.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\Keyboard.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\LoadFont.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\Mouse.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io_\Properties.cpp">
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

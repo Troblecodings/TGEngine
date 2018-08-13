@@ -1,10 +1,9 @@
 #pragma once
 
 #include "stdbase.hpp"
-#include "Pipeline\Buffer\VertexBuffer.hpp"
+#include "..\Pipeline\Buffer\VertexBuffer.hpp"
 #include "fbxsdk.h"
-#include "Pipeline/Buffer/Texturebuffer.hpp"
-#include "tgstring.hpp"
+#include "..\Pipeline\Buffer\Texturebuffer.hpp"
 
 #ifdef DEBUG
 #define FBX_CHECK(sucess)\

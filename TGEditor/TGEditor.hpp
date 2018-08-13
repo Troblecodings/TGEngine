@@ -3,9 +3,9 @@
 #define DEBUG
 #include <stdbase.hpp>
 
-#include "FBX_Loader.hpp"
+#include "model\FBX_Loader.hpp"
 #include <TGEngine.hpp>
-#include <Drawlib\DrawLib.hpp>
+#include "drawlib\DrawLib.hpp"
 #include <IO\LoadFont.hpp>
 #include <Pipeline\CommandBuffer.hpp>
 #include "IO\ImagePNG.hpp"
