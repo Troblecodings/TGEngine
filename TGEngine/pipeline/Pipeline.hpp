@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Instance.hpp"
-#include "Window\Window.hpp"
+#include "window\Window.hpp"
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Pipe.hpp"
 #include "Shader.hpp"
 #include "Swapchain.hpp"
-#include "Buffer\IndexBuffer.hpp"
-#include "Buffer\UniformBuffer.hpp"
+#include "buffer\IndexBuffer.hpp"
+#include "buffer\UniformBuffer.hpp"
 #include "Descriptors.hpp"
-#include "Buffer\Texturebuffer.hpp"
+#include "buffer\Texturebuffer.hpp"

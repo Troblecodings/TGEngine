@@ -4,9 +4,8 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Shader.hpp"
-#include <Vertex.hpp>
 #include <vector>
-#include "Window\Window.hpp"
+#include "window\Window.hpp"
 #include "Descriptors.hpp"
 
 extern VkPipeline pipeline;

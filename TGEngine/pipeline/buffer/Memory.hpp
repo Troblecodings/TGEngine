@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Pipeline\Device.hpp"
+#include "..\..\pipeline\Device.hpp"
 
 extern std::vector<VkBuffer> buffers;
 extern std::vector<bool> isImage;

@@ -2,7 +2,7 @@
 
 #include "..\stdbase.hpp"
 #include "Device.hpp"
-#include "Window\Window.hpp"
+#include "window\Window.hpp"
 #include "RenderPass.hpp"
 #include "Swapchain.hpp"
 #include "PrePipeline.hpp"

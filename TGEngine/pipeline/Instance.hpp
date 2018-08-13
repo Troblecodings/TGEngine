@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\stdbase.hpp"
-#include "..\IO\Properties.hpp"
+#include "..\io\Properties.hpp"
 
 extern VkResult last_result;
 extern VkInstance instance;

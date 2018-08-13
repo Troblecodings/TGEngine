@@ -2,9 +2,9 @@
 
 #include "..\..\stdbase.hpp"
 #include "..\Instance.hpp"
-#include "..\..\IO\Properties.hpp"
+#include "..\..\io\Properties.hpp"
 #include <string>
-#include "..\..\IO\Mouse.hpp"
+#include "..\..\io\Mouse.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 

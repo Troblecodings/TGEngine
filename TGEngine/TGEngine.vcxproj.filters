@@ -147,9 +147,6 @@
     <ClInclude Include="Util\Endian.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="stdbase.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="game_content\Camera.hpp">
       <Filter>Headerdateien\game content</Filter>
+    </ClInclude>
+    <ClInclude Include="Stdbase_.hpp">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +248,6 @@
     <ClCompile Include="Pipeline\Window\Window.cpp">
       <Filter>Quelldateien\pipeline\window</Filter>
     </ClCompile>
-    <ClCompile Include="stdbase.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Util\Endian.cpp">
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
@@ -298,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="game_content\Camera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="Stdbase_.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

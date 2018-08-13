@@ -2,10 +2,10 @@
 
 #include "..\stdbase.hpp"
 #include "Device.hpp"
-#include "Window\Window.hpp"
+#include "window\Window.hpp"
 #include "Swapchain.hpp"
 #include "CommandBuffer.hpp"
-#include "Buffer\IndexBuffer.hpp"
+#include "buffer\IndexBuffer.hpp"
 
 extern std::vector<VkPipelineStageFlags> stage_flags;
 extern uint32_t image_index;

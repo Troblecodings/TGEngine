@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Pipeline\Device.hpp"
+#include "..\..\pipeline\Device.hpp"
 #include "..\..\TGVertex.hpp"
 #include "Memory.hpp"
 #include "UniformBuffer.hpp"

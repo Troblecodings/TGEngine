@@ -55,7 +55,7 @@
     <ClInclude Include="Pipeline\Swapchain.hpp" />
     <ClInclude Include="Pipeline\Window\Window.hpp" />
     <ClInclude Include="Resources\ShaderData.hpp" />
-    <ClInclude Include="stdbase.hpp" />
+    <ClInclude Include="Stdbase_.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="Util\Annotations.hpp" />
     <ClInclude Include="Util\Debug.hpp" />
@@ -95,7 +95,7 @@
     <ClCompile Include="Pipeline\Swapchain.cpp" />
     <ClCompile Include="Pipeline\Window\Window.cpp" />
     <ClCompile Include="Resources\ShaderData.cpp" />
-    <ClCompile Include="stdbase.cpp" />
+    <ClCompile Include="Stdbase_.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="Util\Debug.cpp" />
     <ClCompile Include="Util\Endian.cpp" />

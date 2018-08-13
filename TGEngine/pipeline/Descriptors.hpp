@@ -2,7 +2,7 @@
 
 #include "..\stdbase.hpp"
 #include "Device.hpp"
-#include "..\Pipeline\Buffer\Memory.hpp"
+#include "..\pipeline\buffer\Memory.hpp"
 
 extern VkDescriptorPool descriptor_pool;
 extern VkDescriptorSet descriptor_set;

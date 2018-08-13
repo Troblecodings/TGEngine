@@ -4,10 +4,10 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Framebuffer.hpp"
-#include "Buffer\VertexBuffer.hpp"
+#include "buffer\VertexBuffer.hpp"
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
-#include "Buffer\Texturebuffer.hpp"
+#include "buffer\Texturebuffer.hpp"
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;

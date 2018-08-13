@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Instance.hpp"
-#include "Window\Window.hpp"
+#include "window\Window.hpp"
 
 extern VkPhysicalDevice used_physical_device;
 extern VkPhysicalDeviceProperties device_properties;
