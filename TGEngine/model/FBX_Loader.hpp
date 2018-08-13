@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdbase.hpp"
+#include "Stdbase.hpp"
 #include "..\Pipeline\Buffer\VertexBuffer.hpp"
 #include "fbxsdk.h"
 #include "..\Pipeline\Buffer\Texturebuffer.hpp"

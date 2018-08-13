@@ -1,7 +1,7 @@
 #pragma once
 
 #define DEBUG
-#include <stdbase.hpp>
+#include <Stdbase.hpp>
 
 #include <model\FBX_Loader.hpp>
 #include <TGEngine.hpp>

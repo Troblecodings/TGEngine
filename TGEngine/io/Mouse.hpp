@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\stdbase.hpp"
+#include "..\Stdbase.hpp"
 
 extern bool FIRST_MOUSE_BUTTON;
 extern bool SECOND_MOUSE_BUTTON;

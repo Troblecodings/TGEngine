@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\stdbase.hpp"
+#include "..\Stdbase.hpp"
 #include "..\io\Properties.hpp"
 
 extern VkResult last_result;

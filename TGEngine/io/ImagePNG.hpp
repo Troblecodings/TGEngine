@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\stdbase.hpp"
+#include "..\Stdbase.hpp"
 #include "..\IO\Files.hpp"
 #include "..\Util\Endian.hpp"
 #include "..\Pipeline\Buffer\Texturebuffer.hpp"

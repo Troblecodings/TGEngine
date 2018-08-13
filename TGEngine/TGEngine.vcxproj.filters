@@ -186,7 +186,7 @@
     <ClInclude Include="game_content\Camera.hpp">
       <Filter>Headerdateien\game content</Filter>
     </ClInclude>
-    <ClInclude Include="Stdbase_.hpp">
+    <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -296,7 +296,7 @@
     <ClCompile Include="game_content\Camera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
-    <ClCompile Include="Stdbase_.cpp">
+    <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
