@@ -1,8 +1,8 @@
 #pragma once
 
-#define DEBUG
 #include <stdio.h>
 #include <iostream>
+#include <cstddef>
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif

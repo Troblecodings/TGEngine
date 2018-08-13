@@ -25,7 +25,7 @@
     <ClInclude Include="Drawlib\DrawLib.hpp" />
     <ClInclude Include="Drawlib\Ellipse.hpp" />
     <ClInclude Include="Drawlib\Rectangle.hpp" />
-    <ClInclude Include="GameContent\Camera.hpp" />
+    <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\FontTables.hpp" />
@@ -68,7 +68,7 @@
     <ClCompile Include="Drawlib\Circle.cpp" />
     <ClCompile Include="Drawlib\Ellipse.cpp" />
     <ClCompile Include="Drawlib\Rectangle.cpp" />
-    <ClCompile Include="GameContent\Camera.cpp" />
+    <ClCompile Include="game_content\Camera.cpp" />
     <ClCompile Include="io\Deflate.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\FontTables.cpp" />
@@ -196,7 +196,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -237,7 +237,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>

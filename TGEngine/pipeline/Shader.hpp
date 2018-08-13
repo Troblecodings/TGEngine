@@ -2,9 +2,9 @@
 
 #include <vector>
 #include "..\stdbase.hpp"
-#include "..\IO\Files.hpp"
+#include "..\io\Files.hpp"
 #include "Device.hpp"
-#include "..\Ressources\ShaderData.hpp"
+#include "..\resources\ShaderData.hpp"
 
 extern std::vector<VkPipelineShaderStageCreateInfo> shaders;
 extern std::vector<VkVertexInputAttributeDescription> description_attributes;

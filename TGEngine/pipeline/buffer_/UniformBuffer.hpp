@@ -16,4 +16,4 @@ SINCE(0, 0, 2)
 void createUniformBuffer(UniformBuffer* buffer);
 
 SINCE(0, 0, 2)
-void fillUniformBuffer(UniformBuffer* buffer, uint8_t* input, uint32_t size);
+void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size);

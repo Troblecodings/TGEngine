@@ -147,9 +147,6 @@
     <ClInclude Include="Util\Endian.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="GameContent\Camera.hpp">
-      <Filter>Headerdateien\game content</Filter>
-    </ClInclude>
     <ClInclude Include="stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="io\Properties.hpp">
       <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="game_content\Camera.hpp">
+      <Filter>Headerdateien\game content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +254,6 @@
     <ClCompile Include="Util\Endian.cpp">
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
-    <ClCompile Include="GameContent\Camera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\ShaderData.cpp">
       <Filter>resources</Filter>
     </ClCompile>
@@ -298,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="io\Properties.cpp">
       <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\Camera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

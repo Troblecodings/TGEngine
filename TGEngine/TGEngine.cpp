@@ -1,8 +1,4 @@
 #include "TGEngine.hpp"
-#include "Pipeline/Pipeline.hpp"
-#include "Pipeline\Draw.hpp"
-#include "IO/ObjLoader.hpp"
-#include <cstddef>
 
 using namespace std;
 
@@ -53,13 +49,13 @@ void initTGEngine(App *app) {
 	createAllDescriptorSets();
 
 	if (app->main_window.height > app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
 	}
 	else if (app->main_window.height < app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
 	}
 	else {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1.0f, 1.0f), sizeof(glm::vec2));
+		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1.0f, 1.0f), sizeof(glm::vec2));
 	}
 	cam.updateCamera();
 
