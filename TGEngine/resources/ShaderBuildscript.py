@@ -24,14 +24,14 @@ for name in os.listdir("..\\TGEditor\\"):
     if name.endswith(".spv"):
         os.remove(pth)
         print("Deleted " + name + " due cleanup")
-shader_data = open("Ressources\\ShaderData.cpp", "w")
+shader_data = open("resources\\ShaderData.cpp", "w")
 shader_data.write("#include \"ShaderData.hpp\"\n\n")
 shader_data.write("std::vector<std::vector<char>> shader_data = {\n")
 shader_stages = []
 first = True
-for name in os.listdir(c_path + "\\Ressources"):
+for name in os.listdir(c_path + "\\resources"):
     try:
-        pth = c_path + "\\Ressources\\" + name
+        pth = c_path + "\\resources\\" + name
         if name.endswith(".glsl"):
             total += 1
             print("Detected shader: " + name)

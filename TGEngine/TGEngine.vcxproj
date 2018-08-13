@@ -21,12 +21,10 @@
   <ItemGroup>
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Drawlib\BaseDrawLib.hpp" />
-    <ClInclude Include="Drawlib\Beziercurve.hpp" />
     <ClInclude Include="Drawlib\Circle.hpp" />
     <ClInclude Include="Drawlib\DrawLib.hpp" />
     <ClInclude Include="Drawlib\Ellipse.hpp" />
     <ClInclude Include="Drawlib\Rectangle.hpp" />
-    <ClInclude Include="FBX_Loader.hpp" />
     <ClInclude Include="GameContent\Camera.hpp" />
     <ClInclude Include="IO\Deflate.hpp" />
     <ClInclude Include="IO\Files.hpp" />
@@ -34,9 +32,9 @@
     <ClInclude Include="IO\ImagePNG.hpp" />
     <ClInclude Include="IO\LoadFont.hpp" />
     <ClInclude Include="IO\Mouse.hpp" />
-    <ClInclude Include="IO\ObjLoader.hpp" />
     <ClInclude Include="IO\Properties.hpp" />
-    <ClInclude Include="Keyboard.hpp" />
+    <ClInclude Include="model\FBX_Loader.hpp" />
+    <ClInclude Include="model\ObjLoader.hpp" />
     <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp" />
     <ClInclude Include="Pipeline\Buffer\Memory.hpp" />
     <ClInclude Include="Pipeline\Buffer\Texturebuffer.hpp" />
@@ -55,10 +53,9 @@
     <ClInclude Include="Pipeline\Shader.hpp" />
     <ClInclude Include="Pipeline\Swapchain.hpp" />
     <ClInclude Include="Pipeline\Window\Window.hpp" />
-    <ClInclude Include="Ressources\ShaderData.hpp" />
+    <ClInclude Include="Resources\ShaderData.hpp" />
     <ClInclude Include="stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
-    <ClInclude Include="tgstring.hpp" />
     <ClInclude Include="Util\Annotations.hpp" />
     <ClInclude Include="Util\Debug.hpp" />
     <ClInclude Include="Util\Endian.hpp" />
@@ -67,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Drawlib\BaseDrawLib.cpp" />
-    <ClCompile Include="Drawlib\Beziercurve.cpp" />
     <ClCompile Include="Drawlib\Circle.cpp" />
     <ClCompile Include="Drawlib\Ellipse.cpp" />
     <ClCompile Include="Drawlib\Rectangle.cpp" />
@@ -82,11 +78,11 @@
     <ClCompile Include="IO\ObjLoader.cpp" />
     <ClCompile Include="IO\Properties.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="Pipeline\Buffer\IndexBuffer.cpp" />
-    <ClCompile Include="Pipeline\Buffer\Memory.cpp" />
-    <ClCompile Include="Pipeline\Buffer\Texturebuffer.cpp" />
-    <ClCompile Include="Pipeline\Buffer\UniformBuffer.cpp" />
-    <ClCompile Include="Pipeline\Buffer\VertexBuffer.cpp" />
+    <ClCompile Include="pipeline\Buffer\IndexBuffer.cpp" />
+    <ClCompile Include="pipeline\Buffer\Memory.cpp" />
+    <ClCompile Include="pipeline\Buffer\Texturebuffer.cpp" />
+    <ClCompile Include="pipeline\Buffer\UniformBuffer.cpp" />
+    <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Pipeline\CommandBuffer.cpp" />
     <ClCompile Include="Pipeline\Descriptors.cpp" />
     <ClCompile Include="Pipeline\Device.cpp" />
@@ -99,7 +95,7 @@
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\Swapchain.cpp" />
     <ClCompile Include="Pipeline\Window\Window.cpp" />
-    <ClCompile Include="Ressources\ShaderData.cpp" />
+    <ClCompile Include="Resources\ShaderData.cpp" />
     <ClCompile Include="stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="tgstring.cpp" />
@@ -108,19 +104,20 @@
     <ClCompile Include="Util\Math.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Ressources\fragmentshader.glsl">
-      <FileType>Document</FileType>
-    </CustomBuild>
     <None Include="..\README.md" />
-    <None Include="Ressources\fragmentshader.spv" />
-    <CustomBuild Include="Ressources\vertexshader.glsl">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </CustomBuild>
-    <None Include="Ressources\vertexshader.spv" />
+    <None Include="Resources\fragmentshader.glsl" />
+    <None Include="Resources\fragmentshader.spv" />
+    <None Include="Resources\Shader Compiler.bat" />
+    <None Include="Resources\ShaderBuildscript.py" />
+    <None Include="Resources\text.mtl" />
+    <None Include="Resources\vertexshader.glsl" />
+    <None Include="Resources\vertexshader.spv" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Ressources\Layers.txt" />
+    <Text Include="Resources\Layers.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Resources\text.obj" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -178,15 +175,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <CustomBuildBeforeTargets>Build;Rebuild</CustomBuildBeforeTargets>
+    <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -223,10 +228,10 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <PreBuildEvent>
-      <Command>python Ressources\ShaderBuildscript.py</Command>
+      <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
     </PreBuildEvent>
     <PreBuildEvent>
-      <Message>Start shader compiler</Message>
+      <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -254,6 +259,12 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <PreBuildEvent>
+      <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Build shader</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -285,6 +296,12 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <PreBuildEvent>
+      <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Build shader</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -315,6 +332,12 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <PreBuildEvent>
+      <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Build shader</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

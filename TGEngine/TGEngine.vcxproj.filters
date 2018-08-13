@@ -9,51 +9,54 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Ressourcendateien">
+    <Filter Include="Headerdateien\model">
+      <UniqueIdentifier>{74c22868-2b41-4643-80b6-5586a9805911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\io">
+      <UniqueIdentifier>{97cba680-fb33-40a5-866f-30e6342c0c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\game content">
+      <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\drawlib">
+      <UniqueIdentifier>{e8f1a3ba-f124-4f5b-954d-7bd5e0b649aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\pipeline">
+      <UniqueIdentifier>{fb31c39d-a3e6-4339-908a-6378a466b836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\pipeline\buffer">
+      <UniqueIdentifier>{add50dde-2d2c-4652-9b14-88419a2bd0a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\pipeline\window">
+      <UniqueIdentifier>{af89f53e-b9ff-467a-ada7-89777496d974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\util">
+      <UniqueIdentifier>{2f3fc730-ee5c-4471-b4d7-6dbd251e47c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\drawlib">
+      <UniqueIdentifier>{c803af7c-55f5-47a0-8f14-4afc3787ef84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\gamecontent">
+      <UniqueIdentifier>{6213547f-a0e8-4723-97a5-eb115cc65389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\io">
+      <UniqueIdentifier>{f8b8aafc-acdd-4d22-8751-ce6120ba35ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\pipeline">
+      <UniqueIdentifier>{4a422de4-f27c-4585-af37-85fbb585c5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\pipeline\window">
+      <UniqueIdentifier>{071a9615-0ebc-4cbf-9798-d7408e251887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\util">
+      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Quelldateien\Pipeline">
-      <UniqueIdentifier>{4a422de4-f27c-4585-af37-85fbb585c5c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\Util">
-      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\IO">
-      <UniqueIdentifier>{f8b8aafc-acdd-4d22-8751-ce6120ba35ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\Drawlib">
-      <UniqueIdentifier>{c803af7c-55f5-47a0-8f14-4afc3787ef84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\Pipeline\Buffer">
-      <UniqueIdentifier>{0bd5f532-cf44-47b9-a8dd-07c30bb5a9b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\Pipeline\Window">
-      <UniqueIdentifier>{071a9615-0ebc-4cbf-9798-d7408e251887}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\IO">
-      <UniqueIdentifier>{97cba680-fb33-40a5-866f-30e6342c0c34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Drawlib">
-      <UniqueIdentifier>{e8f1a3ba-f124-4f5b-954d-7bd5e0b649aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Util">
-      <UniqueIdentifier>{2f3fc730-ee5c-4471-b4d7-6dbd251e47c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Pipeline">
-      <UniqueIdentifier>{fb31c39d-a3e6-4339-908a-6378a466b836}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Pipeline\Buffer">
-      <UniqueIdentifier>{add50dde-2d2c-4652-9b14-88419a2bd0a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\Pipeline\Window">
-      <UniqueIdentifier>{af89f53e-b9ff-467a-ada7-89777496d974}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\GameContent">
-      <UniqueIdentifier>{6213547f-a0e8-4723-97a5-eb115cc65389}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headerdateien\GameContent">
-      <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
+    <Filter Include="Quelldateien\pipeline\buffer">
+      <UniqueIdentifier>{42dc206c-413f-419b-8305-451375375d5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,133 +67,124 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="IO\Files.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="IO\FontTables.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="IO\LoadFont.hpp">
-      <Filter>Headerdateien\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\ObjLoader.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="IO\Properties.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="Drawlib\BaseDrawLib.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\Beziercurve.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
+      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Drawlib\Circle.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
+      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Drawlib\DrawLib.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
+      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Drawlib\Ellipse.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
+      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Drawlib\Rectangle.hpp">
-      <Filter>Headerdateien\Drawlib</Filter>
+      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\CommandBuffer.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Descriptors.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Device.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Draw.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Framebuffer.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Instance.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Pipe.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Pipeline.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\PrePipeline.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\RenderPass.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Shader.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Swapchain.hpp">
-      <Filter>Headerdateien\Pipeline</Filter>
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp">
-      <Filter>Headerdateien\Pipeline\Buffer</Filter>
+      <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\Memory.hpp">
-      <Filter>Headerdateien\Pipeline\Buffer</Filter>
+      <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\Texturebuffer.hpp">
-      <Filter>Headerdateien\Pipeline\Buffer</Filter>
+      <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\UniformBuffer.hpp">
-      <Filter>Headerdateien\Pipeline\Buffer</Filter>
+      <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\VertexBuffer.hpp">
-      <Filter>Headerdateien\Pipeline\Buffer</Filter>
+      <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Window\Window.hpp">
-      <Filter>Headerdateien\Pipeline\Window</Filter>
+      <Filter>Headerdateien\pipeline\window</Filter>
     </ClInclude>
     <ClInclude Include="Util\Annotations.hpp">
-      <Filter>Headerdateien\Util</Filter>
+      <Filter>Headerdateien\util</Filter>
     </ClInclude>
     <ClInclude Include="Util\Debug.hpp">
-      <Filter>Headerdateien\Util</Filter>
+      <Filter>Headerdateien\util</Filter>
     </ClInclude>
     <ClInclude Include="Util\Math.hpp">
-      <Filter>Headerdateien\Util</Filter>
+      <Filter>Headerdateien\util</Filter>
     </ClInclude>
     <ClInclude Include="IO\Deflate.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="IO\ImagePNG.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="Util\Endian.hpp">
-      <Filter>Headerdateien\Util</Filter>
+      <Filter>Headerdateien\util</Filter>
     </ClInclude>
     <ClInclude Include="GameContent\Camera.hpp">
-      <Filter>Headerdateien\GameContent</Filter>
-    </ClInclude>
-    <ClInclude Include="Ressources\ShaderData.hpp">
-      <Filter>Ressourcendateien</Filter>
+      <Filter>Headerdateien\game content</Filter>
     </ClInclude>
     <ClInclude Include="IO\Mouse.hpp">
-      <Filter>Headerdateien\IO</Filter>
+      <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Keyboard.hpp">
-      <Filter>Headerdateien\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="FBX_Loader.hpp">
-      <Filter>Headerdateien\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="tgstring.hpp">
-      <Filter>Headerdateien\IO</Filter>
-    </ClInclude>
     <ClInclude Include="TGVertex.hpp">
-      <Filter>Headerdateien\Util</Filter>
+      <Filter>Headerdateien\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ShaderData.hpp">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="model\FBX_Loader.hpp">
+      <Filter>Headerdateien\model</Filter>
+    </ClInclude>
+    <ClInclude Include="model\ObjLoader.hpp">
+      <Filter>Headerdateien\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,145 +192,154 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IO\Files.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="IO\FontTables.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="IO\LoadFont.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="IO\ObjLoader.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="IO\Properties.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\BaseDrawLib.cpp">
-      <Filter>Quelldateien\Drawlib</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawlib\Beziercurve.cpp">
-      <Filter>Quelldateien\Drawlib</Filter>
+      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\Circle.cpp">
-      <Filter>Quelldateien\Drawlib</Filter>
+      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\Ellipse.cpp">
-      <Filter>Quelldateien\Drawlib</Filter>
+      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\Rectangle.cpp">
-      <Filter>Quelldateien\Drawlib</Filter>
+      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
-      <Filter>Quelldateien\Util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Util\Math.cpp">
-      <Filter>Quelldateien\Util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\CommandBuffer.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Descriptors.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Device.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Draw.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Framebuffer.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Instance.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Pipe.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\PrePipeline.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\RenderPass.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Shader.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Swapchain.cpp">
-      <Filter>Quelldateien\Pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Buffer\IndexBuffer.cpp">
-      <Filter>Quelldateien\Pipeline\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Buffer\Memory.cpp">
-      <Filter>Quelldateien\Pipeline\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Buffer\Texturebuffer.cpp">
-      <Filter>Quelldateien\Pipeline\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Buffer\UniformBuffer.cpp">
-      <Filter>Quelldateien\Pipeline\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Buffer\VertexBuffer.cpp">
-      <Filter>Quelldateien\Pipeline\Buffer</Filter>
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Window\Window.cpp">
-      <Filter>Quelldateien\Pipeline\Window</Filter>
+      <Filter>Quelldateien\pipeline\window</Filter>
     </ClCompile>
     <ClCompile Include="stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IO\Deflate.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="IO\ImagePNG.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="Util\Endian.cpp">
-      <Filter>Quelldateien\Util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="GameContent\Camera.cpp">
-      <Filter>Quelldateien\GameContent</Filter>
-    </ClCompile>
-    <ClCompile Include="Ressources\ShaderData.cpp">
-      <Filter>Ressourcendateien</Filter>
+      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="IO\Mouse.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="FBX_Loader.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="tgstring.cpp">
-      <Filter>Quelldateien\IO</Filter>
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ShaderData.cpp">
+      <Filter>resources</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\Buffer\IndexBuffer.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\Buffer\Memory.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\Buffer\Texturebuffer.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\Buffer\UniformBuffer.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ressources\fragmentshader.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="Ressources\vertexshader.spv">
-      <Filter>Ressourcendateien</Filter>
-    </None>
     <None Include="..\README.md">
-      <Filter>Ressourcendateien</Filter>
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\fragmentshader.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\fragmentshader.spv">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\Shader Compiler.bat">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\ShaderBuildscript.py">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\text.mtl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\vertexshader.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="Resources\vertexshader.spv">
+      <Filter>resources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Ressources\Layers.txt">
-      <Filter>Ressourcendateien</Filter>
+    <Text Include="Resources\Layers.txt">
+      <Filter>resources</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Ressources\fragmentshader.glsl">
-      <Filter>Ressourcendateien</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Ressources\vertexshader.glsl">
-      <Filter>Ressourcendateien</Filter>
-    </CustomBuild>
+    <Object Include="Resources\text.obj">
+      <Filter>resources</Filter>
+    </Object>
   </ItemGroup>
 </Project>
