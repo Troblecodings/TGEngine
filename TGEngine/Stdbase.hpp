@@ -9,14 +9,14 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <string>
-#include "Util/Annotations.hpp"
+#include "util/Annotations.hpp"
 #include <thread>
-#include "IO/Properties.hpp"
-#include "Util/Math.hpp"
+#include "io/Properties.hpp"
+#include "util/Math.hpp"
 #include <glm/glm.hpp>
 #include "util/TGVertex.hpp"
 
-extern nio::Properties properties;
+extern nio::Properties* properties;
 extern uint32_t image_count;
 
 SINCE(0, 0, 1)

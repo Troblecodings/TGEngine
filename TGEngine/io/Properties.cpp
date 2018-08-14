@@ -5,12 +5,14 @@ namespace nio {
 	using namespace std;
 
 	void readProperties(char* path, Properties* prop) {
-		ifstream input(path, ios::binary);
+		FILE* file = fopen(path, "rb");
 
-		if (!input.is_open()) {
-			std::cout << path << " | Can't open file!" << std::endl;
-		}
-
+#ifdef DEBUG
+		if (!file) {
+			std::cout << "DEBUG: File " << path << " can not be opened, this should not happen!" << std::endl;
+			return;
+	    }
+#endif // DEBUG
 		TagType tagtype = NaN;
 
 		char* namebuf;
@@ -19,41 +21,50 @@ namespace nio {
 		int stage = 0;
 
 		string buffer = "";
+		size_t size = 0;
 
-		while (!input.eof())
+		while (!feof(file))
 		{
-			char args[1];
-			input.read(args, 1);
-			if (args[0] == '<') {
+			char c_char;
+			fread(&c_char, sizeof(char), 1, file);
+
+			if (c_char == '<') {
 				stage = 1;
 				continue;
 			}
-			else if (args[0] == '>' || args[0] == '/') {
-				size_t siz = 0;
+			else if (c_char == '>' || c_char == '/') {
 				if (tagtype != NaN) {
 					switch (tagtype) {
 					case BOOLEAN: {
-						siz = prop->bools.size();
-						prop->bools.resize(siz + 1);
-						prop->bools[siz] = BooleanTag(namebuf, valuebuf);
+						size = prop->bool_names.size();
+						prop->bool_names.resize(size + 1);
+						prop->bool_values.resize(size + 1);
+						prop->bool_names[size] = namebuf;
+						prop->bool_values[size] = strcmp(valuebuf, "true") == 0;
 					}
 								  break;
 					case INT: {
-						siz = prop->ints.size();
-						prop->ints.resize(siz + 1);
-						prop->ints[siz] = IntTag(namebuf, valuebuf);
+						size = prop->int_names.size();
+						prop->int_names.resize(size + 1);
+						prop->int_values.resize(size + 1);
+						prop->int_names[size] = namebuf;
+						prop->int_values[size] = stoi(valuebuf);
 					}
 							  break;
 					case FLOAT: {
-						siz = prop->floats.size();
-						prop->floats.resize(siz + 1);
-						prop->floats[siz] = FloatTag(namebuf, valuebuf);
+						size = prop->float_names.size();
+						prop->float_names.resize(size + 1);
+						prop->float_values.resize(size + 1);
+						prop->float_names[size] = namebuf;
+						prop->float_values[size] = stof(valuebuf);
 					}
 								break;
 					case STRING: {
-						siz = prop->strings.size();
-						prop->strings.resize(siz + 1);
-						prop->strings[siz] = Tag(namebuf, valuebuf);
+						size = prop->bool_names.size();
+						prop->bool_names.resize(size + 1);
+						prop->bool_values.resize(size + 1);
+						prop->bool_names[size] = namebuf;
+						prop->bool_values[size] = valuebuf;
 					}
 								 break;
 					}
@@ -65,7 +76,7 @@ namespace nio {
 				buffer.clear();
 				continue;
 			}
-			else if (args[0] == ' ') {
+			else if (c_char == ' ') {
 				if (stage == 1) {
 					if (buffer.compare("boolean") == 0) {
 						tagtype = BOOLEAN;
@@ -87,7 +98,7 @@ namespace nio {
 				}
 				if (stage != 5 && stage != 6)continue;
 			}
-			else if (args[0] == '=') {
+			else if (c_char == '=') {
 				if (stage == 2) {
 					if (buffer.compare("name") == 0) {
 						stage = 3;
@@ -102,7 +113,7 @@ namespace nio {
 				}
 				continue;
 			}
-			else if (args[0] == '"') {
+			else if (c_char == '"') {
 				if (stage == 3) {
 					stage = 5;
 				}
@@ -123,61 +134,49 @@ namespace nio {
 				continue;
 			}
 			if (stage >= 1) {
-				buffer += args[0];
+				buffer += c_char;
 			}
 		}
 	}
 
-	Tag::Tag(char * iname, char * ivalue)
-	{
-		this->name = iname;
-		this->value = ivalue;
-	}
-
-	BooleanTag::BooleanTag(char * iname, char* ivalue) : Tag(iname, ivalue)
-	{
-		this->rvalue = string("true").compare(ivalue) == 0;
-		this->type = BOOLEAN;
-	}
-
-	FloatTag::FloatTag(char* iname, char* ivalue) : Tag(iname, ivalue)
-	{
-		this->rvalue = atof(ivalue);
-		this->type = FLOAT;
-	}
-
-	IntTag::IntTag(char* iname, char* ivalue) : Tag(iname, ivalue)
-	{
-		this->rvalue = atoi(ivalue);
-		this->type = INT;
-	}
-
-	BooleanTag Properties::getBoolean(char* name) {
-		for each (BooleanTag val in this->bools) {
-			if (string(val.name).compare(name) == 0)return val;
+	char* Properties::getString(char* name) {
+		for (size_t i = 0; i < this->string_names.size(); i++)
+		{
+			if (strcmp(name, this->string_names[i]) == 0) {
+				return this->string_values[i];
+			}
 		}
-		return BooleanTag("", false);
+		return "";
 	}
 
-	Tag Properties::getString(char* name) {
-		for each (Tag val in this->strings) {
-			if (string(val.name).compare(name) == 0)return val;
+	bool Properties::getBoolean(char* name) {
+		for (size_t i = 0; i < this->bool_names.size(); i++)
+		{
+			if (strcmp(name, this->bool_names[i]) == 0) {
+				return this->bool_values[i];
+			}
 		}
-		return Tag("", "");
+		return false;
 	}
 
-	IntTag Properties::getInt(char* name) {
-		for each (IntTag val in this->ints) {
-			if (string(val.name).compare(name) == 0)return val;
+	float Properties::getFloat(char* name) {
+		for (size_t i = 0; i < this->float_names.size(); i++)
+		{
+			if (strcmp(name, this->float_names[i]) == 0) {
+				return this->float_values[i];
+			}
 		}
-		return IntTag("", 0);
+		return 0;
 	}
 
-	FloatTag Properties::getFloat(char* name) {
-		for each (FloatTag val in this->floats) {
-			if (string(val.name).compare(name) == 0)return val;
+	int Properties::getInt(char* name) {
+		for (size_t i = 0; i < this->int_names.size(); i++)
+		{
+			if (strcmp(name, this->int_names[i]) == 0) {
+				return this->int_values[i];
+			}
 		}
-		return FloatTag("", 0);
+		return 0;
 	}
 
 }

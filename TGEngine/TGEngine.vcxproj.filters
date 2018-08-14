@@ -341,13 +341,5 @@
       <Filter>resources</Filter>
     </None>
     <None Include="resources\Layers.txt" />
-    <None Include="tgresour.bin">
-      <Filter>resources</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="TGEngine.rc">
-      <Filter>resources</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

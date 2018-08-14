@@ -1,15 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <string>
+#include "..\util\Annotations.hpp"
 #include <stdio.h>
 #include <iostream>
-#include <vector>
-#include <string>
-#include "..\Util\Annotations.hpp"
-#include <thread>
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <string>
 
 namespace nio {
 
@@ -22,51 +17,23 @@ namespace nio {
 	};
 
 	SINCE(0, 0, 1)
-	struct Tag
-	{
-		TagType type = STRING;
-		char* name;
-		char* value;
-		Tag() {};
-		Tag(char* iname, char* ivalue);
-	};
-
-	SINCE(0, 0, 1)
-	struct BooleanTag : Tag
-	{
-		bool rvalue;
-		BooleanTag() {};
-		BooleanTag(char* iname, char* ivalue);
-	};
-
-	SINCE(0, 0, 1)
-	struct IntTag : Tag
-	{
-		int rvalue;
-		IntTag() {}
-		IntTag(char* iname, char* ivalue);
-	};
-
-	SINCE(0, 0, 1)
-	struct FloatTag : Tag
-	{
-		float rvalue;
-		FloatTag() {};
-		FloatTag(char* iname, char* ivalue);
-	};
-
-	SINCE(0, 0, 1)
 	struct Properties
 	{
-		vector<Tag> strings;
-		vector<BooleanTag> bools;
-		vector<IntTag> ints;
-		vector<FloatTag> floats;
+		//name vectors
+		vector<char*> string_names;
+		vector<char*> bool_names;
+		vector<char*> int_names;
+		vector<char*> float_names;
+		//value vectors
+		vector<char*> string_values;
+		vector<bool> bool_values;
+		vector<int> int_values;
+		vector<float> float_values;
 
-		Tag getString(char* name);
-		BooleanTag getBoolean(char* name);
-		FloatTag getFloat(char* name);
-		IntTag getInt(char* name);
+		char* getString(char* name);
+		bool getBoolean(char* name);
+		float getFloat(char* name);
+		int getInt(char* name);
 	};
 
 	/*

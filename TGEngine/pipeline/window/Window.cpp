@@ -5,20 +5,23 @@ std::vector<Window*> window_list;
 HMODULE sys_module;
 
 #if defined(_WIN32) || defined(_WIN64)
+std::vector<HWND> __impl_window_list;
+
 Window::Window(wchar_t* name) {
 	this->__impl_cursor = this->cursor ? LoadCursor(nullptr, IDC_ARROW) : NULL;
 	this->__impl_handle = name;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	//TDOD performance ?
-	Window* a_window = nullptr;
-	for each (Window* windowptr in window_list) {
-		if (windowptr->__impl_window == hwnd) {
-			a_window = windowptr;
+	//Avoided cash miss predictions
+	size_t i;
+	for (i = 0; i < __impl_window_list.size(); i++)
+	{
+		if (hwnd == __impl_window_list[i]) {
 			break;
 		}
 	}
+	Window* a_window = window_list[i];
 	if (a_window == nullptr) {
 		if (msg == WM_CREATE || msg == WM_NCCREATE || msg == WM_ENABLE || msg == WM_NCPAINT || msg == WM_ERASEBKGND || msg == WM_SHOWWINDOW || msg == WM_IME_SETCONTEXT || msg == WM_IME_NOTIFY || msg == WM_GETMINMAXINFO || msg == WM_GETICON || msg == WM_NCCALCSIZE || msg == WM_ACTIVATEAPP || msg == WM_NCACTIVATE || msg == WM_ACTIVATE) {
 			return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -36,9 +39,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		}
 		else if (msg == WM_MOUSEMOVE) {
 			inputupdate({ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) });
-			LPRECT rect = new RECT();
-			GetWindowRect(hwnd, rect);
-			ClipCursor(rect);
 		}
 		else if (msg == WM_LBUTTONDOWN) {
 			FIRST_MOUSE_BUTTON = true;
@@ -77,55 +77,49 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 #endif
 
-void setWindowProperties(Window* window, nio::Properties* properties) {
-	if (properties != nullptr) {
-		bool fullscreen = properties->getBoolean("fullscreen").rvalue;
-		window->decorated = fullscreen ? false : properties->getBoolean("decorated").rvalue;
-		window->cursor = properties->getBoolean("cursor").rvalue;
-		if (fullscreen) {
-			GET_SIZE(d_width, d_height)
-			window->width = d_width;
-			window->height = d_height;
-			window->x = d_width / 2 - window->width / 2;
-			window->y = d_height / 2 - window->height / 2;
-		}
-		else if (properties->getBoolean("center").rvalue) {
-			GET_SIZE(d_width, d_height)
-			window->height = properties->getInt("height").rvalue;
-			window->width = properties->getInt("width").rvalue;
-			window->x = d_width / 2 - window->width / 2;
-			window->y = d_height / 2 - window->height / 2;
-		}
-		else {
-			window->height = properties->getInt("height").rvalue;
-			window->width = properties->getInt("width").rvalue;
-			window->x = properties->getInt("posx").rvalue;
-			window->y = properties->getInt("posy").rvalue;
-		}
-	}
-}
-
-void createWindow(Window* window, nio::Properties* properties) {
+void createWindow(Window* window) {
 	// IMPL getMonitor();
 
-	setWindowProperties(window, properties);
+	bool fullscreen = properties->getBoolean("fullscreen");
+	window->decorated = fullscreen ? false : properties->getBoolean("decorated");
+	window->cursor = properties->getBoolean("cursor");
+	if (fullscreen) {
+		GET_SIZE(d_width, d_height)
+		window->width = d_width;
+		window->height = d_height;
+		window->x = d_width / 2 - window->width / 2;
+		window->y = d_height / 2 - window->height / 2;
+	}
+	else if (properties->getBoolean("center")) {
+		GET_SIZE(d_width, d_height)
+			window->height = properties->getInt("height");
+		window->width = properties->getInt("width");
+		window->x = d_width / 2 - window->width / 2;
+		window->y = d_height / 2 - window->height / 2;
+	}
+	else {
+		window->height = properties->getInt("height");
+		window->width = properties->getInt("width");
+		window->x = properties->getInt("posx");
+		window->y = properties->getInt("posy");
+	}
 
     #ifdef _WIN32 //Windows window createion
 	if (window->decorated) {
 		//Char unicode conversation
 		if (properties != nullptr) {
-			char* ch = properties->getString("app_name").value;
+			char* ch = properties->getString("app_name");
 			const size_t cSize = strlen(ch) + 1;
 			std::wstring wc(cSize, L'#');
 			mbstowcs(&wc[0], ch, cSize);
 			unsigned long style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
-			if (properties->getBoolean("minimizeable").rvalue) {
+			if (properties->getBoolean("minimizeable")) {
 				style |= WS_MINIMIZEBOX;
 			}
-			if (properties->getBoolean("maximizable").rvalue) {
+			if (properties->getBoolean("maximizable")) {
 				style |= WS_MAXIMIZEBOX;
 			}
-			if (properties->getBoolean("resizeable").rvalue) {
+			if (properties->getBoolean("resizeable")) {
 				style |= WS_SIZEBOX;
 			}
 			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc.data(), style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
@@ -143,6 +137,9 @@ void createWindow(Window* window, nio::Properties* properties) {
 		return;
 	}
 #endif // DEBUG
+	size_t csize = __impl_window_list.size();
+	__impl_window_list.resize(csize + 1);
+	__impl_window_list[csize] = window->__impl_window;
 
 	ShowWindow(window->__impl_window, SW_SHOW);
 	UpdateWindow(window->__impl_window);

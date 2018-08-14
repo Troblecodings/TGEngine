@@ -2,7 +2,6 @@
 
 #include "..\..\Stdbase.hpp"
 #include "..\Instance.hpp"
-#include "..\..\io\Properties.hpp"
 #include <string>
 #include "..\..\io\Mouse.hpp"
 
@@ -15,6 +14,7 @@
 #define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"
 
 extern HMODULE sys_module;
+extern std::vector<HWND> __impl_window_list;
 
 struct Window {
 
@@ -62,14 +62,12 @@ extern std::vector<Window*> window_list;
  * Creates a window based on the properties
  */
 SINCE(0, 0, 1)
-void createWindow(Window* window, nio::Properties* properties = nullptr);
+void createWindow(Window* window);
 
 /*
-* Reads the window properties from the given property
-*/
-SINCE(0, 0, 3)
-void setWindowProperties(Window* window, nio::Properties* properties = nullptr);
-
+ * Creates the actual window 
+ * Attention! Much platform code here!
+ */
 SINCE(0, 0, 3)
 void createWindowClass();
 

@@ -4,10 +4,11 @@ using namespace std;
 
 void initTGEngine(App *app) {
 	nio::queryCWD();
-	nio::readProperties("Properties.xml", &properties);
+	properties = new nio::Properties();
+	nio::readProperties("Properties.xml", properties);
 	createWindowClass();
-	createWindow(&app->main_window, &properties);
-	createInstance(&properties, {
+	createWindow(&app->main_window);
+	createInstance({
 		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
 		#endif
