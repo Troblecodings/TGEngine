@@ -195,6 +195,9 @@
     <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -338,5 +341,13 @@
       <Filter>resources</Filter>
     </None>
     <None Include="resources\Layers.txt" />
+    <None Include="tgresour.bin">
+      <Filter>resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TGEngine.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

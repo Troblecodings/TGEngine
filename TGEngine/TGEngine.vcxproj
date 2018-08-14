@@ -54,6 +54,7 @@
     <ClInclude Include="pipeline\buffer\UniformBuffer.hpp" />
     <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
     <ClInclude Include="pipeline\window\Window.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="util\Annotations.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Endian.hpp" />
@@ -114,6 +115,10 @@
     <None Include="resources\Vertexshader.spv" />
     <None Include="resources\Layers.txt" />
     <None Include="..\README.md" />
+    <None Include="tgresour.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TGEngine.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
