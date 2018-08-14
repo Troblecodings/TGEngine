@@ -6,6 +6,17 @@ void initTGEngine(App *app) {
 	nio::queryCWD();
 	properties = new nio::Properties();
 	nio::readProperties("Properties.xml", properties);
+
+	Texture no_texture = {};
+	no_texture.width = 1;
+	no_texture.height = 1;
+	no_texture.image_data = new stbi_uc[4];
+	no_texture.image_data[0] = 0;
+	no_texture.image_data[1] = 0;
+	no_texture.image_data[2] = 0;
+	no_texture.image_data[3] = 0;
+	createTexture(&no_texture);
+
 	createWindowClass();
 	createWindow(&app->main_window);
 	createInstance({

@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /TGEditor/Vraag.png
+/TGEngine/run/TGEngine-0.0.3.zip
+/TGEngine/run

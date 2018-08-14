@@ -12,9 +12,9 @@ int main() {
 	arial = {
 		"resource\\arial.ttf"
 	};
-	loadfont(&arial);
+	//loadfont(&arial);
 
-	mesh = load("resource\\lul.fbx");
+	//mesh = load("resource\\lul.fbx");
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"
@@ -22,8 +22,8 @@ int main() {
 	tex2 = {
 		"resource\\LogoTM.png"
 	};
-	createTexture(&tex1);
-	createTexture(&tex2);
+	//createTexture(&tex1);
+	//createTexture(&tex2);
 	initTGEngine((App*)&editor);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
@@ -54,6 +54,7 @@ void drawGrid(VertexBuffer* buffer) {
 
 void Editor::drawloop(VertexBuffer* buffer)
 {
-	arial.drawString({ {-1, 0, 0},  { 0, 0, 0, 1} }, "Hallo Welt!", buffer);
-	FBX_Dictionary::addToDraw(buffer);
+	drawGrid(buffer);
+	//arial.drawString({ {-1, 0, 0},  { 0, 0, 0, 1} }, "Hallo Welt!", buffer);
+	//FBX_Dictionary::addToDraw(buffer);
 }
