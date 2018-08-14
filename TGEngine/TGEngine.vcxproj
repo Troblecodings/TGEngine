@@ -77,6 +77,8 @@
     <ClCompile Include="io\LoadFont.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
+    <ClCompile Include="model\FBX_Loader.cpp" />
+    <ClCompile Include="model\ObjLoader.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
     <ClCompile Include="pipeline\Descriptors.cpp" />
     <ClCompile Include="pipeline\Device.cpp" />

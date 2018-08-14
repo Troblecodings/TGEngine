@@ -1,6 +1,5 @@
 #pragma once
 
-#define DEBUG
 #include <Stdbase.hpp>
 
 #include <model\FBX_Loader.hpp>
@@ -8,7 +7,7 @@
 #include <drawlib\DrawLib.hpp>
 #include <io\LoadFont.hpp>
 #include <pipeline\CommandBuffer.hpp>
-#include <TGVertex.hpp>
+#include <util\TGVertex.hpp>
 
 extern Texture tex1;
 extern Texture tex2;

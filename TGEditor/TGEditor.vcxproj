@@ -25,16 +25,7 @@
     <ClCompile Include="TGEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentshader.spv" />
-    <None Include="vertexshader.spv" />
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="Properties.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="arial.ttf">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </Font>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -89,27 +80,33 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
-    <OutDir>$(SolutionDir)run\$(PlatformShortName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)run\$(PlatformShortName)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>
     </LinkIncremental>
+    <OutDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>
     </LinkIncremental>
+    <OutDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>
     </LinkIncremental>
+    <OutDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)run\$(PlatformShortName)\$(Configuration)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -121,7 +118,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\$(PlatformShortName)\$(Configuration);D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\$(PlatformShortName)\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>TGVertexLibrary.lib;vulkan-1.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
@@ -142,7 +139,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>

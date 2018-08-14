@@ -25,21 +25,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentshader.spv">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="vertexshader.spv">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="Properties.xml">
       <Filter>Resource Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="arial.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
   </ItemGroup>
 </Project>

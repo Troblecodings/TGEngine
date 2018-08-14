@@ -58,6 +58,9 @@
     <Filter Include="Quelldateien\pipeline\buffer">
       <UniqueIdentifier>{42dc206c-413f-419b-8305-451375375d5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\model">
+      <UniqueIdentifier>{29e31da8-8a5a-44c8-94c5-9672861b87c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -304,6 +307,12 @@
     </ClCompile>
     <ClCompile Include="util\TGString.cpp">
       <Filter>Quelldateien\util</Filter>
+    </ClCompile>
+    <ClCompile Include="model\FBX_Loader.cpp">
+      <Filter>Quelldateien\model</Filter>
+    </ClCompile>
+    <ClCompile Include="model\ObjLoader.cpp">
+      <Filter>Quelldateien\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

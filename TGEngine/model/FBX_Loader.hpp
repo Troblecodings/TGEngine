@@ -13,7 +13,7 @@ if (!sucess) {\
     return nullptr;\
 }
 #else
-sucess;
+#define FBX_CHECK(sucess) sucess;
 #endif
 
 namespace FBX_Dictionary {

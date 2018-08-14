@@ -10,22 +10,22 @@ int main() {
 	std::cout << "Starting Editor" << std::endl;
 
 	arial = {
-		"arial.ttf"
+		"resource\\arial.ttf"
 	};
 	loadfont(&arial);
 
-
-	mesh = load("lul.fbx");
+	mesh = load("resource\\lul.fbx");
 
 	tex1 = {
-		"ODST_Helmet.png"
+		"resource\\ODST_Helmet.png"
 	};
 	tex2 = {
-		"LogoTM.png"
+		"resource\\LogoTM.png"
 	};
 	createTexture(&tex1);
 	createTexture(&tex2);
 	initTGEngine((App*)&editor);
+	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
 }
 
