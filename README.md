@@ -6,12 +6,10 @@ It should be or better to say it will be a Game Engine, hopefully...
 
 <h3>Status</h3>
 
-still working on it...<br>
-<br>
 | Platform | Build Status |
 |:--------:|:------------:|
-| Windows (Visual Studio 2017) | [Windows Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg) |
-<br>
+| Windows (Visual Studio 2017) | ![Windows Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg) |
+<br>still working on it...<br>
 For updates please follow the [official twitter account of Troblecodings](https://twitter.com/Troblecodings)
 
 <h3>Libraries</h3>
