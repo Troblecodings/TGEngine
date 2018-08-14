@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
-    <ClInclude Include="Drawlib\BaseDrawLib.hpp" />
-    <ClInclude Include="Drawlib\Circle.hpp" />
-    <ClInclude Include="Drawlib\DrawLib.hpp" />
-    <ClInclude Include="Drawlib\Ellipse.hpp" />
-    <ClInclude Include="Drawlib\Rectangle.hpp" />
+    <ClInclude Include="drawlib\BaseDrawLib.hpp" />
+    <ClInclude Include="drawlib\Circle.hpp" />
+    <ClInclude Include="drawlib\DrawLib.hpp" />
+    <ClInclude Include="drawlib\Ellipse.hpp" />
+    <ClInclude Include="drawlib\Rectangle.hpp" />
     <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />
@@ -36,38 +36,38 @@
     <ClInclude Include="io\Properties.hpp" />
     <ClInclude Include="model\FBX_Loader.hpp" />
     <ClInclude Include="model\ObjLoader.hpp" />
-    <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp" />
-    <ClInclude Include="Pipeline\Buffer\Memory.hpp" />
-    <ClInclude Include="Pipeline\Buffer\Texturebuffer.hpp" />
-    <ClInclude Include="Pipeline\Buffer\UniformBuffer.hpp" />
-    <ClInclude Include="Pipeline\Buffer\VertexBuffer.hpp" />
-    <ClInclude Include="Pipeline\CommandBuffer.hpp" />
-    <ClInclude Include="Pipeline\Descriptors.hpp" />
-    <ClInclude Include="Pipeline\Device.hpp" />
-    <ClInclude Include="Pipeline\Draw.hpp" />
-    <ClInclude Include="Pipeline\Framebuffer.hpp" />
-    <ClInclude Include="Pipeline\Instance.hpp" />
-    <ClInclude Include="Pipeline\Pipe.hpp" />
-    <ClInclude Include="Pipeline\Pipeline.hpp" />
-    <ClInclude Include="Pipeline\PrePipeline.hpp" />
-    <ClInclude Include="Pipeline\RenderPass.hpp" />
-    <ClInclude Include="Pipeline\Shader.hpp" />
-    <ClInclude Include="Pipeline\Swapchain.hpp" />
-    <ClInclude Include="Pipeline\Window\Window.hpp" />
-    <ClInclude Include="Resources\ShaderData.hpp" />
+    <ClInclude Include="pipeline\CommandBuffer.hpp" />
+    <ClInclude Include="pipeline\Descriptors.hpp" />
+    <ClInclude Include="pipeline\Device.hpp" />
+    <ClInclude Include="pipeline\Draw.hpp" />
+    <ClInclude Include="pipeline\Framebuffer.hpp" />
+    <ClInclude Include="pipeline\Instance.hpp" />
+    <ClInclude Include="pipeline\Pipe.hpp" />
+    <ClInclude Include="pipeline\Pipeline.hpp" />
+    <ClInclude Include="pipeline\PrePipeline.hpp" />
+    <ClInclude Include="pipeline\RenderPass.hpp" />
+    <ClInclude Include="pipeline\Shader.hpp" />
+    <ClInclude Include="pipeline\Swapchain.hpp" />
+    <ClInclude Include="pipeline\buffer\IndexBuffer.hpp" />
+    <ClInclude Include="pipeline\buffer\Memory.hpp" />
+    <ClInclude Include="pipeline\buffer\Texturebuffer.hpp" />
+    <ClInclude Include="pipeline\buffer\UniformBuffer.hpp" />
+    <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
+    <ClInclude Include="pipeline\window\Window.hpp" />
+    <ClInclude Include="util\Annotations.hpp" />
+    <ClInclude Include="util\Debug.hpp" />
+    <ClInclude Include="util\Endian.hpp" />
+    <ClInclude Include="util\Math.hpp" />
+    <ClInclude Include="util\TGString.hpp" />
     <ClInclude Include="Stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
-    <ClInclude Include="Util\Annotations.hpp" />
-    <ClInclude Include="Util\Debug.hpp" />
-    <ClInclude Include="Util\Endian.hpp" />
-    <ClInclude Include="Util\Math.hpp" />
-    <ClInclude Include="util\TGVertex.hpp" />
+    <ClInclude Include="TGVertex.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Drawlib\BaseDrawLib.cpp" />
-    <ClCompile Include="Drawlib\Circle.cpp" />
-    <ClCompile Include="Drawlib\Ellipse.cpp" />
-    <ClCompile Include="Drawlib\Rectangle.cpp" />
+    <ClCompile Include="drawlib\BaseDrawLib.cpp" />
+    <ClCompile Include="drawlib\Circle.cpp" />
+    <ClCompile Include="drawlib\Ellipse.cpp" />
+    <ClCompile Include="drawlib\Rectangle.cpp" />
     <ClCompile Include="game_content\Camera.cpp" />
     <ClCompile Include="io\Deflate.cpp" />
     <ClCompile Include="io\Files.cpp" />
@@ -77,54 +77,47 @@
     <ClCompile Include="io\LoadFont.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
-    <ClCompile Include="pipeline\Buffer\IndexBuffer.cpp" />
-    <ClCompile Include="pipeline\Buffer\Memory.cpp" />
-    <ClCompile Include="pipeline\Buffer\Texturebuffer.cpp" />
-    <ClCompile Include="pipeline\Buffer\UniformBuffer.cpp" />
-    <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp" />
-    <ClCompile Include="Pipeline\CommandBuffer.cpp" />
-    <ClCompile Include="Pipeline\Descriptors.cpp" />
-    <ClCompile Include="Pipeline\Device.cpp" />
-    <ClCompile Include="Pipeline\Draw.cpp" />
-    <ClCompile Include="Pipeline\Framebuffer.cpp" />
-    <ClCompile Include="Pipeline\Instance.cpp" />
-    <ClCompile Include="Pipeline\Pipe.cpp" />
-    <ClCompile Include="Pipeline\PrePipeline.cpp" />
-    <ClCompile Include="Pipeline\RenderPass.cpp" />
-    <ClCompile Include="Pipeline\Shader.cpp" />
-    <ClCompile Include="Pipeline\Swapchain.cpp" />
-    <ClCompile Include="Pipeline\Window\Window.cpp" />
-    <ClCompile Include="Resources\ShaderData.cpp" />
+    <ClCompile Include="pipeline\CommandBuffer.cpp" />
+    <ClCompile Include="pipeline\Descriptors.cpp" />
+    <ClCompile Include="pipeline\Device.cpp" />
+    <ClCompile Include="pipeline\Draw.cpp" />
+    <ClCompile Include="pipeline\Framebuffer.cpp" />
+    <ClCompile Include="pipeline\Instance.cpp" />
+    <ClCompile Include="pipeline\Pipe.cpp" />
+    <ClCompile Include="pipeline\PrePipeline.cpp" />
+    <ClCompile Include="pipeline\RenderPass.cpp" />
+    <ClCompile Include="pipeline\Shader.cpp" />
+    <ClCompile Include="pipeline\Swapchain.cpp" />
+    <ClCompile Include="pipeline\window\Window.cpp" />
+    <ClCompile Include="pipeline\buffer\IndexBuffer.cpp" />
+    <ClCompile Include="pipeline\buffer\Memory.cpp" />
+    <ClCompile Include="pipeline\buffer\Texturebuffer.cpp" />
+    <ClCompile Include="pipeline\buffer\UniformBuffer.cpp" />
+    <ClCompile Include="pipeline\buffer\VertexBuffer.cpp" />
+    <ClCompile Include="util\Debug.cpp" />
+    <ClCompile Include="util\Endian.cpp" />
+    <ClCompile Include="util\TGString.cpp" />
+    <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
-    <ClCompile Include="Util\Debug.cpp" />
-    <ClCompile Include="Util\Endian.cpp" />
-    <ClCompile Include="Util\Math.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resources\ShaderData.hpp" />
+    <ClCompile Include="resources\ShaderData.cpp" />
+    <None Include="resources\Fragmentshader.glsl" />
+    <None Include="resources\Fragmentshader.spv" />
+    <None Include="resources\Shader Compiler.bat" />
+    <None Include="resources\ShaderBuildscript.py" />
+    <None Include="resources\Vertexshader.glsl" />
+    <None Include="resources\Vertexshader.spv" />
+    <None Include="resources\Layers.txt" />
     <None Include="..\README.md" />
-    <None Include="Resources\fragmentshader.glsl" />
-    <None Include="Resources\fragmentshader.spv" />
-    <None Include="Resources\Shader Compiler.bat" />
-    <None Include="Resources\ShaderBuildscript.py" />
-    <None Include="Resources\text.mtl" />
-    <None Include="Resources\vertexshader.glsl" />
-    <None Include="Resources\vertexshader.spv" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Layers.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\text.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Object>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ConsoleApplication1</RootNamespace>
+    <Keyword>TGEngine</Keyword>
+    <RootNamespace>TGEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>TGEngine</ProjectName>
   </PropertyGroup>
@@ -175,7 +168,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <CustomBuildBeforeTargets>Build;Rebuild</CustomBuildBeforeTargets>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -200,38 +192,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;D:\Documents\Visual Studio 2017\Projects\TGEngine\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\fbx\;D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\TGVertexLibrary;D:\2019.0\include;$(SolutionDir)..\stb;D:\Vulkan\Third-Party\Include;D:\Vulkan\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <Link>
-      <SubSystem>Native</SubSystem>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.65.0\Third-Party\Bin32;D:\Vulkan\1.0.65.0\Lib32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
-    </Link>
     <Lib>
       <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
-    <Lib>
       <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-      <Outputs>$(ProjectDir)Ressources\fragmentshader.spv;$(ProjectDir)Ressources\vertexshader.spv;%(Outputs)</Outputs>
-      <Inputs>$(ProjectDir)Ressources\fragmentshader.glsl;$(ProjectDir)Ressources\vertexshader.glsl;%(Inputs)</Inputs>
-      <Message>Start shader compile step</Message>
-      <TreatOutputAsContent>false</TreatOutputAsContent>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
       <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -245,15 +219,8 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <Link>
-      <SubSystem>Native</SubSystem>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.61.1\Third-Party\Bin32;D:\Vulkan\1.0.61.1\Lib32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <Lib>
       <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
-    <Lib>
       <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib;D:\Vulkan\Third-Party\Bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -262,8 +229,6 @@
     </ProjectReference>
     <PreBuildEvent>
       <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
       <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -279,18 +244,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <Link>
-      <SubSystem>Native</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.61.1\Third-Party\Bin32;D:\Vulkan\1.0.61.1\Lib32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EmbedManagedResourceFile>vulkan-1.lib;glfw3.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
-    </Link>
     <Lib>
       <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
-    <Lib>
       <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Release;D:\2019.0\lib\vs2015\x86\release;D:\Vulkan\Lib32;D:\Vulkan\Third-Party\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -299,8 +254,6 @@
     </ProjectReference>
     <PreBuildEvent>
       <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
       <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -316,17 +269,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <Link>
-      <SubSystem>Native</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Vulkan\1.0.61.1\Third-Party\Bin32;D:\Vulkan\1.0.61.1\Lib32;D:\Desktop\ALL\CPP\glfw-3.2.1.bin.WIN32\lib-vc2015</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <Lib>
       <AdditionalDependencies>TGVertexLibrary.lib;SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
-    <Lib>
       <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Vulkan\Lib;D:\Vulkan\Third-Party\Bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -335,8 +279,6 @@
     </ProjectReference>
     <PreBuildEvent>
       <Command>python "$(SolutionDir)resources\ShaderBuildscript.py"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
       <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>

@@ -186,7 +186,10 @@
     <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="util\TGVertex.hpp">
+    <ClInclude Include="util\TGString.hpp">
+      <Filter>Headerdateien\util</Filter>
+    </ClInclude>
+    <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
   </ItemGroup>
@@ -299,6 +302,9 @@
     <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="util\TGString.cpp">
+      <Filter>Quelldateien\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -316,24 +322,12 @@
     <None Include="Resources\ShaderBuildscript.py">
       <Filter>resources</Filter>
     </None>
-    <None Include="Resources\text.mtl">
-      <Filter>resources</Filter>
-    </None>
     <None Include="Resources\vertexshader.glsl">
       <Filter>resources</Filter>
     </None>
     <None Include="Resources\vertexshader.spv">
       <Filter>resources</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Layers.txt">
-      <Filter>resources</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\text.obj">
-      <Filter>resources</Filter>
-    </Object>
+    <None Include="resources\Layers.txt" />
   </ItemGroup>
 </Project>
