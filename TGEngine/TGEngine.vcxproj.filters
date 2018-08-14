@@ -147,9 +147,6 @@
     <ClInclude Include="Util\Endian.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="TGVertex.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\ShaderData.hpp">
       <Filter>resources</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="util\TGVertex.hpp">
+      <Filter>Headerdateien\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

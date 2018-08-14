@@ -36,7 +36,7 @@ for name in os.listdir(c_path + "\\resources"):
             total += 1
             print("Detected shader: " + name)
             shaderstage = "frag"
-            if name.startswith("vertex"):
+            if name.startswith("Vertex"):
                 shaderstage = "vert"
                 print("Detected vertex shader")
                 shader_stages.append("VK_SHADER_STAGE_VERTEX_BIT")

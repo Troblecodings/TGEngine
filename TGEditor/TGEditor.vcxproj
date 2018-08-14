@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\x86\debug;D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Documents\Visual Studio 2017\Projects\TGVertex\TGVertexLibrary\Debug;D:\2019.0\lib\vs2015\$(PlatformShortName)\$(Configuration);D:\Documents\Visual Studio 2017\Projects\TGEngine\TGEngine\Debug;D:\Vulkan\Third-Party\Bin32;D:\Vulkan\Lib32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>TGVertexLibrary.lib;vulkan-1.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>
       </ShowProgress>
