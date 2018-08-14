@@ -14,12 +14,17 @@ For updates please follow the [official twitter account of Troblecodings](https:
 | Platform | Build Status |
 |:--------:|:------------:|
 | Windows (Visual Studio 2017) | ![Windows Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg) |
+| Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg)
 
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
 Current built version: <strong>1.1.82.0</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
+<br>
+<br>
+Autodesk [FBX SDK](https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2019-0)<br>
+Current built version: <strong>2019.0</strong>
 <br>
 <br>
 For image loading and font loading is [STB](https://github.com/nothings/stb) currently being used.<br>
@@ -40,7 +45,11 @@ Every library used is Open-Source.<br>
 <br>
 STB is published under a [Public domain](https://github.com/nothings/stb) License (or MIT)<br>
 LunarG's Vulkan-SDK is published under [Creative Commons](https://creativecommons.org/licenses/by-nd/4.0/), see [LunarG.com](https://vulkan.lunarg.com/doc/sdk/1.1.82.0/windows/getting_started.html)<br>
-Vulkan itself is distributed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0), see Vulkan.h
+Vulkan itself is distributed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0), see Vulkan.h<br>
+The FBX SDK [Licenses](http://download.autodesk.com/us/fbx/2019/2019.0/FBX%20SDK%202019%20About%20Box%20Final.pdf)
+
+All other brand names, product names or tr
+ademarks belong to their respective holders.
 
 <h3>Wanna contribute?</h3>
 
