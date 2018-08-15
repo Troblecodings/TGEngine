@@ -13,7 +13,7 @@ For updates please follow the [official twitter account of Troblecodings](https:
 
 | Platform | Build Status |
 |:--------:|:------------:|
-| Windows (Visual Studio 2017) | ![Windows Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg) |
+| Windows (Visual Studio 2017) | ![Windows Build Status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true) |
 | Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg)
 
 <h3>Libraries</h3>
