@@ -263,3 +263,5 @@ __pycache__/
 /TGEngine/run/TGEngine-0.0.3.zip
 /TGEngine/run
 dependencies/deps.zip
+/dependencies/deps/Deps
+/TGEditor/helmet.blend
