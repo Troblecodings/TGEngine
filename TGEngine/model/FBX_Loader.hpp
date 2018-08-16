@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Stdbase.hpp"
+#include "..\Stdbase.hpp"
 #include "..\Pipeline\Buffer\VertexBuffer.hpp"
-#include "fbxsdk.h"
+#include <fbxsdk.h>
 #include "..\Pipeline\Buffer\Texturebuffer.hpp"
 
 #ifdef DEBUG

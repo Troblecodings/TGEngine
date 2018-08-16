@@ -4,7 +4,6 @@
 #include "..\IO\Files.hpp"
 #include "..\Util\Endian.hpp"
 #include "..\Pipeline\Buffer\Texturebuffer.hpp"
-#include <Vertex.hpp>
 #include "Deflate.hpp"
 
 #define BUFFER_COMPARE(buffer, name) memcmp(buffer.data() + 4, name, 4) == 0
