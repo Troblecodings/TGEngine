@@ -26,4 +26,38 @@ namespace nio {
 		strm.seekg(0);
 		return strm;
 	}
+
+	File open(char* name, char* mode) {
+		File file = fopen(name, mode);
+#ifdef DEBUG
+		if (!file) {
+			cerr << "Error can't open file [" << name << "]" << endl;
+			return nullptr;
+		}
+#endif
+		return file;
+	}
+
+	File readFileSize(char* name, char* mode, OUTPUT long* file_length) {
+#ifdef DEBUG
+		if (!file_length) {
+			cerr << "On call readFileSize the paramter file_length was nullptr [should be a valid long pointer]" << endl;
+			return nullptr;
+		}
+#endif
+		File file = open(name, mode);
+
+		fseek(file, 0, SEEK_END);
+		*file_length = ftell(file);
+		fseek(file, 0, SEEK_END);
+		return file;
+	}
+
+	uint8_t* readAll(char* name) {
+		long size = 0;
+		File file = readFileSize(name, "rb", &size);
+		uint8_t* data = new uint8_t[size];
+		fread(data, sizeof(uint8_t), size, file);
+		return data;
+	}
 }

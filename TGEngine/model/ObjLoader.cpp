@@ -1,153 +1,39 @@
 #include "ObjLoader.hpp"
 
 namespace obj {
+
 	using namespace std;
+	using namespace nio;
 
-	void load(char* file, VertexBuffer* vert) {
-		OUT_LV_DEBUG("Load OBJ File")
-		vector<TGVertex> verticies = {};
-		vector<vector<uint32_t>> index = {};
-		ifstream stream(file, ios::binary | ios::ate);
-		streampos strm_pos = stream.tellg();
-		stream.seekg(0);
+	void load(char* name, VertexBuffer* vert) {
+		long size = 0;
+		File file = readFileSize(name, "rb", &size);
 
-		bool read_data = false;
-		ObjMode mode = ObjMode::NaN;
-		string cmd = "";
-		vector<char*> data = {};
-		rsize_t size = 0;
+		vector<TGVertex> vertecies = {};
 
-		Materials mat = {};
-		vector<string> mtl_names;
-		uint32_t material_index = 0;
+		string buffer;
+		Mode mode = NONE;
 
-		bool wait_for = false;
-		
-		for (size_t i = 0; i < strm_pos; i++)
+		for (long i = 0; i < size; i++)
 		{
-			char input;
-			stream.read(&input, 1);
-			if(read_data) {
-				if (input != '\n' && input != '\r' && input != ' ' && input != '/' && !wait_for) {
-					cmd += input;
+			char character;
+			fread(&character, sizeof(char), 1, file);
+
+			if (character == ' ') {
+				SET_MODE("v", VERTEX)
+				else SET_MODE("vt", UV)
+				else SET_MODE("vn", NORMAL)
+				else SET_MODE("f", FACE)
+				else SET_MODE("mtllib", MTL_LOAD)
+				else SET_MODE("usemtl", USE_MTL)
+				else SET_MODE("s", SMOTHING);
+			    else if (character == '\n' || character == '\r' ) {
+					mode = NONE;
 				}
-				switch (input) {
-				case '/':
-					wait_for = true;
-					break;
-				case ' ':
-					wait_for = false;
-					size = data.size();
-					data.resize(size + 1);
-					data[size] = new char[cmd.size() + 1];
-					strcpy(data[size], cmd.c_str());
-					cmd = "";
-					break;
-				case '\r':
-				case '\n':
-					size = data.size();
-					data.resize(size + 1);
-					data[size] = new char[cmd.size() + 1];
-					strcpy(data[size], cmd.c_str());
-					cmd = "";
-					switch (mode)
-					{
-					case obj::VERTEX:
-						size = verticies.size();
-						verticies[size].position = { stof(data[0]), stof(data[1]), stof(data[2]) };
-						verticies[size].color = mat.diffuse[material_index];
-						break;
-					case obj::INDEX:
-						size = index.size();
-						index.resize(size + 1);
-						index[size] = { stoul(data[0]),  stoul(data[1]),  stoul(data[2])};
-						break;
-					case obj::MTL_LOAD:
-						size = mtl_names.size();
-						mtl_names.resize(size + 1);
-						mtl_names[size] = string(data[0]);
-						loadMaterial(mtl_names[size], &mat);
-						break;
-					case obj::USE_MTL:
-						material_index = mat.find(data[0]);
-						break;
-					case obj::COMMENT:
-                    #ifdef DEBUG
-						for (char* ch : data) {
-							cout << ch;
-						}
-						cout << endl;
-                    #endif
-						break;
-					case obj::UV:
-						break;
-					case obj::NORMAL:
-						break;
-					case obj::NaN:
-						break;
-					}
-					mode = ObjMode::NaN;
-					cmd = "";
-					read_data = false;
-					data.clear();
-					break;
-				}
-			}else {
-			switch (input) {
-			case ' ':
-				read_data = true;
-				cmd = "";
-				break;
-			case 'v':
-				mode = VERTEX;
-				break;
-			case 'f':
-				mode = INDEX;
-				break;
-			case '#':
-				mode = COMMENT;
-				break;
-			case 'u':
-				cmd += "u";
-			NEXT_CHAR_AT(1, 's', 'u')
-				break;
-			NEXT_CHAR_AT(2, 'e', 's')
-				break;
-			NEXT_CHAR_AT(3, 'm', 'e')
-	            else {
-				cmd = "m";
-			    }
-			    break;
-			NEXT_CHAR_AT(4, 't', 'm')
-				CHECK_CHAR(1, 't', 'm')
-				break;
-			NEXT_CHAR_AT(5, 'l', 't')
-				CHECK_CHAR(2, 'l', 't')
-				CHECK_CHAR(3, 'l', 'l')
-				break;
-			NEXT_CHAR_AT(4, 'i', 'l')
-				break;
-			NEXT_CHAR_AT(5, 'b', 'i')
-				break;
-			case 'n':
-				if (mode == VERTEX)mode = ObjMode::NaN;
-				break;
+				buffer.clear();
 			}
-			if (cmd.compare("mtllib") == 0) {
-				mode = ObjMode::MTL_LOAD;
-			}
-			else if(cmd.compare("usemtl") == 0) {
-				mode = ObjMode::USE_MTL;
-			}
-			}
-		}
-		size = 0;
-		for each (std::vector<uint32_t> var in index)
-		{
-			for each (uint32_t var2 in var)
-			{
-				vert->add(verticies[var2 - 1]);
-				size++;
+			else {
+				buffer.append(&character);
 			}
 		}
 	}
@@ -157,7 +43,7 @@ namespace obj {
 		streampos strm_pos = stream.tellg();
 		stream.seekg(0);
 
-		MtlMode mode = MtlMode::Null;
+		Mode mode = NONE;
 
 		vector<char*> data = {};
 		string cmd = "";

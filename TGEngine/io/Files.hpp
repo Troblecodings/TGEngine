@@ -16,6 +16,8 @@ namespace nio {
 
 	using namespace std;
 
+	typedef FILE*  File;
+
 	extern char current_working_dir[];
 
 	/*
@@ -34,11 +36,34 @@ namespace nio {
 	 *      char* -> binary of your file declareted be #file_path
 	 */
 	SINCE(0, 0, 1)
+	DEPRECATED("readAll")
 	vector<char> getBinarys(char* file_path);
 
 	/*
 	 * If size_of_file is not nullptr it returns the filesize 
 	 */
 	SINCE(0, 0, 2)
+	DEPRECATED("readFileSize")
 	ifstream getBinaryStream(INPUT char* filename, OUTPUT size_t* size_of_file);
+
+	/*
+	 * Opens the file
+	 * (In debug mode it checks if the open was successfull)
+	 */
+	SINCE(0, 0, 4)
+	File open(char* name, char* mode);
+
+	/*
+	 * Opens the file and get's the size of the file
+	 * (In debug mode it checks if the open was successfull)
+	 * (the long* needs to be vailid pointer)
+	 */
+	SINCE(0, 0, 4)
+	File readFileSize(char* name, char* mode, OUTPUT long* file_length);
+
+	/*
+	 * Reads all bytes out of a file
+	 */
+	SINCE(0, 0, 4)
+	uint8_t* readAll(char* name);
 }

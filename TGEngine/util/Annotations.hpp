@@ -12,7 +12,7 @@
 USAGE_DOCS
 TARGET_CODE
 TARGET_METHODE
-#define DEPRECATED // Deprecated code or method followes
+#define DEPRECATED(use) // Deprecated code or method followes
 
 USAGE_DOCS
 TARGET_CODE

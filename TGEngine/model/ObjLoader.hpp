@@ -2,43 +2,60 @@
 
 #include "..\Stdbase.hpp"
 #include "..\Pipeline\Buffer\VertexBuffer.hpp"
-#include <fstream>
+#include "..\io\Files.hpp"
 
 namespace obj {
 
-#define CHECK_CHAR(index, ure_char, char_befor)if (cmd.size() == index && cmd.at(index - 1) == char_befor) {\
-		cmd += ure_char;\
-        break;\
-	}
-#define NEXT_CHAR_AT(index, ure_char, char_befor) case ure_char:\
-	CHECK_CHAR(index, ure_char, char_befor)
+#define SET_MODE(ch, mod) if (buffer.compare(ch) == 0) {\
+mode = mod;\
+}
 
 
 	SINCE(0, 0, 2)
-	enum ObjMode {
-		NaN,
+	enum Mode {
+		NONE,
 		VERTEX,
 		INDEX,
 		MTL_LOAD,
 		USE_MTL,
 		COMMENT,
-
-		UNFINISHED
 		UV,
-		NORMAL
-		END_UNFINISHED
-	};
+		SMOTHING,
+		NORMAL,
+		FACE,
 
-	SINCE(0, 0, 2)
-	enum MtlMode {
-		Null,
-		NEW,
-		DIFFUSE
+		NEW_MATERIAL,
+		DIFFUSE,
+		AMBIENT,
+		SPECULAR,
+		ALPHA,
+		ILLUMINATION,
+		ROUGHNESS,
+		METALLIC,
+		SHEEN,
+		CLEARCOAT_THICKNESS,
+		CLEARCOAT_ROUGHNESS,
+		EMISSIVE,
+		ANISOTROPY,
+		ANISOTROPY_ROTATION,
+		MAP_ROUGHNESS,
+		MAP_METALLIC,
+		MAP_SHEEN,
+		MAP_EMISSIVE,
+		MAP_DIFFUSE,
+		MAP_AMBIENT,
+		MAP_SPECULAR,
+		MAP_ALPHA,
+		MAP_BUMP,
+		MAP_DISPLACEMENT,
+		MAP_STENCIL_DECAL,
+		MAP_REFLACTION,
+		MAP_NORMAL
 	};
 
 	struct Materials {
 		std::vector<char*> names;
-		std::vector<glm::vec4> diffuse;
+		std::vector<glm::vec3> diffuse;
 
 		uint32_t add(char* name);
 		uint32_t find(char* name);
