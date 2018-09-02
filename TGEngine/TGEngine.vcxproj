@@ -35,7 +35,6 @@
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
     <ClInclude Include="model\FBX_Loader.hpp" />
-    <ClInclude Include="model\ObjLoader.hpp" />
     <ClInclude Include="pipeline\CommandBuffer.hpp" />
     <ClInclude Include="pipeline\Descriptors.hpp" />
     <ClInclude Include="pipeline\Device.hpp" />
@@ -54,7 +53,6 @@
     <ClInclude Include="pipeline\buffer\UniformBuffer.hpp" />
     <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
     <ClInclude Include="pipeline\window\Window.hpp" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="util\Annotations.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Endian.hpp" />
@@ -79,7 +77,6 @@
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
     <ClCompile Include="model\FBX_Loader.cpp" />
-    <ClCompile Include="model\ObjLoader.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
     <ClCompile Include="pipeline\Descriptors.cpp" />
     <ClCompile Include="pipeline\Device.cpp" />

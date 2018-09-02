@@ -156,9 +156,6 @@
     <ClInclude Include="model\FBX_Loader.hpp">
       <Filter>Headerdateien\model</Filter>
     </ClInclude>
-    <ClInclude Include="model\ObjLoader.hpp">
-      <Filter>Headerdateien\model</Filter>
-    </ClInclude>
     <ClInclude Include="io\Deflate.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
@@ -194,9 +191,6 @@
     </ClInclude>
     <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -312,9 +306,6 @@
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="model\FBX_Loader.cpp">
-      <Filter>Quelldateien\model</Filter>
-    </ClCompile>
-    <ClCompile Include="model\ObjLoader.cpp">
       <Filter>Quelldateien\model</Filter>
     </ClCompile>
   </ItemGroup>
