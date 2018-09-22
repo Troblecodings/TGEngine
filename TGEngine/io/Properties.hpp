@@ -3,10 +3,12 @@
 #include <vector>
 #include <string>
 #include "..\util\Annotations.hpp"
+#include "..\Error.h"
+#include "Files.hpp"
 #include <stdio.h>
 #include <iostream>
 
-namespace nio {
+namespace prop {
 
 	using namespace std;
 

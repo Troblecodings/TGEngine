@@ -15,9 +15,13 @@
 #include "util/Math.hpp"
 #include <glm/glm.hpp>
 #include "util/TGVertex.hpp"
+#include "Error.h"
 
-extern nio::Properties* properties;
+extern prop::Properties* properties;
 extern uint32_t image_count;
+
+SINCE(0, 0, 4)
+#define TGE_VERSION VK_MAKE_VERSION(0, 0, 4)
 
 SINCE(0, 0, 1)
 #define HANDEL(result)\

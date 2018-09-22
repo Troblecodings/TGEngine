@@ -1,10 +1,13 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
 #include <fstream>
 #include <string>
+#include <stdio.h>
+#include <vector>
+#include <iostream>
+#include "..\util\Annotations.hpp"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <direct.h>
 #define GetCurrentDir getcwd
 #else
@@ -56,7 +59,7 @@ namespace nio {
 	/*
 	 * Opens the file and get's the size of the file
 	 * (In debug mode it checks if the open was successfull)
-	 * (the long* needs to be vailid pointer)
+	 * (the long* needs to be vailid pointer, will be checked in debug mode)
 	 */
 	SINCE(0, 0, 4)
 	File readFileSize(char* name, char* mode, OUTPUT long* file_length);

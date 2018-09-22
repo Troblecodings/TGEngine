@@ -1,18 +1,13 @@
 #include "Properties.hpp"
 
-namespace nio {
+namespace prop {
 
 	using namespace std;
+	using namespace nio;
 
 	void readProperties(char* path, Properties* prop) {
-		FILE* file = fopen(path, "rb");
+		File file = open(path, "rb");
 
-#ifdef DEBUG
-		if (!file) {
-			std::cout << "DEBUG: File " << path << " can not be opened, this should not happen!" << std::endl;
-			return;
-	    }
-#endif // DEBUG
 		TagType tagtype = NaN;
 
 		char* namebuf;

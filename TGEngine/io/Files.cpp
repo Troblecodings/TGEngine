@@ -49,7 +49,7 @@ namespace nio {
 
 		fseek(file, 0, SEEK_END);
 		*file_length = ftell(file);
-		fseek(file, 0, SEEK_END);
+		fseek(file, 0, SEEK_SET);
 		return file;
 	}
 

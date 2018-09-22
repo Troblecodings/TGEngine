@@ -25,6 +25,7 @@
     <ClInclude Include="drawlib\DrawLib.hpp" />
     <ClInclude Include="drawlib\Ellipse.hpp" />
     <ClInclude Include="drawlib\Rectangle.hpp" />
+    <ClInclude Include="Error.h" />
     <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />

@@ -21,9 +21,7 @@ struct Window {
 	SINCE(0, 0, 3)
 	Window(wchar_t* name);
 
-	void pollevents(),
-		destroy(),
-		createWindowSurface();
+	void pollevents();
 
 	int x = 0,
 		y = 0,
@@ -70,6 +68,18 @@ void createWindow(Window* window);
  */
 SINCE(0, 0, 3)
 void createWindowClass();
+
+/*
+ * Destroys all windows
+ */
+SINCE(0, 0, 4)
+void destroyWindows();
+
+/*
+ * Create surfaces for each created window
+ */
+SINCE(0, 0, 4)
+void createWindowSurfaces();
 
 /*
  * Don't use

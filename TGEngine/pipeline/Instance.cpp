@@ -2,7 +2,6 @@
 
 VkResult last_result;
 VkInstance instance;
-VkAllocationCallbacks allocator;
 
 void createInstance(std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable) {
 
@@ -12,7 +11,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		properties->getString("app_name"),
 		properties->getInt("version"),
 	    "TGEngine",
-	    VK_MAKE_VERSION(0, 0, 3),
+	    TGE_VERSION,
 		VK_API_VERSION_1_1
 	};
 

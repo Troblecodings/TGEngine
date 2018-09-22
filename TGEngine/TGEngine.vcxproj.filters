@@ -192,6 +192,9 @@
     <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">

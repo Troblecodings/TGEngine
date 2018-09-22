@@ -4,8 +4,8 @@ using namespace std;
 
 void initTGEngine(App *app) {
 	nio::queryCWD();
-	properties = new nio::Properties();
-	nio::readProperties("Properties.xml", properties);
+	properties = new prop::Properties();
+	prop::readProperties("Properties.xml", properties);
 
 	Texture no_texture = {};
 	no_texture.width = 1;
@@ -27,7 +27,7 @@ void initTGEngine(App *app) {
 		"VK_LAYER_NV_optimus"
 		}, { });
 
-	app->main_window.createWindowSurface();
+	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
 	createRenderpass();
@@ -107,6 +107,6 @@ void initTGEngine(App *app) {
 	destroyShaders();
 	destroyRenderPass();
 	destroyDevice();
-	app->main_window.destroy();
+	destroyWindows();
 	destroyInstance();
 }

@@ -154,20 +154,6 @@ void createWindow(Window* window) {
     #endif
 }
 
-void Window::createWindowSurface() {
-    #ifdef _WIN32 
-	VkWin32SurfaceCreateInfoKHR surface_create_info = {
-		VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-	    nullptr,
-	    0,
-		sys_module,
-	    this->__impl_window
-	};
-	last_result = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &this->surface);
-	HANDEL(last_result)
-    #endif 
-}
-
 void createWindowClass() {
 #ifdef DEBUG
 	if (!
@@ -216,11 +202,31 @@ void createWindowClass() {
 void getMonitor() {
 }
 
-void Window::destroy() {
+void destroyWindows() {
+	for each (Window* var in window_list)
+	{
 #if defined(_WIN32) || defined(_WIN64)
-	DestroyWindow(this->__impl_window);
+		DestroyWindow(var->__impl_window);
 #endif 
-	vkDestroySurfaceKHR(instance, this->surface, nullptr);
+		vkDestroySurfaceKHR(instance, var->surface, nullptr);
+	}
+}
+
+void createWindowSurfaces() {
+	for each (Window* var in window_list)
+	{
+#ifdef _WIN32 
+		VkWin32SurfaceCreateInfoKHR surface_create_info = {
+			VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+			nullptr,
+			0,
+			sys_module,
+			var->__impl_window
+		};
+		last_result = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface);
+		HANDEL(last_result)
+#endif 
+	}
 }
 
 void Window::pollevents() {

@@ -3,6 +3,7 @@
 #define USAGE(enum_usage) // Defines the usage of an annotation within this header
 #define USAGE_DOCS USAGE("DOCUMANTATION")
 #define USAGE_DEBUG USAGE("DEBUG")
+#define USAGE_CODE USAGE("CODE")
 
 #define TARGET(enum_target) // Defines the target of an annotation within this header
 #define TARGET_METHODE TARGET("METHODE")
@@ -12,7 +13,7 @@
 USAGE_DOCS
 TARGET_CODE
 TARGET_METHODE
-#define DEPRECATED(use) // Deprecated code or method followes
+#define DEPRECATED(use) // Deprecated code or method follows
 
 USAGE_DOCS
 TARGET_CODE
@@ -21,7 +22,7 @@ TARGET_CODE
 USAGE_DOCS
 TARGET_METHODE
 TARGET_CODE
-#define UNFINISHED // Unfinished code or method followes
+#define UNFINISHED // Unfinished code or method follows
 
 USAGE_DOCS
 TARGET_CODE
@@ -29,8 +30,8 @@ TARGET_CODE
 
 USAGE_DOCS
 TARGET_METHODE
-#define SINCE(major, minor, version) // Tells since wich engine version this method is in the engine
-// Remember that methods as well as parameters and/or it's function can change even tho the version stays the same
+#define SINCE(major, minor, version) // Tells since which engine version this method is in the engine
+// Remember that methods as well as parameters and/or it's function can change eventhough the version may stay the same
 
 USAGE_DOCS
 TARGET_PARAMETER

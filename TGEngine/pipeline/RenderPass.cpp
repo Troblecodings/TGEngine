@@ -3,7 +3,7 @@
 VkRenderPass render_pass;
 
 void createRenderpass() {
-	//Attachment
+	//Attachment for color images
 	VkAttachmentDescription attachment_description = {
 		0,
 	    used_format.format,
@@ -16,10 +16,29 @@ void createRenderpass() {
 	    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 	};
 
+	//Attachment for depth images
+	VkAttachmentDescription depth_attachment_description = {
+		0,
+		used_depth_format,
+		VK_SAMPLE_COUNT_1_BIT,
+		VK_ATTACHMENT_LOAD_OP_CLEAR,
+		VK_ATTACHMENT_STORE_OP_STORE,
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,
+		VK_IMAGE_LAYOUT_UNDEFINED,
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+	};
+
 	//Input attachment
 	VkAttachmentReference attachment_reference = {
 		0,
 		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+	};
+
+	//Depth attachment
+	VkAttachmentReference depth_attachment_reference = {
+		1,
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 	};
 
 	//Subpass
@@ -39,9 +58,9 @@ void createRenderpass() {
 	VkSubpassDependency subpass_dependency = {
 		0,
 		VK_SUBPASS_EXTERNAL,
-		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ,
-		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-		VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT ,
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+		VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+		0,
 		0,
 		0
 	};

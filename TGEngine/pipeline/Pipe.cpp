@@ -140,16 +140,15 @@ void createPipeline() {
 		{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
 	};
 	
-	//Not in use
 	VkPipelineDepthStencilStateCreateInfo depth_stencil = {
 		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
-		VK_FALSE,
-		VK_FALSE,
+		VK_TRUE,
+		VK_TRUE,
 	    VK_COMPARE_OP_LESS_OR_EQUAL,
-	    VK_FALSE,
-	    VK_FALSE,
+		VK_TRUE,
+		VK_TRUE,
 	{
 		VK_STENCIL_OP_ZERO,
 	    VK_STENCIL_OP_KEEP,
@@ -185,7 +184,7 @@ void createPipeline() {
 	    &pViewportState,
 	    &pRasterizationState,
 	    &pMultisampleState,
-	    nullptr,
+	    &depth_stencil,
 	    &pColorBlendState,
 	    nullptr,
 	    layout,

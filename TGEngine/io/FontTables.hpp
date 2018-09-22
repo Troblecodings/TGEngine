@@ -61,7 +61,7 @@ struct BaseTable {
 };
 
 SINCE(0, 0, 2)
-DEPRECATED
+DEPRECATED("Not usable / Not needed")
 UNFINISHED
 struct acntTable : BaseTable {
 
@@ -364,8 +364,6 @@ struct metaTable : BaseTable {
 
 };
 
-SINCE(0, 0, 2)
-DEPRECATED
 struct mortTable : BaseTable {
 	mortTable() {
 		table_id = FontTable::mort;
