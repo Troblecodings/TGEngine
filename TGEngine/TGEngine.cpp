@@ -30,6 +30,7 @@ void initTGEngine(App *app) {
 	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
+	createDepthTest();
 	createRenderpass();
 	createShader();
 	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
@@ -106,6 +107,7 @@ void initTGEngine(App *app) {
 	destroyPipeline();
 	destroyShaders();
 	destroyRenderPass();
+	destroyDepthTest();
 	destroyDevice();
 	destroyWindows();
 	destroyInstance();

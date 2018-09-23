@@ -17,19 +17,11 @@ extern bool started;
 SINCE(0, 0, 1)
 void createCommandBuffer();
 
-SINCE(0, 0, 1)
+SINCE(0, 0, 2)
 void singleTimeCommand();
 
 SINCE(0, 0, 1)
 void fillCommandBuffer(VertexBuffer* buffer, uint32_t index);
-
-SINCE(0, 0, 3)
-DEPRECATED("Not usable / Not needed")
-void submitWithoutTexture(VertexBuffer* buffer, uint32_t index);
-
-SINCE(0, 0, 3)
-DEPRECATED("Not usable / Not needed")
-void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index);
 
 SINCE(0, 0, 1)
 void destroyCommandBuffer();

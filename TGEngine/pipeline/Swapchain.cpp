@@ -42,17 +42,20 @@ void createSwapchain() {
 void recreateSwapchain() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
-	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, window_list[0]->surface, &surface_capabilities);
-	HANDEL(last_result)
-	window_list[0]->width = surface_capabilities.currentExtent.width;
-	window_list[0]->height = surface_capabilities.currentExtent.height;
 
 	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
 	destroyPipeline();
 	destroyRenderPass();
+	destroyDepthTest();
 	destroySwapchain();
 
+	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, window_list[0]->surface, &surface_capabilities);
+	HANDEL(last_result)
+	window_list[0]->width = surface_capabilities.currentExtent.width;
+	window_list[0]->height = surface_capabilities.currentExtent.height;
+
+	createDepthTest();
 	createRenderpass();
 	createPipeline();
 	createSwapchain();

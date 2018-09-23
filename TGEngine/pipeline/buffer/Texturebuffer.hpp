@@ -40,9 +40,6 @@ struct Texture {
 	uint32_t interlace_methode;
 	END_DEPRECATED
 
-	SINCE(0, 0, 2)
-	void addBarrier(VkCommandBuffer buffer, VkImageLayout oldLayout, VkImageLayout newLayout);
-
 };
 
 extern std::vector<Texture*> texture_buffers;

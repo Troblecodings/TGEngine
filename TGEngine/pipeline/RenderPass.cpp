@@ -6,14 +6,14 @@ void createRenderpass() {
 	//Attachment for color images
 	VkAttachmentDescription attachment_description = {
 		0,
-	    used_format.format,
+		used_format.format,
 		VK_SAMPLE_COUNT_1_BIT,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
-	    VK_ATTACHMENT_STORE_OP_STORE,
-	    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		VK_ATTACHMENT_STORE_OP_STORE,
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_STORE_OP_DONT_CARE,
-	    VK_IMAGE_LAYOUT_UNDEFINED,
-	    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+		VK_IMAGE_LAYOUT_UNDEFINED,
+		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 	};
 
 	//Attachment for depth images
@@ -44,15 +44,15 @@ void createRenderpass() {
 	//Subpass
 	VkSubpassDescription subpass_description = {
 		0,
-	    VK_PIPELINE_BIND_POINT_GRAPHICS,
+		VK_PIPELINE_BIND_POINT_GRAPHICS,
 		0,
 		nullptr,
 		1,
-	    &attachment_reference,
+		&attachment_reference,
 		nullptr,
-		nullptr,
+		&depth_attachment_reference,
 		0,
-	    nullptr
+		nullptr
 	};
 
 	VkSubpassDependency subpass_dependency = {
@@ -65,13 +65,15 @@ void createRenderpass() {
 		0
 	};
 
+	VkAttachmentDescription attachments[2] = { attachment_description, depth_attachment_description };
+
 	//Renderpass
 	VkRenderPassCreateInfo render_pass_create_info = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 	    nullptr,
 	    0,
-	    1,
-	    &attachment_description,
+	    2,
+		attachments,
 	    1,
 	    &subpass_description,
 	    1,

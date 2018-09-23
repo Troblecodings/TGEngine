@@ -146,29 +146,15 @@ void createPipeline() {
 	    0,
 		VK_TRUE,
 		VK_TRUE,
-	    VK_COMPARE_OP_LESS_OR_EQUAL,
-		VK_TRUE,
-		VK_TRUE,
+	    VK_COMPARE_OP_LESS,
+		VK_FALSE,
+		VK_FALSE,
 	{
-		VK_STENCIL_OP_ZERO,
-	    VK_STENCIL_OP_KEEP,
-	    VK_STENCIL_OP_REPLACE,
-		VK_COMPARE_OP_LESS_OR_EQUAL,
-		0,
-		0,
-		0
 	},
 	{
-		VK_STENCIL_OP_ZERO,
-		VK_STENCIL_OP_KEEP,
-		VK_STENCIL_OP_REPLACE,
-		VK_COMPARE_OP_LESS_OR_EQUAL,
-		0,
-		0,
-		0
 	},
-	0,
-	0
+	-10000.0f,
+	10000.0f
 	};
 
 	//Pipeline

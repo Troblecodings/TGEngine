@@ -12,46 +12,52 @@ void createFramebuffer() {
 
 	frame_buffer.resize(image_count); 
 	image_view.resize(image_count); 
+
+	VkImageViewCreateInfo image_view_create_info = {
+	    VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+	    nullptr,
+	    0,
+	    nullptr,
+	    VK_IMAGE_VIEW_TYPE_2D,
+	    used_format.format,
+	    {
+	    	VK_COMPONENT_SWIZZLE_IDENTITY,
+	    	VK_COMPONENT_SWIZZLE_IDENTITY,
+	    	VK_COMPONENT_SWIZZLE_IDENTITY,
+	    	VK_COMPONENT_SWIZZLE_IDENTITY
+	    },
+	    {
+	    	VK_IMAGE_ASPECT_COLOR_BIT,
+	    	0,
+	    	1,
+	    	0,
+	    	1,
+	    }
+	};
+
+	VkFramebufferCreateInfo framebuffer_create_info = {
+	     VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+	     nullptr,
+	     0,
+	     render_pass,
+	     2,
+	     VK_NULL_HANDLE,
+	     win->width,
+	     win->height,
+	     1
+	};
+
+	VkImageView views[2] = { nullptr, depth_image_view };
+
 	for (size_t i = 0; i < image_count; i++)
 	{
-	
-		VkImageViewCreateInfo image_view_create_info = {
-			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-		    nullptr,
-			0,
-		    image[i],
-		    VK_IMAGE_VIEW_TYPE_2D,
-			used_format.format,
-			{
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY
-            },
-			{
-				VK_IMAGE_ASPECT_COLOR_BIT,
-				0,
-				1,
-				0,
-				1,
-            }
-		};
+		image_view_create_info.image = image[i];
 		last_result = vkCreateImageView(device, &image_view_create_info, nullptr, &image_view[i]);
-        HANDEL(last_result)
+		HANDEL(last_result)
 
-		
+		views[0] = image_view[i];
+		framebuffer_create_info.pAttachments = views;
 
-		VkFramebufferCreateInfo framebuffer_create_info = {
-			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-		    nullptr,
-		    0,
-		    render_pass,
-		    1,
-		    &image_view[i],
-			win->width,
-			win->height,
-		    1
-		};
 		last_result = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);
 		HANDEL(last_result)
 	}

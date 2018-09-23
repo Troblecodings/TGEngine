@@ -42,67 +42,97 @@ void singleTimeCommand() {
 	};
 	VkCommandBuffer buffer;
 	last_result = vkAllocateCommandBuffers(device, &command_buffer_allocate_info, &buffer);
-	HANDEL(last_result)
+	HANDEL(last_result);
 
-		VkCommandBufferBeginInfo beginInfo = {
-			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			nullptr,
-			VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
-			nullptr
+	VkCommandBufferBeginInfo beginInfo = {
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+		nullptr,
+		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+		nullptr
 	};
 	last_result = vkBeginCommandBuffer(buffer, &beginInfo);
-	HANDEL(last_result)
+	HANDEL(last_result);
 
-		for each(Texture* tex in texture_buffers) {
-			tex->addBarrier(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	VkImageMemoryBarrier image_memory_barrier = {
+		VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+		nullptr,
+		0,
+		0,
+		VK_IMAGE_LAYOUT_UNDEFINED,
+		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+		VK_QUEUE_FAMILY_IGNORED,
+		VK_QUEUE_FAMILY_IGNORED,
+		VK_NULL_HANDLE,
+		{
+			VK_IMAGE_ASPECT_COLOR_BIT,
+			0,
+			1,
+			0,
+			1
+		}
+	};
 
-			VkBufferImageCopy image_copy = {
-				0,
-				0,
-				0,
+	for each(Texture* tex in texture_buffers) {
+		image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		image_memory_barrier.image = tex->image;
+		image_memory_barrier.srcAccessMask = 0;
+		image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		vkCmdPipelineBarrier(buffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &image_memory_barrier);
+
+		VkBufferImageCopy image_copy = {
+			0,
+			0,
+			0,
 			{
 				VK_IMAGE_ASPECT_COLOR_BIT,
 				0,
 				0,
 				1
 			},
-					{
-						0,
-						0,
-						0
-					},
-					{
-						tex->width,
-						tex->height,
-						1
-					}
-			};
+			{
+				0,
+				0,
+				0
+			},
+			{
+				tex->width,
+				tex->height,
+				1
+			}
+		};
 
-			vkCmdCopyBufferToImage(
-				buffer,
-				tex->buffer,
-				tex->image,
-				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-				1,
-				&image_copy
-			);
+		vkCmdCopyBufferToImage(
+			buffer,
+			tex->buffer,
+			tex->image,
+			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1,
+			&image_copy
+		);
 
-			tex->addBarrier(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		}
+		image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		image_memory_barrier.image = tex->image;
+		image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		vkCmdPipelineBarrier(buffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &image_memory_barrier);
+	}
+
 
 	last_result = vkEndCommandBuffer(buffer);
-	HANDEL(last_result)
+	HANDEL(last_result);
 
-		VkSubmitInfo submitInfo = {
-			VK_STRUCTURE_TYPE_SUBMIT_INFO,
-			nullptr,
-			0,
-			nullptr,
-			nullptr,
-			1,
-			&buffer,
-			0,
-			nullptr,
+	VkSubmitInfo submitInfo = {
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		nullptr,
+		0,
+		nullptr,
+		nullptr,
+		1,
+		&buffer,
+		0,
+		nullptr,
 	};
 
 	vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
@@ -116,14 +146,23 @@ void singleTimeCommand() {
 }
 
 void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
-	VkClearValue clear_color = {
+	VkClearValue clear[2] = {
 		{
-			1,
-			1,
-			1,
-			1
-		}
+		    {
+		    	1,
+		    	1,
+		    	1,
+		    	1
+		    }
+	    },
+     	{
+	        {
+				1.0f, 
+				0
+			}
+        }
 	};
+
 
 	VkCommandBuffer buffer = command_buffers[index];
 
@@ -145,7 +184,7 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 		&command_buffer_inheritance_info
 	};
 	last_result = vkBeginCommandBuffer(buffer, &command_buffer_begin_info);
-	HANDEL(last_result)
+	HANDEL(last_result);
 
 	VkRenderPassBeginInfo render_pass_begin_info = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -158,8 +197,8 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 			window_list[0]->width,
 			window_list[0]->height
 		},
-		1,
-		&clear_color
+		2,
+		clear
 	};
 	vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -175,28 +214,6 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 
 	last_result = vkEndCommandBuffer(buffer);
 	HANDEL(last_result)
-}
-
-void submitWithoutTexture(VertexBuffer* buffer, uint32_t index) {
-/*	uint32_t max = 101;
-	vkCmdPushConstants(command_buffers[index], layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uint32_t), &max);
-
-	vkCmdBindVertexBuffers(command_buffers[index], 0, 1, &buffers[buffer->vertex_buffer_index], &offsets);
-
-	vkCmdDraw(command_buffers[index], offsets - buffer->count_of_points, 1, 0, 0);
-	offsets = VERTEX_SIZE * buffer->count_of_points;*/
-}
-
-void endCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
-	/*VkCommandBuffer buffer = command_buffers[index];
-	vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
-
-	vkCmdDraw(buffer, offsets - vbuffer->count_of_points, 1, 0, 0);
-
-	vkCmdEndRenderPass(buffer);
-
-	last_result = vkEndCommandBuffer(buffer);
-	HANDEL(last_result)*/
 }
 
 void destroyCommandBuffer() {

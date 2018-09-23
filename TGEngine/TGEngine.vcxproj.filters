@@ -195,6 +195,9 @@
     <ClInclude Include="Error.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="pipeline\DepthStencil.hpp">
+      <Filter>Headerdateien\pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="model\FBX_Loader.cpp">
       <Filter>Quelldateien\model</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\DepthStencil.cpp">
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

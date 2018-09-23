@@ -37,6 +37,7 @@
     <ClInclude Include="io\Properties.hpp" />
     <ClInclude Include="model\FBX_Loader.hpp" />
     <ClInclude Include="pipeline\CommandBuffer.hpp" />
+    <ClInclude Include="pipeline\DepthStencil.hpp" />
     <ClInclude Include="pipeline\Descriptors.hpp" />
     <ClInclude Include="pipeline\Device.hpp" />
     <ClInclude Include="pipeline\Draw.hpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="io\Properties.cpp" />
     <ClCompile Include="model\FBX_Loader.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
+    <ClCompile Include="pipeline\DepthStencil.cpp" />
     <ClCompile Include="pipeline\Descriptors.cpp" />
     <ClCompile Include="pipeline\Device.cpp" />
     <ClCompile Include="pipeline\Draw.cpp" />

@@ -8,6 +8,7 @@
 #include "CommandBuffer.hpp"
 #include "Pipe.hpp"
 #include "RenderPass.hpp"
+#include "DepthStencil.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkSurfaceCapabilitiesKHR surface_capabilities;
