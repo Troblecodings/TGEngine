@@ -56,10 +56,10 @@ namespace prop {
 								break;
 					case STRING: {
 						size = prop->bool_names.size();
-						prop->bool_names.resize(size + 1);
-						prop->bool_values.resize(size + 1);
-						prop->bool_names[size] = namebuf;
-						prop->bool_values[size] = valuebuf;
+						prop->string_names.resize(size + 1);
+						prop->string_values.resize(size + 1);
+						prop->string_names[size] = namebuf;
+						prop->string_values[size] = valuebuf;
 					}
 								 break;
 					}
