@@ -12,7 +12,7 @@
     <boolean name="maximizable" value="true" />
     <boolean name="minimizeable" value="true" />
     <int name="height" value="800"/>
-    <int name="width" value="1200"/>
+    <int name="width" value="800"/>
     <boolean name="center" value="true"/>
     <!--Will be ignored if center is true-->
     <int name="posx" value="0" />

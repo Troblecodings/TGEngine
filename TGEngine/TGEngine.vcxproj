@@ -109,7 +109,6 @@
     <ClCompile Include="resources\ShaderData.cpp" />
     <None Include="resources\Fragmentshader.glsl" />
     <None Include="resources\Fragmentshader.spv" />
-    <None Include="resources\Shader Compiler.bat" />
     <None Include="resources\ShaderBuildscript.py" />
     <None Include="resources\Vertexshader.glsl" />
     <None Include="resources\Vertexshader.spv" />

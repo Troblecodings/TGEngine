@@ -26,7 +26,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		HANDEL(last_result)
 		for each(VkLayerProperties layer in usable_layers) {
 			for each(const char* name in layers_to_enable) {
-				if (std::string(layer.layerName).compare(name) == 0) {
+				if (strcmp(layer.layerName, name) == 0) {
 					uint32_t size = enable_layer.size();
 					enable_layer.resize(size + 1);
 					enable_layer[size] = name;
@@ -56,7 +56,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		HANDEL(last_result)
 		for each(VkExtensionProperties extension in usable_extensions) {			
 			for each(const char* name in extensions_to_enable) {
-				if (std::string(extension.extensionName).compare(name) == 0) {
+				if (strcmp(extension.extensionName, name) == 0) {
 					uint32_t size = enable_extensions.size();
 					enable_extensions.resize(size + 1);
 					enable_extensions[size] = name;

@@ -23,7 +23,7 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = vec4(posIn, 1) * matrix_block.rotation_matrix * vec4(image_format_block.multiplier, 1, 1);
+    gl_Position = matrix_block.rotation_matrix * vec4(posIn, 1);
     colorOut = colorIn;
     uvOut = uv;
     only_color = color_only;

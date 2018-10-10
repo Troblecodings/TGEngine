@@ -170,7 +170,6 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
         }
 	};
 
-
 	VkCommandBuffer buffer = command_buffers[index];
 
 	VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {

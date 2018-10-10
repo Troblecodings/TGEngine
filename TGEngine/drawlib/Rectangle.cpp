@@ -92,15 +92,15 @@ void drawRectangleWithTexture(TGVertex vert, float xsize, float ysize, VertexBuf
 		vert.color_only
 		});
 	buffer->add({
-		{ vert.position.x - xsize, vert.position.y + ysize, vert.position.z },
+		{ vert.position.x + xsize, vert.position.y + ysize, vert.position.z },
 		vert.color,
-		{ 0, 1 },
+		{ 1, 1 },
 		vert.color_only
 		});
 	buffer->add({
-		{ vert.position.x + xsize, vert.position.y - ysize, vert.position.z },
+		{ vert.position.x - xsize, vert.position.y - ysize, vert.position.z },
 		vert.color,
-		{ 1, 0 },
+		{ 0, 0 },
 		vert.color_only
 		});
 	buffer->add({

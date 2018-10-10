@@ -95,9 +95,9 @@ void createPipeline() {
 		VK_TRUE,
 		VK_FALSE,
 	    VK_POLYGON_MODE_FILL,
-		VK_CULL_MODE_FRONT_BIT,
+		VK_CULL_MODE_BACK_BIT,
 		VK_FRONT_FACE_CLOCKWISE,
-		VK_TRUE,
+		VK_FALSE,
 	    1,
 	    0,
 	    1,
@@ -153,8 +153,8 @@ void createPipeline() {
 	},
 	{
 	},
-	-100.0f,
-	100.0f
+	0,
+	1.0f
 	};
 
 	//Pipeline

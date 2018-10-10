@@ -328,9 +328,6 @@
     <None Include="Resources\fragmentshader.spv">
       <Filter>resources</Filter>
     </None>
-    <None Include="Resources\Shader Compiler.bat">
-      <Filter>resources</Filter>
-    </None>
     <None Include="Resources\ShaderBuildscript.py">
       <Filter>resources</Filter>
     </None>
