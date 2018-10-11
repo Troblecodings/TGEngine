@@ -81,52 +81,47 @@ void createWindow(Window* window) {
 	// IMPL getMonitor();
 
 	bool fullscreen = properties->getBoolean("fullscreen");
-	window->decorated = fullscreen ? false : properties->getBoolean("decorated");
-	window->cursor = properties->getBoolean("cursor");
+	window->decorated = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
+	window->cursor = properties->getBooleanOrDefault("cursor", true);
 	if (fullscreen) {
-		GET_SIZE(d_width, d_height)
+		GET_SIZE(d_width, d_height);
 		window->width = d_width;
 		window->height = d_height;
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
 	}
-	else if (properties->getBoolean("center")) {
-		GET_SIZE(d_width, d_height)
-			window->height = properties->getInt("height");
-		window->width = properties->getInt("width");
+	else if (properties->getBooleanOrDefault("center", true)) {
+		GET_SIZE(d_width, d_height);
+		window->height = properties->getIntOrDefault("height", 400);
+		window->width = properties->getIntOrDefault("width", 400);
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
 	}
 	else {
-		window->height = properties->getInt("height");
-		window->width = properties->getInt("width");
+		window->height = properties->getIntOrDefault("height", 400);
+		window->width = properties->getIntOrDefault("width", 400);
 		window->x = properties->getInt("posx");
 		window->y = properties->getInt("posy");
 	}
 
     #ifdef _WIN32 //Windows window createion
 	if (window->decorated) {
-		if (properties != nullptr) {
-			//Char unicode conversation
-			const char* ch = properties->getString("app_name");
-			wchar_t* wc = new wchar_t[strlen(ch) + 1];
-			wc[mbstowcs(wc, ch, _TRUNCATE)] = '\0';
+		//Char unicode conversation
+		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
+		wchar_t* wc = new wchar_t[strlen(ch) + 1];
+		wc[mbstowcs(wc, ch, _TRUNCATE)] = '\0';
 
-			DWORD style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
-			if (properties->getBoolean("minimizeable")) {
-				style |= WS_MINIMIZEBOX;
-			}
-			if (properties->getBoolean("maximizable")) {
-				style |= WS_MAXIMIZEBOX;
-			}
-			if (properties->getBoolean("resizeable")) {
-				style |= WS_SIZEBOX;
-			}
-			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
+		DWORD style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
+		if (properties->getBooleanOrDefault("minimizeable", true)) {
+			style |= WS_MINIMIZEBOX;
 		}
-		else {
-			window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, nullptr, WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
+		if (properties->getBooleanOrDefault("maximizable", true)) {
+			style |= WS_MAXIMIZEBOX;
 		}
+		if (properties->getBooleanOrDefault("resizeable", true)) {
+			style |= WS_SIZEBOX;
+		}
+		window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
 	}
 	else {
 		window->__impl_window = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, window->x, window->y, window->width, window->height, nullptr, nullptr, sys_module , nullptr);

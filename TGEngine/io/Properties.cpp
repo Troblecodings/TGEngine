@@ -8,6 +8,8 @@ namespace prop {
 	void readProperties(char* path, Properties* prop) {
 		File file = open(path, "rb");
 
+		if (!file) return;
+
 		TagType tagtype = NaN;
 
 		char* namebuf;
@@ -30,38 +32,14 @@ namespace prop {
 			else if (c_char == '>' || c_char == '/') {
 				if (tagtype != NaN) {
 					switch (tagtype) {
-					case BOOLEAN: {
-						size = prop->bool_names.size();
-						prop->bool_names.resize(size + 1);
-						prop->bool_values.resize(size + 1);
-						prop->bool_names[size] = namebuf;
-						prop->bool_values[size] = strcmp(valuebuf, "true") == 0;
-					}
-								  break;
-					case INT: {
-						size = prop->int_names.size();
-						prop->int_names.resize(size + 1);
-						prop->int_values.resize(size + 1);
-						prop->int_names[size] = namebuf;
-						prop->int_values[size] = stoi(valuebuf);
-					}
-							  break;
-					case FLOAT: {
-						size = prop->float_names.size();
-						prop->float_names.resize(size + 1);
-						prop->float_values.resize(size + 1);
-						prop->float_names[size] = namebuf;
-						prop->float_values[size] = stof(valuebuf);
-					}
-								break;
-					case STRING: {
-						size = prop->bool_names.size();
-						prop->string_names.resize(size + 1);
-						prop->string_values.resize(size + 1);
-						prop->string_names[size] = namebuf;
-						prop->string_values[size] = valuebuf;
-					}
-								 break;
+					case BOOLEAN: prop->addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
+					    break;
+					case INT: prop->addFloat(namebuf, stoi(valuebuf));
+						break;
+					case FLOAT: prop->addFloat(namebuf, stof(valuebuf));
+						break;
+					case STRING: prop->addString(namebuf, valuebuf);
+						break;
 					}
 					tagtype = NaN;
 					stage = 0;
@@ -134,44 +112,91 @@ namespace prop {
 		}
 	}
 
-	char* Properties::getString(char* name) {
+	char* Properties::getStringOrDefault(char* name, char* def) {
 		for (size_t i = 0; i < this->string_names.size(); i++)
 		{
 			if (strcmp(name, this->string_names[i]) == 0) {
 				return this->string_values[i];
 			}
 		}
-		return "";
+		return def;
 	}
 
-	bool Properties::getBoolean(char* name) {
+	bool Properties::getBooleanOrDefault(char* name, bool def) {
 		for (size_t i = 0; i < this->bool_names.size(); i++)
 		{
 			if (strcmp(name, this->bool_names[i]) == 0) {
 				return this->bool_values[i];
 			}
 		}
-		return false;
+		return def;
 	}
 
-	float Properties::getFloat(char* name) {
+	float Properties::getFloatOrDefault(char* name, float def) {
 		for (size_t i = 0; i < this->float_names.size(); i++)
 		{
 			if (strcmp(name, this->float_names[i]) == 0) {
 				return this->float_values[i];
 			}
 		}
-		return 0;
+		return def;
 	}
 
-	int Properties::getInt(char* name) {
+	int Properties::getIntOrDefault(char* name, int def) {
 		for (size_t i = 0; i < this->int_names.size(); i++)
 		{
 			if (strcmp(name, this->int_names[i]) == 0) {
 				return this->int_values[i];
 			}
 		}
-		return 0;
+		return def;
 	}
 
+	char* Properties::getString(char* name) {
+		return this->getStringOrDefault(name, "");
+	}
+
+	bool Properties::getBoolean(char* name) {
+		return this->getBooleanOrDefault(name, false);
+	}
+
+	float Properties::getFloat(char* name) {
+		return this->getFloatOrDefault(name, 0.0);
+	}
+
+	int Properties::getInt(char* name) {
+		return this->getIntOrDefault(name, 0);
+	}
+
+	void Properties::addString(char* name, char* value) {
+		size_t size = this->bool_names.size();
+		this->string_names.resize(size + 1);
+		this->string_values.resize(size + 1);
+		this->string_names[size] = name;
+		this->string_values[size] = value;
+	}
+
+	void Properties::addBoolean(char* name, bool value) {
+		size_t size = this->bool_names.size();
+		this->bool_names.resize(size + 1);
+		this->bool_values.resize(size + 1);
+		this->bool_names[size] = name;
+		this->bool_values[size] = value;
+	}
+
+	void Properties::addFloat(char* name, float value) {
+		size_t size = this->bool_names.size();
+		this->float_names.resize(size + 1);
+		this->float_values.resize(size + 1);
+		this->float_names[size] = name;
+		this->float_values[size] = value;
+	}
+	
+	void Properties::addInt(char* name, int value) {
+		size_t size = this->bool_names.size();
+		this->int_names.resize(size + 1);
+		this->int_values.resize(size + 1);
+		this->int_names[size] = name;
+		this->int_values[size] = value;
+	}
 }

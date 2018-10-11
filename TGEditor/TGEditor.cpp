@@ -54,8 +54,9 @@ void drawGrid(VertexBuffer* buffer) {
 
 void Editor::drawloop(VertexBuffer* buffer)
 {
-	drawRectangleWithTexture({ {0, 0, 0},  { 1, 1, 1, 1}, {0, 0}, tex2.index}, 0.3, 0.3, buffer);
+	drawGrid(buffer);
 	drawRectangleWithTexture({ {0.2, 0.2, 0.2},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
+	drawRectangleWithTexture({ {0, 0, 0},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
 	//arial.drawString({ {0, 0, -0.3},  { 1, 0, 0, 1} }, "Hallo Welt!", buffer);
 	//FBX_Dictionary::addToDraw(buffer);
 }

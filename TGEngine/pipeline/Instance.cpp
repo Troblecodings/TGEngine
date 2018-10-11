@@ -8,7 +8,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	VkApplicationInfo app_info = { 
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
 		nullptr,
-		properties->getString("app_name"),
+		properties->getStringOrDefault("app_name", "TGEngine"),
 		properties->getInt("version"),
 	    "TGEngine",
 	    TGE_VERSION,
