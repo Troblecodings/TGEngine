@@ -15,7 +15,7 @@
 #include "util/Math.hpp"
 #include <glm/glm.hpp>
 #include "util/TGVertex.hpp"
-#include "Error.h"
+#include "Error.hpp"
 
 extern prop::Properties* properties;
 extern uint32_t image_count;

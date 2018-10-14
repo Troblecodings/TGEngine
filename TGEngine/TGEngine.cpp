@@ -83,7 +83,7 @@ void initTGEngine(App *app) {
 		if (app->main_window.close_request) {
 			break;
 		}
-		else if (app->main_window.minimized) {
+		if (app->main_window.minimized) {
 			continue;
 		}
 		startdraw();

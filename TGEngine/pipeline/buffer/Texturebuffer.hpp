@@ -7,6 +7,8 @@
 #include "..\Descriptors.hpp"
 #include "VertexBuffer.hpp"
 #include "..\Draw.hpp"
+#include "../../vlib/VulkanImage.hpp"
+#include "../../vlib/VulkanBuffer.hpp"
 
 #define MAX_TEXTURES 4094
 #define COLOR_ONLY MAX_TEXTURES + 1
@@ -43,7 +45,7 @@ struct Texture {
 };
 
 extern std::vector<Texture*> texture_buffers;
-extern Descriptor* texture_descriptor;
+extern Descriptor texture_descriptor;
 extern VkSampler tex_image_sampler;
 extern uint32_t tex_array_index;
 

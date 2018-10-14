@@ -25,7 +25,7 @@
     <ClInclude Include="drawlib\DrawLib.hpp" />
     <ClInclude Include="drawlib\Ellipse.hpp" />
     <ClInclude Include="drawlib\Rectangle.hpp" />
-    <ClInclude Include="Error.h" />
+    <ClInclude Include="Error.hpp" />
     <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />
@@ -63,6 +63,8 @@
     <ClInclude Include="Stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="TGVertex.hpp" />
+    <ClInclude Include="vlib\VulkanBuffer.hpp" />
+    <ClInclude Include="vlib\VulkanImage.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drawlib\BaseDrawLib.cpp" />
@@ -103,6 +105,8 @@
     <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="vlib\VulkanBuffer.cpp" />
+    <ClCompile Include="vlib\VulkanImage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />

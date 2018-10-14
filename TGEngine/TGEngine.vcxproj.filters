@@ -61,6 +61,12 @@
     <Filter Include="Quelldateien\model">
       <UniqueIdentifier>{29e31da8-8a5a-44c8-94c5-9672861b87c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\vlib">
+      <UniqueIdentifier>{b4fb9809-f7f4-4ca8-b5b5-260999bd1d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\vlib">
+      <UniqueIdentifier>{6e3272fc-2588-43cc-996c-0e7a31f95acf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -192,11 +198,17 @@
     <ClInclude Include="TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="Error.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="pipeline\DepthStencil.hpp">
       <Filter>Headerdateien\pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="vlib\VulkanImage.hpp">
+      <Filter>Headerdateien\vlib</Filter>
+    </ClInclude>
+    <ClInclude Include="vlib\VulkanBuffer.hpp">
+      <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="pipeline\DepthStencil.cpp">
       <Filter>Quelldateien\pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="vlib\VulkanImage.cpp">
+      <Filter>Quelldateien\vlib</Filter>
+    </ClCompile>
+    <ClCompile Include="vlib\VulkanBuffer.cpp">
+      <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

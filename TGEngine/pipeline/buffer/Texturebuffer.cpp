@@ -1,7 +1,7 @@
 #include "Texturebuffer.hpp"
 
 std::vector<Texture*> texture_buffers;
-Descriptor* texture_descriptor;
+Descriptor texture_descriptor;
 VkSampler tex_image_sampler;
 uint32_t tex_array_index = 0;
 
@@ -37,7 +37,7 @@ void initAllTextures() {
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
-	texture_descriptor = new Descriptor{
+	texture_descriptor = {
 		VK_SHADER_STAGE_FRAGMENT_BIT,
 		MAX_TEXTURES,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
@@ -45,7 +45,16 @@ void initAllTextures() {
 		tex_image_sampler,
 		NULL
 	};
-	addDescriptor(texture_descriptor);
+	addDescriptor(&texture_descriptor);
+
+	uint32_t image_index;
+	FIND_INDEX(image_index, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
+
+	uint32_t buffer_index;
+	FIND_INDEX(buffer_index, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+
+	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
 	for each(Texture* ptr in texture_buffers) {
 		if (ptr->texture_path) {
@@ -53,79 +62,38 @@ void initAllTextures() {
 			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
 		}
 
-		VkImageCreateInfo image_create_info = {
-			VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-			nullptr,
-			0,
-			VK_IMAGE_TYPE_2D,
-			ptr->image_format,
-		    {
-			    ptr->width,
-			    ptr->height,
-			    1
-		    },
-			1,
-			1,
-			VK_SAMPLE_COUNT_1_BIT,
-			VK_IMAGE_TILING_OPTIMAL,
-			VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-			VK_SHARING_MODE_EXCLUSIVE,
-			0,
-			nullptr,
-			VK_IMAGE_LAYOUT_UNDEFINED
-		};
-		last_result = vkCreateImage(device, &image_create_info, nullptr, &ptr->image);
-		HANDEL(last_result)
+		vlib_image_create_info.format = ptr->image_format;
+		vlib_image_create_info.extent.width = ptr->width;
+		vlib_image_create_info.extent.height = ptr->height;
+		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
 
-		uint32_t index;
-		for (index = 0; index < memory_properties.memoryTypeCount; index++) {
-			if (memory_properties.memoryTypes[index].propertyFlags & (VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) break;
-		}
 		vkGetImageMemoryRequirements(device, ptr->image, &ptr->requierments);
 
-		VkMemoryAllocateInfo mem_alloc_info = {
-			VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-		    nullptr,
-			ptr->requierments.size,
-			index
-		};
-		last_result = vkAllocateMemory(device, &mem_alloc_info, nullptr, &ptr->d_memory);
+		vlib_buffer_memory_allocate_info.allocationSize = ptr->requierments.size;
+		vlib_buffer_memory_allocate_info.memoryTypeIndex = image_index;
+		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->d_memory);
 		HANDEL(last_result)
 
 		last_result = vkBindImageMemory(device, ptr->image, ptr->d_memory, 0);
 		HANDEL(last_result)
 
-		VkBufferCreateInfo buffer_create_info = {
-			VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-		    nullptr,
-		    0,
-			ptr->width * ptr->height * 4,
-		    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		    VK_SHARING_MODE_EXCLUSIVE,
-		    0,
-		    nullptr
-		};
-		last_result = vkCreateBuffer(device, &buffer_create_info, nullptr, &ptr->buffer);
+		vlib_buffer_create_info.size = ptr->width * ptr->height * 4;
+		last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &ptr->buffer);
 		HANDEL(last_result)
 		
-		for (index = 0; index < memory_properties.memoryTypeCount; index++) {
-			if (memory_properties.memoryTypes[index].propertyFlags & (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) break;
-		}
 		vkGetBufferMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
 
-		VkMemoryAllocateInfo buffer_mem_alloc_info = {
-			VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-			nullptr,
-			ptr->buffer_requierments.size,
-			index
-		};
-		last_result = vkAllocateMemory(device, &buffer_mem_alloc_info, nullptr, &ptr->buffer_memory);
+		vlib_buffer_memory_allocate_info.allocationSize = ptr->buffer_requierments.size;
+		vlib_buffer_memory_allocate_info.memoryTypeIndex = buffer_index;
+		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->buffer_memory);
 		HANDEL(last_result)
 
 		last_result = vkBindBufferMemory(device, ptr->buffer, ptr->buffer_memory, 0);
 		HANDEL(last_result)
 
-		vkMapMemory(device, ptr->buffer_memory, 0, ptr->width * ptr->height * 4, 0, &ptr->memory);
+		last_result = vkMapMemory(device, ptr->buffer_memory, 0, ptr->width * ptr->height * 4, 0, &ptr->memory);
+		HANDEL(last_result);
+
 		memcpy(ptr->memory, ptr->image_data, ptr->width * ptr->height * 4);
 		vkUnmapMemory(device, ptr->buffer_memory);
 
@@ -136,28 +104,9 @@ void initAllTextures() {
 			delete[] ptr->image_data;
 		}
 
-		VkImageViewCreateInfo image_view_create_info = {
-			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-		    nullptr,
-		    0,
-		    ptr->image,
-			VK_IMAGE_VIEW_TYPE_2D,
-		    ptr->image_format,
-		    {
-			    VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY
-		    },
-		    {
-			    VK_IMAGE_ASPECT_COLOR_BIT,
-			    0,
-			    1,
-			    0,
-			    1
-		    }
-		};
-		last_result = vkCreateImageView(device, &image_view_create_info, nullptr, &ptr->image_view);
+		vlib_image_view_create_info.format = ptr->image_format;
+		vlib_image_view_create_info.image = ptr->image;
+		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
 		HANDEL(last_result)
 	}
 
@@ -186,7 +135,7 @@ void addTextures() {
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 		nullptr,
 		descriptor_set,
-		texture_descriptor->binding,
+		texture_descriptor.binding,
 		0,
 		MAX_TEXTURES,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
