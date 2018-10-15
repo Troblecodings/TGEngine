@@ -44,9 +44,21 @@ VkImageViewCreateInfo vlib_image_view_create_info = {
 	}
 };
 
-VkMemoryAllocateInfo vlib_buffer_memory_allocate_info = {
-	VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+VkImageMemoryBarrier vlib_image_memory_barrier = {
+	VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 	nullptr,
 	0,
-	0
+	0,
+	VK_IMAGE_LAYOUT_UNDEFINED,
+	VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+	VK_QUEUE_FAMILY_IGNORED,
+	VK_QUEUE_FAMILY_IGNORED,
+	VK_NULL_HANDLE,
+	{
+		VK_IMAGE_ASPECT_COLOR_BIT,
+		0,
+		1,
+		0,
+		1
+	}
 };

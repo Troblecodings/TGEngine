@@ -154,6 +154,8 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	}
 
 	vkGetPhysicalDeviceMemoryProperties(used_physical_device, &memory_properties);
+
+	FIND_INDEX(vlib_device_local_memory_index, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
 }
 
 void destroyDevice() {

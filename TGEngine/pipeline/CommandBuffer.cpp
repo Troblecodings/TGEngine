@@ -53,32 +53,8 @@ void singleTimeCommand() {
 	last_result = vkBeginCommandBuffer(buffer, &beginInfo);
 	HANDEL(last_result);
 
-	VkImageMemoryBarrier image_memory_barrier = {
-		VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-		nullptr,
-		0,
-		0,
-		VK_IMAGE_LAYOUT_UNDEFINED,
-		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-		VK_QUEUE_FAMILY_IGNORED,
-		VK_QUEUE_FAMILY_IGNORED,
-		VK_NULL_HANDLE,
-		{
-			VK_IMAGE_ASPECT_COLOR_BIT,
-			0,
-			1,
-			0,
-			1
-		}
-	};
-
 	for each(Texture* tex in texture_buffers) {
-		image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-		image_memory_barrier.image = tex->image;
-		image_memory_barrier.srcAccessMask = 0;
-		image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		vkCmdPipelineBarrier(buffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &image_memory_barrier);
+		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
 		VkBufferImageCopy image_copy = {
 			0,
@@ -111,21 +87,11 @@ void singleTimeCommand() {
 			&image_copy
 		);
 
-		image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-		image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		image_memory_barrier.image = tex->image;
-		image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-		vkCmdPipelineBarrier(buffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &image_memory_barrier);
+		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 	}
 
-	image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	image_memory_barrier.image = depth_image;
-	image_memory_barrier.srcAccessMask = 0;
-	image_memory_barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;;
-	image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	vkCmdPipelineBarrier(buffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, nullptr, 0, nullptr, 1, &image_memory_barrier);
+	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
 
 	last_result = vkEndCommandBuffer(buffer);
 	HANDEL(last_result);

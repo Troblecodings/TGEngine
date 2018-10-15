@@ -10,3 +10,12 @@ VkBufferCreateInfo vlib_buffer_create_info = {
 	0,
 	nullptr
 };
+
+VkMemoryAllocateInfo vlib_buffer_memory_allocate_info = {
+	VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+	nullptr,
+	0,
+	0
+};
+
+uint32_t vlib_device_local_memory_index;

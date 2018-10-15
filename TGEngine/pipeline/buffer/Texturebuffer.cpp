@@ -47,9 +47,6 @@ void initAllTextures() {
 	};
 	addDescriptor(&texture_descriptor);
 
-	uint32_t image_index;
-	FIND_INDEX(image_index, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
-
 	uint32_t buffer_index;
 	FIND_INDEX(buffer_index, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
 
@@ -66,11 +63,12 @@ void initAllTextures() {
 		vlib_image_create_info.extent.width = ptr->width;
 		vlib_image_create_info.extent.height = ptr->height;
 		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
+		HANDEL(last_result)
 
 		vkGetImageMemoryRequirements(device, ptr->image, &ptr->requierments);
 
 		vlib_buffer_memory_allocate_info.allocationSize = ptr->requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = image_index;
+		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
 		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->d_memory);
 		HANDEL(last_result)
 
@@ -109,7 +107,6 @@ void initAllTextures() {
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
 		HANDEL(last_result)
 	}
-
 }
 
 void addTextures() {

@@ -14,12 +14,10 @@ void createDepthTest()
 	HANDEL(last_result);
 
 	VkMemoryRequirements requierments;
-	uint32_t index;
-	FIND_INDEX(index, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
 	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlib_buffer_memory_allocate_info.allocationSize = requierments.size;
-	vlib_buffer_memory_allocate_info.memoryTypeIndex = index;
+	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
 	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &depth_image_memory);
 	HANDEL(last_result);
 

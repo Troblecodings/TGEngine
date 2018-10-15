@@ -8,6 +8,7 @@
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
 #include "buffer\Texturebuffer.hpp"
+#include "../vlib/VulkanImage.hpp"
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;
