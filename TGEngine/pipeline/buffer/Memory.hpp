@@ -1,19 +1,20 @@
 #pragma once
 
 #include "..\..\pipeline\Device.hpp"
+#include "..\..\vlib\VulkanBuffer.hpp"
 
 extern std::vector<VkBuffer> buffers;
-extern std::vector<bool> isImage;
 extern std::vector<VkDeviceSize> buffer_sizes;
 extern std::vector<VkDeviceSize> buffer_offsets;
 extern VkDeviceMemory device_memory;
-
-extern uint32_t index;
+extern VkMemoryRequirements last_requirements;
 extern VkDeviceSize _impl_size;
-extern uint32_t memory_flags;
 
-SINCE(0, 0, 2)
-uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags);
+/*
+ * Adds a buffer to the creation list
+ */
+SINCE(0, 0, 4)
+uint32_t addBuffer(VkBuffer buffer);
 
 SINCE(0, 0, 2)
 void allocateAllBuffers();

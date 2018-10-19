@@ -4,26 +4,21 @@ std::vector<VkBuffer> buffers = {};
 std::vector<VkDeviceSize> buffer_sizes = {};
 std::vector<VkDeviceSize> buffer_offsets = { 0 };
 VkDeviceMemory device_memory;
-
-uint32_t index;
 VkDeviceSize _impl_size;
-uint32_t memory_flags;
+VkMemoryRequirements last_requirements;
 
-uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags) {
-	memory_flags |= memoryflags;
+uint32_t addBuffer(VkBuffer buffer) {
+	vkGetBufferMemoryRequirements(device, buffer, &last_requirements);
 
-	VkMemoryRequirements requirements;
-	vkGetBufferMemoryRequirements(device, buffer, &requirements);
-
-	_impl_size += requirements.size;
+	_impl_size += last_requirements.size;
 
 	uint32_t csize = buffer_offsets.size();
 	buffer_offsets.resize(csize + 1);
-	buffer_offsets[csize] = buffer_offsets[csize - 1] + requirements.size;
+	buffer_offsets[csize] = buffer_offsets[csize - 1] + last_requirements.size;
 
 	csize = buffer_sizes.size();
 	buffer_sizes.resize(csize + 1);
-	buffer_sizes[csize] = requirements.size;
+	buffer_sizes[csize] = last_requirements.size;
 
 	buffers.resize(csize + 1);
 	buffers[csize] = buffer;
@@ -31,18 +26,9 @@ uint32_t getMemoryRequirements(VkBuffer buffer, uint32_t memoryflags) {
 }
  
 void allocateAllBuffers() {
-	for (index = 0; index < memory_properties.memoryTypeCount; index++) {
-		if (memory_properties.memoryTypes[index].propertyFlags & (memory_flags)) break;
-	}
-
-	VkMemoryAllocateInfo memory_allocation_info = {
-		VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-		nullptr,
-		_impl_size,
-		index
-	};
-
-	last_result = vkAllocateMemory(device, &memory_allocation_info, nullptr, &device_memory);
+	vlib_buffer_memory_allocate_info.allocationSize = _impl_size;
+	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
+	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &device_memory);
 	HANDEL(last_result)
 	
 	for (int i = 0; i < buffers.size();i++) {
@@ -61,10 +47,8 @@ void unmapMemory() {
 }
 
 void destroyMemory() {
-	int i = 0;
 	for (VkBuffer buffer : buffers) {
 		vkDestroyBuffer(device, buffer, nullptr);
-		i++;
 	}
 	vkFreeMemory(device, device_memory, nullptr);
 }

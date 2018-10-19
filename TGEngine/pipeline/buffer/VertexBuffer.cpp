@@ -3,21 +3,12 @@
 void createVertexBuffer(VertexBuffer* buffer_storage) {
 	VkBuffer vertex_buffer;
 
-	VkBufferCreateInfo vertex_buffer_create_info = {
-		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-	    nullptr,
-		0,
-		VERTEX_SIZE * buffer_storage->max_vertex_count,
-	    VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-	    VK_SHARING_MODE_EXCLUSIVE,
-	    0,
-	    nullptr
-	};
-
-	last_result = vkCreateBuffer(device, &vertex_buffer_create_info, nullptr, &vertex_buffer);
+	vlib_buffer_create_info.size = VERTEX_SIZE * buffer_storage->max_vertex_count;
+	vlib_buffer_create_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &vertex_buffer);
 	HANDEL(last_result)
 
-	buffer_storage->vertex_buffer_index = getMemoryRequirements(vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	buffer_storage->vertex_buffer_index = addBuffer(vertex_buffer);
 }
 
 void VertexBuffer::start() {
