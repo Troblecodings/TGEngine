@@ -15,9 +15,6 @@
     <Filter Include="Headerdateien\io">
       <UniqueIdentifier>{97cba680-fb33-40a5-866f-30e6342c0c34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\game content">
-      <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headerdateien\drawlib">
       <UniqueIdentifier>{e8f1a3ba-f124-4f5b-954d-7bd5e0b649aa}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,9 @@
     </Filter>
     <Filter Include="Headerdateien\vlib">
       <UniqueIdentifier>{6e3272fc-2588-43cc-996c-0e7a31f95acf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\gamecontent">
+      <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,7 +187,7 @@
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="game_content\Camera.hpp">
-      <Filter>Headerdateien\game content</Filter>
+      <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
     <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>

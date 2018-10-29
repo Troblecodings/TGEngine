@@ -2,12 +2,23 @@
 
 #include "Memory.hpp"
 
-extern VkBuffer index_buffer;
-extern uint32_t index_count;
-extern uint32_t index_buffer_index;
+struct IndexBuffer{
+	uint32_t size;
+
+	VkBuffer index_buffer;
+	uint32_t index_count;
+	uint32_t index_buffer_index;
+	void* memory;
+
+	SINCE(0, 0, 2)
+	void addIndex(uint32_t index);
+	
+	SINCE(0, 0, 4)
+	void start();
+
+	SINCE(0, 0, 4)
+	void end();
+};
 
 SINCE(0, 0, 2)
-void createIndexBuffer(uint32_t size);
-
-SINCE(0, 0, 2)
-void fillIndexBuffer(std::vector<uint32_t>* indicies);
+void createIndexBuffer(IndexBuffer* buffer);

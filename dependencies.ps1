@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 param([String]$refresh_deps="no-refresh")
 
 Write-Output "Dependencies 1.0"
@@ -35,14 +36,14 @@ $includes = (Resolve-Path "dependencies\deps\Deps\fbx\include").ToString() + ";"
 $includes += (Resolve-Path "dependencies\deps\Deps\Third-Party\Include").ToString() + ";"
 $includes += (Resolve-Path "dependencies\deps\Deps\vulkan\Include").ToString() + ";"
 $includes += (Resolve-Path "stb").ToString() + ";"
-[Environment]::SetEnvironmentVariable("TGE_INCLUDE", $includes, "User")
+[Environment]::SetEnvironmentVariable("TGE_INCLUDE", $includes, "Machine")
 $lib_names = "SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib"
-[Environment]::SetEnvironmentVariable("TGE_LIB_NAMES", $lib_names, "User")
+[Environment]::SetEnvironmentVariable("TGE_LIB_NAMES", $lib_names, "Machine")
 $lib_path_32 = (Resolve-Path "dependencies\deps\Deps\Third-Party\Bin32").ToString() + ";"
 $lib_path_32 += (Resolve-Path "dependencies\deps\Deps\vulkan\Lib32").ToString() + ";"
 $lib_path_32 += (Resolve-Path "dependencies\deps\Deps\fbx\lib\vs2015\").ToString()
-[Environment]::SetEnvironmentVariable("TGE_LIBS_32", $lib_path_32, "User")
+[Environment]::SetEnvironmentVariable("TGE_LIBS_32", $lib_path_32, "Machine")
 $lib_path = (Resolve-Path "dependencies\deps\Deps\Third-Party\Bin").ToString() + ";"
 $lib_path += (Resolve-Path "dependencies\deps\Deps\vulkan\Lib").ToString() + ";"
 $lib_path += (Resolve-Path "dependencies\deps\Deps\fbx\lib\vs2015\").ToString()
-[Environment]::SetEnvironmentVariable("TGE_LIBS", $lib_path, "User")
+[Environment]::SetEnvironmentVariable("TGE_LIBS", $lib_path, "Machine")
