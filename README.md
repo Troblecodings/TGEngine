@@ -13,7 +13,7 @@ For updates please follow the [official twitter account of Troblecodings](https:
 
 | Platform | Build Status |
 |:--------:|:------------:|
-| Windows (Visual Studio 2017) | ![Windows Build Status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true) |
+| Windows (Visual Studio 2017) | [![Windows Build status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true)](https://ci.appveyor.com/project/MrTroble/tgengine) |
 | Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg) |
 
 <h4>Note<h4>
