@@ -20,7 +20,7 @@ void createUniformBuffer(UniformBuffer* buffer){
 	last_result = vkCreateBuffer(device, &uniform_buffer_create_info, nullptr, &uniform_buffer);
 	HANDEL(last_result)
 
-	buffer->index = getMemoryRequirements(uniform_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	buffer->index = addBuffer(uniform_buffer);
 	buffer->descriptor.buffer = buffer->index;
 	addDescriptor(&buffer->descriptor);
 }

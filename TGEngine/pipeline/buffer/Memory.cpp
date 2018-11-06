@@ -1,14 +1,14 @@
 #include "Memory.hpp"
 
-std::vector<VkBuffer*> buffers = {};
+std::vector<VkBuffer> buffers = {};
 std::vector<VkDeviceSize> buffer_sizes = {};
 std::vector<VkDeviceSize> buffer_offsets = { 0 };
 VkDeviceMemory device_memory;
 VkDeviceSize _impl_size;
 VkMemoryRequirements last_requirements;
 
-uint32_t addBuffer(VkBuffer* buffer) {
-	vkGetBufferMemoryRequirements(device, *buffer, &last_requirements);
+uint32_t addBuffer(VkBuffer buffer) {
+	vkGetBufferMemoryRequirements(device, buffer, &last_requirements);
 
 	_impl_size += last_requirements.size;
 
@@ -32,7 +32,7 @@ void allocateAllBuffers() {
 	HANDEL(last_result)
 	
 	for (int i = 0; i < buffers.size();i++) {
-		last_result = vkBindBufferMemory(device, *buffers[i], device_memory, buffer_offsets[i]);
+		last_result = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
 		HANDEL(last_result)
 	}
 }
