@@ -26,7 +26,9 @@
     <ClInclude Include="drawlib\Ellipse.hpp" />
     <ClInclude Include="drawlib\Rectangle.hpp" />
     <ClInclude Include="Error.hpp" />
+    <ClInclude Include="game_content\Actor.hpp" />
     <ClInclude Include="game_content\Camera.hpp" />
+    <ClInclude Include="game_content\Mesh.hpp" />
     <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\FontTables.hpp" />
@@ -63,6 +65,7 @@
     <ClInclude Include="Stdbase.hpp" />
     <ClInclude Include="TGEngine.hpp" />
     <ClInclude Include="TGVertex.hpp" />
+    <ClInclude Include="util\VectorUtil.hpp" />
     <ClInclude Include="vlib\VulkanBuffer.hpp" />
     <ClInclude Include="vlib\VulkanImage.hpp" />
   </ItemGroup>
@@ -71,7 +74,9 @@
     <ClCompile Include="drawlib\Circle.cpp" />
     <ClCompile Include="drawlib\Ellipse.cpp" />
     <ClCompile Include="drawlib\Rectangle.cpp" />
+    <ClCompile Include="game_content\Actor.cpp" />
     <ClCompile Include="game_content\Camera.cpp" />
+    <ClCompile Include="game_content\Mesh.cpp" />
     <ClCompile Include="io\Deflate.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\FontTables.cpp" />
@@ -105,6 +110,7 @@
     <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="util\VectorUtil.cpp" />
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
     <ClCompile Include="vlib\VulkanImage.cpp" />
   </ItemGroup>

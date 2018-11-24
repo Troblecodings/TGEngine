@@ -149,8 +149,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 
 	if (!isSupported) {
 		std::cerr << "Swapchain not Supported with surface" << std::endl;
-		_sleep(1000000);
-		exit(-1000);
+		TGERROR(SWAPCHAIN_NOT_SUPPORTED)
 	}
 
 	vkGetPhysicalDeviceMemoryProperties(used_physical_device, &memory_properties);

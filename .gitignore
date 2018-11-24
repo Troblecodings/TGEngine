@@ -268,3 +268,8 @@ dependencies/deps.zip
 /dependencies/deps/Deps
 /TGEditor/helmet.blend
 /dependencies
+/TGEngine/TGEngine.layout
+/TGEngine/TGEngine.depend
+/TGEngine/TGEngine.cbp
+/TGEditor/TGEditor.layout
+/TGEditor/TGEditor.cbp

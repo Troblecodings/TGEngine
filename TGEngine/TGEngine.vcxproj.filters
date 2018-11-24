@@ -210,6 +210,15 @@
     <ClInclude Include="vlib\VulkanBuffer.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
+    <ClInclude Include="game_content\Actor.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="game_content\Mesh.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="util\VectorUtil.hpp">
+      <Filter>Headerdateien\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -334,6 +343,15 @@
     </ClCompile>
     <ClCompile Include="vlib\VulkanBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\Actor.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\Mesh.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="util\VectorUtil.cpp">
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
