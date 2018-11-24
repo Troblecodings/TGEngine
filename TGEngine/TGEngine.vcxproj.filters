@@ -153,9 +153,6 @@
     <ClInclude Include="Util\Math.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Endian.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\ShaderData.hpp">
       <Filter>resources</Filter>
     </ClInclude>
@@ -192,12 +189,6 @@
     <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="util\TGString.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
-    <ClInclude Include="TGVertex.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
     <ClInclude Include="pipeline\DepthStencil.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
@@ -218,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="util\VectorUtil.hpp">
       <Filter>Headerdateien\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\TGVertex.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +272,6 @@
     <ClCompile Include="Pipeline\Window\Window.cpp">
       <Filter>Quelldateien\pipeline\window</Filter>
     </ClCompile>
-    <ClCompile Include="Util\Endian.cpp">
-      <Filter>Quelldateien\util</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\ShaderData.cpp">
       <Filter>resources</Filter>
     </ClCompile>
@@ -328,9 +319,6 @@
     </ClCompile>
     <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="util\TGString.cpp">
-      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="model\FBX_Loader.cpp">
       <Filter>Quelldateien\model</Filter>

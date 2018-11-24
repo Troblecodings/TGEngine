@@ -60,15 +60,15 @@ namespace FBX_Dictionary {
 		}
 	}
 
-	fbxsdk::FbxMesh* addAll(fbxsdk::FbxNode* node)
+	uint32_t addAll(fbxsdk::FbxNode* node)
 	{
 		fbxsdk::FbxMesh* mesh = node->GetMesh();
+		uint32_t pos = FBX_Dictionary::names.size();
 		if (mesh) {
 			fbxsdk::FbxSurfaceMaterial* material = node->GetMaterial(0);
 
 			glm::vec4 color = { 0, 0, 0, 1 };
 
-			uint32_t pos = FBX_Dictionary::names.size();
 			FBX_Dictionary::names.resize(pos + 1);
 			FBX_Dictionary::fbx_meshes.resize(pos + 1);
 			FBX_Dictionary::colors.resize(pos + 1);
@@ -98,12 +98,12 @@ namespace FBX_Dictionary {
 
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addAll(node->GetChild(i));
-		return mesh;
+		return pos;
 	}
 };
 
 
-fbxsdk::FbxMesh* load(char* name) {
+uint32_t load(char* name) {
 	FbxManager* manager = FbxManager::Create();
 
 	FbxIOSettings* io_settings = FbxIOSettings::Create(manager, IOSROOT);

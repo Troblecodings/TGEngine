@@ -2,11 +2,13 @@
 
 std::vector<Actor*> actors;
 
-void addActor(Actor* actor) {
-	TG_VECTOR_APPEND(actors, actor);
-	actor->_impl_array_pos = last_size;
+Actor::Actor(Mesh* mesh) : mesh(mesh) {
+	ASSERT_NONE_NULL_DB(mesh, "Mesh is null in actor!", TG_ERR_MESH_NULL_IN_ACTOR)
+	Actor* act = this;
+	TG_VECTOR_APPEND(actors, &act);
+	this->_impl_array_pos = last_size;
 }
 
-void removeActor(Actor* actor) {
-	actors.erase(actors.begin() + (actor->_impl_array_pos - 1));
+Actor::~Actor() {
+	actors.erase(actors.begin() + (this->_impl_array_pos - 1));
 }

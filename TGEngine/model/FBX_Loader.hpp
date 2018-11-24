@@ -10,7 +10,7 @@
 if (!sucess) {\
 	OUT_LV_DEBUG("Failed to load " << name)\
 	OUT_LV_DEBUG("Error: " << importer->GetStatus().GetErrorString())\
-    return nullptr;\
+    return 0;\
 }
 #else
 #define FBX_CHECK(sucess) sucess;
@@ -23,12 +23,12 @@ namespace FBX_Dictionary {
 	extern std::vector<Texture> textures;
 
 	SINCE(0, 0, 3)
-	fbxsdk::FbxMesh* addAll(fbxsdk::FbxNode* mesh);
+	uint32_t addAll(fbxsdk::FbxNode* mesh);
 	
 	SINCE(0, 0, 3)
 	void addToDraw(VertexBuffer* buffer);
 };
 
 SINCE(0, 0, 3)
-fbxsdk::FbxMesh* load(char* name);
+uint32_t load(char* name);
 

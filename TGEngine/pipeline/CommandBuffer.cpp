@@ -118,7 +118,7 @@ void singleTimeCommand() {
 	}
 }
 
-void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
+void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t index) {
 	VkClearValue clear[2] = {
 		{
 		    {
@@ -180,7 +180,9 @@ void fillCommandBuffer(VertexBuffer* vbuffer, uint32_t index) {
 
 	vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
 
-	vkCmdDraw(buffer, vbuffer->count_of_points, 1, 0, 0);
+	vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+
+	vkCmdDrawIndexed(buffer, ibuffer->index_count, 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(buffer);
 

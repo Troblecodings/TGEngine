@@ -1,13 +1,14 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
+#include "../Stdbase.hpp"
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Framebuffer.hpp"
-#include "buffer\VertexBuffer.hpp"
+#include "buffer/VertexBuffer.hpp"
+#include "buffer/IndexBuffer.hpp"
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
-#include "buffer\Texturebuffer.hpp"
+#include "buffer/Texturebuffer.hpp"
 #include "../vlib/VulkanImage.hpp"
 
 extern VkCommandPool command_pool;
@@ -22,7 +23,7 @@ SINCE(0, 0, 2)
 void singleTimeCommand();
 
 SINCE(0, 0, 1)
-void fillCommandBuffer(VertexBuffer* buffer, uint32_t index);
+void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer, uint32_t index);
 
 SINCE(0, 0, 1)
 void destroyCommandBuffer();

@@ -58,6 +58,10 @@ void initTGEngine(App *app) {
 	main_buffer.max_vertex_count = 500000;
 	createVertexBuffer(&main_buffer);
 
+	IndexBuffer index_buffer = {};
+	index_buffer.size = 500000;
+	createIndexBuffer(&index_buffer);
+
 	allocateAllBuffers();
 	createAllDescriptorSets();
 
@@ -92,7 +96,7 @@ void initTGEngine(App *app) {
 		main_buffer.end();
 		last_result = vkDeviceWaitIdle(device);
 		HANDEL(last_result)
-		fillCommandBuffer(&main_buffer, image_index);
+		fillCommandBuffer(&index_buffer, &main_buffer, image_index);
 		submit();
 		present();
 	}
@@ -102,6 +106,7 @@ void initTGEngine(App *app) {
 	destroyCommandBuffer();
 	destroyDescriptors();
 	destroyMemory();
+	destroyIndexBuffer(&index_buffer);
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyPipeline();

@@ -8,19 +8,8 @@
 
 struct Actor
 {
-	Actor(Mesh* mesh) : mesh(mesh) {
-#ifdef DEBUG
-		if (!mesh) {
-			std::cout << "Mesh is null";
-			TGERROR(MESH_NULL_IN_ACTOR)
-		}
-#endif // DEBUG
-		addActor(this);
-	}
-
-	~Actor() {
-		removeActor(this);
-	}
+	Actor(Mesh* mesh);
+	~Actor();
 
 	Actor* parent;
 	size_t _impl_array_pos;
@@ -31,7 +20,3 @@ struct Actor
 };
 
 extern std::vector<Actor*> actors;
-
-void addActor(Actor* actor);
-
-void removeActor(Actor* actor);

@@ -41,7 +41,7 @@ void prePipeline() {
 	}
 
 	if (used_depth_format == VK_FORMAT_UNDEFINED) {
-		TGERROR(DEPTH_FORMAT_NOT_SUPPORTED)
+		TGERROR(TG_ERR_DEPTH_FORMAT_NOT_SUPPORTED)
 	}
 
 	used_present_mode = present_mode[0];
