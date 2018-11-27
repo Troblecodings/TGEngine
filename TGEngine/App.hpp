@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Util/Annotations.hpp"
-#include "Pipeline/Buffer/VertexBuffer.hpp"
+#include "util/Annotations.hpp"
+#include "pipeline/buffer/VertexBuffer.hpp"
 
 SINCE(0, 0, 2)
 struct App {
@@ -13,7 +13,5 @@ struct App {
 	}
 
 	Window main_window;
-
-	virtual void drawloop(VertexBuffer* buffer) = 0;
 
 };

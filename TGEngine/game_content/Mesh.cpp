@@ -13,7 +13,7 @@ void loadFromFBX(Mesh* mesh, char* path) {
 	uint32_t ind = load(path);
 	fbxsdk::FbxMesh* msh = FBX_Dictionary::fbx_meshes[ind];
 	glm::vec4 color = FBX_Dictionary::colors[ind];
-	Texture tex = FBX_Dictionary::textures[ind];
+	Texture* tex = &FBX_Dictionary::textures[ind];
 	size_t siz = msh->GetControlPointsCount();
 	fbxsdk::FbxVector4* arr = msh->GetControlPoints();
 	for (size_t i = 0; i < siz; i++)
@@ -22,6 +22,8 @@ void loadFromFBX(Mesh* mesh, char* path) {
 		vert.position.x = (double)arr->mData[0];
 		vert.position.y = (double)arr->mData[1];
 		vert.position.z = (double)arr->mData[2];
+		vert.color = color;
+		vert.color_only = tex->index;
 
 		TG_VECTOR_APPEND(mesh->vertices, &vert)
 	}

@@ -2,29 +2,13 @@
 
 Texture tex1;
 Texture tex2;
-fbxsdk::FbxMesh* mesh;
+uint32_t mesh;
 Font arial;
 
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
-
-	arial = {
-		"resource\\arial.ttf"
-	};
-	loadfont(&arial);
-
-	mesh = load("resource\\lul.fbx");
-
-	tex1 = {
-		"resource\\ODST_Helmet.png"
-	};
-	tex2 = {
-		"resource\\LogoTM.png"
-	};
-	createTexture(&tex1);
-	createTexture(&tex2);
-	initTGEngine((App*)&editor);
+	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
 }
@@ -52,11 +36,51 @@ void drawGrid(VertexBuffer* buffer) {
 	drawRectangle({ { 0.15, 0, 0 },{ 0, 0, 1, 1 },{ 0, 0 }, COLOR_ONLY }, 0.15, -0.002, buffer);
 }
 
-void Editor::drawloop(VertexBuffer* buffer)
+void init() {
+	arial = {
+	    "resource\\arial.ttf"
+	};
+	loadfont(&arial);
+
+	mesh = load("resource\\lul.fbx");
+
+	tex1 = {
+		"resource\\ODST_Helmet.png"
+	};
+	tex2 = {
+		"resource\\LogoTM.png"
+	};
+	createTexture(&tex1);
+	createTexture(&tex2);
+}
+
+void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
 {
-	drawGrid(buffer);
-	drawRectangleWithTexture({ {0.2, 0.2, 0.2},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
-	drawRectangleWithTexture({ {0, 0, 0},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
+	ibuffer->addIndex(0);
+	ibuffer->addIndex(1);
+	ibuffer->addIndex(2);
+	
+	vbuffer->add({
+		{-1, -1, 0},
+		{1, 0, 0, 1},
+		{0, 0},
+		COLOR_ONLY
+	});
+	vbuffer->add({
+	    {1, 0, 0},
+	    {1, 0, 0, 1},
+	    {0, 0},
+	    COLOR_ONLY
+	});
+	vbuffer->add({
+		{0, 1, 0},
+		{1, 0, 0, 1},
+		{0, 0},
+		COLOR_ONLY
+	});
+	//drawGrid(buffer);
+	//drawRectangleWithTexture({ {0.2, 0.2, 0.2},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
+	//drawRectangleWithTexture({ {0, 0, 0},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
 	//arial.drawString({ {0, 0, -0.3},  { 1, 0, 0, 1} }, "Hallo Welt!", buffer);
 	//FBX_Dictionary::addToDraw(buffer);
 }

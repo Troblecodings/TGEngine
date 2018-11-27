@@ -7,4 +7,4 @@
 #include "pipeline\Draw.hpp"
 
 SINCE(0, 0, 1)
-void initTGEngine(App *app);
+void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void));

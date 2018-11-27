@@ -29,8 +29,8 @@ void IndexBuffer::start() {
 }
 
 void IndexBuffer::addIndex(uint32_t index) {
-	this->index_count++;
 	memcpy((uint32_t*)this->memory + this->index_count, &index, sizeof(uint32_t));
+	this->index_count++;
 }
 
 void IndexBuffer::end() {

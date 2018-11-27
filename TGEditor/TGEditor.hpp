@@ -11,15 +11,17 @@
 
 extern Texture tex1;
 extern Texture tex2;
-extern fbxsdk::FbxMesh* mesh;
+extern uint32_t mesh;
 extern Font arial;
 
 struct Editor : App
 {
 	Editor() : App() {};
-
-	virtual void drawloop(VertexBuffer* verticies);
 };
+
+void init();
+
+void drawloop(IndexBuffer* ibuffer, VertexBuffer* verticies);
 
 void drawGrid(VertexBuffer* buffer);
 

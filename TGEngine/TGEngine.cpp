@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void initTGEngine(App *app) {
+void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), void (*init)(void)) {
 	nio::queryCWD();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
@@ -18,7 +18,7 @@ void initTGEngine(App *app) {
 	createTexture(&no_texture);
 
 	createWindowClass();
-	createWindow(&app->main_window);
+	createWindow(window);
 	createInstance({
 		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
@@ -30,6 +30,7 @@ void initTGEngine(App *app) {
 	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
+	init();
 	createDepthTest();
 	createRenderpass();
 	createShader();
@@ -65,11 +66,11 @@ void initTGEngine(App *app) {
 	allocateAllBuffers();
 	createAllDescriptorSets();
 
-	if (app->main_window.height > app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1, (float)((float)app->main_window.width / (float)app->main_window.height)), sizeof(glm::vec2));
+	if (window->height > window->width) {
+		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1, (float)((float)window->width / (float)window->height)), sizeof(glm::vec2));
 	}
-	else if (app->main_window.height < app->main_window.width) {
-		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2((float)((float)app->main_window.height / (float)app->main_window.width), 1), sizeof(glm::vec2));
+	else if (window->height < window->width) {
+		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2((float)((float)window->height / (float)window->width), 1), sizeof(glm::vec2));
 	}
 	else {
 		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1.0f, 1.0f), sizeof(glm::vec2));
@@ -83,17 +84,19 @@ void initTGEngine(App *app) {
 	addTextures();
 
 	while (true) {
-		app->main_window.pollevents();
-		if (app->main_window.close_request) {
+		window->pollevents();
+		if (window->close_request) {
 			break;
 		}
-		if (app->main_window.minimized) {
+		if (window->minimized) {
 			continue;
 		}
 		startdraw();
 		main_buffer.start();
-		app->drawloop(&main_buffer);
+		index_buffer.start();
+		draw(&index_buffer, &main_buffer);
 		main_buffer.end();
+		index_buffer.end();
 		last_result = vkDeviceWaitIdle(device);
 		HANDEL(last_result)
 		fillCommandBuffer(&index_buffer, &main_buffer, image_index);
