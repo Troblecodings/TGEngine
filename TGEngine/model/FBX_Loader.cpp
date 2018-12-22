@@ -27,11 +27,6 @@ namespace FBX_Dictionary {
 						if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
 							uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
 						}
-#ifdef DEBUG
-						else {
-							OUT_LV_DEBUG(vector.mData[1])
-						}
-#endif
 						FbxDouble* data = vertexArray[index].mData;
 						buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] }, { color[0], color[1], color[2], color[3] }, { uv[0], uv[1] }, tex->index });
 					}
@@ -47,11 +42,6 @@ namespace FBX_Dictionary {
 						if (mesh->GetPolygonVertexUV(j, i, lUVNames[0], vector, unmapped)) {
 							uv = { (float)vector.mData[0], 1 - (float)vector.mData[1] };
 						}
-#ifdef DEBUG
-						else {
-							OUT_LV_DEBUG(vector.mData[1])
-						}
-#endif
 						FbxDouble* data = vertexArray[index].mData;
 						buffer->add({ { (float)data[0], (float)data[1] , (float)data[2] },{ color[0], color[1], color[2], color[3] },{ uv[0], uv[1] }, COLOR_ONLY });
 					}

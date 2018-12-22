@@ -8,10 +8,11 @@
 #include <io\LoadFont.hpp>
 #include <pipeline\CommandBuffer.hpp>
 #include <util\TGVertex.hpp>
+#include "game_content/Mesh.hpp"
 
 extern Texture tex1;
 extern Texture tex2;
-extern uint32_t mesh;
+extern Mesh mesh;
 extern Font arial;
 
 struct Editor : App

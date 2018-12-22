@@ -2,7 +2,7 @@
 
 Texture tex1;
 Texture tex2;
-uint32_t mesh;
+Mesh mesh;
 Font arial;
 
 int main() {
@@ -42,7 +42,7 @@ void init() {
 	};
 	loadfont(&arial);
 
-	mesh = load("resource\\lul.fbx");
+	loadFromFBX(&mesh,"resource\\lul.fbx");
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"
@@ -78,9 +78,10 @@ void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
 		{0, 0},
 		COLOR_ONLY
 	});
+
+	mesh.consume(vbuffer, ibuffer);
 	//drawGrid(buffer);
 	//drawRectangleWithTexture({ {0.2, 0.2, 0.2},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
 	//drawRectangleWithTexture({ {0, 0, 0},  { 1, 1, 1, 1}, {0, 0}, tex2.index }, 0.3, 0.3, buffer);
 	//arial.drawString({ {0, 0, -0.3},  { 1, 0, 0, 1} }, "Hallo Welt!", buffer);
-	//FBX_Dictionary::addToDraw(buffer);
 }

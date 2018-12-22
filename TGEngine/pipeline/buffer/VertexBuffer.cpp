@@ -33,10 +33,8 @@ void VertexBuffer::addTexOnly(TGVertex vert) {
 }
 
 void VertexBuffer::addAll(TGVertex* verts, uint32_t count) {
-	for (size_t i = 0; i < count; i++)
-	{
-		this->add(verts[i]);
-	}
+	memcpy((TGVertex*)this->memory + this->count_of_points, verts, VERTEX_SIZE * count);
+	this->count_of_points += count;
 }
 
 void VertexBuffer::end() {

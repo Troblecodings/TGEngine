@@ -11,6 +11,7 @@ void createTexture(Texture* tex) {
 	uint32_t size = texture_buffers.size();
 	texture_buffers.resize(size + 1);
 	texture_buffers[size] = tex;
+	tex->index = size;
 }
 
 void initAllTextures() {
@@ -118,7 +119,6 @@ void addTextures() {
 			tex->image_view,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
-		tex->index = index;
 		index++;
 	}
 	for (; index < MAX_TEXTURES; index++) {

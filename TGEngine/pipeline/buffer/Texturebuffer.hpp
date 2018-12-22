@@ -3,12 +3,13 @@
 #include "Memory.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
-#include "..\..\..\stb\stb_image.h"
-#include "..\Descriptors.hpp"
+#include "../../../stb/stb_image.h"
+#include "../Descriptors.hpp"
 #include "VertexBuffer.hpp"
-#include "..\Draw.hpp"
+#include "../Draw.hpp"
 #include "../../vlib/VulkanImage.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
+#include "../../util/VectorUtil.hpp"
 
 #define MAX_TEXTURES 4094
 #define COLOR_ONLY MAX_TEXTURES + 1
