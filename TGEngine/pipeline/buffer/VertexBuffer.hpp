@@ -8,7 +8,7 @@
 struct VertexBuffer {
 	INPUT uint32_t max_vertex_count;
 	OUTPUT uint32_t vertex_buffer_index;
-	OUTPUT uint32_t count_of_points;
+	OUTPUT size_t count_of_points;
 	OUTPUT void* memory;
 
 	SINCE(0, 0, 2)
@@ -24,7 +24,7 @@ struct VertexBuffer {
 	void addTexOnly(TGVertex vert);
 
 	SINCE(0, 0, 2)
-	void addAll(TGVertex* verts, uint32_t count);
+	void addAll(TGVertex* verts, size_t count);
 
 	SINCE(0, 0, 2)
 	void end();

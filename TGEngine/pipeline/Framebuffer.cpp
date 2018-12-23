@@ -23,8 +23,8 @@ void createFramebuffer() {
 	     render_pass,
 	     2,
 	     VK_NULL_HANDLE,
-	     win->width,
-	     win->height,
+		 (uint32_t)win->width,
+		 (uint32_t)win->height,
 	     1
 	};
 

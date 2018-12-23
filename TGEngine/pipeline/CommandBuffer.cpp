@@ -72,8 +72,8 @@ void singleTimeCommand() {
 				0
 			},
 			{
-				tex->width,
-				tex->height,
+				(uint32_t)tex->width,
+				(uint32_t)tex->height,
 				1
 			}
 		};
@@ -166,8 +166,8 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t ind
 		{
 			0,
 			0,
-			window_list[0]->width,
-			window_list[0]->height
+			(uint32_t)window_list[0]->width,
+			(uint32_t)window_list[0]->height
 		},
 		2,
 		clear
@@ -191,6 +191,6 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t ind
 }
 
 void destroyCommandBuffer() {
-	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
+	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
 }

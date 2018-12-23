@@ -9,7 +9,7 @@
 
 #ifdef _WIN32
 #include <direct.h>
-#define GetCurrentDir getcwd
+#define GetCurrentDir _getcwd
 #else
 #include <unistd.h>
 #define GetCurrentDir getcwd
@@ -36,17 +36,19 @@ namespace nio {
 	 *  Parameter:
 	 *      char* fila_path -> path to your file 
 	 *  Returns:
-	 *      char* -> binary of your file declareted be #file_path
+	 *      char* -> binary of your file declared be #file_path
 	 */
 	SINCE(0, 0, 1)
-	DEPRECATED("readAll")
+	DEPRECATED
+	INSTEAD_USE("readAll")
 	vector<char> getBinarys(char* file_path);
 
 	/*
 	 * If size_of_file is not nullptr it returns the filesize 
 	 */
 	SINCE(0, 0, 2)
-	DEPRECATED("readFileSize")
+	DEPRECATED
+	INSTEAD_USE("readFileSize")
 	ifstream getBinaryStream(INPUT char* filename, OUTPUT size_t* size_of_file);
 
 	/*

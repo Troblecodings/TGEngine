@@ -1,22 +1,11 @@
 #include "LoadFont.hpp"
 
-
-
 void loadfont(Font* font) {
-	FILE* file = fopen(font->path, "rb");
-#ifdef DEBUG
-	if (!file) {
-		OUT_LV_DEBUG("File " << font->path << " can not be opened, this should not happen!")
-			return;
-	}
-#endif // DEBUG
-
-	fseek(file, 0, SEEK_END);
-	long size_of_file = ftell(file);
-	fseek(file, 0, SEEK_SET);
+	long size_of_file;
+	nio::File file = nio::readFileSize(font->path, "rb", &size_of_file);
 	unsigned char * temp_buffer = new unsigned char[size_of_file];
-	font->texture.width = font->height * 256;
-	font->texture.height = font->height;
+	font->texture.width = (int)font->height * 256;
+	font->texture.height = (int)font->height;
 	font->texture.image_data = new stbi_uc[font->texture.width * font->texture.height * 4];
 
 	stbi_uc* tempbitmap = new stbi_uc[font->texture.width * font->texture.height];

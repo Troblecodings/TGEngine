@@ -8,10 +8,10 @@ uint32_t tex_array_index = 0;
 using namespace nio;
 
 void createTexture(Texture* tex) {
-	uint32_t size = texture_buffers.size();
+	size_t size = texture_buffers.size();
 	texture_buffers.resize(size + 1);
 	texture_buffers[size] = tex;
-	tex->index = size;
+	tex->index = (uint32_t)size;
 }
 
 void initAllTextures() {

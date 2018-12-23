@@ -9,7 +9,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
 		nullptr,
 		properties->getStringOrDefault("app_name", "TGEngine"),
-		properties->getInt("version"),
+		(uint32_t)properties->getInt("version"),
 	    "TGEngine",
 	    TGE_VERSION,
 		VK_API_VERSION_1_1
@@ -27,7 +27,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		for each(VkLayerProperties layer in usable_layers) {
 			for each(const char* name in layers_to_enable) {
 				if (strcmp(layer.layerName, name) == 0) {
-					uint32_t size = enable_layer.size();
+					size_t size = enable_layer.size();
 					enable_layer.resize(size + 1);
 					enable_layer[size] = name;
 					OUT_LV_DEBUG(name)
@@ -40,7 +40,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	}
 
     #ifdef _WIN32
-		count = extensions_to_enable.size();
+		count = (uint32_t)extensions_to_enable.size();
 	    extensions_to_enable.resize(count + 2);
 		extensions_to_enable[count] = "VK_KHR_surface";
 		extensions_to_enable[count + 1] = "VK_KHR_win32_surface";
@@ -57,7 +57,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		for each(VkExtensionProperties extension in usable_extensions) {			
 			for each(const char* name in extensions_to_enable) {
 				if (strcmp(extension.extensionName, name) == 0) {
-					uint32_t size = enable_extensions.size();
+					size_t size = enable_extensions.size();
 					enable_extensions.resize(size + 1);
 					enable_extensions[size] = name;
 					OUT_LV_DEBUG(name)
@@ -75,9 +75,9 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	    nullptr,
 	    0,
 	    &app_info,
-	    enable_layer.size(),
+		(uint32_t)enable_layer.size(),
 	    enable_layer.data(),
-	    enable_extensions.size(),
+		(uint32_t)enable_extensions.size(),
 	    enable_extensions.data()
 	};
 	last_result = vkCreateInstance(&instance_create_info, nullptr, &instance);

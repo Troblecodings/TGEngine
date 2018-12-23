@@ -9,7 +9,7 @@ uint32_t uniform_count;
 uint32_t image_sampler;
 
 void addDescriptor(Descriptor* descriptor) {
-	descriptor->binding = descriptor_bindings.size();
+	descriptor->binding = (uint32_t)descriptor_bindings.size();
 	descriptor_bindings.resize(descriptor->binding + 1);
 	descriptor_bindings[descriptor->binding] = {
 		descriptor->binding,
@@ -32,7 +32,7 @@ void createPipelineLayout() {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 		nullptr,
 		0,
-		descriptor_bindings.size(),
+		(uint32_t)descriptor_bindings.size(),
 		descriptor_bindings.data()
 	};
 	last_result = vkCreateDescriptorSetLayout(device, &descriptor_set_layout_create_info, nullptr, &desc_layout);
@@ -42,7 +42,7 @@ void createPipelineLayout() {
 void createAllDescriptorSets() {
 	std::vector<VkDescriptorPoolSize> sizes;
 
-	uint32_t c_size;
+	size_t c_size;
 	if (uniform_count > 0) {
 		VkDescriptorPoolSize descriptor_pool_size = {
 			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -68,7 +68,7 @@ void createAllDescriptorSets() {
 		nullptr,
 		VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 		1,
-		sizes.size(),
+		(uint32_t)sizes.size(),
 		sizes.data()
 	};
 	last_result = vkCreateDescriptorPool(device, &descriptor_pool_create_info, nullptr, &descriptor_pool);

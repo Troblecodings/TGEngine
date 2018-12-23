@@ -34,7 +34,7 @@ struct Texture {
 	uint32_t index;
 	void* memory;
 
-	DEPRECATED()
+	DEPRECATED
 	VkExtent2D texture_extend;
 	uint32_t depth;
 	uint32_t color_type;

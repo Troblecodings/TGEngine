@@ -20,8 +20,8 @@ void createSwapchain() {
 	    used_format.format,
 		used_format.colorSpace,
 		{
-		    win->width,
-		    win->height
+			(uint32_t)win->width,
+			(uint32_t)win->height
 		},
 	    1,
 		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -44,7 +44,7 @@ void recreateSwapchain() {
 	HANDEL(last_result)
 
 	destroyFrameBuffer();
-	vkFreeCommandBuffers(device, command_pool, command_buffers.size(), command_buffers.data());
+	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	destroyPipeline();
 	destroyRenderPass();
 	destroyDepthTest();

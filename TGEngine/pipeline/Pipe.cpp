@@ -66,7 +66,7 @@ void createPipeline() {
 		0,
 		1,
 		&vertex_buffer_binding,
-		description_attributes.size(),
+		(uint32_t)description_attributes.size(),
 		description_attributes.data()
 	};
 
@@ -162,7 +162,7 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 	    nullptr,
 	    0,
-	    shaders.size(),
+		(uint32_t)shaders.size(),
 	    shaders.data(),
 		&pVertexInputState,
 	    &pInputAssemblyState,

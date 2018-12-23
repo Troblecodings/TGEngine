@@ -12,7 +12,7 @@ uint32_t addBuffer(VkBuffer buffer) {
 
 	_impl_size += last_requirements.size;
 
-	uint32_t csize = buffer_offsets.size();
+	size_t csize = buffer_offsets.size();
 	buffer_offsets.resize(csize + 1);
 	buffer_offsets[csize] = buffer_offsets[csize - 1] + last_requirements.size;
 
@@ -22,7 +22,7 @@ uint32_t addBuffer(VkBuffer buffer) {
 
 	buffers.resize(csize + 1);
 	buffers[csize] = buffer;
-	return csize;
+	return (uint32_t)csize;
 }
  
 void allocateAllBuffers() {

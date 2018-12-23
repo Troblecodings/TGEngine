@@ -4,6 +4,7 @@
 #define USAGE_DOCS USAGE("DOCUMANTATION")
 #define USAGE_DEBUG USAGE("DEBUG")
 #define USAGE_CODE USAGE("CODE")
+#define USAGE_DEPRECATION USAGE("DEPRECATION")
 
 #define TARGET(enum_target) // Defines the target of an annotation within this header
 #define TARGET_METHODE TARGET("METHODE")
@@ -11,9 +12,16 @@
 #define TARGET_PARAMETER TARGET("PARAMETER")
 
 USAGE_DOCS
+USAGE_DEPRECATION
 TARGET_CODE
 TARGET_METHODE
-#define DEPRECATED(use) // Deprecated code or method follows
+#define DEPRECATED // Deprecated code or method follows
+
+USAGE_DOCS
+USAGE_DEPRECATION
+TARGET_CODE
+TARGET_METHODE
+#define INSTEAD_USE(use) // Used
 
 USAGE_DOCS
 TARGET_CODE

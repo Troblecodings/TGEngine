@@ -3,13 +3,13 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "..\Util\Debug.hpp"
-#include "FontTables.hpp"
-#include "../Pipeline/Buffer/Texturebuffer.hpp"
+#include "../Util/Debug.hpp"
+#include "../pipeline/Buffer/Texturebuffer.hpp"
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
-#include "..\stb\stb_truetype.h"
-#include "../Drawlib/Rectangle.hpp"
+#include "../stb/stb_truetype.h"
+#include "../drawlib/Rectangle.hpp"
+#include "../io/Files.hpp"
 
 struct Font {
 	INPUT

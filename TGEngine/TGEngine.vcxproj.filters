@@ -159,19 +159,10 @@
     <ClInclude Include="model\FBX_Loader.hpp">
       <Filter>Headerdateien\model</Filter>
     </ClInclude>
-    <ClInclude Include="io\Deflate.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
     <ClInclude Include="io\Files.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="io\FontTables.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
     <ClInclude Include="io\ImagePNG.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="io\LoadFont.hpp">
@@ -217,9 +208,6 @@
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawlib\BaseDrawLib.cpp">
-      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Drawlib\Circle.cpp">
       <Filter>Quelldateien\drawlib</Filter>
@@ -290,19 +278,10 @@
     <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
-    <ClCompile Include="io\Deflate.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
     <ClCompile Include="io\Files.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
-    <ClCompile Include="io\FontTables.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
     <ClCompile Include="io\ImagePNG.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="io\LoadFont.cpp">

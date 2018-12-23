@@ -3,7 +3,6 @@
 #include "..\Stdbase.hpp"
 #include "..\io\Files.hpp"
 #include "..\pipeline\buffer\Texturebuffer.hpp"
-#include "Deflate.hpp"
 
 #define BUFFER_COMPARE(buffer, name) memcmp(buffer.data() + 4, name, 4) == 0
 
@@ -18,5 +17,5 @@ buffer.resize(chunksize);\
 fread(buffer.data(), sizeof(uint8_t), chunksize, fileptr);
 
 SINCE(0, 0, 2)
-DEPRECATED()
+DEPRECATED
 void loadPNGData(Texture* texture);

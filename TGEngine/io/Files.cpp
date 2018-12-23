@@ -28,10 +28,11 @@ namespace nio {
 	}
 
 	File open(char* name, char* mode) {
-		File file = fopen(name, mode);
+		File file;
+		errno_t err = fopen_s(&file, name, mode);
 #ifdef DEBUG
-		if (!file) {
-			cerr << "Error can't open file [" << name << "]" << endl;
+		if (err) {
+			cerr << "Error can't open file [" << name << "] with error " << err << endl;
 			return nullptr;
 		}
 #endif

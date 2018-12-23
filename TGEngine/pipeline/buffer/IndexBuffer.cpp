@@ -8,7 +8,7 @@ void createIndexBuffer(IndexBuffer* buffer) {
 
 	vkGetBufferMemoryRequirements(device, buffer->index_buffer, &last_requirements);
 
-	buffer->max_size = vlib_buffer_memory_allocate_info.allocationSize = last_requirements.size;
+	buffer->max_size = (uint32_t)(vlib_buffer_memory_allocate_info.allocationSize = last_requirements.size);
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
 	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &buffer->device_memory);
 	HANDEL(last_result)

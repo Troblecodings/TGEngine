@@ -10,8 +10,8 @@ void createCamera(Camera* camera) {
 	addListener(camera);
 }
 
-void Camera::applyRotation(float x, float y, float z, float angle) {
-	this->rotation = glm::rotate(this->rotation, angle, glm::vec3(x, y, z));
+void Camera::applyRotation(double x, double y, double z, double angle) {
+	this->rotation = glm::rotate(this->rotation, (float)angle, glm::vec3(x, y, z));
 }
 
 void Camera::updateCamera() {

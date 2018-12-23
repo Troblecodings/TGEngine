@@ -29,11 +29,8 @@
     <ClInclude Include="game_content\Actor.hpp" />
     <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="game_content\Mesh.hpp" />
-    <ClInclude Include="io\Deflate.hpp" />
     <ClInclude Include="io\Files.hpp" />
-    <ClInclude Include="io\FontTables.hpp" />
     <ClInclude Include="io\ImagePNG.hpp" />
-    <ClInclude Include="io\Keyboard.hpp" />
     <ClInclude Include="io\LoadFont.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
@@ -68,18 +65,14 @@
     <ClInclude Include="vlib\VulkanImage.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="drawlib\BaseDrawLib.cpp" />
     <ClCompile Include="drawlib\Circle.cpp" />
     <ClCompile Include="drawlib\Ellipse.cpp" />
     <ClCompile Include="drawlib\Rectangle.cpp" />
     <ClCompile Include="game_content\Actor.cpp" />
     <ClCompile Include="game_content\Camera.cpp" />
     <ClCompile Include="game_content\Mesh.cpp" />
-    <ClCompile Include="io\Deflate.cpp" />
     <ClCompile Include="io\Files.cpp" />
-    <ClCompile Include="io\FontTables.cpp" />
     <ClCompile Include="io\ImagePNG.cpp" />
-    <ClCompile Include="io\Keyboard.cpp" />
     <ClCompile Include="io\LoadFont.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />

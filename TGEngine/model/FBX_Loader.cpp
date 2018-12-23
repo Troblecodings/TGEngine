@@ -18,8 +18,8 @@ namespace FBX_Dictionary {
 
 			if (tex) {
 
-				for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {
-					for (size_t i = 0; i < mesh->GetPolygonSize(j); i++) {
+				for (int j = 0; j < mesh->GetPolygonCount(); j++) {
+					for (int i = 0; i < mesh->GetPolygonSize(j); i++) {
 						int index = mesh->GetPolygonVertex(j, i);
 						fbxsdk::FbxVector2 vector;
 						glm::vec2 uv = {};
@@ -33,8 +33,8 @@ namespace FBX_Dictionary {
 				}
 			}
 			else {
-				for (size_t j = 0; j < mesh->GetPolygonCount(); j++) {
-					for (size_t i = 0; i < mesh->GetPolygonSize(j); i++) {
+				for (int j = 0; j < mesh->GetPolygonCount(); j++) {
+					for (int i = 0; i < mesh->GetPolygonSize(j); i++) {
 						int index = mesh->GetPolygonVertex(j, i);
 						fbxsdk::FbxVector2 vector;
 						glm::vec2 uv = {};
@@ -53,7 +53,7 @@ namespace FBX_Dictionary {
 	uint32_t addAll(fbxsdk::FbxNode* node)
 	{
 		fbxsdk::FbxMesh* mesh = node->GetMesh();
-		uint32_t pos = FBX_Dictionary::names.size();
+		size_t pos = FBX_Dictionary::names.size();
 		if (mesh) {
 			fbxsdk::FbxSurfaceMaterial* material = node->GetMaterial(0);
 
@@ -86,9 +86,9 @@ namespace FBX_Dictionary {
 			FBX_Dictionary::fbx_meshes[pos] = mesh;
 		}
 
-		for (size_t i = 0; i < node->GetChildCount(); i++)
+		for (int i = 0; i < node->GetChildCount(); i++)
 			addAll(node->GetChild(i));
-		return pos;
+		return (uint32_t)pos;
 	}
 };
 

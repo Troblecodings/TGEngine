@@ -16,7 +16,7 @@ void inputupdate(glm::vec2 pos) {
 }
 
 void addListener(Mouse* mouse) {
-	uint32_t size = mouse_handler.size();
+	size_t size = mouse_handler.size();
 	mouse_handler.resize(size + 1);
 	mouse_handler[size] = mouse;
 }

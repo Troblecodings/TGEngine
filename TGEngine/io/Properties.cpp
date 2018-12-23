@@ -34,7 +34,7 @@ namespace prop {
 					switch (tagtype) {
 					case BOOLEAN: prop->addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
 					    break;
-					case INT: prop->addFloat(namebuf, stoi(valuebuf));
+					case INT: prop->addInt(namebuf, stoi(valuebuf));
 						break;
 					case FLOAT: prop->addFloat(namebuf, stof(valuebuf));
 						break;
@@ -95,12 +95,12 @@ namespace prop {
 				}
 				else if (stage == 5) {
 					namebuf = new char[buffer.size() + 1];
-					strcpy(namebuf, buffer.c_str());
+					strcpy_s(namebuf, buffer.size() + 1, buffer.c_str());
 					stage = 2;
 				}
 				else if (stage == 6) {
 					valuebuf = new char[buffer.size() + 1];
-					strcpy(valuebuf, buffer.c_str());
+					strcpy_s(valuebuf, buffer.size() + 1, buffer.c_str());
 					stage = 2;
 				}
 				buffer.clear();

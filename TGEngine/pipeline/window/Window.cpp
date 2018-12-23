@@ -109,7 +109,9 @@ void createWindow(Window* window) {
 		//Char unicode conversation
 		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
 		wchar_t* wc = new wchar_t[strlen(ch) + 1];
-		wc[mbstowcs(wc, ch, _TRUNCATE)] = '\0';
+		size_t pConv;
+		mbstowcs_s(&pConv, wc, strlen(ch), ch, _TRUNCATE);
+		wc[pConv] = '\0';
 
 		DWORD style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
 		if (properties->getBooleanOrDefault("minimizeable", true)) {

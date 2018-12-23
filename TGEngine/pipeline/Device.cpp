@@ -63,7 +63,7 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		priorities.data(),
 	};
 
-	uint32_t size = 0;
+	size_t size = 0;
 
 	//Validation for the device layers
 	std::vector<const char*> enable_layer;
@@ -130,9 +130,9 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	    0,
 	    1,
 	    &device_queue_create_info,
-		enable_layer.size(),
+		(uint32_t)enable_layer.size(),
 		enable_layer.data(),
-		enable_extensions.size(),
+		(uint32_t)enable_extensions.size(),
 		enable_extensions.data(),
 	    &device_features_to_enable
 	};

@@ -5,13 +5,13 @@
 #include "..\IO\Mouse.hpp"
 
 struct Camera : Mouse{
-	INPUT float speed;
+	INPUT double speed;
 
 	OUTPUT UniformBuffer uniform;
 	OUTPUT glm::mat4 rotation;
 
 	SINCE(0, 0, 3)
-	void applyRotation(float x, float y, float z, float angle);
+	void applyRotation(double x, double y, double z, double angle);
 
 	SINCE(0, 0, 2)
 	void updateCamera();
