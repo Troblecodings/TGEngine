@@ -42,9 +42,7 @@ for name in os.listdir(c_path + "\\resources"):
                 shader_stages.append("VK_SHADER_STAGE_VERTEX_BIT")
             else:
                 shader_stages.append("VK_SHADER_STAGE_FRAGMENT_BIT")
-            p = subprocess.Popen(["D:\\Vulkan\\Bin32\\glslangValidator.exe", "-V", "-o", pth.replace(".glsl", "") +
-                                  ".spv", "-H", "-S",  shaderstage, pth],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([os.getenv("VULKAN_SDK") + "\\Bin\\glslangValidator.exe", "-V", "-o", pth.replace(".glsl", "") + ".spv", "-H", "-S",  shaderstage, pth],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             for line in iter(p.stdout.readline, b''):
                 print(">>> " + str(line.rstrip()).replace("b'", ""))
             b = True

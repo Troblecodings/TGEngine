@@ -38,16 +38,9 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createShaderInput(1, offsetof(TGVertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
-
-	uniform_scale_buffer = {
-		sizeof(glm::vec2),
-		{ VK_SHADER_STAGE_VERTEX_BIT }
-	};
-	createUniformBuffer(&uniform_scale_buffer);
 	initAllTextures();
 
 	Camera cam;
-	cam.speed = 0.001f;
 	createCamera(&cam);
 
 	createPipelineLayout();
@@ -65,17 +58,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 
 	allocateAllBuffers();
 	createAllDescriptorSets();
-
-	if (window->height > window->width) {
-		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1, (float)((float)window->width / (float)window->height)), sizeof(glm::vec2));
-	}
-	else if (window->height < window->width) {
-		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2((float)((float)window->height / (float)window->width), 1), sizeof(glm::vec2));
-	}
-	else {
-		fillUniformBuffer(&uniform_scale_buffer, &glm::vec2(1.0f, 1.0f), sizeof(glm::vec2));
-	}
-	cam.updateCamera();
+	cam.updateCamera(window->width, window->height);
 
 	createCommandBuffer();
 	singleTimeCommand();

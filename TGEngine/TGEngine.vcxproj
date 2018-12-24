@@ -224,6 +224,7 @@
       <AdditionalIncludeDirectories>$(TGE_INCLUDE)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>$(TGE_LIB_NAMES)</AdditionalDependencies>

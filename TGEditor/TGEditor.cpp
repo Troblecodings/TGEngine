@@ -14,13 +14,13 @@ int main() {
 }
 
 void drawLineH(TGVertex start, float length, VertexBuffer* buffer) {
-	drawRectangle(start, length, 0.002, buffer);
-	drawRectangle(start, -length, 0.002, buffer);
+	drawRectangle(start, length, 0.002f, buffer);
+	drawRectangle(start, -length, 0.002f, buffer);
 }
 
 void drawLineV(TGVertex start, float length, VertexBuffer* buffer) {
-	drawRectangle(start, 0.002, length, buffer);
-	drawRectangle(start, 0.002, -length, buffer);
+	drawRectangle(start, 0.002f, length, buffer);
+	drawRectangle(start, 0.002f, -length, buffer);
 }
 
 void drawGrid(VertexBuffer* buffer) {
@@ -28,12 +28,12 @@ void drawGrid(VertexBuffer* buffer) {
 		drawLineH({ { 0, -2 + 0.1 * i, 0 }, { 0, 0, 0, 1}, {0, 0}, COLOR_ONLY }, 2, buffer);
 		drawLineV({ { -2 + 0.1 * i, 0, 0 },{ 0, 0, 0, 1 },{ 0, 0 }, COLOR_ONLY }, 2, buffer);
 	}
-	drawRectangleZ({ { 0, 0, 0.15 },{ 1, 0, 0, 1 }, { 0, 0 }, COLOR_ONLY }, 0.002, 0.15, buffer);
-	drawRectangleZ({ { 0, 0, 0.15 },{ 1, 0, 0, 1 }, { 0, 0 }, COLOR_ONLY }, -0.002, 0.15, buffer);
-	drawRectangle({ { 0, 0.15, 0},{ 0, 1, 0, 1 }, { 0, 0 }, COLOR_ONLY }, 0.002, 0.15, buffer);
-	drawRectangle({ { 0, 0.15, 0},{ 0, 1, 0, 1 }, { 0, 0 }, COLOR_ONLY }, -0.002, 0.15, buffer);
-	drawRectangle({ { 0.15, 0, 0 },{ 0, 0, 1, 1 },{ 0, 0 }, COLOR_ONLY }, 0.15, 0.002, buffer);
-	drawRectangle({ { 0.15, 0, 0 },{ 0, 0, 1, 1 },{ 0, 0 }, COLOR_ONLY }, 0.15, -0.002, buffer);
+	drawRectangleZ({ { 0, 0, 0.15 },{ 1, 0, 0, 1 }, { 0, 0 }, COLOR_ONLY }, 0.002f, 0.15f, buffer);
+	drawRectangleZ({ { 0, 0, 0.15 },{ 1, 0, 0, 1 }, { 0, 0 }, COLOR_ONLY }, -0.002f, 0.15f, buffer);
+	drawRectangle({ { 0, 0.15, 0},{ 0, 1, 0, 1 }, { 0, 0 }, COLOR_ONLY }, 0.002f, 0.15f, buffer);
+	drawRectangle({ { 0, 0.15, 0},{ 0, 1, 0, 1 }, { 0, 0 }, COLOR_ONLY }, -0.002f, 0.15f, buffer);
+	drawRectangle({ { 0.15, 0, 0 },{ 0, 0, 1, 1 },{ 0, 0 }, COLOR_ONLY }, 0.15f, 0.002f, buffer);
+	drawRectangle({ { 0.15, 0, 0 },{ 0, 0, 1, 1 },{ 0, 0 }, COLOR_ONLY }, 0.15f, -0.002f, buffer);
 }
 
 void init() {

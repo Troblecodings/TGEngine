@@ -1,12 +1,8 @@
 #version 460
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(binding = 0) uniform format_block {
-   vec2 multiplier;
-} image_format_block;
-
-layout(binding = 2) uniform mat_block{
-    mat4 rotation_matrix;
+layout(binding = 1) uniform MATRIX_BLOCK{
+    mat4 matrix;
 } matrix_block;
 
 layout(location = 0) in vec3 posIn;
@@ -23,7 +19,7 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = matrix_block.rotation_matrix * vec4(posIn, 1);
+    gl_Position = matrix_block.matrix * vec4(posIn, 1);
     colorOut = colorIn;
     uvOut = uv;
     only_color = color_only;

@@ -13,7 +13,6 @@ Window::Window(wchar_t* name) {
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	//Avoided cash miss predictions
 	size_t i;
 	for (i = 0; i < __impl_window_list.size(); i++)
 	{
@@ -21,6 +20,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	}
+	//This is all locking god awefull
 	Window* a_window = window_list[i];
 	if (a_window == nullptr) {
 		if (msg == WM_CREATE || msg == WM_NCCREATE || msg == WM_ENABLE || msg == WM_NCPAINT || msg == WM_ERASEBKGND || msg == WM_SHOWWINDOW || msg == WM_IME_SETCONTEXT || msg == WM_IME_NOTIFY || msg == WM_GETMINMAXINFO || msg == WM_GETICON || msg == WM_NCCALCSIZE || msg == WM_ACTIVATEAPP || msg == WM_NCACTIVATE || msg == WM_ACTIVATE) {
@@ -83,6 +83,7 @@ void createWindow(Window* window) {
 	bool fullscreen = properties->getBoolean("fullscreen");
 	window->decorated = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
 	window->cursor = properties->getBooleanOrDefault("cursor", true);
+
 	if (fullscreen) {
 		GET_SIZE(d_width, d_height);
 		window->width = d_width;
@@ -108,10 +109,10 @@ void createWindow(Window* window) {
 	if (window->decorated) {
 		//Char unicode conversation
 		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
-		wchar_t* wc = new wchar_t[strlen(ch) + 1];
-		size_t pConv;
-		mbstowcs_s(&pConv, wc, strlen(ch), ch, _TRUNCATE);
-		wc[pConv] = '\0';
+		size_t conv = strlen(ch) + 1;
+		wchar_t* wc = new wchar_t[conv];
+		mbstowcs_s(&conv, wc, conv, ch, _TRUNCATE);
+		wc[conv] = '\0';
 
 		DWORD style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
 		if (properties->getBooleanOrDefault("minimizeable", true)) {

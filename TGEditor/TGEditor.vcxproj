@@ -123,8 +123,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>
-      </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -141,21 +139,21 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>false</SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(TGE_INCLUDE);$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <CompileAs>Default</CompileAs>
+      <CompileAs>CompileAsCpp</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeaderFile>stdbase.hpp</PrecompiledHeaderFile>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>
-      </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -185,8 +183,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>
-      </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -216,8 +212,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>
-      </ShowProgress>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>

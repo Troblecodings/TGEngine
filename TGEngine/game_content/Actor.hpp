@@ -13,9 +13,7 @@ struct Actor
 
 	Actor* parent;
 	size_t _impl_array_pos;
-	glm::mat4 translate;
-	glm::mat4 rotate;
-	glm::mat4 scale;
+	glm::mat4 model_matrix;
 	Mesh* mesh;
 };
 

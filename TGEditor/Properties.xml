@@ -11,7 +11,7 @@
     <boolean name="resizeable" value="true" />
     <boolean name="maximizable" value="true" />
     <boolean name="minimizeable" value="true" />
-    <int name="height" value="800"/>
+    <int name="height" value="600"/>
     <int name="width" value="800"/>
     <boolean name="center" value="true"/>
     <!--Will be ignored if center is true-->

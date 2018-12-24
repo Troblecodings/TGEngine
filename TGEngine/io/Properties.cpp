@@ -169,7 +169,7 @@ namespace prop {
 	}
 
 	void Properties::addString(char* name, char* value) {
-		size_t size = this->bool_names.size();
+		size_t size = this->string_names.size();
 		this->string_names.resize(size + 1);
 		this->string_values.resize(size + 1);
 		this->string_names[size] = name;
@@ -185,7 +185,7 @@ namespace prop {
 	}
 
 	void Properties::addFloat(char* name, float value) {
-		size_t size = this->bool_names.size();
+		size_t size = this->float_names.size();
 		this->float_names.resize(size + 1);
 		this->float_values.resize(size + 1);
 		this->float_names[size] = name;
@@ -193,7 +193,7 @@ namespace prop {
 	}
 	
 	void Properties::addInt(char* name, int value) {
-		size_t size = this->bool_names.size();
+		size_t size = this->int_names.size();
 		this->int_names.resize(size + 1);
 		this->int_values.resize(size + 1);
 		this->int_names[size] = name;

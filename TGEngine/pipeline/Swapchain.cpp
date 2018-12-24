@@ -61,16 +61,6 @@ void recreateSwapchain() {
 	createSwapchain();
 	createFramebuffer();
 	createCommandBuffer();
-
-	if (window_list[0]->height > window_list[0]->width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, (float)((float)window_list[0]->width / (float)window_list[0]->height)), sizeof(glm::vec2));
-	}
-	else if (window_list[0]->height < window_list[0]->width) {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2((float)((float)window_list[0]->height / (float)window_list[0]->width), 1), sizeof(glm::vec2));
-	}
-	else {
-		fillUniformBuffer(&uniform_scale_buffer, (uint8_t*)&glm::vec2(1, 1), sizeof(glm::vec2));
-	}
 }
 
 void destroySwapchain() {

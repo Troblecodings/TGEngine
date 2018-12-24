@@ -1,7 +1,6 @@
 #include "Draw.hpp"
 
 uint32_t image_index;
-UniformBuffer uniform_scale_buffer;
 VkFence fence;
 std::vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT };
 
