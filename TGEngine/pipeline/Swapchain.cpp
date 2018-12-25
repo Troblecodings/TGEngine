@@ -61,6 +61,8 @@ void recreateSwapchain() {
 	createSwapchain();
 	createFramebuffer();
 	createCommandBuffer();
+
+	updateCamera(window_list[0]->width, window_list[0]->height);
 }
 
 void destroySwapchain() {

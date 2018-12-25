@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
+#include "../Stdbase.hpp"
 #include "window\Window.hpp"
 #include "Device.hpp"
 #include "PrePipeline.hpp"
@@ -9,6 +9,7 @@
 #include "Pipe.hpp"
 #include "RenderPass.hpp"
 #include "DepthStencil.hpp"
+#include "../game_content/Camera.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkSurfaceCapabilitiesKHR surface_capabilities;

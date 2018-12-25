@@ -39,9 +39,10 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
 	initAllTextures();
+	initCameras();
 
 	Camera cam;
-	createCamera(&cam);
+	createFirstPersonCamera(&cam);
 
 	createPipelineLayout();
 	createPipeline();
@@ -58,7 +59,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 
 	allocateAllBuffers();
 	createAllDescriptorSets();
-	cam.updateCamera(window->width, window->height);
+	updateCamera(window->width, window->height);
 
 	createCommandBuffer();
 	singleTimeCommand();

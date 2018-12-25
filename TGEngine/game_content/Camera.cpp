@@ -1,31 +1,59 @@
 #include "Camera.hpp"
 
-void createCamera(Camera* camera) {
-	camera->uniform = {
-		sizeof(glm::mat4),
-	   { VK_SHADER_STAGE_VERTEX_BIT }
+std::vector<Camera*> cameras_on_scene;
+UniformBuffer camera_uniform;
+size_t active_camera = 0;
+
+void initCameras() {
+	camera_uniform = {
+	sizeof(glm::mat4),
+	{ VK_SHADER_STAGE_VERTEX_BIT }
 	};
-	camera->world_transform = glm::mat4(1.0f);
-	createUniformBuffer(&camera->uniform);
-	addListener(camera);
+	createUniformBuffer(&camera_uniform);
+	addListener(__impl_input_handle);
 }
 
-void Camera::applyWorldRotation(double x, double y, double z, double angle) {
+void createCamera(Camera* camera) {
+	TG_VECTOR_APPEND_NORMAL(cameras_on_scene, camera)
+	camera->camera_index = last_size;
+}
+
+void Camera::applyWorldRotation(double x, double y, double z, double angle) 
+{
 	this->world_transform = glm::rotate(this->world_transform, (float)angle, glm::vec3(x, y, z));
 }
 
-void Camera::updateCamera(float width, float height) {
-	glm::mat4 camera = glm::lookAt(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 projection = glm::perspective(glm::radians(60.0f), width / height, 0.01f, 1000.0f);
-	projection[1][1] *= -1;
-	this->matrix = projection * camera * this->world_transform;
-	fillUniformBuffer(&this->uniform, (uint8_t*)&this->matrix, sizeof(glm::mat4));
+void Camera::applyWorldTranslation(double x, double y, double z)
+{
+	this->world_transform = glm::translate(this->world_transform, glm::vec3(x, y, z));
 }
 
-void Camera::mouse_move(glm::vec2 pos, glm::vec2 delta)
+void Camera::applyWorldScale(double x, double y, double z)
 {
-	if (!FIRST_MOUSE_BUTTON)return;
-	this->applyWorldRotation(0, 1, 0, delta.x * -this->speed * PIx2);
-	this->applyWorldRotation(1, 0, 0, delta.y * -this->speed * PIx2);
-	this->updateCamera(window_list[0]->width, window_list[0]->height);
+	this->world_transform = glm::scale(this->world_transform, glm::vec3(x, y, z));
+}
+
+void Camera::applyCameraRotation(double x, double y, double z, double angle)
+{
+	this->direction = glm::rotate(this->direction, (float)angle, glm::vec3(x, y, z));
+}
+
+void Camera::applyCameraTranslation(double x, double y, double z)
+{
+	this->position += glm::vec3(x, y, z);
+
+}
+
+void updateCamera(int width, int height) {
+	Camera* ptr = cameras_on_scene[active_camera];
+	ptr->camera = glm::lookAt(ptr->position, ptr->position + ptr->direction, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
+	projection[1][1] *= -1;
+	ptr->matrix = projection * ptr->camera * ptr->world_transform;
+	fillUniformBuffer(&camera_uniform, (uint8_t*)&ptr->matrix, sizeof(glm::mat4));
+}
+
+void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)
+{
+	if (cameras_on_scene[active_camera]->mouse_input_handler)cameras_on_scene[active_camera]->mouse_input_handler(pos, delta, cameras_on_scene[active_camera]);
 }

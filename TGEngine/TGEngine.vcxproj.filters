@@ -204,6 +204,12 @@
     <ClInclude Include="util\TGVertex.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
+    <ClInclude Include="game_content\StaticCamera.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="game_content\FirstPersonCamera.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -319,6 +325,12 @@
     </ClCompile>
     <ClCompile Include="util\VectorUtil.cpp">
       <Filter>Quelldateien\util</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\StaticCamera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\FirstPersonCamera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

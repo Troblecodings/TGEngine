@@ -21,7 +21,7 @@ USAGE_DOCS
 USAGE_DEPRECATION
 TARGET_CODE
 TARGET_METHODE
-#define INSTEAD_USE(use) // Used
+#define INSTEAD_USE(use) // You should use this method instead (Only used in combination with DEPRECATED)
 
 USAGE_DOCS
 TARGET_CODE
@@ -52,3 +52,8 @@ TARGET_PARAMETER
 USAGE_DOCS
 TARGET_PARAMETER
 #define OPT // Defines the parameter to be an optional input or output
+
+USAGE_DOCS
+TARGET_METHODE
+TARGET_PARAMETER
+#define INTERNAL // Defines a method or parameter to be internal -> This methods or parameters shouldn't be used

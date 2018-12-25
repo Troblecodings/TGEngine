@@ -2,7 +2,7 @@
 
 #include "Stdbase.hpp"
 #include "App.hpp"
-#include "game_content\Camera.hpp"
+#include "game_content\FirstPersonCamera.hpp"
 #include "pipeline\Pipeline.hpp"
 #include "pipeline\Draw.hpp"
 
