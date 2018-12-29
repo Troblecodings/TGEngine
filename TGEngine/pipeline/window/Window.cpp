@@ -20,60 +20,69 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	}
-	//This is all locking god awefull
 	Window* a_window = window_list[i];
-	if (a_window == nullptr) {
-		if (msg == WM_CREATE || msg == WM_NCCREATE || msg == WM_ENABLE || msg == WM_NCPAINT || msg == WM_ERASEBKGND || msg == WM_SHOWWINDOW || msg == WM_IME_SETCONTEXT || msg == WM_IME_NOTIFY || msg == WM_GETMINMAXINFO || msg == WM_GETICON || msg == WM_NCCALCSIZE || msg == WM_ACTIVATEAPP || msg == WM_NCACTIVATE || msg == WM_ACTIVATE) {
-			return DefWindowProc(hwnd, msg, wParam, lParam);
-		}
-		return NULL;
-	}
 
-	if (msg == WM_QUIT || msg == WM_CLOSE || msg == WM_DESTROY) {
+	switch (msg)
+	{
+	case WM_QUIT:
+	case WM_CLOSE:
+	case WM_DESTROY:
 		a_window->close_request = true;
-		return NULL;
+		break;
+	case WM_MOUSELEAVE:
+	case WM_NCMOUSELEAVE:
+		SetCursor(a_window->__impl_cursor);
+		break;
+	case WM_INPUT:
+		uint32_t size;
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &size, sizeof(RAWINPUTHEADER));
+		RAWINPUT input;
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
+		switch (input.header.dwType)
+		{
+		case RIM_TYPEMOUSE:
+			inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
+			break;
+		default:
+			break;
+		}
+		break;
+	case WM_LBUTTONDOWN:
+		FIRST_MOUSE_BUTTON = true;
+		break;
+	case WM_LBUTTONUP:
+		FIRST_MOUSE_BUTTON = false;
+		break;
+	case WM_MBUTTONDOWN:
+		THIRED_MOUSE_BUTTON = true;
+		break;
+	case WM_MBUTTONUP:
+		THIRED_MOUSE_BUTTON = false;
+		break;
+	case WM_RBUTTONDOWN:
+		SECOND_MOUSE_BUTTON = true;
+		break;
+	case WM_RBUTTONUP:
+		SECOND_MOUSE_BUTTON = false;
+		break;
+	case WM_KILLFOCUS:
+		a_window->focused = false;
+		break;
+	case WM_SETFOCUS:
+		a_window->focused = true;
+		break;
+	case WM_SYSCOMMAND:
+		if (wParam == SC_MINIMIZE) {
+			a_window->minimized = true;
+		}
+		else if (wParam == SC_RESTORE) {
+			a_window->minimized = false;
+		}
+		break;
+	default:
+		break;
 	}
-	else {
-		if (msg == WM_MOUSELEAVE || msg == WM_NCMOUSELEAVE) {
-			SetCursor(a_window->__impl_cursor);
-		}
-		else if (msg == WM_MOUSEMOVE) {
-			inputupdate({ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) });
-		}
-		else if (msg == WM_LBUTTONDOWN) {
-			FIRST_MOUSE_BUTTON = true;
-		}
-		else if (msg == WM_LBUTTONUP) {
-			FIRST_MOUSE_BUTTON = false;
-		}
-		else if (msg == WM_MBUTTONDOWN) {
-			THIRED_MOUSE_BUTTON = true;
-		}
-		else if (msg == WM_MBUTTONUP) {
-			THIRED_MOUSE_BUTTON = false;
-		}
-		else if (msg == WM_RBUTTONDOWN) {
-			SECOND_MOUSE_BUTTON = true;
-		}
-		else if (msg == WM_RBUTTONUP) {
-			SECOND_MOUSE_BUTTON = false;
-		} 
-		else if (msg == WM_KILLFOCUS) {
-			a_window->focused = false;
-		}
-		else if (msg == WM_SETFOCUS) {
-			a_window->focused = true;
-		}
-		else if (msg == WM_SYSCOMMAND) {
-			if (wParam == SC_MINIMIZE) {
-				a_window->minimized = true;
-			}
-			else if (wParam == SC_RESTORE) {
-				a_window->minimized = false;
-			}
-		}
-		return DefWindowProc(hwnd, msg, wParam, lParam);
-	}
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 #endif
 
@@ -105,7 +114,52 @@ void createWindow(Window* window) {
 		window->y = properties->getInt("posy");
 	}
 
-    #ifdef _WIN32 //Windows window createion
+    #ifdef _WIN32 //Windows window creation
+
+	uint32_t size;
+	GetRawInputDeviceList(NULL, &size, sizeof(RAWINPUTDEVICELIST));
+	RAWINPUTDEVICELIST* list = new RAWINPUTDEVICELIST[size];
+	GetRawInputDeviceList(list, &size, sizeof(RAWINPUTDEVICELIST));
+	for (size_t i = 0; i < size; i++)
+	{
+		uint32_t uint = 0;
+		GetRawInputDeviceInfo(list[i].hDevice, RIDI_DEVICENAME, NULL, &uint);
+		wchar_t* name = new wchar_t[uint + 1];
+		GetRawInputDeviceInfo(list[i].hDevice, RIDI_DEVICENAME, name, &uint);
+		name[uint] = '\0';
+		OUT_LV_DEBUG("Name: " << name)
+		RID_DEVICE_INFO info;
+		uint = info.cbSize = sizeof(RID_DEVICE_INFO);
+		GetRawInputDeviceInfo(list[i].hDevice, RIDI_DEVICEINFO, &info, &uint);
+		switch (info.dwType)
+		{
+		case RIM_TYPEMOUSE:
+			OUT_LV_DEBUG("Found mouse " << list[i].hDevice)
+			OUT_LV_DEBUG("   ID: " << info.mouse.dwId)
+			OUT_LV_DEBUG("   Number of buttons: " << info.mouse.dwNumberOfButtons)
+			OUT_LV_DEBUG("   Sample rate: " << info.mouse.dwSampleRate)
+			OUT_LV_DEBUG("   Has horizontal wheel: " << info.mouse.fHasHorizontalWheel)
+			break;
+		case RIM_TYPEKEYBOARD:
+			OUT_LV_DEBUG("Found keyboard " << list[i].hDevice)
+			OUT_LV_DEBUG("   Type: " << info.keyboard.dwType)
+			OUT_LV_DEBUG("   Sub type: " << info.keyboard.dwSubType)
+			OUT_LV_DEBUG("   Mode: " << info.keyboard.dwKeyboardMode)
+			OUT_LV_DEBUG("   Num function keys: " << info.keyboard.dwNumberOfFunctionKeys)
+			OUT_LV_DEBUG("   Num indicators: " << info.keyboard.dwNumberOfIndicators)
+			OUT_LV_DEBUG("   Num keys total: " << info.keyboard.dwNumberOfKeysTotal)
+			break;
+		case RIM_TYPEHID:
+			OUT_LV_DEBUG("Found hid " << list[i].hDevice)
+			OUT_LV_DEBUG("   Product ID: " << info.hid.dwProductId)
+			OUT_LV_DEBUG("   Vendor ID: " << info.hid.dwVendorId)
+			OUT_LV_DEBUG("   Version Num: " << info.hid.dwVersionNumber)
+			OUT_LV_DEBUG("   Usage: " << info.hid.usUsage)
+			OUT_LV_DEBUG("   Usage Page: " << info.hid.usUsagePage)
+			break;
+		}
+	}
+
 	if (window->decorated) {
 		//Char unicode conversation
 		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
@@ -149,6 +203,18 @@ void createWindow(Window* window) {
 	}
 
 	SetCursor(window->__impl_cursor);
+
+	RAWINPUTDEVICE Rid[2];
+	Rid[0].usUsagePage = 0x01;
+	Rid[0].usUsage = 0x02;
+	Rid[0].dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;   // adds HID mouse and also ignores legacy mouse messages
+	Rid[0].hwndTarget = window->__impl_window;
+
+	Rid[1].usUsagePage = 0x01;
+	Rid[1].usUsage = 0x06;
+	Rid[1].dwFlags = 0;   // adds HID keyboard and also ignores legacy keyboard messages
+	Rid[1].hwndTarget = window->__impl_window;
+	RegisterRawInputDevices(Rid, 2, sizeof(Rid[0]));
     #endif
 }
 

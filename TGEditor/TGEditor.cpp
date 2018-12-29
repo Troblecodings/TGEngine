@@ -56,10 +56,10 @@ void init() {
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
 {
-	ibuffer->addIndex(0);
-	ibuffer->addIndex(1);
 	ibuffer->addIndex(2);
-	
+	ibuffer->addIndex(1);
+	ibuffer->addIndex(0);
+
 	vbuffer->add({
 		{-1, -1, 0},
 		{1, 0, 0, 1},

@@ -20,9 +20,7 @@ void loadFromFBX(Mesh* mesh, char* path) {
 	{
 		TGVertex vert;
 		double* ptr = (double*)arr[i];
-		vert.position.x = (float)ptr[0];
-		vert.position.y = (float)ptr[1];
-		vert.position.z = (float)ptr[2];
+		vert.position = { ptr[0], ptr[1], ptr[2]};
 		vert.color = color;
 		vert.color_only = tex->index;
 		fbxsdk::FbxLayerElementArrayTemplate<FbxVector2>* pLockableArray;
