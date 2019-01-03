@@ -28,6 +28,8 @@ struct Window {
 		width = 0,
 		height = 0;
 
+	long middleX = 0, middleY = 0;
+
 	bool close_request = false,
 		decorated = true,
 		cursor = true,

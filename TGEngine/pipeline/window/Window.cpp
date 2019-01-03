@@ -8,7 +8,6 @@ HMODULE sys_module;
 std::vector<HWND> __impl_window_list;
 
 Window::Window(wchar_t* name) {
-	this->__impl_cursor = this->cursor ? LoadCursor(nullptr, IDC_ARROW) : NULL;
 	this->__impl_handle = name;
 }
 
@@ -38,6 +37,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &size, sizeof(RAWINPUTHEADER));
 		RAWINPUT input;
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
+		if (a_window->consume_input) {
+			SetCursorPos(0, 0);
+		}
 		switch (input.header.dwType)
 		{
 		case RIM_TYPEMOUSE:
@@ -91,7 +93,7 @@ void createWindow(Window* window) {
 
 	bool fullscreen = properties->getBoolean("fullscreen");
 	window->decorated = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
-	window->cursor = properties->getBooleanOrDefault("cursor", true);
+	window->consume_input = !(window->cursor = properties->getBooleanOrDefault("cursor", true));
 
 	if (fullscreen) {
 		GET_SIZE(d_width, d_height);
@@ -116,6 +118,7 @@ void createWindow(Window* window) {
 
     #ifdef _WIN32 //Windows window creation
 
+#ifdef DEBUG 
 	uint32_t size;
 	GetRawInputDeviceList(NULL, &size, sizeof(RAWINPUTDEVICELIST));
 	RAWINPUTDEVICELIST* list = new RAWINPUTDEVICELIST[size];
@@ -159,6 +162,7 @@ void createWindow(Window* window) {
 			break;
 		}
 	}
+#endif
 
 	if (window->decorated) {
 		//Char unicode conversation
@@ -168,7 +172,10 @@ void createWindow(Window* window) {
 		mbstowcs_s(&conv, wc, conv, ch, _TRUNCATE);
 		wc[conv] = '\0';
 
-		DWORD style = WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU;
+		DWORD style = WS_CLIPSIBLINGS | WS_CAPTION;
+		if (!window->consume_input) {
+			style |= WS_SYSMENU;
+		}
 		if (properties->getBooleanOrDefault("minimizeable", true)) {
 			style |= WS_MINIMIZEBOX;
 		}
@@ -199,20 +206,28 @@ void createWindow(Window* window) {
 	if (window->consume_input) {
 		LPRECT win_rect = new RECT();
 		GetWindowRect(window->__impl_window, win_rect);
-		SetCursorPos((int)(win_rect->right - win_rect->left) / 2 + win_rect->left, (int)(win_rect->bottom - win_rect->top) / 2 + win_rect->top);
+		window->middleX = (long)(win_rect->left + win_rect->right / 2.0f);
+		window->middleY = (long)(win_rect->top + win_rect->bottom / 2.0f);
+		SetCursorPos(window->middleX, window->middleY);
 	}
 
+	window->__impl_cursor = window->cursor ? LoadCursor(nullptr, IDC_ARROW) : NULL;
 	SetCursor(window->__impl_cursor);
 
 	RAWINPUTDEVICE Rid[2];
 	Rid[0].usUsagePage = 0x01;
 	Rid[0].usUsage = 0x02;
-	Rid[0].dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;   // adds HID mouse and also ignores legacy mouse messages
+	if (window->consume_input) {
+		Rid[0].dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;   // adds HID mouse and also ignores legacy mouse messages if it consumes input
+	}
+	else {
+		Rid[0].dwFlags = 0;
+	}
 	Rid[0].hwndTarget = window->__impl_window;
 
 	Rid[1].usUsagePage = 0x01;
 	Rid[1].usUsage = 0x06;
-	Rid[1].dwFlags = 0;   // adds HID keyboard and also ignores legacy keyboard messages
+	Rid[1].dwFlags = 0;   // adds HID keyboard
 	Rid[1].hwndTarget = window->__impl_window;
 	RegisterRawInputDevices(Rid, 2, sizeof(Rid[0]));
     #endif
