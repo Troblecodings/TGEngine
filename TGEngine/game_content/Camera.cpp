@@ -10,12 +10,12 @@ void initCameras() {
 	{ VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&camera_uniform);
-	addListener(__impl_input_handle);
+	if(cameras_on_scene.size() > 0)addListener(__impl_input_handle);
 }
 
 void createCamera(Camera* camera) {
 	TG_VECTOR_APPEND_NORMAL(cameras_on_scene, camera)
-	camera->camera_index = last_size;
+	active_camera = camera->camera_index = last_size;
 }
 
 void Camera::applyWorldRotation(double x, double y, double z, double angle) 
@@ -50,10 +50,13 @@ void updateCamera(int width, int height) {
 	glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
 	projection[1][1] *= -1;
 	ptr->matrix = projection * ptr->camera * ptr->world_transform;
-	fillUniformBuffer(&camera_uniform, (uint8_t*)&ptr->matrix, sizeof(glm::mat4));
+	fillUniformBuffer(&camera_uniform, &ptr->matrix, sizeof(glm::mat4));
 }
 
 void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)
 {
-	if (cameras_on_scene[active_camera]->mouse_input_handler)cameras_on_scene[active_camera]->mouse_input_handler(pos, delta, cameras_on_scene[active_camera]);
+	Camera* cam = cameras_on_scene[active_camera];
+	if (cam->mouse_input_handler) {
+		cam->mouse_input_handler(cam, pos, delta);
+	}
 }

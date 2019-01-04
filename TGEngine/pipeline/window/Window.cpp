@@ -38,7 +38,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		RAWINPUT input;
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
 		if (a_window->consume_input) {
-			SetCursorPos(0, 0);
+			SetCursorPos(a_window->middleX, a_window->middleY);
 		}
 		switch (input.header.dwType)
 		{

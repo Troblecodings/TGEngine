@@ -4,6 +4,7 @@ Texture tex1;
 Texture tex2;
 Mesh mesh;
 Font arial;
+Camera camera;
 
 int main() {
 	Editor editor = Editor();
@@ -52,13 +53,15 @@ void init() {
 	};
 	createTexture(&tex1);
 	createTexture(&tex2);
+
+	createFirstPersonCamera(&camera);
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
 {
-	ibuffer->addIndex(2);
-	ibuffer->addIndex(1);
 	ibuffer->addIndex(0);
+	ibuffer->addIndex(1);
+	ibuffer->addIndex(2);
 
 	vbuffer->add({
 		{-1, -1, 0},

@@ -9,7 +9,7 @@ void createPipeline() {
 
 	Window* win = window_list[0];
 
-    //Viewport and so on
+    //Viewport and scissor
 	viewport = {
 		0.0F,
 		0.0F,
@@ -95,7 +95,7 @@ void createPipeline() {
 		VK_TRUE,
 		VK_FALSE,
 	    VK_POLYGON_MODE_FILL,
-		VK_CULL_MODE_BACK_BIT,
+		VK_CULL_MODE_FRONT_BIT,
 		VK_FRONT_FACE_CLOCKWISE,
 		VK_FALSE,
 	    1,

@@ -7,7 +7,7 @@
     <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
-    <boolean name="cursor" value="false" />
+    <boolean name="cursor" value="true" />
     <boolean name="resizeable" value="true" />
     <boolean name="maximizable" value="true" />
     <boolean name="minimizeable" value="true" />

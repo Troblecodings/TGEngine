@@ -7,18 +7,18 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 struct Camera {
-	INPUT 
-	OPT double speed = 0.001f; // Speed of the camera movement - Usually less then 1 and greater then 0
-	OPT float fov = (float)PI * 0.4f; // Field of view in radians
-	OPT float near_clip_plain = 0.01f; // The nearest thing to the camera
-	OPT float far_clip_plain = 1000.0f; // The farest thing from the camera
-	OPT void(*mouse_input_handler)(glm::vec2, glm::vec2, Camera* camera); // A handle for the camera (How should it handle mouse movement?)
+	OPT INPUT
+	double speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
+	float fov = (float)PI * 0.4f; // Field of view in radians
+	float near_clip_plain = 0.01f; // The nearest thing to the camera
+	float far_clip_plain = 1000.0f; // The farest thing from the camera
+	void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 
 	OUTPUT 
 	glm::mat4 world_transform = glm::mat4(1.0f); // The world transform for all verticies in the world 
 	glm::mat4 camera = glm::mat4(1.0f); // The camera transforms done with glm::lookAt
 	glm::mat4 matrix; // The actual computed matrix -> Calculated: perspective * camera * world_transform
-	glm::vec3 position = glm::vec3(0.0f, 1.0f, 0.0f); // The position of the camera in world space
+	glm::vec3 position = glm::vec3(0.0f, 1.0f, 1.0f); // The position of the camera in world space
 	glm::vec3 direction = glm::vec3(-1.0f, -1.0f, -1.0f); // The direction into witch the camera faces
 	size_t camera_index;
 

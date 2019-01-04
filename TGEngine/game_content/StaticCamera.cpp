@@ -7,7 +7,7 @@ void createStaticCamera(Camera * camera)
 	createCamera(camera);
 }
 
-void __impl_mouseinputHandleSC(glm::vec2 pos, glm::vec2 delta, Camera * camera)
+void __impl_mouseinputHandleSC(Camera * camera, glm::vec2 pos, glm::vec2 delta)
 {
 	if (!FIRST_MOUSE_BUTTON)return;
 	camera->applyWorldRotation(0, 1, 0, delta.x * -camera->speed * PIx2);
