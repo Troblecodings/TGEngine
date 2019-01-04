@@ -48,11 +48,11 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createFramebuffer();
 
 	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 500000;
+	main_buffer.max_vertex_count = 90000000;
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 500000;
+	index_buffer.size = 90000000;
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();

@@ -26,10 +26,10 @@ void init();
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* verticies);
 
-void drawGrid(VertexBuffer* buffer);
+void drawGrid(VertexBuffer* buffer, IndexBuffer* vbuffer);
 
-void drawLineH(TGVertex start, float length, VertexBuffer* buffer);
+void drawLineH(TGVertex start, float length, VertexBuffer* buffer, IndexBuffer* vbuffer);
 
-void drawLineV(TGVertex start, float length, VertexBuffer* buffer);
+void drawLineV(TGVertex start, float length, VertexBuffer* buffer, IndexBuffer* vbuffer);
 
 int main();

@@ -103,6 +103,7 @@
     <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
+    <ClCompile Include="util\TGVertex.cpp" />
     <ClCompile Include="util\VectorUtil.cpp" />
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
     <ClCompile Include="vlib\VulkanImage.cpp" />

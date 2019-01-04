@@ -2,4 +2,5 @@
 
 #include "BaseDrawLib.hpp"
 
-void drawCircle(TGVertex pos, float radius, int max_verticies, VertexBuffer* vert);
+SINCE(0, 0, 4)
+void drawCircle(TGVertex pos, float radius, int max_verticies, VertexBuffer* vert, IndexBuffer* ibuffer);

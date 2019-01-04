@@ -1,6 +1,6 @@
 #include "Ellipse.hpp"
 
-void drawEllipse(TGVertex pos, float xradius, float yradius, int max_verticies, VertexBuffer* vert) {
+void drawEllipse(TGVertex pos, float xradius, float yradius, int max_verticies, VertexBuffer* vert, IndexBuffer* ibuffer) {
 	double angle = PIx2 / max_verticies, l_x, l_y;
 
 	for (size_t i = 0; i < max_verticies + 1; i++)

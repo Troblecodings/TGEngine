@@ -7,6 +7,8 @@ struct TGVertex {
 	glm::vec4 color;
 	glm::vec2 uv;
 	uint32_t color_only;
+
+	bool operator==(const TGVertex& lhs);
 };
 
 #define VERTEX_SIZE sizeof(TGVertex)

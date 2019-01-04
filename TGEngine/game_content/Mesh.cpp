@@ -1,7 +1,7 @@
 #include "Mesh.hpp"
 
 void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
-	uint32_t sz = ind->index_count;
+	uint32_t sz = vrt->count_of_points;
 	vrt->addAll(this->vertices.data(), this->vertices.size());
 	for(uint32_t nt : this->indices)
 	{
@@ -14,27 +14,39 @@ void loadFromFBX(Mesh* mesh, char* path) {
 	fbxsdk::FbxMesh* msh = FBX_Dictionary::fbx_meshes[ind];
 	glm::vec4 color = FBX_Dictionary::colors[ind];
 	Texture* tex = &FBX_Dictionary::textures[ind];
-	int siz = msh->GetControlPointsCount();
-	fbxsdk::FbxVector4* arr = msh->GetControlPoints();
-	for (int i = 0; i < siz; i++)
-	{
-		TGVertex vert;
-		double* ptr = (double*)arr[i];
-		vert.position = { ptr[0], ptr[1], ptr[2]};
-		vert.color = color;
-		vert.color_only = tex->index;
-		fbxsdk::FbxLayerElementArrayTemplate<FbxVector2>* pLockableArray;
-		if (msh->GetTextureUV(&pLockableArray)) {
-			double* vector = (double*)pLockableArray->GetAt(i);
-			vert.uv = { vector[0], 1 - vector[1] };
-		}
 
-		TG_VECTOR_APPEND(mesh->vertices, &vert)
-	}
+	fbxsdk::FbxVector4* arr = msh->GetControlPoints();
+	FbxStringList lUVNames;
+	msh->GetUVSetNames(lUVNames);
+
+	FbxVector2 uv;
+	bool bol;
+	int index;
 	for (int j = 0; j < msh->GetPolygonCount(); j++) {
 		for (int i = 0; i < msh->GetPolygonSize(j); i++) {
-			int index = msh->GetPolygonVertex(j, i);
-			TG_VECTOR_APPEND(mesh->indices, &index)
+			index = msh->GetPolygonVertex(j, i);
+			msh->GetPolygonVertexUV(j, i, lUVNames[0], uv, bol);
+			double* ptr = (double*)arr[index];
+			TGVertex vertx = {
+				{ ptr[0], ptr[1], ptr[2]},
+				color,
+				{ uv[0], 1 - uv[1] },
+				tex->index
+			};
+			bol = false;
+			for (size_t b = 0; b < mesh->vertices.size(); b++)
+			{
+				if (mesh->vertices[b] == vertx) {
+					TG_VECTOR_APPEND_NORMAL(mesh->indices, (uint32_t)b)
+					bol = true;
+					break;
+				}
+			}
+			if (!bol) {
+				TG_VECTOR_APPEND_NORMAL(mesh->vertices, vertx)
+				uint32_t idx = (uint32_t)last_size;
+				TG_VECTOR_APPEND_NORMAL(mesh->indices, idx)
+			}
 		}
 	}
 }
