@@ -79,6 +79,9 @@ namespace FBX_Dictionary {
 							};
 							createTexture(&FBX_Dictionary::textures[pos]);
 						}
+						else {
+							FBX_Dictionary::textures[pos].texture_path = nullptr;
+						}
 					}
 				}
 			}

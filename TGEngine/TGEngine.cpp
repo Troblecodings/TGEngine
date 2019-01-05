@@ -76,6 +76,9 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 		startdraw();
 		main_buffer.start();
 		index_buffer.start();
+		for (Actor act : actors) {
+			act.mesh->consume(&main_buffer, &index_buffer);
+		}
 		draw(&index_buffer, &main_buffer);
 		main_buffer.end();
 		index_buffer.end();

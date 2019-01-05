@@ -10,6 +10,7 @@
 #include <util/TGVertex.hpp>
 #include "game_content/Mesh.hpp"
 #include "game_content/FirstPersonCamera.hpp"
+#include "game_content/StaticCamera.hpp"
 
 extern Texture tex1;
 extern Texture tex2;

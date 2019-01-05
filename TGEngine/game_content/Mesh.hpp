@@ -15,4 +15,11 @@ struct Mesh
 	void consume(VertexBuffer* vrt, IndexBuffer* ind);
 };
 
+/*
+ * Preproccess data for vertex buffer
+ * This is triangulated via a fan-triangulation algorithem
+ *  -> Inputs should only be models that have convex pylogens without holes
+ */
 void loadFromFBX(Mesh* msh, char* path);
+
+uint32_t addVertex(Mesh* mesh, TGVertex vert);
