@@ -33,6 +33,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 
 	init();
 	createDepthTest();
+	createColorResouce();
 	createRenderpass();
 	createShader();
 	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
@@ -102,6 +103,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	destroyShaders();
 	destroyRenderPass();
 	destroyDepthTest();
+	destroyColorResouce();
 	destroyDevice();
 	destroyWindows();
 	destroyInstance();

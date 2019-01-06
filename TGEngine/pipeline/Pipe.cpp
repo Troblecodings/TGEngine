@@ -109,7 +109,7 @@ void createPipeline() {
 		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
 	    nullptr,
 	    0,
-	    VK_SAMPLE_COUNT_1_BIT,
+	    used_msaa_flag,
 	    VK_FALSE,
 	    1.0F,
 	    nullptr,

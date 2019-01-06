@@ -14,23 +14,24 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	uint32_t count;
 	last_result = vkEnumeratePhysicalDevices(instance, &count, nullptr);
 	HANDEL(last_result);
-	std::vector<VkPhysicalDevice> physical_devices(count);
-	last_result = vkEnumeratePhysicalDevices(instance, &count, physical_devices.data());
+	VkPhysicalDevice*  physical_devices = new VkPhysicalDevice[count];
+	last_result = vkEnumeratePhysicalDevices(instance, &count, physical_devices);
 	HANDEL(last_result);
 
 	//Get best Physical Device
 	uint32_t points = 0;
-	for each(VkPhysicalDevice device in physical_devices) {
+	for (size_t i = 0; i < count; i++)
+	{
 		VkPhysicalDeviceProperties c_properties;
-		vkGetPhysicalDeviceProperties(device, &c_properties);
-		uint32_t c_points = c_properties.limits.maxImageDimension2D + (c_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000:0);
+		vkGetPhysicalDeviceProperties(physical_devices[i], &c_properties);
+		uint32_t c_points = c_properties.limits.maxImageDimension2D + (c_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
 		if (c_points > points) {
 			points = c_points;
-			used_physical_device = device;
+			used_physical_device = physical_devices[i];
 			device_properties = c_properties;
 		}
 	}
-	physical_devices.clear();
+	delete[] physical_devices;
 
 	//Query Queues
 	vkGetPhysicalDeviceQueueFamilyProperties(used_physical_device, &count, nullptr);

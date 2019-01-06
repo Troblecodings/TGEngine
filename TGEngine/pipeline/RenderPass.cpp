@@ -7,26 +7,39 @@ void createRenderpass() {
 	VkAttachmentDescription attachment_description = {
 		0,
 		used_format.format,
-		VK_SAMPLE_COUNT_1_BIT,
+		used_msaa_flag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_STORE_OP_DONT_CARE,
 		VK_IMAGE_LAYOUT_UNDEFINED,
-		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 	};
 
 	//Attachment for depth images
 	VkAttachmentDescription depth_attachment_description = {
 		0,
 		used_depth_format,
-		VK_SAMPLE_COUNT_1_BIT,
+		used_msaa_flag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_STORE_OP_DONT_CARE,
 		VK_IMAGE_LAYOUT_UNDEFINED,
 		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+	};
+
+	//Resolve attachment -> For MSAA
+	VkAttachmentDescription resolve_description = {
+		0,
+		used_format.format,
+		VK_SAMPLE_COUNT_1_BIT,
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,
+		VK_IMAGE_LAYOUT_UNDEFINED,
+		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 	};
 
 	//Input attachment
@@ -41,6 +54,12 @@ void createRenderpass() {
 		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 	};
 
+	//Resolve attachment -> For MSAA
+	VkAttachmentReference resolve_attachment = {
+		2,
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+	};
+
 	//Subpass
 	VkSubpassDescription subpass_description = {
 		0,
@@ -49,7 +68,7 @@ void createRenderpass() {
 		nullptr,
 		1,
 		&attachment_reference,
-		nullptr,
+		&resolve_attachment,
 		&depth_attachment_reference,
 		0,
 		nullptr
@@ -65,14 +84,14 @@ void createRenderpass() {
 		0
 	};
 
-	VkAttachmentDescription attachments[2] = { attachment_description, depth_attachment_description };
+	VkAttachmentDescription attachments[3] = { attachment_description, depth_attachment_description, resolve_description };
 
 	//Renderpass
 	VkRenderPassCreateInfo render_pass_create_info = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 	    nullptr,
 	    0,
-	    2,
+	    3,
 		attachments,
 	    1,
 	    &subpass_description,

@@ -21,14 +21,14 @@ void createFramebuffer() {
 	     nullptr,
 	     0,
 	     render_pass,
-	     2,
+	     3,
 	     VK_NULL_HANDLE,
 		 (uint32_t)win->width,
 		 (uint32_t)win->height,
 	     1
 	};
 
-	VkImageView views[2] = { nullptr, depth_image_view };
+	VkImageView views[3] = { color_image_view, depth_image_view, nullptr };
 
 	for (size_t i = 0; i < image_count; i++)
 	{
@@ -36,7 +36,7 @@ void createFramebuffer() {
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &image_view[i]);
 		HANDEL(last_result)
 
-		views[0] = image_view[i];
+		views[2] = image_view[i];
 		framebuffer_create_info.pAttachments = views;
 
 		last_result = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);

@@ -10,6 +10,7 @@ void createDepthTest()
 	vlib_image_create_info.extent.height = window_list[0]->height;
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 	vlib_image_create_info.format = used_depth_format;
+	vlib_image_create_info.samples = used_msaa_flag;
 	last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &depth_image);
 	HANDEL(last_result);
 
