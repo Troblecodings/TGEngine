@@ -52,7 +52,7 @@ void loadFromFBX(Mesh* mesh, char* path) {
 				{ uv[0], 1 - uv[1] },
 				tex->index
 			});
-		for (size_t i = 0; i < triangle_size; i++)
+		for (int i = 0; i < triangle_size; i++)
 		{
 			if (i == 0) {
 				if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, 1, lUVNames[0], uv, bol);
@@ -83,7 +83,7 @@ void loadFromFBX(Mesh* mesh, char* path) {
 			addVertex(mesh, last_vert);
 
 			if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, i + 2, lUVNames[0], uv, bol);
-			index = msh->GetPolygonVertex(j, i + 2);
+			index = msh->GetPolygonVertex(j, (int)i + 2);
 			ptr = (double*)arr[index];
 
 			addVertex(mesh, last_vert = {

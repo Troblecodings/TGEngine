@@ -6,7 +6,7 @@ namespace nio {
 
 	char current_working_dir[FILENAME_MAX];
 
-	void queryCWD()
+	void initFileSystem()
 	{
 		GetCurrentDir(current_working_dir, sizeof(current_working_dir));
 	}

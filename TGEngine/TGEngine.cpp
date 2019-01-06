@@ -3,19 +3,9 @@
 using namespace std;
 
 void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), void (*init)(void)) {
-	nio::queryCWD();
+	nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
-
-	Texture no_texture = {};
-	no_texture.width = 1;
-	no_texture.height = 1;
-	no_texture.image_data = new stbi_uc[4];
-	no_texture.image_data[0] = 0;
-	no_texture.image_data[1] = 0;
-	no_texture.image_data[2] = 0;
-	no_texture.image_data[3] = 0;
-	createTexture(&no_texture);
 
 	createWindowClass();
 	createWindow(window);
@@ -30,6 +20,16 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
+
+	Texture no_texture = {};
+	no_texture.width = 1;
+	no_texture.height = 1;
+	no_texture.image_data = new stbi_uc[4];
+	no_texture.image_data[0] = 1;
+	no_texture.image_data[1] = 0;
+	no_texture.image_data[2] = 1;
+	no_texture.image_data[3] = 1;
+	createTexture(&no_texture);
 
 	init();
 	createDepthTest();
@@ -48,11 +48,11 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createFramebuffer();
 
 	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 90000000;
+	main_buffer.max_vertex_count = 9000000;
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 90000000;
+	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();
@@ -60,6 +60,15 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
 	createCommandBuffer();
+	main_buffer.start();
+	index_buffer.start();
+	for (Actor act : actors) {
+		act.mesh->consume(&main_buffer, &index_buffer);
+	}
+	draw(&index_buffer, &main_buffer);
+	main_buffer.end();
+	index_buffer.end();
+
 	singleTimeCommand();
 	createSemaphores();
 
@@ -74,16 +83,6 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 			continue;
 		}
 		startdraw();
-		main_buffer.start();
-		index_buffer.start();
-		for (Actor act : actors) {
-			act.mesh->consume(&main_buffer, &index_buffer);
-		}
-		draw(&index_buffer, &main_buffer);
-		main_buffer.end();
-		index_buffer.end();
-		last_result = vkDeviceWaitIdle(device);
-		HANDEL(last_result)
 		fillCommandBuffer(&index_buffer, &main_buffer, image_index);
 		submit();
 		present();
@@ -95,6 +94,8 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	destroyDescriptors();
 	destroyMemory();
 	destroyIndexBuffer(&index_buffer);
+	destroyVertexBuffer(&main_buffer);
+	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyPipeline();

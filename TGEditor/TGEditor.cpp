@@ -3,6 +3,7 @@
 Texture tex1;
 Texture tex2;
 Mesh mesh;
+Mesh mesh2;
 Font arial;
 Camera camera;
 
@@ -43,7 +44,8 @@ void init() {
 	};
 	loadfont(&arial);
 
-	loadFromFBX(&mesh,"resource\\loop.fbx");
+	loadFromFBX(&mesh, "resource\\loop.fbx");
+	loadFromFBX(&mesh2, "resource\\lul.fbx");
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"
@@ -55,6 +57,7 @@ void init() {
 	createTexture(&tex2);
 
 	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
+	createActor(&mesh2)->prePos(0, 1, 0)->applyPretransform();
 
 	createStaticCamera(&camera);
 }

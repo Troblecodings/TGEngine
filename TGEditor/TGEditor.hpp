@@ -15,6 +15,7 @@
 extern Texture tex1;
 extern Texture tex2;
 extern Mesh mesh;
+extern Mesh mesh2;
 extern Font arial;
 extern Camera camera;
 

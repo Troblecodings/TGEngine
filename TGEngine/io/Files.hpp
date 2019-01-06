@@ -24,13 +24,13 @@ namespace nio {
 	extern char current_working_dir[];
 
 	/*
-	 * Querys the current working directory 
+	 * Querys the current working directory and initalizes all other systems
 	 * 
 	 * Use "current_working_dir" to get the cwd after quereing.
 	 * (Is automatically called in initTGEngine())
 	 */
 	SINCE(0, 0, 3)
-	void queryCWD();
+	void initFileSystem();
 
 	/*
 	 *  Parameter:

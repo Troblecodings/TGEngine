@@ -210,6 +210,9 @@
     <ClInclude Include="util\TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
+    <ClInclude Include="pipeline\buffer\StagingBuffer.hpp">
+      <Filter>Headerdateien\pipeline\buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="util\TGVertex.cpp">
       <Filter>Quelldateien\util</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
+      <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

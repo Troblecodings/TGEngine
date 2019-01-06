@@ -92,6 +92,23 @@ void singleTimeCommand() {
 
 	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
+	
+	VkBufferCopy copy = {
+		0,
+		0,
+	};
+
+	for each(StagingBuffer* buf in staging_buffer)
+	{
+		copy.size = buf->size;
+		vkCmdCopyBuffer(
+			buffer,
+			buf->staging_buffer,
+			*buf->destination,
+			1,
+			&copy
+		);
+	}
 
 	last_result = vkEndCommandBuffer(buffer);
 	HANDEL(last_result);
@@ -178,7 +195,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t ind
 
 	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &descriptor_set, 0, nullptr);
 
-	vkCmdBindVertexBuffers(buffer, 0, 1, &buffers[vbuffer->vertex_buffer_index], &offsets);
+	vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
 
 	vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 

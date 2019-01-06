@@ -26,7 +26,7 @@ USAGE_DEBUG
 
 #else
 // Null define
-#define MESH_NULL_IN_ACTOR
+#define TG_ERR_MESH_NULL_IN_ACTOR
 
 #define ASSERT_NONE_NULL_DB(ptr, msg, error)
 #define ASSERT_FILE(ptr, pth) 

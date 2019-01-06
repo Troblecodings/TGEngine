@@ -53,6 +53,7 @@ void initAllTextures() {
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
 	for each(Texture* ptr in texture_buffers) {
+
 		if (ptr->texture_path) {
 			File file = open(ptr->texture_path, "rb");
 			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
