@@ -109,7 +109,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(TGE_INCLUDE);$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -121,8 +121,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -141,7 +141,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(TGE_INCLUDE);$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -153,8 +153,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(TGE_LIBS)$(PlatformShortName)\$(Configuration);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin;$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -171,7 +171,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(TGE_INCLUDE);$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -182,8 +182,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -200,7 +200,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(TGE_INCLUDE);$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;$(ProjectDir)..\TGEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
@@ -211,8 +211,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(TGE_LIBS_32)$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(TGE_LIB_NAMES);TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin;$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>

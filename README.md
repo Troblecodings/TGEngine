@@ -21,7 +21,7 @@ The appveyor pipeline is currently broken!
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current built version: <strong>1.1.82.0</strong><br>
+Current built version: <strong>1.1.85.0</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>

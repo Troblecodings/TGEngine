@@ -9,6 +9,7 @@ layout(location = 0) in vec3 posIn;
 layout(location = 1) in vec4 colorIn;
 layout(location = 2) in vec2 uv;
 layout(location = 3) in uint indx;
+layout(location = 4) in vec3 normalIn;
 
 layout(location = 0) flat out uint index_id;
 layout(location = 1) out vec4 colorOut;
@@ -20,7 +21,11 @@ out gl_PerVertex{
 
 void main(){
     gl_Position = matrix_block.matrix * vec4(posIn, 1);
-	colorOut = colorIn;
 	index_id = indx;
 	uvOut = uv;
+
+	float cosAngIncidence = dot(normalize(normalIn), vec3(1, 0, 1));
+    cosAngIncidence = clamp(cosAngIncidence, 0, 1);
+
+	colorOut = vec4(1, 1, 1, 1) * colorIn * cosAngIncidence;
 }

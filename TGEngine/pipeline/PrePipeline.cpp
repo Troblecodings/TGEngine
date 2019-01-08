@@ -5,7 +5,7 @@ std::vector<VkPresentModeKHR> present_mode;
 VkSurfaceFormatKHR used_format;
 VkFormat used_depth_format = VK_FORMAT_UNDEFINED;
 VkPresentModeKHR used_present_mode;
-VkSampleCountFlagBits used_msaa_flag = VK_SAMPLE_COUNT_1_BIT;
+VkSampleCountFlagBits  used_msaa_flag;
 
 void prePipeline() {
 	uint32_t count = 0;
@@ -24,13 +24,17 @@ void prePipeline() {
 	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, present_mode.data());
 	HANDEL(last_result)
 
+	used_msaa_flag = (VkSampleCountFlagBits)properties->getInt("msaa");
+
 	VkSampleCountFlags counts = std::min(device_properties.limits.framebufferColorSampleCounts, device_properties.limits.framebufferDepthSampleCounts);
-	if (counts & VK_SAMPLE_COUNT_2_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_2_BIT; }
-	if (counts & VK_SAMPLE_COUNT_4_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_4_BIT; }
-	if (counts & VK_SAMPLE_COUNT_8_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_8_BIT; }
-	if (counts & VK_SAMPLE_COUNT_16_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_16_BIT; }
-	if (counts & VK_SAMPLE_COUNT_32_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_32_BIT; }
-	if (counts & VK_SAMPLE_COUNT_64_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_64_BIT; }
+	if (!(counts & used_msaa_flag)) {
+		if (counts & VK_SAMPLE_COUNT_2_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_2_BIT; }
+		if (counts & VK_SAMPLE_COUNT_4_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_4_BIT; }
+		if (counts & VK_SAMPLE_COUNT_8_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_8_BIT; }
+		if (counts & VK_SAMPLE_COUNT_16_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_16_BIT; }
+		if (counts & VK_SAMPLE_COUNT_32_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_32_BIT; }
+		if (counts & VK_SAMPLE_COUNT_64_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_64_BIT; }
+	}
 
 	used_format = surface_format[0];
 	for (VkSurfaceFormatKHR c_surface_formats : surface_format) {

@@ -28,7 +28,7 @@ void createFramebuffer() {
 	     1
 	};
 
-	VkImageView views[3] = { color_image_view, depth_image_view, nullptr };
+	VkImageView views[3] = { color_image_view, depth_image_view };
 
 	for (size_t i = 0; i < image_count; i++)
 	{

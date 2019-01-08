@@ -40,6 +40,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createShaderInput(1, offsetof(TGVertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
 	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
+	createShaderInput(4, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 	initAllTextures();
 	initCameras();
 
@@ -49,11 +50,11 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createFramebuffer();
 
 	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 9000000;
+	main_buffer.max_vertex_count = 900000;
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 9000000;
+	index_buffer.size = 9900000;
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();

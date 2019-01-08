@@ -26,7 +26,7 @@ VkImageViewCreateInfo vlib_image_view_create_info = {
 	VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 	nullptr,
 	0,
-	nullptr,
+	VK_NULL_HANDLE,
 	VK_IMAGE_VIEW_TYPE_2D,
 	VK_FORMAT_UNDEFINED,
 	{

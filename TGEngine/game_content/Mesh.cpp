@@ -42,6 +42,8 @@ void loadFromFBX(Mesh* mesh, char* path) {
 		if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, 0, lUVNames[0], uv, bol);
 		fbxsdk::FbxVector4* arr = msh->GetControlPoints();
 		index = msh->GetPolygonVertex(j, 0);
+		fbxsdk::FbxVector4 normal;
+		msh->GetPolygonVertexNormal(j, 0, normal);
 		double* ptr = (double*)arr[index];
 
 		TGVertex first_vert, last_vert;
@@ -50,7 +52,8 @@ void loadFromFBX(Mesh* mesh, char* path) {
 				{ ptr[0], ptr[1], ptr[2]},
 				color,
 				{ uv[0], 1 - uv[1] },
-				tex->index
+				tex->index,
+				{ normal[0], normal[1], normal[2]}
 			});
 		for (int i = 0; i < triangle_size; i++)
 		{
@@ -58,23 +61,27 @@ void loadFromFBX(Mesh* mesh, char* path) {
 				if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, 1, lUVNames[0], uv, bol);
 				index = msh->GetPolygonVertex(j, 1);
 				ptr = (double*)arr[index];
+				msh->GetPolygonVertexNormal(j, 1, normal);
 
 				addVertex(mesh, {
 						{ ptr[0], ptr[1], ptr[2]},
 						color,
 						{ uv[0], 1 - uv[1] },
-						tex->index
+						tex->index,
+				{ normal[0], normal[1], normal[2]}
 					});
 
 				if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, 2, lUVNames[0], uv, bol);
 				index = msh->GetPolygonVertex(j, 2);
 				ptr = (double*)arr[index];
+				msh->GetPolygonVertexNormal(j, 2, normal);
 
 				addVertex(mesh, last_vert = {
 						{ ptr[0], ptr[1], ptr[2]},
 						color,
 						{ uv[0], 1 - uv[1] },
-						tex->index
+						tex->index,
+				{ normal[0], normal[1], normal[2]}
 					});
 				continue;
 			}
@@ -83,14 +90,16 @@ void loadFromFBX(Mesh* mesh, char* path) {
 			addVertex(mesh, last_vert);
 
 			if (lUVNames.GetCount() > 0)msh->GetPolygonVertexUV(j, i + 2, lUVNames[0], uv, bol);
-			index = msh->GetPolygonVertex(j, (int)i + 2);
+			index = msh->GetPolygonVertex(j, i + 2);
 			ptr = (double*)arr[index];
+			msh->GetPolygonVertexNormal(j, i + 2, normal);
 
 			addVertex(mesh, last_vert = {
 					{ ptr[0], ptr[1], ptr[2]},
 					color,
 					{ uv[0], 1 - uv[1] },
-					tex->index
+					tex->index,
+				{ normal[0], normal[1], normal[2]}
 				});
 		}
 	}
