@@ -2,7 +2,6 @@ import zipfile
 import traceback
 import os
 import os.path
-import urllib
 import urllib.request
 import sys
 
@@ -16,8 +15,7 @@ msg = None
 
 
 def wrt(vk, src):
-    sys.stdout.write(".")
-    sys.stdout.flush()
+    print(".", end="", flush=True)
     dependencies_file.write(vk + src, arcname=src, compress_type=zipfile.ZIP_DEFLATED)
 
 
@@ -60,7 +58,7 @@ def trigger(id):
             msg = "Finished!"
             clear()
             return
-    except not SystemExit:
+    except IOError or ValueError:
         clear()
         print(traceback.format_exc())
         return
@@ -88,7 +86,7 @@ while True:
     print("0. Close")
     try:
         trigger(int(input()))
-    except not SystemExit:
+    except ValueError:
         clear()
         print(traceback.format_exc())
         continue
