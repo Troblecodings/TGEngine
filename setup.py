@@ -3,6 +3,7 @@ import traceback
 import os
 import os.path
 import urllib.request
+import sys
 
 
 def clear(): os.system("cls")
@@ -11,8 +12,6 @@ def clear(): os.system("cls")
 vulkan = os.getenv("VULKAN_SDK")
 dependencies_file = None
 msg = None
-CURSOR_UP_ONE = '\x1b[1A'
-ERASE_LINE = '\x1b[2K'
 
 
 def wrt(vk, src):
@@ -28,23 +27,10 @@ def wrtdir(vk, src):
             wrt(vk, src + str)
 
 
-while True:
-    print("=============================")
-    print("       DEPENDENCIES 2.0      ")
-    print("=============================")
-    print("")
-    if not msg == None:
-        print(msg)
-        print("")
-    print("1. Get dependencies")
-    print("2. Pack dependencies")
-    print("3. Compile shader")
-    print("4. Deploy engine")
-    print("0. Close")
+def trigger(id):
     try:
-        id = int(input())
         if id == 0:
-            break
+            exit(0)
         elif id == 1:
             print("Downloading")
             urllib.request.urlretrieve("http://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1",
@@ -56,7 +42,7 @@ while True:
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()
-            continue
+            return
         elif id == 2:
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
@@ -71,8 +57,36 @@ while True:
             dependencies_file.close()
             msg = "Finished!"
             clear()
+            return
+    except not SystemExit:
+        clear()
+        print(traceback.format_exc())
+        return
+
+
+if len(sys.argv) > 1:
+    for ids in sys.argv:
+        try:
+            trigger(int(ids))
+        except ValueError:
             continue
-    except:
+
+while True:
+    print("=============================")
+    print("       DEPENDENCIES 2.0      ")
+    print("=============================")
+    print("")
+    if not msg == None:
+        print(msg)
+        print("")
+    print("1. Get dependencies")
+    print("2. Pack dependencies")
+    print("3. Compile shader")
+    print("4. Deploy engine")
+    print("0. Close")
+    try:
+        trigger(int(input()))
+    except not SystemExit:
         clear()
         print(traceback.format_exc())
         continue
