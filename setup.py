@@ -15,7 +15,8 @@ msg = None
 
 
 def wrt(vk, src):
-    print(".", end="", flush=True)
+    sys.stdout.write(".")
+    sys.stdout.flush()
     dependencies_file.write(vk + src, arcname=src, compress_type=zipfile.ZIP_DEFLATED)
 
 
