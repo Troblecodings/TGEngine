@@ -23,8 +23,6 @@ Now you can open the VisualStudios Project file and compile the Engine.
 | Windows (Visual Studio 2017) | [![Windows Build status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true)](https://ci.appveyor.com/project/MrTroble/tgengine) |
 | Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg) |
 
-<h4>Note</h4>
-The appveyor pipeline is currently broken!
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
@@ -37,11 +35,9 @@ Current built version: <strong>2019.2</strong>
 <br>
 <br>
 For image loading and font loading is [STB](https://github.com/nothings/stb) currently being used.<br>
-This is planned to be replaced in the future.
-
-<br>
-SIDE NOTE: The file library [TGVL](https://github.com/Troblecodings/TGVertex) maybe needed in the future to compile newer versions of the TGEngine 
-but currently it is not supported!
+This is planned to be replaced in the future.<br>
+*SIDE NOTE: The file library [TGVL](https://github.com/Troblecodings/TGVertex) maybe needed in the future to compile newer versions of the TGEngine 
+but currently it is not supported!*
 
 <h3>License</h3>
 
@@ -49,7 +45,7 @@ Can be found in the [License File](https://github.com/MrTroble/TGEngine/blob/mas
 <br>
 <h4>Library</h4>
 
-Every library used is Open-Source.<br>
+Every library used is Open-Source or free to use.<br>
 <br>
 STB is published under a [Public domain](https://github.com/nothings/stb) License (or MIT)<br>
 LunarG's Vulkan-SDK is published under [Creative Commons](https://creativecommons.org/licenses/by-nd/4.0/), see [LunarG.com](https://vulkan.lunarg.com/doc/sdk/1.1.82.0/windows/getting_started.html)<br>
