@@ -9,6 +9,13 @@ It should be or better to say it will be a Game Engine, hopefully...
 still working on it...<br>
 For updates please follow the [official twitter account of Troblecodings](https://twitter.com/Troblecodings)
 
+<h3>Build your own</h3>
+
+To compile your own build you have to install the dependencies.<br>
+To do so you need tu run <strong>python setup.py</strong>.<br>
+There you have to select <strong>1 Get dependencies</strong><br>
+Now you can open the VisualStudios Project file and compile the Engine.
+
 <h3>Build Status</h3>
 
 | Platform | Build Status |
@@ -16,26 +23,25 @@ For updates please follow the [official twitter account of Troblecodings](https:
 | Windows (Visual Studio 2017) | [![Windows Build status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true)](https://ci.appveyor.com/project/MrTroble/tgengine) |
 | Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg) |
 
-<h4>Note<h4>
+<h4>Note</h4>
 The appveyor pipeline is currently broken!
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current built version: <strong>1.1.85.0</strong><br>
+Current built version: <strong>1.1.92.1</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>
-and Autodesk [FBX SDK](https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2019-0)<br>
-Current built version: <strong>2019.0</strong>
+and Autodesk [FBX SDK](https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2019-2)<br>
+Current built version: <strong>2019.2</strong>
 <br>
 <br>
 For image loading and font loading is [STB](https://github.com/nothings/stb) currently being used.<br>
 This is planned to be replaced in the future.
 
-The file library [TGVL](https://github.com/Troblecodings/TGVertex) will be needed in the future to compile newer versions of the TGEngine
 <br>
-<br>
-<b>NOTE:</b> GLFW3 was removed because of linker errors
+SIDE NOTE: The file library [TGVL](https://github.com/Troblecodings/TGVertex) maybe needed in the future to compile newer versions of the TGEngine 
+but currently it is not supported!
 
 <h3>License</h3>
 

@@ -67,6 +67,9 @@
     <Filter Include="Headerdateien\gamecontent">
       <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="docs">
+      <UniqueIdentifier>{1439cb04-66f8-4e9a-8b9c-6b9ca3ad36a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -361,6 +364,14 @@
     <None Include="Resources\vertexshader.spv">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\Layers.txt" />
+    <None Include="..\docs\_config.yml">
+      <Filter>docs</Filter>
+    </None>
+    <None Include="..\docs\index.html">
+      <Filter>docs</Filter>
+    </None>
+    <None Include="resources\Layers.txt">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
 </Project>
