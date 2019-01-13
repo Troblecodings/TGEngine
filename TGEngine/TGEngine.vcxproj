@@ -113,9 +113,9 @@
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
     <ClCompile Include="resources\ShaderData.cpp" />
+    <None Include="..\setup.py" />
     <None Include="resources\Fragmentshader.glsl" />
     <None Include="resources\Fragmentshader.spv" />
-    <None Include="resources\ShaderBuildscript.py" />
     <None Include="resources\Vertexshader.glsl" />
     <None Include="resources\Vertexshader.spv" />
     <None Include="resources\Layers.txt" />

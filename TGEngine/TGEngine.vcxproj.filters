@@ -352,9 +352,6 @@
     <None Include="Resources\fragmentshader.spv">
       <Filter>resources</Filter>
     </None>
-    <None Include="Resources\ShaderBuildscript.py">
-      <Filter>resources</Filter>
-    </None>
     <None Include="Resources\vertexshader.glsl">
       <Filter>resources</Filter>
     </None>
@@ -362,5 +359,8 @@
       <Filter>resources</Filter>
     </None>
     <None Include="resources\Layers.txt" />
+    <None Include="..\setup.py">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
 </Project>
