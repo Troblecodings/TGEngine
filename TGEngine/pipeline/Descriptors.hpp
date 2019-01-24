@@ -1,12 +1,13 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
+#include "../Stdbase.hpp"
 #include "Device.hpp"
-#include "..\pipeline\buffer\Memory.hpp"
+#include "../pipeline/buffer/Memory.hpp"
+#include "../vlib/VulkanDescriptor.hpp"
 
 extern VkDescriptorPool descriptor_pool;
-extern VkDescriptorSet descriptor_set;
-extern VkDescriptorSetLayout desc_layout;
+extern std::vector<VkDescriptorSet> descriptor_set;
+extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
 extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
 
 extern uint32_t uniform_count;
@@ -22,6 +23,7 @@ struct Descriptor {
 	VkSampler image_sampler;
 	VkImageView image_view;
 	OPT uint32_t array_index = 0;
+	OPT size_t descriptor_set = 0;
 
 	OUTPUT
     uint32_t binding;
@@ -35,8 +37,11 @@ void addDescriptor(Descriptor* desc);
 SINCE(0, 0, 2)
 void createPipelineLayout();
 
-SINCE(0, 0, 2)
-void createAllDescriptorSets();
+SINCE(0, 0, 4)
+void initDescriptors();
+
+SINCE(0, 0, 4)
+void createDescriptorSet();
 
 SINCE(0, 0, 2)
 void updateDescriptorSet(Descriptor* desc, uint32_t size);

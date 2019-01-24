@@ -58,7 +58,8 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();
-	createAllDescriptorSets();
+	initDescriptors();
+	createDescriptorSet();
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
 	createCommandBuffer();

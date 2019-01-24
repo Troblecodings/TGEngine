@@ -1,6 +1,6 @@
 #include "Circle.hpp"
 
-void drawCircle(TGVertex pos, float radius, int max_verticies, VertexBuffer* vert, IndexBuffer* ibuffer) {
+void drawCircle(TGVertex pos, float radius, size_t max_verticies, VertexBuffer* vert, IndexBuffer* ibuffer) {
 	double angle = PIx2 / max_verticies, l_x, l_y;
 
 	for (size_t i = 0; i < max_verticies + 1; i++)

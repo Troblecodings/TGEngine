@@ -3,6 +3,7 @@
 
 layout(binding = 1) uniform MATRIX_BLOCK{
     mat4 matrix;
+	vec3 ldir 
 } matrix_block;
 
 layout(location = 0) in vec3 posIn;
@@ -24,8 +25,8 @@ void main(){
 	index_id = indx;
 	uvOut = uv;
 
-	float cosAngIncidence = dot(normalize(normalIn), vec3(1, 0, 1));
+	float cosAngIncidence = ldir * normalIn;
     cosAngIncidence = clamp(cosAngIncidence, 0, 1);
 
-	colorOut = vec4(1, 1, 1, 1) * colorIn * cosAngIncidence;
+	colorOut = colorIn * cosAngIncidence;
 }

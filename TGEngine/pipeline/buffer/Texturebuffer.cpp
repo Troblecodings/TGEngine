@@ -131,7 +131,7 @@ void addTextures() {
 	VkWriteDescriptorSet descriptor_writes = {
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 		nullptr,
-		descriptor_set,
+		descriptor_set[0],
 		texture_descriptor.binding,
 		0,
 		MAX_TEXTURES,

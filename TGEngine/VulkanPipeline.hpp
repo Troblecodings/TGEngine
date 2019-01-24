@@ -1,0 +1,19 @@
+#pragma once
+
+#include "Stdbase.hpp"
+#include "pipeline/PrePipeline.hpp"
+
+extern VkViewport vlib_viewport;
+extern VkRect2D vlib_scissor;
+extern VkPipelineViewportStateCreateInfo vlib_viewport_state;
+extern VkVertexInputBindingDescription vlib_vertex_buffer_binding;
+extern VkPipelineVertexInputStateCreateInfo vlib_vertex_input_state;
+extern VkPipelineInputAssemblyStateCreateInfo vlib_input_assembly_state;
+extern VkPipelineTessellationStateCreateInfo vlib_tessellation_state;
+extern VkPipelineRasterizationStateCreateInfo vlib_rasterization_state;
+extern VkPipelineMultisampleStateCreateInfo vlib_multisample_state;
+extern VkPipelineColorBlendAttachmentState vlib_color_blend_attachment_state;
+extern VkPipelineColorBlendStateCreateInfo vlib_color_blend_state;
+extern VkPipelineDepthStencilStateCreateInfo vlib_depth_stencil_state;
+extern VkPipelineLayoutCreateInfo vlib_layout_info;
+extern VkGraphicsPipelineCreateInfo vlib_graphics_pipeline_create_info;

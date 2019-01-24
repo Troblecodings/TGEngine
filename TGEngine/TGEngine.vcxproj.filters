@@ -216,6 +216,12 @@
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanPipeline.hpp">
+      <Filter>Headerdateien\vlib</Filter>
+    </ClInclude>
+    <ClInclude Include="vlib\VulkanDescriptor.hpp">
+      <Filter>Headerdateien\vlib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -344,6 +350,12 @@
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanPipeline.cpp">
+      <Filter>Quelldateien\vlib</Filter>
+    </ClCompile>
+    <ClCompile Include="vlib\VulkanDescriptor.cpp">
+      <Filter>Quelldateien\vlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -368,9 +380,6 @@
       <Filter>docs</Filter>
     </None>
     <None Include="resources\Layers.txt">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="..\setup.py">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>

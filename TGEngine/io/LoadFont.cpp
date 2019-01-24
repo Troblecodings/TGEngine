@@ -15,7 +15,7 @@ void loadfont(Font* font) {
 	stbtt_BakeFontBitmap(temp_buffer, 0, font->height, tempbitmap, font->texture.width, font->texture.height, 0, 256, font->cdata);
 	delete[] temp_buffer;
 
-	for (size_t i = 0; i < font->texture.width * font->texture.height; i++)
+	for (size_t i = 0; i < (size_t)(font->texture.width * font->texture.height); i++)
 	{
 		font->texture.image_data[i * 4] = tempbitmap[i];
 		font->texture.image_data[i * 4 + 1] = tempbitmap[i];
