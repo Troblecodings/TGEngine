@@ -29,3 +29,16 @@ VkDescriptorPoolSize vlib_descriptor_pool_size = {
 	VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 	0
 };
+
+VkWriteDescriptorSet vlib_descriptor_writes = {
+		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+		nullptr,
+		nullptr,
+		0,
+		0,
+		1,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		nullptr,
+		VK_NULL_HANDLE,
+		nullptr
+};

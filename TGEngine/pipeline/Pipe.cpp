@@ -4,7 +4,6 @@ std::vector<VkPipeline> pipelines;
 std::vector<VkPipelineLayout> layouts;
 
 void createPipeline() {
-	TG_VECTOR_APPEND_NORMAL(pipelines, VkPipeline())
 	TG_VECTOR_APPEND_NORMAL(layouts, VkPipelineLayout())
 
 	Window* win = window_list[0];
@@ -15,8 +14,11 @@ void createPipeline() {
 	vlib_layout_info.pSetLayouts = descriptor_set_layouts.data();
 	last_result = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
 
+	vlib_graphics_pipeline_create_info.stageCount = (uint32_t)shaders.size();
+	vlib_graphics_pipeline_create_info.pStages = shaders.data();
 	vlib_graphics_pipeline_create_info.layout = layouts[last_size];
 	vlib_graphics_pipeline_create_info.renderPass = render_pass;
+	TG_VECTOR_APPEND_NORMAL(pipelines, VkPipeline())
 	last_result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlib_graphics_pipeline_create_info, nullptr, &pipelines[last_size]);
 	HANDEL(last_result);
 }
