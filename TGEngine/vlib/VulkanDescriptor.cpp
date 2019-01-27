@@ -20,7 +20,7 @@ VkDescriptorPoolCreateInfo vlib_descriptor_pool_create_info = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 	nullptr,
 	VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-	10,
+	1,
 	0,
 	nullptr
 };
@@ -39,6 +39,6 @@ VkWriteDescriptorSet vlib_descriptor_writes = {
 		1,
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 		nullptr,
-		VK_NULL_HANDLE,
+		nullptr,
 		nullptr
 };

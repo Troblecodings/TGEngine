@@ -29,6 +29,8 @@ void addDescriptor(Descriptor* descriptor) {
 
 void createPipelineLayout() {
 	TG_VECTOR_APPEND_NORMAL(descriptor_set_layouts, VK_NULL_HANDLE)
+	vlib_descriptor_set_layout_create_info.bindingCount = (uint32_t)descriptor_bindings.size();
+	vlib_descriptor_set_layout_create_info.pBindings = descriptor_bindings.data();
 	last_result = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[last_result]);
 	HANDEL(last_result)
 }
@@ -41,14 +43,14 @@ void initDescriptors() {
 	{
 		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		vlib_descriptor_pool_size.descriptorCount = uniform_count;
-		memcpy_s(sizes, sizeof(VkDescriptorPoolSize), &vlib_descriptor_pool_size, sizeof(VkDescriptorPoolSize));
+		sizes[0] = vlib_descriptor_pool_size;
 	}
 
 	if (image_sampler > 0)
 	{
 		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		vlib_descriptor_pool_size.descriptorCount = image_sampler;
-		memcpy_s(&sizes[1], sizeof(VkDescriptorPoolSize), &vlib_descriptor_pool_size, sizeof(VkDescriptorPoolSize));
+		sizes[1] = vlib_descriptor_pool_size;
 	}
 
 	vlib_descriptor_pool_create_info.pPoolSizes = sizes;
@@ -61,26 +63,41 @@ void initDescriptors() {
 void createDescriptorSet() {
 	TG_VECTOR_APPEND_NORMAL(descriptor_set, VK_NULL_HANDLE)
 
-	vlib_allocate_info.descriptorSetCount = (uint32_t)descriptor_set_layouts.size();
-	vlib_allocate_info.pSetLayouts = descriptor_set_layouts.data();
+	vlib_allocate_info.descriptorSetCount = 1;
+	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[last_result];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_result]);
 	HANDEL(last_result)
 }
 
 void updateDescriptorSet(Descriptor* desc, uint32_t size) {
-	vlib_descriptor_writes.descriptorType = desc->type;
-	vlib_descriptor_writes.dstArrayElement = desc->array_index;
-	vlib_descriptor_writes.dstBinding = desc->binding;
-	vlib_descriptor_writes.dstSet = descriptor_set[desc->descriptor_set];
+	VkWriteDescriptorSet descriptor_writes = {
+		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+		nullptr,
+		nullptr,
+		0,
+		0,
+		1,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		nullptr,
+		nullptr,
+		nullptr
+	};
+
+	descriptor_writes.descriptorType = desc->type;
+	descriptor_writes.dstArrayElement = desc->array_index;
+	descriptor_writes.dstBinding = desc->binding;
+	descriptor_writes.descriptorCount = desc->count;
+	descriptor_writes.dstSet = descriptor_set[desc->descriptor_set];
 
 	if (desc->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
 		desc->buffer_info = {
 			buffers[desc->buffer],
 			0ULL,
-			size
+			size,
 		};
 
-		vlib_descriptor_writes.pBufferInfo = &desc->buffer_info;
+		descriptor_writes.pImageInfo = nullptr;
+		descriptor_writes.pBufferInfo = &desc->buffer_info;
 	}
 	else if (desc->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
 		desc->desc_image_info = {
@@ -89,10 +106,12 @@ void updateDescriptorSet(Descriptor* desc, uint32_t size) {
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
 		
-		vlib_descriptor_writes.pImageInfo = &desc->desc_image_info;
+		descriptor_writes.pBufferInfo = nullptr;
+		descriptor_writes.pImageInfo = &desc->desc_image_info;
 	}
 
-	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
+
 }
 
 void destroyDescriptors() {
