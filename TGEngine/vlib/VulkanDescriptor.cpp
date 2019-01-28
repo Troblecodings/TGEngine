@@ -11,7 +11,7 @@ VkDescriptorSetLayoutCreateInfo vlib_descriptor_set_layout_create_info = {
 VkDescriptorSetAllocateInfo vlib_allocate_info = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 	nullptr,
-	nullptr,
+	VK_NULL_HANDLE,
 	1,
 	VK_NULL_HANDLE
 };
@@ -33,7 +33,7 @@ VkDescriptorPoolSize vlib_descriptor_pool_size = {
 VkWriteDescriptorSet vlib_descriptor_writes = {
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 		nullptr,
-		nullptr,
+		VK_NULL_HANDLE,
 		0,
 		0,
 		1,

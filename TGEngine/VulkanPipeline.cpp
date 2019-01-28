@@ -163,8 +163,8 @@ VkGraphicsPipelineCreateInfo vlib_graphics_pipeline_create_info = {
 	&vlib_depth_stencil_state,
 	&vlib_color_blend_state,
 	nullptr,
-	nullptr,
-	nullptr,
+	VK_NULL_HANDLE,
+	VK_NULL_HANDLE,
 	0,
 	VK_NULL_HANDLE,
 	0
