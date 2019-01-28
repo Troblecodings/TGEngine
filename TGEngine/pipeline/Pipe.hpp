@@ -7,7 +7,7 @@
 #include <vector>
 #include "window\Window.hpp"
 #include "Descriptors.hpp"
-#include "../VulkanPipeline.hpp"
+#include "../vlib/VulkanPipeline.hpp"
 
 extern std::vector<VkPipeline> pipelines;
 extern std::vector<VkPipelineLayout> layouts;

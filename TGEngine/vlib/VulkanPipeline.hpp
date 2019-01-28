@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Stdbase.hpp"
-#include "pipeline/PrePipeline.hpp"
+#include "../Stdbase.hpp"
+#include "../pipeline/PrePipeline.hpp"
 
 extern VkViewport vlib_viewport;
 extern VkRect2D vlib_scissor;

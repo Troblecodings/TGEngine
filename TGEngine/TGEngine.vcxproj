@@ -67,7 +67,7 @@
     <ClInclude Include="vlib\VulkanBuffer.hpp" />
     <ClInclude Include="vlib\VulkanDescriptor.hpp" />
     <ClInclude Include="vlib\VulkanImage.hpp" />
-    <ClInclude Include="VulkanPipeline.hpp" />
+    <ClInclude Include="vlib\VulkanPipeline.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drawlib\Circle.cpp" />
@@ -112,7 +112,7 @@
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
     <ClCompile Include="vlib\VulkanDescriptor.cpp" />
     <ClCompile Include="vlib\VulkanImage.cpp" />
-    <ClCompile Include="VulkanPipeline.cpp" />
+    <ClCompile Include="vlib\VulkanPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />

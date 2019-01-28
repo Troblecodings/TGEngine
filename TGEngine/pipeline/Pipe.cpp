@@ -14,6 +14,9 @@ void createPipeline() {
 	vlib_layout_info.pSetLayouts = descriptor_set_layouts.data();
 	last_result = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
 
+	vlib_vertex_input_state.vertexAttributeDescriptionCount = (uint32_t)description_attributes.size();
+	vlib_vertex_input_state.pVertexAttributeDescriptions = description_attributes.data();
+
 	vlib_graphics_pipeline_create_info.stageCount = (uint32_t)shaders.size();
 	vlib_graphics_pipeline_create_info.pStages = shaders.data();
 	vlib_graphics_pipeline_create_info.layout = layouts[last_size];
@@ -32,4 +35,6 @@ void destroyPipeline() {
 	{
 		vkDestroyPipeline(device, var, nullptr);
 	}
+	layouts.clear();
+	pipelines.clear();
 }

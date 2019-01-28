@@ -32,14 +32,10 @@ void createShader() {
 }
 
 void createShaderInput(uint32_t location, uint32_t offset, VkFormat format) {
-	size_t size = description_attributes.size();
-	description_attributes.resize(size + 1);
-	description_attributes[size] = {
-		location,
-		0,
-		format,
-		offset
-	};
+	TG_VECTOR_APPEND_NORMAL(description_attributes, VkVertexInputAttributeDescription())
+	description_attributes[last_size].location = location;
+	description_attributes[last_size].offset = offset;
+	description_attributes[last_size].format = format;
 }
 
 void destroyShaders() {

@@ -216,10 +216,10 @@
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanPipeline.hpp">
+    <ClInclude Include="vlib\VulkanDescriptor.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
-    <ClInclude Include="vlib\VulkanDescriptor.hpp">
+    <ClInclude Include="vlib\VulkanPipeline.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
   </ItemGroup>
@@ -350,10 +350,10 @@
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanPipeline.cpp">
+    <ClCompile Include="vlib\VulkanDescriptor.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
-    <ClCompile Include="vlib\VulkanDescriptor.cpp">
+    <ClCompile Include="vlib\VulkanPipeline.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
   </ItemGroup>
