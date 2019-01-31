@@ -21,21 +21,18 @@ struct Descriptor {
 	uint32_t buffer;
 
 	VkSampler image_sampler;
-	VkImageView image_view;
+	VkImageView* image_view;
 	OPT uint32_t array_index = 0;
 	OPT size_t descriptor_set = 0;
 
 	OUTPUT
     uint32_t binding;
-	OPT VkDescriptorImageInfo desc_image_info;
+	OPT VkDescriptorImageInfo* desc_image_info;
 	OPT VkDescriptorBufferInfo buffer_info;
 };
 
 SINCE(0, 0, 2)
 void addDescriptor(Descriptor* desc);
-
-SINCE(0, 0, 2)
-void createPipelineLayout();
 
 SINCE(0, 0, 4)
 void initDescriptors();

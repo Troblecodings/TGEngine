@@ -2,7 +2,6 @@
 
 uint32_t image_index;
 VkFence fence;
-std::vector<VkPipelineStageFlags> stage_flags = { VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT };
 
 void createSemaphores() {
 	VkFenceCreateInfo info = {
@@ -29,7 +28,7 @@ void submit() {
 		nullptr,
 		0,
 	    nullptr,
-		stage_flags.data(),
+		nullptr,
 		1,
 		&command_buffers[image_index],
 		0,

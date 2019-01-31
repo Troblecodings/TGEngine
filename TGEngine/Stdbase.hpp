@@ -26,7 +26,7 @@ SINCE(0, 0, 4)
 SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
-std::cout << "FAILED WITH ERROR: " << result << std::endl;\
+std::cout << "FAILED IN " << __FILE__ << " - " << __LINE__ << " WITH ERROR: " << result << std::endl;\
 exit(result);\
 }
 

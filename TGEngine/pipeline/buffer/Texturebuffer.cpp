@@ -36,13 +36,13 @@ void initAllTextures() {
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
-		texture_descriptor = {
-			VK_SHADER_STAGE_FRAGMENT_BIT,
-			MAX_TEXTURES,
-			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-			VK_NULL_HANDLE,
-			tex_image_sampler,
-			NULL
+	texture_descriptor = {
+		VK_SHADER_STAGE_FRAGMENT_BIT,
+		MAX_TEXTURES,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		VK_NULL_HANDLE,
+		tex_image_sampler,
+		NULL
 	};
 	addDescriptor(&texture_descriptor);
 
@@ -112,35 +112,15 @@ void initAllTextures() {
 
 void addTextures() {
 	uint32_t index = 0;
-	std::vector<VkDescriptorImageInfo> sampler_array(MAX_TEXTURES);
+	texture_descriptor.image_view = new VkImageView[MAX_TEXTURES];
 	for each (Texture* tex in texture_buffers) {
-		sampler_array[index] = {
-			tex_image_sampler,
-			tex->image_view,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		};
+		texture_descriptor.image_view[index] = tex->image_view;
 		index++;
 	}
 	for (; index < MAX_TEXTURES; index++) {
-		sampler_array[index] = {
-			tex_image_sampler,
-			texture_buffers[0]->image_view,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		};
+		texture_descriptor.image_view[index] = texture_buffers[0]->image_view;
 	}
-	VkWriteDescriptorSet descriptor_writes = {
-		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-		nullptr,
-		descriptor_set[0],
-		texture_descriptor.binding,
-		0,
-		MAX_TEXTURES,
-		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-		sampler_array.data(),
-		nullptr,
-		nullptr
-	};
-	vkUpdateDescriptorSets(device, 1, &descriptor_writes, 0, nullptr);
+	updateDescriptorSet(&texture_descriptor, sizeof(VkImageView) * MAX_TEXTURES);
 }
 
 void destroyBufferofTexture(Texture* tex) {

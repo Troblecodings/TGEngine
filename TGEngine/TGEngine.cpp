@@ -43,8 +43,8 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createShaderInput(4, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 	initAllTextures();
 	initCameras();
+	initDescriptors();
 
-	createPipelineLayout();
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
@@ -58,7 +58,6 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();
-	initDescriptors();
 	createDescriptorSet();
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 

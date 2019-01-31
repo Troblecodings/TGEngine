@@ -25,12 +25,13 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		last_result = vkEnumerateInstanceLayerProperties(&count, usable_layers.data());
 		HANDEL(last_result)
 		for each(VkLayerProperties layer in usable_layers) {
+			OUT_LV_DEBUG("Available " << layer.layerName)
 			for each(const char* name in layers_to_enable) {
 				if (strcmp(layer.layerName, name) == 0) {
 					size_t size = enable_layer.size();
 					enable_layer.resize(size + 1);
 					enable_layer[size] = name;
-					OUT_LV_DEBUG(name)
+					OUT_LV_DEBUG("Active ")
 					break;
 				}
 			}
@@ -54,13 +55,14 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		std::vector<VkExtensionProperties> usable_extensions(count);
 		last_result = vkEnumerateInstanceExtensionProperties(nullptr, &count, usable_extensions.data());
 		HANDEL(last_result)
-		for each(VkExtensionProperties extension in usable_extensions) {			
+		for each(VkExtensionProperties extension in usable_extensions) {	
+			OUT_LV_DEBUG("Available " << extension.extensionName)
 			for each(const char* name in extensions_to_enable) {
 				if (strcmp(extension.extensionName, name) == 0) {
 					size_t size = enable_extensions.size();
 					enable_extensions.resize(size + 1);
 					enable_extensions[size] = name;
-					OUT_LV_DEBUG(name)
+					OUT_LV_DEBUG("Active " << name)
 					break;
 				}
 			}

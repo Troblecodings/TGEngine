@@ -1,16 +1,14 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
+#include "../Stdbase.hpp"
 #include "Device.hpp"
-#include "window\Window.hpp"
+#include "window/Window.hpp"
 #include "Swapchain.hpp"
 #include "CommandBuffer.hpp"
-#include "buffer\IndexBuffer.hpp"
+#include "buffer/IndexBuffer.hpp"
 
-extern std::vector<VkPipelineStageFlags> stage_flags;
 extern uint32_t image_index;
 extern VkFence fence;
-extern UniformBuffer uniform_scale_buffer;
 
 SINCE(0, 0, 3)
 void startdraw();
