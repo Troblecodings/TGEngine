@@ -38,6 +38,9 @@ SINCE(0, 0, 4)
 void initDescriptors();
 
 SINCE(0, 0, 4)
+void createDesctiptorLayout();
+
+SINCE(0, 0, 4)
 void createDescriptorSet();
 
 SINCE(0, 0, 2)

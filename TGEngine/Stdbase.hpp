@@ -6,6 +6,7 @@
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
+#undef VK_NO_PROTOTYPES
 #include <vulkan/vulkan.hpp>
 #include <vector>
 #include <string>
@@ -26,7 +27,7 @@ SINCE(0, 0, 4)
 SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
-std::cout << "FAILED IN " << __FILE__ << " - " << __LINE__ << " WITH ERROR: " << result << std::endl;\
+std::cout << "FAILED IN " << __FILE__ << " LINE " << __LINE__ << " WITH ERROR: " << result << std::endl;\
 exit(result);\
 }
 

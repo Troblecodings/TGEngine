@@ -15,7 +15,11 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 		#endif
 		"VK_LAYER_VALVE_steam_overlay",
 		"VK_LAYER_NV_optimus"
-		}, { });
+		}, { 
+#ifdef DEBUG
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+#endif
+		});
 
 	createWindowSurfaces();
 	createDevice({}, {});
@@ -45,6 +49,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	initCameras();
 	initDescriptors();
 
+	createDesctiptorLayout();
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();

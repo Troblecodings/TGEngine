@@ -379,8 +379,5 @@
     <None Include="..\docs\index.html">
       <Filter>docs</Filter>
     </None>
-    <None Include="resources\Layers.txt">
-      <Filter>resources</Filter>
-    </None>
   </ItemGroup>
 </Project>

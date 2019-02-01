@@ -10,7 +10,8 @@ uint32_t image_sampler;
 
 void addDescriptor(Descriptor* descriptor) {
 	TG_VECTOR_APPEND_NORMAL(descriptor_bindings, VkDescriptorSetLayoutBinding())
-	descriptor_bindings[descriptor->binding = (uint32_t)last_size] = {
+	descriptor->binding = (uint32_t)last_size;
+	descriptor_bindings[descriptor->binding] = {
 		descriptor->binding,
 		descriptor->type,
 		descriptor->count,
@@ -51,15 +52,17 @@ void initDescriptors() {
 	vlib_allocate_info.descriptorPool = descriptor_pool;
 }
 
-void createDescriptorSet() {
-	TG_VECTOR_APPEND_NORMAL(descriptor_set, VK_NULL_HANDLE)
-	TG_VECTOR_APPEND_NORMAL(descriptor_set_layouts, VK_NULL_HANDLE)
-	
+void createDesctiptorLayout() {
+	TG_VECTOR_APPEND_NORMAL(descriptor_set_layouts, VkDescriptorSetLayout())
+
 	vlib_descriptor_set_layout_create_info.bindingCount = (uint32_t)descriptor_bindings.size();
 	vlib_descriptor_set_layout_create_info.pBindings = descriptor_bindings.data();
 	last_result = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[last_result]);
 	HANDEL(last_result)
+}
 
+void createDescriptorSet() {
+	TG_VECTOR_APPEND_NORMAL(descriptor_set, VkDescriptorSet())
 	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[last_result];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_result]);
 	HANDEL(last_result)

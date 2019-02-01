@@ -88,7 +88,7 @@ VkPipelineMultisampleStateCreateInfo vlib_multisample_state = {
 	VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
 	nullptr,
 	0,
-	used_msaa_flag,
+	VK_SAMPLE_COUNT_2_BIT,
 	VK_FALSE,
 	1.0F,
 	nullptr,

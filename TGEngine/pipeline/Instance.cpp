@@ -2,6 +2,7 @@
 
 VkResult last_result;
 VkInstance instance;
+VkDebugUtilsMessengerEXT msger;
 
 void createInstance(std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable) {
 
@@ -28,10 +29,8 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 			OUT_LV_DEBUG("Available " << layer.layerName)
 			for each(const char* name in layers_to_enable) {
 				if (strcmp(layer.layerName, name) == 0) {
-					size_t size = enable_layer.size();
-					enable_layer.resize(size + 1);
-					enable_layer[size] = name;
-					OUT_LV_DEBUG("Active ")
+					TG_VECTOR_APPEND_NORMAL(enable_layer, name)
+					OUT_LV_DEBUG("Active " << name)
 					break;
 				}
 			}
@@ -41,10 +40,8 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	}
 
     #ifdef _WIN32
-		count = (uint32_t)extensions_to_enable.size();
-	    extensions_to_enable.resize(count + 2);
-		extensions_to_enable[count] = "VK_KHR_surface";
-		extensions_to_enable[count + 1] = "VK_KHR_win32_surface";
+		TG_VECTOR_APPEND_NORMAL(extensions_to_enable, VK_KHR_SURFACE_EXTENSION_NAME)
+		TG_VECTOR_APPEND_NORMAL(extensions_to_enable, VK_KHR_WIN32_SURFACE_EXTENSION_NAME)
     #endif
 
 	//Validation for the intance extensions
@@ -59,9 +56,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 			OUT_LV_DEBUG("Available " << extension.extensionName)
 			for each(const char* name in extensions_to_enable) {
 				if (strcmp(extension.extensionName, name) == 0) {
-					size_t size = enable_extensions.size();
-					enable_extensions.resize(size + 1);
-					enable_extensions[size] = name;
+					TG_VECTOR_APPEND_NORMAL(enable_extensions, name)
 					OUT_LV_DEBUG("Active " << name)
 					break;
 				}
@@ -84,7 +79,34 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	};
 	last_result = vkCreateInstance(&instance_create_info, nullptr, &instance);
 	HANDEL(last_result)
+
+#ifdef DEBUG
+	VkDebugUtilsMessengerCreateInfoEXT util_message = {
+		VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+		nullptr,
+		0,
+		VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT,
+		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		&callback_debug,
+		VK_NULL_HANDLE
+	};
+	PFN_vkCreateDebugUtilsMessengerEXT CreateDebugReportCallback = VK_NULL_HANDLE;
+	CreateDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	last_result = CreateDebugReportCallback(instance, &util_message, nullptr, &msger);
+	HANDEL(last_result)
+#endif
 }
+
+#ifdef DEBUG
+VkBool32 callback_debug(
+	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
+	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
+	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+	void *pUserData) {
+	OUT_LV_DEBUG(pCallbackData->pMessage)
+		return true;
+}
+#endif // DEBUG
 
 void destroyInstance() {
 	vkDestroyInstance(instance, nullptr);
