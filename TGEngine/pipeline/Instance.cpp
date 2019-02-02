@@ -87,7 +87,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		0,
 		VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT,
 		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
-		&callback_debug,
+		(PFN_vkDebugUtilsMessengerCallbackEXT)&callback_debug,
 		VK_NULL_HANDLE
 	};
 	PFN_vkCreateDebugUtilsMessengerEXT CreateDebugReportCallback = VK_NULL_HANDLE;
@@ -104,7 +104,7 @@ VkBool32 callback_debug(
 	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
 	void *pUserData) {
 	OUT_LV_DEBUG(pCallbackData->pMessage)
-		return true;
+		return VK_TRUE;
 }
 #endif // DEBUG
 

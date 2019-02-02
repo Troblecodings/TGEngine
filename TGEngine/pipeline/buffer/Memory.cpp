@@ -31,7 +31,7 @@ void allocateAllBuffers() {
 	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &device_memory);
 	HANDEL(last_result)
 	
-	for (int i = 0; i < buffers.size();i++) {
+	for (size_t i = 0; i < buffers.size();i++) {
 		last_result = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
 		HANDEL(last_result)
 	}
