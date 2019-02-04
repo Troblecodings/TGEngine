@@ -60,6 +60,9 @@ void init() {
 	createActor(&mesh2)->prePos(0, 1, 0)->applyPretransform();
 
 	createStaticCamera(&camera);
+
+	UIButton btn = UIButton();
+	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, btn)
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)

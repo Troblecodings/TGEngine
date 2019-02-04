@@ -11,6 +11,7 @@
 #include "game_content/Mesh.hpp"
 #include "game_content/FirstPersonCamera.hpp"
 #include "game_content/StaticCamera.hpp"
+#include "ui/UIButton.h"
 
 extern Texture tex1;
 extern Texture tex2;

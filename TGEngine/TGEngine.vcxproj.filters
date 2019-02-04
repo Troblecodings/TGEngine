@@ -70,6 +70,12 @@
     <Filter Include="docs">
       <UniqueIdentifier>{1439cb04-66f8-4e9a-8b9c-6b9ca3ad36a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\ui">
+      <UniqueIdentifier>{ee8d2418-0cdb-426d-93ec-e760d39155a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\ui">
+      <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -222,6 +228,12 @@
     <ClInclude Include="vlib\VulkanPipeline.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UI.h">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIButton.h">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -355,6 +367,12 @@
     </ClCompile>
     <ClCompile Include="vlib\VulkanPipeline.cpp">
       <Filter>Quelldateien\vlib</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UI.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIButton.cpp">
+      <Filter>Quelldateien\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

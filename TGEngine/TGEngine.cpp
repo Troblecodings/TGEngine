@@ -36,6 +36,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createTexture(&no_texture);
 
 	init();
+
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
@@ -50,6 +51,10 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	initDescriptors();
 
 	createDesctiptorLayout();
+	createDesctiptorLayout();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	createPipeline();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
@@ -64,7 +69,14 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 
 	allocateAllBuffers();
 	createDescriptorSet();
+	createDescriptorSet();
+	camera_uniform.descriptor.descriptor_set = 0;
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	ui_camera_uniform.descriptor.descriptor_set = 1;
+	ui_camera_uniform.descriptor.binding = 1;
+	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
+	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
 
 	createCommandBuffer();
 	main_buffer.start();
@@ -73,6 +85,8 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 		act.mesh->consume(&main_buffer, &index_buffer);
 	}
 	draw(&index_buffer, &main_buffer);
+	index_offset = index_buffer.index_count;
+	scene_component.draw(&index_buffer, &main_buffer);
 	main_buffer.end();
 	index_buffer.end();
 

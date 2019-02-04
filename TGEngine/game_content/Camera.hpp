@@ -60,6 +60,7 @@ struct Camera {
 };
 
 extern UniformBuffer camera_uniform; // The uniform buffer for the camera matrix
+extern UniformBuffer ui_camera_uniform; // The uniform buffer for the camera matrix in the UI
 extern std::vector<Camera*> cameras_on_scene; // Contains all cameras on the scene
 extern size_t active_camera; // The index of the active camera
 

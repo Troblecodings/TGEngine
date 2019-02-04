@@ -95,6 +95,9 @@ void recreateSwapchain() {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	createPipeline();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();

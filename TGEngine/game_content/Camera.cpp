@@ -2,6 +2,7 @@
 
 std::vector<Camera*> cameras_on_scene;
 UniformBuffer camera_uniform;
+UniformBuffer ui_camera_uniform;
 size_t active_camera = 0;
 
 void initCameras() {
@@ -11,6 +12,12 @@ void initCameras() {
 	};
 	createUniformBuffer(&camera_uniform);
 	if(cameras_on_scene.size() > 0)addListener(__impl_input_handle);
+
+	ui_camera_uniform = {
+    sizeof(glm::mat4),
+    { VK_SHADER_STAGE_VERTEX_BIT }
+    };
+	createUniformBuffer(&ui_camera_uniform);
 }
 
 void createCamera(Camera* camera) {

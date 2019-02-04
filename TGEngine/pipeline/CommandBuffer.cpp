@@ -4,6 +4,7 @@
 VkCommandPool command_pool;
 std::vector<VkCommandBuffer> command_buffers;
 VkDeviceSize offsets = 0;
+uint32_t index_offset = 0;
 bool started = true;
 
 void createCommandBuffer() {
@@ -198,9 +199,17 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t ind
 
 	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
 
-	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, descriptor_set.data(), 0, nullptr);
+	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
 
-	vkCmdDrawIndexed(buffer, ibuffer->index_count, 1, 0, 0, 0);
+	vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
+
+	if (index_offset < ibuffer->index_count) {
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
+
+		vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, index_offset, 0, 0);
+	}
 
 	vkCmdEndRenderPass(buffer);
 

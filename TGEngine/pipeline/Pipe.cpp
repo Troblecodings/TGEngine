@@ -10,8 +10,8 @@ void createPipeline() {
 	vlib_scissor.extent.height = (uint32_t) (vlib_viewport.height = (float) win->height);
 	vlib_scissor.extent.width = (uint32_t) (vlib_viewport.width = (float) win->width);
 
-	vlib_layout_info.setLayoutCount = (uint32_t) descriptor_set_layouts.size();
-	vlib_layout_info.pSetLayouts = descriptor_set_layouts.data();
+	vlib_layout_info.setLayoutCount = 1;
+	vlib_layout_info.pSetLayouts = &descriptor_set_layouts[last_size];
 	last_result = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
 	HANDEL(last_result);
 

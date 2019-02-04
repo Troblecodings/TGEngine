@@ -30,5 +30,4 @@ void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size) {
 	mapMemory(buffer->index, &buffer->memory);
 	memcpy(buffer->memory, input, size);
 	unmapMemory();
-	updateDescriptorSet(&buffer->descriptor, size);
 }
