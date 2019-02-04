@@ -4,7 +4,12 @@
 
 struct UIButton : UIComponent
 {
-	UIButton();
+	UIButton(Font* font, glm::vec4 rect, glm::vec4 color, char* string);
+
+	glm::vec4 rect;
+	glm::vec4 color;
+	char* string;
+	Font* font;
 };
 
-void drawButton(UIComponent* comp, IndexBuffer* idx, VertexBuffer* vert);
+void drawButton(void* comp, IndexBuffer* idx, VertexBuffer* vert);

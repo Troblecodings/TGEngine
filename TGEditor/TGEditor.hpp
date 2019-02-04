@@ -19,6 +19,7 @@ extern Mesh mesh;
 extern Mesh mesh2;
 extern Font arial;
 extern Camera camera;
+extern UIButton btn;
 
 struct Editor : App
 {

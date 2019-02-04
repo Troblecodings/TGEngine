@@ -6,6 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
+UIButton btn = UIButton(&arial, { -0.8, -0.8, 0.2, 0.2 }, { 0, 0, 0, 0.5 }, "Play");
 
 int main() {
 	Editor editor = Editor();
@@ -61,8 +62,7 @@ void init() {
 
 	createStaticCamera(&camera);
 
-	UIButton btn = UIButton();
-	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, btn)
+	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, &btn)
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)

@@ -19,6 +19,7 @@ SINCE(0, 0, 4)
 //Debug error codes
 USAGE_DEBUG
 #define TG_ERR_MESH_NULL_IN_ACTOR -1001
+#define TG_ERR_UI_COMPONENT_NULL -1002
 //end
 
 #define ASSERT_NONE_NULL_DB(ptr, msg, error) if(!ptr) { std::cout << msg << std::endl; TGERROR(error) }

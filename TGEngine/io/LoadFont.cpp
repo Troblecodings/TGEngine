@@ -29,33 +29,33 @@ void loadfont(Font* font) {
 void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
 	vert.position.x /= multi;
 	vert.position.y /= multi;
-	for (size_t i = strlen(text); i > -1; i--)
+	while (*text)
 	{
 		stbtt_aligned_quad quad;
-		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, text[i], &vert.position.x, &vert.position.y, &quad, 0);
+		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &vert.position.x, &vert.position.y, &quad, 0);
 		uint32_t idcount = (uint32_t)buffer->count_of_points;
 		buffer->add({
 			{ quad.x0 * multi, quad.y0 * multi, vert.position.z},
-			vert.color,
-			{ quad.s1, quad.t0 },
-			this->texture.index
-			});
-		buffer->add({
-			{ quad.x1 * multi, quad.y0 * multi, vert.position.z },
-			vert.color,
-			{ quad.s0, quad.t0 },
-			this->texture.index
-			});
-		buffer->add({
-			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s0, quad.t1 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x0 * multi, quad.y1 * multi, vert.position.z },
+			{ quad.x1 * multi, quad.y0 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t1 },
+			this->texture.index
+			});
+		buffer->add({
+			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
+			vert.color,
+			{ quad.s1, quad.t0 },
+			this->texture.index
+			});
+		buffer->add({
+			{ quad.x0 * multi, quad.y1 * multi, vert.position.z },
+			vert.color,
+			{ quad.s0, quad.t0 },
 			this->texture.index
 			});
 		ibuffer->addIndex(idcount);
@@ -64,5 +64,6 @@ void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuff
 		ibuffer->addIndex(idcount);
 		ibuffer->addIndex(idcount + 2);
 		ibuffer->addIndex(idcount + 3);
+		text++;
 	}
 }
