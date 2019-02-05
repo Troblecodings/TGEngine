@@ -75,7 +75,7 @@ void destroyColorResouce() {
 	vkDestroyImage(device, color_image, nullptr);
 }
 
-void recreateSwapchain() {
+void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
@@ -95,17 +95,19 @@ void recreateSwapchain() {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
-	vlib_rasterization_state.cullMode = 0;
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
 	createPipeline();
-	vlib_rasterization_state.cullMode = 0;
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
 	createCommandBuffer();
 
-	multiplier = -(window_list[0]->width / (float)window_list[0]->height);
+	multiplier = (window_list[0]->width / (float)window_list[0]->height);
 	fillUniformBuffer(&ui_camera_uniform, &glm::scale(glm::mat4(1.0f), { 1, multiplier, 1 }), sizeof(glm::mat4));
 	updateCamera(window_list[0]->width, window_list[0]->height);
+
+	fillCommandBuffer(ibuffer, vbuffer);
 }
 
 void destroySwapchain() {

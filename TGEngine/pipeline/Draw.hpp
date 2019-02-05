@@ -11,13 +11,13 @@ extern uint32_t image_index;
 extern VkFence fence;
 
 SINCE(0, 0, 3)
-void startdraw();
+void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
 
 SINCE(0, 0, 3)
-void present();
+void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
 
 SINCE(0, 0, 1)
-void submit();
+void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
 
 SINCE(0, 0, 1)
 void createSemaphores();

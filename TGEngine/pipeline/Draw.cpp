@@ -12,13 +12,13 @@ void createSemaphores() {
 	vkCreateFence(device, &info, nullptr, &fence);
 }
 
-void startdraw() {
+void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	last_result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
 	HANDEL_RECREATE(last_result)
 	offsets = 0;
 }
 
-void submit() {	
+void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
 	HANDEL(last_result)
 	last_result = vkResetFences(device, 1, &fence);
@@ -38,7 +38,7 @@ void submit() {
 	HANDEL_RECREATE(last_result)
 }
 
-void present() {
+void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
 	HANDEL(last_result)
 	last_result = vkResetFences(device, 1, &fence);

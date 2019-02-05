@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Stdbase.hpp"
-#include "window\Window.hpp"
+#include "window/Window.hpp"
 #include "Device.hpp"
 #include "PrePipeline.hpp"
 #include "Framebuffer.hpp"
@@ -10,6 +10,8 @@
 #include "RenderPass.hpp"
 #include "DepthStencil.hpp"
 #include "../game_content/Camera.hpp"
+#include "buffer/IndexBuffer.hpp"
+#include "buffer/VertexBuffer.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkSurfaceCapabilitiesKHR surface_capabilities;
@@ -27,7 +29,7 @@ SINCE(0, 0, 4)
 void destroyColorResouce();
 
 SINCE(0, 0, 3)
-void recreateSwapchain();
+void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
 
 SINCE(0, 0, 1)
 void destroySwapchain();

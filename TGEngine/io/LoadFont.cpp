@@ -36,25 +36,25 @@ float Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuf
 		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &vert.position.x, &vert.position.y, &quad, 0);
 		uint32_t idcount = (uint32_t)buffer->count_of_points;
 		buffer->add({
-			{ quad.x0 * multi, quad.y0 * -multi, vert.position.z},
+			{ quad.x0 * multi, quad.y0 * multi, vert.position.z},
 			vert.color,
 			{ quad.s0, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 * multi, quad.y0 * -multi, vert.position.z },
+			{ quad.x1 * multi, quad.y0 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 * multi, quad.y1 * -multi, vert.position.z },
+			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t1 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x0 * multi, quad.y1 * -multi, vert.position.z },
+			{ quad.x0 * multi, quad.y1 * multi, vert.position.z },
 			vert.color,
 			{ quad.s0, quad.t1 },
 			this->texture.index

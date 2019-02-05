@@ -25,7 +25,7 @@ SINCE(0, 0, 2)
 void singleTimeCommand();
 
 SINCE(0, 0, 1)
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer, uint32_t index);
+void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer);
 
 SINCE(0, 0, 1)
 void destroyCommandBuffer();

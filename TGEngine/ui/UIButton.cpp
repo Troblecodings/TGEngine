@@ -12,13 +12,13 @@ UIButton::UIButton(Font* font, glm::vec4 rect, glm::vec4 color, char* string) : 
 void drawButton(void* c, IndexBuffer* idx, VertexBuffer* vert) {
 	UIButton* comp = (UIButton*)c;
 	comp->font->drawString({
-		{comp->rect.x, comp->rect.y, 0.01f},
-		comp->font_color
+	{comp->rect.x, comp->rect.y, 0.011f},
+	comp->font_color
 		}, comp->string, vert, idx);
 	drawRectangle({
-	{comp->rect.x, comp->rect.y, 0},
-	comp->color,
-	{0, 0},
-	COLOR_ONLY
+{comp->rect.x, comp->rect.y, 0.01f},
+comp->color,
+{0, 0},
+COLOR_ONLY
 		}, comp->rect.z, comp->rect.w, vert, idx);
 }

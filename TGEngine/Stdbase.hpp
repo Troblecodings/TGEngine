@@ -37,7 +37,7 @@ if(result == VK_ERROR_OUT_OF_DATE_KHR){\
 if(window_list[0]->minimized){\
 return;\
 }\
-recreateSwapchain();\
+recreateSwapchain(ibuffer, vbuffer);\
 }else if(result != VK_SUCCESS){\
 HANDEL(result)\
 }

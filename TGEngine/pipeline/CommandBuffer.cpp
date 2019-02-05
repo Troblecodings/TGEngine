@@ -57,26 +57,26 @@ void singleTimeCommand() {
 	for each(Texture* tex in texture_buffers) {
 		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
-		VkBufferImageCopy image_copy = {
-			0,
-			0,
-			0,
-			{
-				VK_IMAGE_ASPECT_COLOR_BIT,
+			VkBufferImageCopy image_copy = {
 				0,
 				0,
-				1
-			},
-			{
 				0,
-				0,
-				0
-			},
-			{
-				(uint32_t)tex->width,
-				(uint32_t)tex->height,
-				1
-			}
+				{
+					VK_IMAGE_ASPECT_COLOR_BIT,
+					0,
+					0,
+					1
+				},
+				{
+					0,
+					0,
+					0
+				},
+				{
+					(uint32_t)tex->width,
+					(uint32_t)tex->height,
+					1
+				}
 		};
 
 		vkCmdCopyBufferToImage(
@@ -90,14 +90,14 @@ void singleTimeCommand() {
 
 		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 	}
-	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT; , VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
 
-	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
-	
-	VkBufferCopy copy = {
-		0,
-		0,
+
+		VkBufferCopy copy = {
+			0,
+			0,
 	};
 
 	for each(StagingBuffer* buf in staging_buffer)
@@ -137,84 +137,87 @@ void singleTimeCommand() {
 	}
 }
 
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer, uint32_t index) {
+void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	VkClearValue clear[2] = {
 		{
-		    {
-		    	1,
-		    	1,
-		    	1,
-		    	1
-		    }
-	    },
-     	{
-	        {
-				1.0f, 
+			{
+				1,
+				1,
+				1,
+				1
+			}
+		},
+		{
+			{
+				1.0f,
 				0
 			}
-        }
+		}
 	};
 
-	VkCommandBuffer buffer = command_buffers[index];
+	for (size_t i = 0; i < command_buffers.size(); i++)
+	{
+		VkCommandBuffer buffer = command_buffers[i];
 
-	VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
-		VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
+		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
+			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
+				nullptr,
+				render_pass,
+				0,
+				frame_buffer[i],
+				VK_FALSE,
+				0,
+				0
+		};
+
+		VkCommandBufferBeginInfo command_buffer_begin_info = {
+			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+			nullptr,
+			VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT,
+			&command_buffer_inheritance_info
+		};
+		last_result = vkBeginCommandBuffer(buffer, &command_buffer_begin_info);
+		HANDEL(last_result);
+
+		VkRenderPassBeginInfo render_pass_begin_info = {
+			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			nullptr,
 			render_pass,
-			0,
-			frame_buffer[index],
-			VK_FALSE,
-			0,
-			0
-	};
+			frame_buffer[i],
+			{
+				0,
+				0,
+				(uint32_t)window_list[0]->width,
+				(uint32_t)window_list[0]->height
+			},
+			2,
+			clear
+		};
+		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
-	VkCommandBufferBeginInfo command_buffer_begin_info = {
-		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-		nullptr,
-		VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT,
-		&command_buffer_inheritance_info
-	};
-	last_result = vkBeginCommandBuffer(buffer, &command_buffer_begin_info);
-	HANDEL(last_result);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
 
-	VkRenderPassBeginInfo render_pass_begin_info = {
-		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-		nullptr,
-		render_pass,
-		frame_buffer[index],
-		{
-			0,
-			0,
-			(uint32_t)window_list[0]->width,
-			(uint32_t)window_list[0]->height
-		},
-		2,
-		clear
-	};
-	vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-	vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
 
-	vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
 
-	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
+		vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
 
-	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
+		if (index_offset < ibuffer->index_count) {
+			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
 
-	vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
 
-	if (index_offset < ibuffer->index_count) {
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, index_offset, 0, 0);
+		}
 
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
+		vkCmdEndRenderPass(buffer);
 
-		vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, index_offset, 0, 0);
+		last_result = vkEndCommandBuffer(buffer);
+		HANDEL(last_result)
 	}
-
-	vkCmdEndRenderPass(buffer);
-
-	last_result = vkEndCommandBuffer(buffer);
-	HANDEL(last_result)
 }
 
 void destroyCommandBuffer() {
