@@ -33,6 +33,7 @@
     <ClInclude Include="game_content\StaticCamera.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\ImagePNG.hpp" />
+    <ClInclude Include="io\Keyboard.hpp" />
     <ClInclude Include="io\LoadFont.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
@@ -83,6 +84,7 @@
     <ClCompile Include="game_content\StaticCamera.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\ImagePNG.cpp" />
+    <ClCompile Include="io\Keyboard.cpp" />
     <ClCompile Include="io\LoadFont.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />

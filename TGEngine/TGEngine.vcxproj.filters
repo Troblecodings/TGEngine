@@ -237,6 +237,9 @@
     <ClInclude Include="ui\UITexture.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
+    <ClInclude Include="io\Keyboard.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -379,6 +382,9 @@
     </ClCompile>
     <ClCompile Include="ui\UITexture.cpp">
       <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="io\Keyboard.cpp">
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

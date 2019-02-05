@@ -54,7 +54,7 @@ void init() {
 		"resource\\ODST_Helmet.png"
 	};
 	tex2 = {
-		"resource\\LogoTM.png"
+		"resource\\test_logo.png"
 	};
 	createTexture(&tex1);
 	createTexture(&tex2);
@@ -62,18 +62,14 @@ void init() {
 	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
 	createActor(&mesh2)->prePos(0, 1, 0)->applyPretransform();
 
-	createStaticCamera(&camera);
+	createFirstPersonCamera(&camera);
 
 	btn = new UIButton(&arial, { 0.1, 0.1, 0.2, 0.2 }, { 0, 0, 0, 0.5 }, "Play");
-	tex = new UITexture({ 0.8, 0.9, 0.2, 0.1 }, "resource\\test_logo.png");
+	tex = new UITexture({ 0.8, 0.9, 0.2, 0.1 }, &tex2);
 	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, tex)
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
 {
 	drawGrid(vbuffer, ibuffer);
-	arial.drawString({
-		{0, 0, 0},
-		{1, 1, 0, 1},
-		}, "Play", vbuffer, ibuffer);
 }

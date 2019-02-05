@@ -1,9 +1,10 @@
 #pragma once
 
-#include "..\..\Stdbase.hpp"
-#include "..\Instance.hpp"
+#include "../../Stdbase.hpp"
+#include "../Instance.hpp"
 #include <string>
-#include "..\..\io\Mouse.hpp"
+#include "../../io/Mouse.hpp"
+#include "../../io/Keyboard.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 

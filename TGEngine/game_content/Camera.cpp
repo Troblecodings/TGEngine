@@ -6,7 +6,6 @@ UniformBuffer ui_camera_uniform;
 float multiplier = 1;
 size_t active_camera = 0;
 
-
 void initCameras() {
 	camera_uniform = {
 	sizeof(glm::mat4),
@@ -14,6 +13,7 @@ void initCameras() {
 	};
 	createUniformBuffer(&camera_uniform);
 	if(cameras_on_scene.size() > 0)addListener(__impl_input_handle);
+	if (cameras_on_scene.size() > 0)addKeyListener(__impl_keyinput_handle);
 
 	ui_camera_uniform = {
     sizeof(glm::mat4),
@@ -49,8 +49,7 @@ void Camera::applyCameraRotation(double x, double y, double z, double angle)
 
 void Camera::applyCameraTranslation(double x, double y, double z)
 {
-	this->position += glm::vec3(x, y, z);
-
+	this->position += glm::vec3(x, y, z) * this->direction;
 }
 
 void updateCamera(int width, int height) {
@@ -67,5 +66,13 @@ void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)
 	Camera* cam = cameras_on_scene[active_camera];
 	if (cam->mouse_input_handler) {
 		cam->mouse_input_handler(cam, pos, delta);
+	}
+}
+
+void __impl_keyinput_handle(uint16_t chr, bool down)
+{
+	Camera* cam = cameras_on_scene[active_camera];
+	if (cam->key_input_handler) {
+		cam->key_input_handler(cam, chr, down);
 	}
 }

@@ -3,6 +3,7 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "../io/Mouse.hpp"
+#include "../io/Keyboard.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -13,6 +14,7 @@ struct Camera {
 	float near_clip_plain = 0.01f; // The nearest thing to the camera
 	float far_clip_plain = 1000.0f; // The farest thing from the camera
 	void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
+	void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
 	OUTPUT 
 	glm::mat4 world_transform = glm::mat4(1.0f); // The world transform for all verticies in the world 
@@ -78,6 +80,13 @@ void updateCamera(int width, int height);
 INTERNAL
 SINCE(0, 0, 4)
 void __impl_input_handle(glm::vec2 pos, glm::vec2 delta);
+
+/*
+ * Internal method. You shouldn't use it ... I mean you can but why would you?
+ */
+INTERNAL
+SINCE(0, 0, 4)
+void __impl_keyinput_handle(uint16_t chr, bool down);
 
 /*
  * Initalizes the camera Uniformbuffer and etc.

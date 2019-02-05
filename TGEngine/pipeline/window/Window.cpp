@@ -45,6 +45,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case RIM_TYPEMOUSE:
 			inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
 			break;
+		case RIM_TYPEKEYBOARD:
+			__impl_key_update(input.data.keyboard.VKey, input.data.keyboard.Flags);
+			break;
 		default:
 			break;
 		}
