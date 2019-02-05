@@ -4,8 +4,8 @@ void loadfont(Font* font) {
 	long size_of_file;
 	nio::File file = nio::readFileSize(font->path, "rb", &size_of_file);
 	unsigned char * temp_buffer = new unsigned char[size_of_file];
-	font->texture.width = (int)font->height * 256;
-	font->texture.height = (int)font->height;
+	font->texture.width = (int)font->height;
+	font->texture.height = (int)font->height * 255;
 	font->texture.image_data = new stbi_uc[font->texture.width * font->texture.height * 4];
 
 	stbi_uc* tempbitmap = new stbi_uc[font->texture.width * font->texture.height];
@@ -26,36 +26,37 @@ void loadfont(Font* font) {
 	createTexture(&font->texture);
 }
 
-void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
+float Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
 	vert.position.x /= multi;
 	vert.position.y /= multi;
+	float width = 0;
 	while (*text)
 	{
 		stbtt_aligned_quad quad;
 		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &vert.position.x, &vert.position.y, &quad, 0);
 		uint32_t idcount = (uint32_t)buffer->count_of_points;
 		buffer->add({
-			{ quad.x0 * multi, quad.y0 * multi, vert.position.z},
+			{ quad.x0 * multi, quad.y0 * -multi, vert.position.z},
 			vert.color,
-			{ quad.s0, quad.t1 },
+			{ quad.s0, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x1 * multi, quad.y0 * multi, vert.position.z },
-			vert.color,
-			{ quad.s1, quad.t1 },
-			this->texture.index
-			});
-		buffer->add({
-			{ quad.x1 * multi, quad.y1 * multi, vert.position.z },
+			{ quad.x1 * multi, quad.y0 * -multi, vert.position.z },
 			vert.color,
 			{ quad.s1, quad.t0 },
 			this->texture.index
 			});
 		buffer->add({
-			{ quad.x0 * multi, quad.y1 * multi, vert.position.z },
+			{ quad.x1 * multi, quad.y1 * -multi, vert.position.z },
 			vert.color,
-			{ quad.s0, quad.t0 },
+			{ quad.s1, quad.t1 },
+			this->texture.index
+			});
+		buffer->add({
+			{ quad.x0 * multi, quad.y1 * -multi, vert.position.z },
+			vert.color,
+			{ quad.s0, quad.t1 },
 			this->texture.index
 			});
 		ibuffer->addIndex(idcount);
@@ -65,5 +66,9 @@ void Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuff
 		ibuffer->addIndex(idcount + 2);
 		ibuffer->addIndex(idcount + 3);
 		text++;
+		if (text == nullptr) {
+			width = vert.position.x - quad.x1;
+		}
 	}
+	return width;
 }

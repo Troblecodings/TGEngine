@@ -228,10 +228,13 @@
     <ClInclude Include="vlib\VulkanPipeline.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UI.h">
+    <ClInclude Include="ui\UIButton.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIButton.h">
+    <ClInclude Include="ui\UI.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITexture.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
   </ItemGroup>
@@ -372,6 +375,9 @@
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIButton.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITexture.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
   </ItemGroup>

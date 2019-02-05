@@ -11,7 +11,8 @@
 #include "game_content/Mesh.hpp"
 #include "game_content/FirstPersonCamera.hpp"
 #include "game_content/StaticCamera.hpp"
-#include "ui/UIButton.h"
+#include "ui/UIButton.hpp"
+#include "ui/UITexture.hpp"
 
 extern Texture tex1;
 extern Texture tex2;
@@ -19,7 +20,8 @@ extern Mesh mesh;
 extern Mesh mesh2;
 extern Font arial;
 extern Camera camera;
-extern UIButton btn;
+extern UIButton* btn;
+extern UITexture* tex;
 
 struct Editor : App
 {

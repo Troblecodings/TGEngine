@@ -21,7 +21,7 @@ struct Font {
 	stbtt_bakedchar cdata[256];
 
 	SINCE(0, 0, 3)
-	void drawString(TGVertex vert, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi = 0.0015);
+	float drawString(TGVertex vert, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi = 0.0015);
 };
 
 SINCE(0, 0, 3)

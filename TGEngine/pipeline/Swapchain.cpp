@@ -95,14 +95,16 @@ void recreateSwapchain() {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	vlib_rasterization_state.cullMode = 0;
 	createPipeline();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
+	vlib_rasterization_state.cullMode = 0;
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
 	createCommandBuffer();
 
+	multiplier = -(window_list[0]->width / (float)window_list[0]->height);
+	fillUniformBuffer(&ui_camera_uniform, &glm::scale(glm::mat4(1.0f), { 1, multiplier, 1 }), sizeof(glm::mat4));
 	updateCamera(window_list[0]->width, window_list[0]->height);
 }
 

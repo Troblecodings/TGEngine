@@ -5,7 +5,7 @@
 #include "pipeline/Pipeline.hpp"
 #include "pipeline/Draw.hpp"
 #include "game_content/Actor.hpp"
-#include "ui/UI.h"
+#include "ui/UI.hpp"
 
 SINCE(0, 0, 1)
 void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void));

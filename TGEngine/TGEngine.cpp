@@ -52,9 +52,9 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 
 	createDesctiptorLayout();
 	createDesctiptorLayout();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	vlib_rasterization_state.cullMode = 0;
 	createPipeline();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
+	vlib_rasterization_state.cullMode = 0;
 	createPipeline();
 	createSwapchain();
 	createFramebuffer();
@@ -74,7 +74,8 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 	ui_camera_uniform.descriptor.descriptor_set = 1;
 	ui_camera_uniform.descriptor.binding = 1;
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	multiplier = -(window->width / (float)window->height);
+	fillUniformBuffer(&ui_camera_uniform, &glm::scale(glm::mat4(1.0f), { 1, multiplier, 1}), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
 
