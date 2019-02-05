@@ -67,7 +67,7 @@ float Font::drawString(TGVertex vert, char* text, VertexBuffer* buffer, IndexBuf
 		ibuffer->addIndex(idcount + 3);
 		text++;
 		if (text == nullptr) {
-			width = vert.position.x - quad.x1;
+			width = vert.position.x;
 		}
 	}
 	return width;

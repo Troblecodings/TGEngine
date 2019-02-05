@@ -65,8 +65,7 @@ void init() {
 	createStaticCamera(&camera);
 
 	btn = new UIButton(&arial, { 0.1, 0.1, 0.2, 0.2 }, { 0, 0, 0, 0.5 }, "Play");
-	tex = new UITexture({ -0.8, -0.8, 0.1, 0.1 }, &tex1);
-	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, btn)
+	tex = new UITexture({ 0.8, 0.9, 0.2, 0.1 }, "resource\\test_logo.png");
 	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, tex)
 }
 
