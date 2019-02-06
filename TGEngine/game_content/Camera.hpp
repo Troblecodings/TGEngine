@@ -20,8 +20,8 @@ struct Camera {
 	glm::mat4 world_transform = glm::mat4(1.0f); // The world transform for all verticies in the world 
 	glm::mat4 camera = glm::mat4(1.0f); // The camera transforms done with glm::lookAt
 	glm::mat4 matrix; // The actual computed matrix -> Calculated: perspective * camera * world_transform
-	glm::vec3 position = glm::vec3(0.0f, 1.0f, 1.0f); // The position of the camera in world space
-	glm::vec3 direction = glm::vec3(-1.0f, -1.0f, -1.0f); // The direction into witch the camera faces
+	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.5f); // The position of the camera in world space
+	glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f); // The direction into which the camera faces
 	size_t camera_index;
 
 	/*  
@@ -99,6 +99,7 @@ void initCameras();
  * from StaticCamera.hpp for example.
  *
  *   -> mouse_input_handler will not be set
+ *   -> key_input_handler will not be set
  */
 SINCE(0, 0, 2)
 void createCamera(Camera* camera);

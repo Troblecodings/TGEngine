@@ -49,7 +49,7 @@ void Camera::applyCameraRotation(double x, double y, double z, double angle)
 
 void Camera::applyCameraTranslation(double x, double y, double z)
 {
-	this->position += glm::vec3(x, y, z) * this->direction;
+	this->position += glm::vec3(x, y, z);
 }
 
 void updateCamera(int width, int height) {

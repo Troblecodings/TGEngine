@@ -20,16 +20,16 @@ void __impl_keyboard_handleFPC(Camera * camera, uint16_t chr, bool down) {
 		switch (chr)
 		{
 		case 'W':
-			camera->applyCameraTranslation(0.1, 0.1, 0);
+			camera->applyCameraTranslation(0.1 * camera->direction.x, 0.1 * camera->direction.y, 0);
 			break;
 		case 'S':
-			camera->applyCameraTranslation(-0.1, -0.1, 0);
+			camera->applyCameraTranslation(-0.1 * camera->direction.x, -0.1 * camera->direction.y, 0);
 			break;
 		case 'A':
-			camera->applyCameraTranslation(0.1, 0.1, 0);
+			camera->applyCameraTranslation(-0.1 * camera->direction.y, 0.1 * camera->direction.x, 0);
 			break;
 		case 'D':
-			camera->applyCameraTranslation(0.1, 0.1, 0);
+			camera->applyCameraTranslation(0.1 * camera->direction.y, -0.1 * camera->direction.x, 0);
 			break;
 		default:
 			break;
