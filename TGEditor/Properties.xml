@@ -4,6 +4,7 @@
     <int name="version" value="1"/>
     <!--MSAA from 1 (off) to 64 | must be a value of 2^x or 1 or 0 for auto detect-->
     <int name="msaa" value="8"/>
+    <boolean name="multithreadrender" value="true" />
   </app>
   <window>
     <boolean name="fullscreen" value="true"/>

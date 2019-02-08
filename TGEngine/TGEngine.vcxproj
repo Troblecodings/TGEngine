@@ -29,6 +29,7 @@
     <ClInclude Include="game_content\Actor.hpp" />
     <ClInclude Include="game_content\Camera.hpp" />
     <ClInclude Include="game_content\FirstPersonCamera.hpp" />
+    <ClInclude Include="game_content\Light.hpp" />
     <ClInclude Include="game_content\Mesh.hpp" />
     <ClInclude Include="game_content\StaticCamera.hpp" />
     <ClInclude Include="io\Files.hpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="game_content\Actor.cpp" />
     <ClCompile Include="game_content\Camera.cpp" />
     <ClCompile Include="game_content\FirstPersonCamera.cpp" />
+    <ClCompile Include="game_content\Light.cpp" />
     <ClCompile Include="game_content\Mesh.cpp" />
     <ClCompile Include="game_content\StaticCamera.cpp" />
     <ClCompile Include="io\Files.cpp" />

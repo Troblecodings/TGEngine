@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), void (*init)(void)) {
+void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void)) {
 	nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
@@ -15,9 +15,9 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 		#endif
 		"VK_LAYER_VALVE_steam_overlay",
 		"VK_LAYER_NV_optimus"
-		}, { 
+		}, {
 #ifdef DEBUG
-        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
 #endif
 		});
 
@@ -48,6 +48,7 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	createShaderInput(4, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 	initAllTextures();
 	initCameras();
+	initLight();
 	initDescriptors();
 
 	createDesctiptorLayout();
@@ -78,6 +79,12 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+	setLightPosition({ 1, 1, 1 });
+	light_buffer.descriptor.descriptor_set = 0;
+	light_buffer.descriptor.binding = 2;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+	light_buffer.descriptor.descriptor_set = 1;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
 
 	createCommandBuffer();
 	main_buffer.start();
@@ -97,19 +104,36 @@ void initTGEngine(Window* window, void (*draw)(IndexBuffer*, VertexBuffer*), voi
 	addTextures();
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
-	while (true) {
-		window->pollevents();
-		if (window->close_request) {
-			break;
+	if (properties->getBoolean("multithreadrender")) {
+		while (true) {
+			window->pollevents();
+			if (window->close_request) {
+				break;
+			}
+			if (window->minimized) {
+				continue;
+			}
+			startdraw(&index_buffer, &main_buffer);
+			submit(&index_buffer, &main_buffer);
+			present(&index_buffer, &main_buffer);
 		}
-		if (window->minimized) {
-			continue;
-		}
-		startdraw(&index_buffer, &main_buffer);
-		submit(&index_buffer, &main_buffer);
-		present(&index_buffer, &main_buffer);
 	}
-
+	else {
+		while (true) {
+			window->pollevents();
+			if (window->close_request) {
+				break;
+			}
+			if (window->minimized) {
+				continue;
+			}
+			startdraw(&index_buffer, &main_buffer);
+			submit(&index_buffer, &main_buffer);
+			present(&index_buffer, &main_buffer);
+			last_result = vkQueueWaitIdle(queue);
+			HANDEL(last_result)
+		}
+	}
 	destroyAllTextures();
 	destroySemaphores();
 	destroyCommandBuffer();

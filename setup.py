@@ -82,7 +82,6 @@ def compileshader():
                 finished += 1
         except Exception:
             msg = "Shader " + name + " failed to Compile"
-            clear()
             traceback.print_exc()
             continue
     shader_data.write( "};\nVkShaderStageFlagBits shader_flags[] = {\n")
@@ -95,7 +94,8 @@ def compileshader():
     shader_data.write("};")
     shader_data.close()
     msg = "Compiled " + str(finished) + " out of " + str(total) + " shaders"
-    clear()
+    if total == finished:
+        clear()
     return
 
 
