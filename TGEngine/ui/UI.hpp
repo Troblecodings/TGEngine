@@ -7,43 +7,57 @@
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../io/LoadFont.hpp"
 
-union TGRect{
-	float x, y, width, height;
-};
+namespace tg_ui {
 
-struct UIEntity {
+	class UIComponent; // See defenition below
 
-	struct UIComponent {
+	/*
+	 * 	Entity class that holds draw and update components
+	 */
+	SINCE(0, 0, 4)
+	class UIEntity {
 
-		UIEntity* parent;
+	public:
+		UIEntity(glm::vec2 position, glm::vec2 extent);
+		glm::vec2 local_position;
+		glm::vec2 extent;
 
-		virtual void draw(IndexBuffer* index, VertexBuffer* vertex) = 0;
-		virtual void update(int mouse_x, int mouse_y) = 0;
+		void addComponent(UIComponent* component);
+		void addChildren(UIEntity* children);
+		void removeComponent(UIComponent* component);
+		void removeChildren(UIEntity* children);
+
+		void draw(IndexBuffer* index, VertexBuffer* vertex);
+		void update(int mouse_x, int mouse_y);
+
+		glm::vec2 getPosition();
+
+	protected:
+		UIEntity* parent = nullptr;
+
+		std::vector<UIComponent*> components;
+		std::vector<UIEntity*> children;
 
 		void onAddTo(UIEntity* parent);
 		void onRemoveFrom(UIEntity* parent);
 	};
 
-	UIEntity(TGRect rect);
+	/*
+     * 	Component class that holds the actual draw and update calls
+     */
+	SINCE(0, 0, 4)
+	class UIComponent {
 
-	UIEntity* parent = nullptr;
-	TGRect local_bounds;
+	public:
+		virtual void draw(IndexBuffer* index, VertexBuffer* vertex); // default implementation, needs override
+		virtual void update(int mouse_x, int mouse_y); // default implementation, needs override
 
-	std::vector<UIComponent*> components;
-	std::vector<UIEntity*> children;
+		void onAddTo(UIEntity* parent);
+		void onRemoveFrom(UIEntity* parent);
 
-	void addComponent(UIComponent* component);
-	void addChildren(UIEntity* children);
-	void removeComponent(UIComponent* component);
-	void removeChildren(UIEntity* children);
+	protected:
+		UIEntity* parent;
+	};
 
-	void draw(IndexBuffer* index, VertexBuffer* vertex);
-	void update(int mouse_x, int mouse_y);
-
-	void onAddTo(UIEntity* parent);
-	void onRemoveFrom(UIEntity* parent);
-
-	TGRect getBounds();
-};
-
-extern UIEntity ui_scene_entity;
+	extern UIEntity ui_scene_entity;
+}

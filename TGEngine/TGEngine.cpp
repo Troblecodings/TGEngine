@@ -93,7 +93,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	}
 	draw(&index_buffer, &main_buffer);
 	index_offset = index_buffer.index_count;
-	ui_scene_entity.draw(&index_buffer, &main_buffer);
+	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 	main_buffer.end();
 	index_buffer.end();
 

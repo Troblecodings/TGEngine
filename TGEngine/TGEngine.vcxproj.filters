@@ -228,13 +228,7 @@
     <ClInclude Include="vlib\VulkanPipeline.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIButton.hpp">
-      <Filter>Headerdateien\ui</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UI.hpp">
-      <Filter>Headerdateien\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UITexture.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
     <ClInclude Include="io\Keyboard.hpp">
@@ -242,6 +236,12 @@
     </ClInclude>
     <ClInclude Include="game_content\Light.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITextComponent.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITextureComponent.hpp">
+      <Filter>Headerdateien\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -380,17 +380,17 @@
     <ClCompile Include="ui\UI.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIButton.cpp">
-      <Filter>Quelldateien\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UITexture.cpp">
-      <Filter>Quelldateien\ui</Filter>
-    </ClCompile>
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="game_content\Light.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITextComponent.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITextureComponent.cpp">
+      <Filter>Quelldateien\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

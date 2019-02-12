@@ -8,6 +8,7 @@
 
 #define TARGET(enum_target) // Defines the target of an annotation within this header
 #define TARGET_METHODE TARGET("METHODE")
+#define TARGET_CLASS TARGET("CLASS")
 #define TARGET_CODE TARGET("CODE")
 #define TARGET_PARAMETER TARGET("PARAMETER")
 
@@ -37,6 +38,7 @@ TARGET_CODE
 #define END_UNFINISHED // End of unfinished code
 
 USAGE_DOCS
+TARGET_CLASS
 TARGET_METHODE
 #define SINCE(major, minor, version) // Tells since which engine version this method is in the engine
 // Remember that methods as well as parameters and/or it's function can change eventhough the version may stay the same

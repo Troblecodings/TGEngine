@@ -60,8 +60,8 @@
     <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
     <ClInclude Include="pipeline\window\Window.hpp" />
     <ClInclude Include="ui\UI.hpp" />
-    <ClInclude Include="ui\UIButton.hpp" />
-    <ClInclude Include="ui\UITexture.hpp" />
+    <ClInclude Include="ui\UITextComponent.hpp" />
+    <ClInclude Include="ui\UITextureComponent.hpp" />
     <ClInclude Include="util\Annotations.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Math.hpp" />
@@ -111,8 +111,8 @@
     <ClCompile Include="pipeline\buffer\UniformBuffer.cpp" />
     <ClCompile Include="pipeline\buffer\VertexBuffer.cpp" />
     <ClCompile Include="ui\UI.cpp" />
-    <ClCompile Include="ui\UIButton.cpp" />
-    <ClCompile Include="ui\UITexture.cpp" />
+    <ClCompile Include="ui\UITextComponent.cpp" />
+    <ClCompile Include="ui\UITextureComponent.cpp" />
     <ClCompile Include="util\Debug.cpp" />
     <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />

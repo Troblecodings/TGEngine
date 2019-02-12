@@ -11,8 +11,8 @@
 #include "game_content/Mesh.hpp"
 #include "game_content/FirstPersonCamera.hpp"
 #include "game_content/StaticCamera.hpp"
-#include "ui/UIButton.hpp"
-#include "ui/UITexture.hpp"
+#include "ui/UITextureComponent.hpp"
+#include "ui/UI.hpp"
 
 extern Texture tex1;
 extern Texture tex2;
@@ -20,8 +20,7 @@ extern Mesh mesh;
 extern Mesh mesh2;
 extern Font arial;
 extern Camera camera;
-extern UIButton* btn;
-extern UITexture* tex;
+extern tg_ui::UIEntity entity;
 
 struct Editor : App
 {
@@ -31,11 +30,5 @@ struct Editor : App
 void init();
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* verticies);
-
-void drawGrid(VertexBuffer* buffer, IndexBuffer* vbuffer);
-
-void drawLineH(TGVertex start, float length, VertexBuffer* buffer, IndexBuffer* vbuffer);
-
-void drawLineV(TGVertex start, float length, VertexBuffer* buffer, IndexBuffer* vbuffer);
 
 int main();
