@@ -63,10 +63,6 @@ void init() {
 	createActor(&mesh2)->prePos(0, 1, 0)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
-
-	btn = new UIButton(&arial, { 0.1, 0.1, 0.2, 0.2 }, { 0, 0, 0, 0.5 }, "Play");
-	tex = new UITexture({ 0.8, 0.9, 0.2, 0.1 }, &tex2);
-	TG_VECTOR_APPEND_NORMAL(scene_component.ui_children, tex)
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)

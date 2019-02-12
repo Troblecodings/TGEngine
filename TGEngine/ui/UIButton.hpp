@@ -2,7 +2,7 @@
 
 #include "UI.hpp"
 
-struct UIButton : UIComponent
+struct UIButton : UIEntity::UIComponent
 {
 	UIButton(Font* font, glm::vec4 rect, glm::vec4 color, char* string);
 
@@ -11,5 +11,3 @@ struct UIButton : UIComponent
 	char* string;
 	Font* font;
 };
-
-void drawButton(void* comp, IndexBuffer* idx, VertexBuffer* vert);

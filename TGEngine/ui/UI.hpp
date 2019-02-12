@@ -7,20 +7,43 @@
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../io/LoadFont.hpp"
 
-struct UIComponent {
+union TGRect{
+	float x, y, width, height;
+};
 
-	UIComponent(glm::vec4 rect);
+struct UIEntity {
 
-	std::vector<UIComponent*> ui_children;
-	glm::vec4 rect;
+	struct UIComponent {
 
-	void (*draw_call)(void*, IndexBuffer*, VertexBuffer*) = nullptr;
-	void (*update_call)(void*, int, int) = nullptr;
+		UIEntity* parent;
+
+		virtual void draw(IndexBuffer* index, VertexBuffer* vertex) = 0;
+		virtual void update(int mouse_x, int mouse_y) = 0;
+
+		void onAddTo(UIEntity* parent);
+		void onRemoveFrom(UIEntity* parent);
+	};
+
+	UIEntity(TGRect rect);
+
+	UIEntity* parent = nullptr;
+	TGRect local_bounds;
+
+	std::vector<UIComponent*> components;
+	std::vector<UIEntity*> children;
+
+	void addComponent(UIComponent* component);
+	void addChildren(UIEntity* children);
+	void removeComponent(UIComponent* component);
+	void removeChildren(UIEntity* children);
 
 	void draw(IndexBuffer* index, VertexBuffer* vertex);
 	void update(int mouse_x, int mouse_y);
 
-	glm::vec4 getRect();
+	void onAddTo(UIEntity* parent);
+	void onRemoveFrom(UIEntity* parent);
+
+	TGRect getBounds();
 };
 
-extern UIComponent scene_component;
+extern UIEntity ui_scene_entity;

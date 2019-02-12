@@ -114,6 +114,7 @@ def wrtdir(vk, src):
 
 def trigger(id):
     global msg
+    global dependencies_file
     try:
         if id == 0:
             exit(0)

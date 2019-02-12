@@ -20,7 +20,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
 #endif
 		});
-
 	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
@@ -94,7 +93,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	}
 	draw(&index_buffer, &main_buffer);
 	index_offset = index_buffer.index_count;
-	scene_component.draw(&index_buffer, &main_buffer);
+	ui_scene_entity.draw(&index_buffer, &main_buffer);
 	main_buffer.end();
 	index_buffer.end();
 
