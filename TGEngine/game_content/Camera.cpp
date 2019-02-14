@@ -4,6 +4,7 @@ std::vector<Camera*> cameras_on_scene;
 UniformBuffer camera_uniform;
 UniformBuffer ui_camera_uniform;
 float multiplier = 1;
+float multiplierx = 1;
 size_t active_camera = 0;
 
 void initCameras() {

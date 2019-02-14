@@ -37,13 +37,13 @@ void drawRectangleZ(TGVertex vert, float xsize, float depth, VertexBuffer* buffe
 void drawRectangle(glm::vec3 pos, glm::vec4 color, uint32_t color_index, float xsize, float ysize, VertexBuffer* buffer, IndexBuffer* ibuffer) {
 	uint32_t idcount = (uint32_t)buffer->count_of_points;
 	buffer->add({
-		{ pos.x - xsize, pos.y - ysize, pos.z },
+		{ pos.x, pos.y, pos.z },
 		color,
 		{ 0, 0 },
 		color_index
 		});
 	buffer->add({
-		{ pos.x + xsize, pos.y - ysize, pos.z },
+		{ pos.x + xsize, pos.y, pos.z },
 		color,
 		{ 1, 0 },
 		color_index
@@ -55,7 +55,7 @@ void drawRectangle(glm::vec3 pos, glm::vec4 color, uint32_t color_index, float x
 		color_index
 		});
 	buffer->add({
-		{ pos.x - xsize, pos.y + ysize, pos.z },
+		{ pos.x, pos.y + ysize, pos.z },
 		color,
 	    { 0, 1 },
 		color_index

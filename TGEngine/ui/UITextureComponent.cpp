@@ -15,6 +15,13 @@ namespace tg_ui {
 	}
 	void UITextureComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
 	{
-		drawRectangle(glm::vec3(this->parent->local_position, 0.1f), this->color, this->texture->index, this->parent->extent.x, this->parent->extent.y, vertex, index);
+		float div = window_list[0]->width - window_list[0]->height;
+		div /= (float)window_list[0]->height;
+		div += 1;
+		glm::vec2 pos = (this->parent->getPosition() * glm::vec2(2, 2)) - glm::vec2(1, 1);
+		pos *= glm::vec2(div, 1);
+		glm::vec2 ext = this->parent->extent;
+		ext *= glm::vec2(multiplier, 1);
+		drawRectangle(glm::vec3(pos, 0.1f), this->color, this->texture->index, ext.x, ext.y, vertex, index);
 	}
 }

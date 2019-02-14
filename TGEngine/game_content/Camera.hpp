@@ -66,6 +66,7 @@ extern UniformBuffer ui_camera_uniform; // The uniform buffer for the camera mat
 extern std::vector<Camera*> cameras_on_scene; // Contains all cameras on the scene
 extern size_t active_camera; // The index of the active camera
 extern float multiplier; // defines the y mutliplier for the ui
+extern float multiplierx; // defines the x mutliplier for the ui
 
 /*
  * Updates the active camera camera matrix and uploads it to the uniform buffer in the shader

@@ -6,7 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({0.8, 0.9}, {0.2, 0.1});
+tg_ui::UIEntity entity = tg_ui::UIEntity({0.5, 0.5}, {0.2, 0.1});
 
 int main() {
 	Editor editor = Editor();
@@ -14,7 +14,7 @@ int main() {
 
 	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2);
 	entity.addComponent(&texture);
-	tg_ui::ui_scene_entity.addChildren(&entity);
+	//tg_ui::ui_scene_entity.addChildren(&entity);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
@@ -29,7 +29,7 @@ void init() {
 	loadfont(&arial);
 
 	loadFromFBX(&mesh, "resource\\loop.fbx");
-	loadFromFBX(&mesh2, "resource\\lul.fbx");
+	loadFromFBX(&mesh2, "resource\\schachbrett.fbx");
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"
@@ -40,8 +40,8 @@ void init() {
 	createTexture(&tex1);
 	createTexture(&tex2);
 
-	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
-	createActor(&mesh2)->prePos(0, 1, 0)->applyPretransform();
+	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
+	createActor(&mesh2)->preScale(0.4, 0.4, 0.4)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
 }

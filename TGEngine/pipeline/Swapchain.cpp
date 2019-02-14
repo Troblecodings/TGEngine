@@ -104,7 +104,8 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createCommandBuffer();
 
 	multiplier = (window_list[0]->width / (float)window_list[0]->height);
-	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
+	multiplierx = (window_list[0]->height / (float)window_list[0]->width);
+	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 	updateCamera(window_list[0]->width, window_list[0]->height);
 
 	fillCommandBuffer(ibuffer, vbuffer);

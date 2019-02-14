@@ -7,7 +7,7 @@
     <boolean name="multithreadrender" value="true" />
   </app>
   <window>
-    <boolean name="fullscreen" value="true"/>
+    <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
     <boolean name="cursor" value="true" />

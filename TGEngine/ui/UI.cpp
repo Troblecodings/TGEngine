@@ -74,6 +74,7 @@ namespace tg_ui {
 
 	glm::vec2 UIEntity::getPosition()
 	{
+		if (this->parent == nullptr) return this->local_position;
 		return this->parent->getPosition() + this->local_position;
 	}
 

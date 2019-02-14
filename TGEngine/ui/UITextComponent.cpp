@@ -18,7 +18,7 @@ namespace tg_ui {
 
 	void UITextComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
 	{
-		this->font->drawString(glm::vec3(this->parent->local_position, 0.1f), this->font_color, this->string, vertex, index);
+		this->font->drawString(glm::vec3(this->parent->getPosition(), 0.1f), this->font_color, this->string, vertex, index);
 	}
 
 }

@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "../Util/Debug.hpp"
+#include "../util/Debug.hpp"
 #include "../pipeline/Buffer/Texturebuffer.hpp"
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
@@ -17,7 +17,7 @@ struct Font {
 	OPT float height = 30;
 
 	OUTPUT
-	Texture texture = {};
+	Texture texture;
 	stbtt_bakedchar cdata[256];
 
 	SINCE(0, 0, 3)
