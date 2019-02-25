@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "..\Stdbase.hpp"
-#include "..\io\Files.hpp"
+#include "../Stdbase.hpp"
+#include "../io/Files.hpp"
 #include "Device.hpp"
-#include "..\resources\ShaderData.hpp"
+#include "../resources/ShaderData.hpp"
 
 extern std::vector<VkPipelineShaderStageCreateInfo> shaders;
 extern std::vector<VkVertexInputAttributeDescription> description_attributes;

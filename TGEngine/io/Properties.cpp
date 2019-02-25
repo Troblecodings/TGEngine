@@ -169,34 +169,22 @@ namespace prop {
 	}
 
 	void Properties::addString(char* name, char* value) {
-		size_t size = this->string_names.size();
-		this->string_names.resize(size + 1);
-		this->string_values.resize(size + 1);
-		this->string_names[size] = name;
-		this->string_values[size] = value;
+		this->string_names.push_back(name);
+		this->string_values.push_back(value);
 	}
 
 	void Properties::addBoolean(char* name, bool value) {
-		size_t size = this->bool_names.size();
-		this->bool_names.resize(size + 1);
-		this->bool_values.resize(size + 1);
-		this->bool_names[size] = name;
-		this->bool_values[size] = value;
+		this->bool_names.push_back(name);
+		this->bool_values.push_back(value);
 	}
 
 	void Properties::addFloat(char* name, float value) {
-		size_t size = this->float_names.size();
-		this->float_names.resize(size + 1);
-		this->float_values.resize(size + 1);
-		this->float_names[size] = name;
-		this->float_values[size] = value;
+		this->float_names.push_back(name);
+		this->float_values.push_back(value);
 	}
 	
 	void Properties::addInt(char* name, int value) {
-		size_t size = this->int_names.size();
-		this->int_names.resize(size + 1);
-		this->int_values.resize(size + 1);
-		this->int_names[size] = name;
-		this->int_values[size] = value;
+		this->int_names.push_back(name);
+		this->int_values.push_back(value);
 	}
 }

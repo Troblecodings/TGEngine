@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Memory.hpp"
-#include "..\Descriptors.hpp"
+#include "../Descriptors.hpp"
 
 struct UniformBuffer {
 	INPUT

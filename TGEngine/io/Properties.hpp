@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <string>
-#include "..\util\Annotations.hpp"
-#include "..\Error.hpp"
+#include "../util/Annotations.hpp"
+#include "../Error.hpp"
 #include "Files.hpp"
 #include <stdio.h>
 #include <iostream>
@@ -18,20 +18,13 @@ namespace prop {
 		BOOLEAN, INT, FLOAT, STRING, NaN
 	};
 
+	/*
+	 * Property storage -> only for tiny bits of data
+	 */
 	SINCE(0, 0, 1)
-	struct Properties
+	class Properties
 	{
-		//name vectors
-		vector<char*> string_names;
-		vector<char*> bool_names;
-		vector<char*> int_names;
-		vector<char*> float_names;
-		//value vectors
-		vector<char*> string_values;
-		vector<bool> bool_values;
-		vector<int> int_values;
-		vector<float> float_values;
-
+	public:
 		/*
          * Gets the value or returns 0. false or an empty string
 		 */
@@ -58,6 +51,18 @@ namespace prop {
 		void addBoolean(char* name, bool value);
 		void addFloat(char* name, float value);
 		void addInt(char* name, int value);
+
+	private:
+		//name vectors
+		vector<char*> string_names;
+		vector<char*> bool_names;
+		vector<char*> int_names;
+		vector<char*> float_names;
+		//value vectors
+		vector<char*> string_values;
+		vector<bool> bool_values;
+		vector<int> int_values;
+		vector<float> float_values;
 	};
 
 	/*

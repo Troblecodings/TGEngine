@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <iostream>
-#include "..\util\Annotations.hpp"
+#include "../util/Annotations.hpp"
 
 #ifdef _WIN32
 #include <direct.h>

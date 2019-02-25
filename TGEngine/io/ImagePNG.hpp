@@ -1,8 +1,8 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
-#include "..\io\Files.hpp"
-#include "..\pipeline\buffer\Texturebuffer.hpp"
+#include "../Stdbase.hpp"
+#include "../io/Files.hpp"
+#include "../pipeline/buffer/Texturebuffer.hpp"
 
 #define BUFFER_COMPARE(buffer, name) memcmp(buffer.data() + 4, name, 4) == 0
 

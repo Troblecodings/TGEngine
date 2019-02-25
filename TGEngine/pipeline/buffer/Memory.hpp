@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\..\pipeline\Device.hpp"
-#include "..\..\vlib\VulkanBuffer.hpp"
+#include "../../pipeline/Device.hpp"
+#include "../../vlib/VulkanBuffer.hpp"
 
 extern std::vector<VkBuffer> buffers;
 extern std::vector<VkDeviceSize> buffer_sizes;

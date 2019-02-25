@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Instance.hpp"
-#include "window\Window.hpp"
+#include "window/Window.hpp"
 #include "../vlib/VulkanBuffer.hpp"
 
 extern VkPhysicalDevice used_physical_device;
