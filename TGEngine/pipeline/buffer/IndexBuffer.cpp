@@ -29,8 +29,7 @@ void destroyIndexBuffer(IndexBuffer * buffer)
 }
 
 void IndexBuffer::start() {
-	this->index_count = 0;
-	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, this->max_size, 0, &this->memory);
+	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, sizeof(uint32_t) * this->index_count, this->max_size, 0, &this->memory);
 }
 
 void IndexBuffer::addIndex(uint32_t index) {

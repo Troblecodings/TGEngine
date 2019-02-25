@@ -74,11 +74,13 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 	ui_camera_uniform.descriptor.descriptor_set = 1;
 	ui_camera_uniform.descriptor.binding = 1;
+	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
 	multiplier = (window->width / (float)window->height);
 	multiplierx = (window_list[0]->height / (float)window_list[0]->width);
 	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
-	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
 	setLightPosition({ 1, 1, 1 });
 	light_buffer.descriptor.descriptor_set = 0;
 	light_buffer.descriptor.binding = 2;
@@ -95,6 +97,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	}
 	draw(&index_buffer, &main_buffer);
 	index_offset = index_buffer.index_count;
+	vertex_offset = main_buffer.count_of_points;
 	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 	main_buffer.end();
 	index_buffer.end();

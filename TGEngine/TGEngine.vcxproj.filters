@@ -243,6 +243,9 @@
     <ClInclude Include="ui\UITextureComponent.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
+    <ClInclude Include="vlib\VulkanCommandBuffer.hpp">
+      <Filter>Headerdateien\vlib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="ui\UITextureComponent.cpp">
       <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="vlib\VulkanCommandBuffer.cpp">
+      <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

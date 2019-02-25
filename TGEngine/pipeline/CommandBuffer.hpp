@@ -11,12 +11,14 @@
 #include "buffer/Texturebuffer.hpp"
 #include "../vlib/VulkanImage.hpp"
 #include "buffer/StagingBuffer.hpp"
+#include "../vlib/VulkanCommandBuffer.hpp"
 
 extern VkCommandPool command_pool;
 extern std::vector<VkCommandBuffer> command_buffers;
 extern VkDeviceSize offsets;
 extern bool started;
 extern uint32_t index_offset;
+extern size_t vertex_offset;
 
 SINCE(0, 0, 1)
 void createCommandBuffer();

@@ -1,5 +1,27 @@
 #include "VulkanImage.hpp"
 
+VkBufferImageCopy vlib_buffer_image_copy = {
+	0,
+	0,
+	0,
+	{
+		VK_IMAGE_ASPECT_COLOR_BIT,
+		0,
+		0,
+		1
+	},
+	{
+		0,
+		0,
+		0
+	},
+	{
+		0,
+		0,
+		1
+	}
+};
+
 VkImageCreateInfo vlib_image_create_info = {
 	VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 	nullptr,

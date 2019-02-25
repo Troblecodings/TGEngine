@@ -70,6 +70,7 @@
     <ClInclude Include="util\TGVertex.hpp" />
     <ClInclude Include="util\VectorUtil.hpp" />
     <ClInclude Include="vlib\VulkanBuffer.hpp" />
+    <ClInclude Include="vlib\VulkanCommandBuffer.hpp" />
     <ClInclude Include="vlib\VulkanDescriptor.hpp" />
     <ClInclude Include="vlib\VulkanImage.hpp" />
     <ClInclude Include="vlib\VulkanPipeline.hpp" />
@@ -120,6 +121,7 @@
     <ClCompile Include="util\TGVertex.cpp" />
     <ClCompile Include="util\VectorUtil.cpp" />
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
+    <ClCompile Include="vlib\VulkanCommandBuffer.cpp" />
     <ClCompile Include="vlib\VulkanDescriptor.cpp" />
     <ClCompile Include="vlib\VulkanImage.cpp" />
     <ClCompile Include="vlib\VulkanPipeline.cpp" />
