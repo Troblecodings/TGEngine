@@ -106,17 +106,15 @@ void loadFromFBX(Mesh* mesh, char* path) {
 
 }
 
-uint32_t addVertex(Mesh* mesh, TGVertex vert)
+void addVertex(Mesh* mesh, TGVertex vert)
 {
 	for (size_t b = 0; b < mesh->vertices.size(); b++)
 	{
 		if (mesh->vertices[b] == vert) {
-			TG_VECTOR_APPEND_NORMAL(mesh->indices, (uint32_t)b)
-			return (uint32_t)b;
+			mesh->indices.push_back((uint32_t)b);
+			return;
 		}
 	}
 	TG_VECTOR_APPEND_NORMAL(mesh->vertices, vert)
-	uint32_t idx = (uint32_t)last_size;
-	TG_VECTOR_APPEND_NORMAL(mesh->indices, idx)
-	return idx;
+	mesh->indices.push_back((uint32_t)last_size);
 }

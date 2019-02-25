@@ -14,7 +14,7 @@ int main() {
 
 	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2);
 	entity.addComponent(&texture);
-	//tg_ui::ui_scene_entity.addChildren(&entity);
+	tg_ui::ui_scene_entity.addChildren(&entity);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
@@ -40,8 +40,8 @@ void init() {
 	createTexture(&tex1);
 	createTexture(&tex2);
 
-	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
-	createActor(&mesh2)->preScale(0.4, 0.4, 0.4)->applyPretransform();
+	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
+	//createActor(&mesh2)->preScale(0.4, 0.4, 0.4)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
 }

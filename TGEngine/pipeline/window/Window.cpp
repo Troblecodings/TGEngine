@@ -7,10 +7,6 @@ HMODULE sys_module;
 #if defined(_WIN32) || defined(_WIN64)
 std::vector<HWND> __impl_window_list;
 
-Window::Window(wchar_t* name) {
-	this->__impl_handle = name;
-}
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	size_t i;
 	for (i = 0; i < __impl_window_list.size(); i++)
@@ -167,6 +163,8 @@ void createWindow(Window* window) {
 	}
 #endif
 
+	window_list.push_back(window);
+
 	if (window->decorated) {
 		//Char unicode conversation
 		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
@@ -199,9 +197,7 @@ void createWindow(Window* window) {
 		return;
 	}
 #endif // DEBUG
-	size_t csize = __impl_window_list.size();
-	__impl_window_list.resize(csize + 1);
-	__impl_window_list[csize] = window->__impl_window;
+	__impl_window_list.push_back(window->__impl_window);
 
 	ShowWindow(window->__impl_window, SW_SHOW);
 	UpdateWindow(window->__impl_window);

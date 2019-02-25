@@ -19,6 +19,9 @@ vulkan = os.getenv("VULKAN_SDK")
 dependencies_file = None
 msg = None
 
+def isValidFile(name):
+    return name.endswith(".h") or name.endswith(".xml") or name.endswith(".hpp") or name.endswith(".md") or name.endswith(".cpp") or name.endswith(".c") or name.endswith(".bat") or name.endswith(".py") or name.endswith(".html")
+
 def compileshader():
     global msg
     c_path = os.getcwd()
@@ -111,10 +114,31 @@ def wrtdir(vk, src):
         else:
             wrt(vk, src + str)
 
+files = 0
+loc = 0
+def find(path):
+    global files
+    global loc
+    global msg
+    data = os.listdir(path)
+    for file in data:
+        if "stb" not in path and "dependencies" not in path and "fbx" not in path and os.path.isdir(path + "/" + file):
+            find(path + "/" + file)
+        elif isValidFile(file):
+            files += 1
+            print("#", end="", flush=True)
+            with open(path + "/" + file, "rb") as fl:
+                loc += len(fl.readline())
+
 
 def trigger(id):
     global msg
     global dependencies_file
+    global files
+    global loc
+    global msg
+    files = 0
+    loc = 0
     try:
         if id == 0:
             exit(0)
@@ -148,6 +172,11 @@ def trigger(id):
         elif id == 3:
             compileshader()
             return
+        elif id == 5:
+            find(os.getcwd())
+            msg = "Found " + str(files) + " files\nWith " + str(loc) + " lines of code"
+            clear()
+            return
     except IOError or ValueError:
         clear()
         print(traceback.format_exc())
@@ -173,6 +202,7 @@ while True:
     print("2. Pack dependencies")
     print("3. Compile shader")
     print("4. Deploy engine")
+    print("5. Get states")
     print("0. Close")
     try:
         trigger(int(input()))

@@ -87,6 +87,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
 
 	createCommandBuffer();
+
 	main_buffer.start();
 	index_buffer.start();
 	for (Actor act : actors) {
@@ -97,43 +98,26 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 	main_buffer.end();
 	index_buffer.end();
+	fillCommandBuffer(&index_buffer, &main_buffer);
 
 	singleTimeCommand();
 	createSemaphores();
 
 	addTextures();
-	fillCommandBuffer(&index_buffer, &main_buffer);
 
-	if (properties->getBoolean("multithreadrender")) {
-		while (true) {
-			window->pollevents();
-			if (window->close_request) {
-				break;
-			}
-			if (window->minimized) {
-				continue;
-			}
-			startdraw(&index_buffer, &main_buffer);
-			submit(&index_buffer, &main_buffer);
-			present(&index_buffer, &main_buffer);
+	while (true) {
+		window->pollevents();
+		if (window->close_request) {
+			break;
 		}
-	}
-	else {
-		while (true) {
-			window->pollevents();
-			if (window->close_request) {
-				break;
-			}
-			if (window->minimized) {
-				continue;
-			}
-			startdraw(&index_buffer, &main_buffer);
-			submit(&index_buffer, &main_buffer);
-			present(&index_buffer, &main_buffer);
-			last_result = vkQueueWaitIdle(queue);
-			HANDEL(last_result)
+		if (window->minimized) {
+			continue;
 		}
+		startdraw(&index_buffer, &main_buffer);
+		submit(&index_buffer, &main_buffer);
+		present(&index_buffer, &main_buffer);
 	}
+
 	destroyAllTextures();
 	destroySemaphores();
 	destroyCommandBuffer();

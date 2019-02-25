@@ -30,7 +30,6 @@ void loadFromFBX(Mesh* msh, char* path);
 /*
  * Adds a vertex to the given mesh
  *  -> if the vertex should already be in the mesh it is not added instead an other index is added
- *    -> returns index of vertex
  */
 SINCE(0, 0, 4)
-uint32_t addVertex(Mesh* mesh, TGVertex vert);
+void addVertex(Mesh* mesh, TGVertex vert);

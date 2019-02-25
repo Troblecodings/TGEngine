@@ -19,9 +19,6 @@ extern std::vector<HWND> __impl_window_list;
 
 struct Window {
 
-	SINCE(0, 0, 3)
-	Window(wchar_t* name);
-
 	void pollevents();
 
 	int x = 0,
@@ -42,7 +39,6 @@ struct Window {
 
 	HWND __impl_window;
 	HCURSOR __impl_cursor;
-	wchar_t* __impl_handle;
 };
 
 #define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\

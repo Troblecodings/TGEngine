@@ -33,6 +33,7 @@ namespace FBX_Dictionary {
 				}
 			}
 			else {
+				tex->index = COLOR_ONLY;
 				for (int j = 0; j < mesh->GetPolygonCount(); j++) {
 					for (int i = 0; i < mesh->GetPolygonSize(j); i++) {
 						int index = mesh->GetPolygonVertex(j, i);
@@ -73,7 +74,7 @@ namespace FBX_Dictionary {
 					fbxsdk::FbxObject* object = surface_lambert->Diffuse.GetSrcObject();
 					if (object) {
 						fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
-						if (tex) {
+						if (tex && tex->GetFileName() != nullptr) {
 							FBX_Dictionary::textures[pos] = {
 								(char*)tex->GetFileName()
 							};
@@ -81,7 +82,12 @@ namespace FBX_Dictionary {
 						}
 						else {
 							FBX_Dictionary::textures[pos].texture_path = nullptr;
+							FBX_Dictionary::textures[pos].index = COLOR_ONLY;
 						}
+					}
+					else {
+						FBX_Dictionary::textures[pos].texture_path = nullptr;
+						FBX_Dictionary::textures[pos].index = COLOR_ONLY;
 					}
 				}
 			}
