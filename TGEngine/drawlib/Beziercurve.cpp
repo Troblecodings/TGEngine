@@ -4,7 +4,7 @@ static TGVertex midpoint(TGVertex a, TGVertex b, float t)
 {
     return {
         b.position + (a.position - b.position) * t,
-        mixColor(a.color, b.color, t),
+        math::mixColor(a.color, b.color, t),
         b.uv + (a.ub - b.uv) * t,
         COLOR_ONLY
     };
