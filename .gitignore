@@ -279,3 +279,6 @@ dependencies/deps.zip
 /Dependencies.zip
 /TGEditor/resource
 /Chess
+
+# Vs Code
+.vscode/
