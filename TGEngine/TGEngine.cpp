@@ -103,10 +103,12 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.end();
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
-	singleTimeCommand();
+	startupCommands();
 	createSemaphores();
 
 	addTextures();
+
+	clock_t last_time = clock();
 
 	while (true) {
 		window->pollevents();
@@ -117,6 +119,40 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			continue;
 		}
 		startdraw(&index_buffer, &main_buffer);
+
+		clock_t current_time = clock();
+		clock_t delta = current_time - last_time;
+
+		if (delta >= (CLOCKS_PER_SEC / 60)) {
+			main_buffer.count_of_points = vertex_offset;
+			index_buffer.index_count = index_offset;
+			main_buffer.start();
+			index_buffer.start();
+			tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
+			main_buffer.end();
+			index_buffer.end();
+
+			startSingleTimeCommand();
+			vlib_buffer_copy.size = main_buffer.stag_buf.size;
+			vkCmdCopyBuffer(
+				command_buffers[image_count],
+				main_buffer.stag_buf.staging_buffer,
+				*main_buffer.stag_buf.destination,
+				1,
+				&vlib_buffer_copy
+			);
+			vlib_buffer_copy.size = index_buffer.stag_buf.size;
+			vkCmdCopyBuffer(
+				command_buffers[image_count],
+				index_buffer.stag_buf.staging_buffer,
+				*index_buffer.stag_buf.destination,
+				1,
+				&vlib_buffer_copy
+			);
+			endSingleTimeCommand();
+			fillCommandBuffer(&index_buffer, &main_buffer);
+		}
+
 		submit(&index_buffer, &main_buffer);
 		present(&index_buffer, &main_buffer);
 	}

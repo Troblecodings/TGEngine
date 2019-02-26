@@ -34,10 +34,35 @@ void createCommandBuffer() {
 	HANDEL(last_result)
 }
 
-void singleTimeCommand() {
+void startSingleTimeCommand() {
 	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
 	last_result = vkBeginCommandBuffer(command_buffers[image_count], &vlib_command_buffer_begin_info);
 	HANDEL(last_result);
+}
+
+void endSingleTimeCommand() {
+	last_result = vkEndCommandBuffer(command_buffers[image_count]);
+	HANDEL(last_result);
+
+	VkSubmitInfo submitInfo = {
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		nullptr,
+		0,
+		nullptr,
+		nullptr,
+		1,
+		&command_buffers[image_count],
+		0,
+		nullptr,
+	};
+
+	vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(queue);
+}
+
+void startupCommands() {
+	startSingleTimeCommand();
 
 	for each(Texture* tex in texture_buffers) {
 		ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
@@ -72,23 +97,7 @@ void singleTimeCommand() {
 		);
 	}
 
-	last_result = vkEndCommandBuffer(command_buffers[image_count]);
-	HANDEL(last_result);
-
-	VkSubmitInfo submitInfo = {
-		VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		nullptr,
-		0,
-		nullptr,
-		nullptr,
-		1,
-		&command_buffers[image_count],
-		0,
-		nullptr,
-	};
-
-	vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(queue);
+	endSingleTimeCommand();
 
 	for each(Texture* tex in texture_buffers) {
 		destroyBufferofTexture(tex);

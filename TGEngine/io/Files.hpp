@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include "../util/Annotations.hpp"
+#include "../Error.hpp"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -33,25 +34,6 @@ namespace nio {
 	void initFileSystem();
 
 	/*
-	 *  Parameter:
-	 *      char* fila_path -> path to your file 
-	 *  Returns:
-	 *      char* -> binary of your file declared be #file_path
-	 */
-	SINCE(0, 0, 1)
-	DEPRECATED
-	INSTEAD_USE("readAll")
-	vector<char> getBinarys(char* file_path);
-
-	/*
-	 * If size_of_file is not nullptr it returns the filesize 
-	 */
-	SINCE(0, 0, 2)
-	DEPRECATED
-	INSTEAD_USE("readFileSize")
-	ifstream getBinaryStream(INPUT char* filename, OUTPUT size_t* size_of_file);
-
-	/*
 	 * Opens the file
 	 * (In debug mode it checks if the open was successfull)
 	 */
@@ -68,6 +50,7 @@ namespace nio {
 
 	/*
 	 * Reads all bytes out of a file
+	 * (In debug mode it checks if the open was successfull)
 	 */
 	SINCE(0, 0, 4)
 	uint8_t* readAll(char* name);

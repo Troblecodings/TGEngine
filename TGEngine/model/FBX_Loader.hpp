@@ -4,14 +4,10 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include <fbxsdk.h>
 #include "../pipeline/buffer/Texturebuffer.hpp"
+#include "../Error.hpp"
 
 #ifdef DEBUG
-#define FBX_CHECK(sucess)\
-if (!sucess) {\
-	OUT_LV_DEBUG("Failed to load " << name)\
-	OUT_LV_DEBUG("Error: " << importer->GetStatus().GetErrorString())\
-    return 0;\
-}
+#define FBX_CHECK(sucess) ASSERT_NONE_NULL_DB(sucess, "Failed to load " << name << " with error " << importer->GetStatus().GetErrorString(), TG_ERR_DB_NULLPTR)
 #else
 #define FBX_CHECK(sucess) sucess;
 #endif

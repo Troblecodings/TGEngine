@@ -117,9 +117,7 @@ uint32_t load(char* name) {
 	importer->Destroy();
 
 	FbxNode* fbx_node = scene->GetRootNode();
+	ASSERT_NONE_NULL_DB(fbx_node, "Fbx node null in mesh " << name, TG_ERR_DB_NULLPTR)
 
-#ifdef DEBUG
-	FBX_CHECK(fbx_node)
-#endif
 	return FBX_Dictionary::addAll(fbx_node);
 }

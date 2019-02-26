@@ -38,12 +38,12 @@ namespace tg_ui {
 	{
 		for each (UIComponent* comp in this->components)
 		{
-			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_UI_COMPONENT_NULL)
+			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
 				comp->draw(index, vertex);
 		}
 		for each (UIEntity* entity in this->children)
 		{
-			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_UI_ENTITY_NULL)
+			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
 				entity->draw(index, vertex);
 		}
 	}
@@ -52,12 +52,12 @@ namespace tg_ui {
 	{
 		for each (UIComponent* comp in this->components)
 		{
-			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_UI_COMPONENT_NULL)
+			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
 				comp->update(mouse_x, mouse_y);
 		}
 		for each (UIEntity* entity in this->children)
 		{
-			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_UI_ENTITY_NULL)
+			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
 				entity->update(mouse_x, mouse_y);
 		}
 	}

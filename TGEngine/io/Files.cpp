@@ -11,41 +11,16 @@ namespace nio {
 		GetCurrentDir(current_working_dir, sizeof(current_working_dir));
 	}
 
-	vector<char> getBinarys(char* filepath) {
-		size_t size_of_file;
-		ifstream inputstream = getBinaryStream(filepath, &size_of_file);
-		vector<char> buffer(size_of_file);
-		inputstream.read(buffer.data(), size_of_file);
-		inputstream.close();
-		return buffer;
-	}
-
-	ifstream getBinaryStream(INPUT char* filename,OUTPUT size_t* size_of_file) {
-		ifstream strm(filename, ios::binary | ios::ate);
-		if(size_of_file != nullptr)*size_of_file = strm.tellg();
-		strm.seekg(0);
-		return strm;
-	}
-
 	File open(char* name, char* mode) {
 		File file;
 		errno_t err = fopen_s(&file, name, mode);
-#ifdef DEBUG
-		if (err) {
-			cerr << "Error can't open file [" << name << "] with error " << err << endl;
-			return nullptr;
-		}
-#endif
+		ASSERT_NONE_NULL_DB(!err, "Can not open file [" << name << "]!", TG_ERR_FILE_NOT_FOUND_OR_NO_RIGHTS)
+
 		return file;
 	}
 
 	File readFileSize(char* name, char* mode, OUTPUT long* file_length) {
-#ifdef DEBUG
-		if (!file_length) {
-			cerr << "On call readFileSize the paramter file_length was nullptr [should be a valid long pointer]" << endl;
-			return nullptr;
-		}
-#endif
+		ASSERT_NONE_NULL_DB(file_length, "File length pointer is null!", TG_ERR_DB_NULLPTR)
 		File file = open(name, mode);
 
 		fseek(file, 0, SEEK_END);
