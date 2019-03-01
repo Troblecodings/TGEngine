@@ -1,6 +1,6 @@
 #include "Beziercurve.hpp"
 
-static TGVertex midpoint(TGVertex a, TGVertex b, float t)
+TGVertex midpoint(TGVertex a, TGVertex b, float t)
 {
     return {
         b.position + (a.position - b.position) * t,
