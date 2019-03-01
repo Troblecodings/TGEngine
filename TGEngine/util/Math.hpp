@@ -13,6 +13,9 @@
 namespace math {
 
 	SINCE(0, 0, 4)
+	TGVertex midpoint(TGVertex a, TGVertex b, float t = 0.5f);
+
+	SINCE(0, 0, 4)
 	glm::vec4 mixColor(glm::vec4 a, glm::vec4 b, float t = 0.5f);
 
 	SINCE(0, 0, 4)

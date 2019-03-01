@@ -2,6 +2,16 @@
 
 namespace math {
 
+	TGVertex midpoint(TGVertex a, TGVertex b, float t)
+	{
+		return {
+			b.position + (a.position - b.position) * t,
+			math::mixColor(a.color, b.color, t),
+			b.uv + (a.ub - b.uv) * t,
+			COLOR_ONLY
+		};
+	}
+
 	glm::vec4 mixColor(glm::vec4 a, glm::vec4 b, float t)
 	{
 		float it = 1 - t; // Inverse time
