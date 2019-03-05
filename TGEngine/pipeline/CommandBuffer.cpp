@@ -2,6 +2,7 @@
 
 
 VkCommandPool command_pool;
+VkFence single_time_command_ready;
 std::vector<VkCommandBuffer> command_buffers;
 VkDeviceSize offsets = 0;
 uint32_t index_offset = 0;
@@ -32,9 +33,16 @@ void createCommandBuffer() {
 	vlib_command_buffer_allocate_info.commandBufferCount = 1;
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &command_buffers[image_count]);
 	HANDEL(last_result)
+
+	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+	last_result = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
+	HANDEL(last_result)
 }
 
 void startSingleTimeCommand() {
+	last_result = vkResetFences(device, 1, &single_time_command_ready);
+	HANDEL(last_result)
+
 	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
 	last_result = vkBeginCommandBuffer(command_buffers[image_count], &vlib_command_buffer_begin_info);
@@ -57,8 +65,11 @@ void endSingleTimeCommand() {
 		nullptr,
 	};
 
-	vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(queue);
+	last_result = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
+	HANDEL(last_result)
+
+	last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
+	HANDEL(last_result)
 }
 
 void startupCommands() {

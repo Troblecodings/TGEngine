@@ -13,8 +13,8 @@ void initCameras() {
 	{ VK_SHADER_STAGE_VERTEX_BIT }
 	};
 	createUniformBuffer(&camera_uniform);
-	if(cameras_on_scene.size() > 0)addListener(__impl_input_handle);
-	if (cameras_on_scene.size() > 0)addKeyListener(__impl_keyinput_handle);
+	if(cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
+	if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
 
 	ui_camera_uniform = {
     sizeof(glm::mat4),

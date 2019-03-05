@@ -28,7 +28,7 @@ void destroyVertexBuffer(VertexBuffer * buffer_storage)
 }
 
 void VertexBuffer::start() {
-	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, VERTEX_SIZE * this->count_of_points, this->max_size, 0, &this->memory);
+	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, this->max_size, 0, &this->memory);
 }
 
 void VertexBuffer::add(TGVertex vert) {

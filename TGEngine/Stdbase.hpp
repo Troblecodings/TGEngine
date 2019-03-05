@@ -27,8 +27,7 @@ SINCE(0, 0, 4)
 SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
-std::cout << "FAILED IN " << __FILE__ << " LINE " << __LINE__ << " WITH ERROR: " << result << std::endl;\
-exit(result);\
+TGERROR(result)\
 }
 
 SINCE(0, 0, 1)
@@ -38,7 +37,7 @@ if(window_list[0]->minimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\
-}else if(result != VK_SUCCESS){\
+} else {\
 HANDEL(result)\
 }
 

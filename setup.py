@@ -151,6 +151,10 @@ def trigger(id):
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
             os.remove("Dependencies.zip")
+            print("Starting git subprocess")
+            p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            for line in iter(p.stdout.readline, b''):
+                print(">>> " + str(line.rstrip()).replace("b'", ""))
             msg = "Finished!"
             clear()
             return

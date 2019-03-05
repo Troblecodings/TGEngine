@@ -39,32 +39,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		switch (input.header.dwType)
 		{
 		case RIM_TYPEMOUSE:
-			inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
+			tg_io::inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
 			break;
 		case RIM_TYPEKEYBOARD:
-			__impl_key_update(input.data.keyboard.VKey, input.data.keyboard.Flags);
+			tg_io::__impl_key_update(input.data.keyboard.VKey, input.data.keyboard.Flags);
 			break;
 		default:
 			break;
 		}
 		break;
 	case WM_LBUTTONDOWN:
-		FIRST_MOUSE_BUTTON = true;
+		tg_io::FIRST_MOUSE_BUTTON = true;
 		break;
 	case WM_LBUTTONUP:
-		FIRST_MOUSE_BUTTON = false;
+		tg_io::FIRST_MOUSE_BUTTON = false;
 		break;
 	case WM_MBUTTONDOWN:
-		THIRED_MOUSE_BUTTON = true;
+		tg_io::THIRED_MOUSE_BUTTON = true;
 		break;
 	case WM_MBUTTONUP:
-		THIRED_MOUSE_BUTTON = false;
+		tg_io::THIRED_MOUSE_BUTTON = false;
 		break;
 	case WM_RBUTTONDOWN:
-		SECOND_MOUSE_BUTTON = true;
+		tg_io::SECOND_MOUSE_BUTTON = true;
 		break;
 	case WM_RBUTTONUP:
-		SECOND_MOUSE_BUTTON = false;
+		tg_io::SECOND_MOUSE_BUTTON = false;
 		break;
 	case WM_KILLFOCUS:
 		a_window->focused = false;

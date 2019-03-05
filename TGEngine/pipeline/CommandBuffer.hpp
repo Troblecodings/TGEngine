@@ -14,6 +14,7 @@
 #include "../vlib/VulkanCommandBuffer.hpp"
 
 extern VkCommandPool command_pool;
+extern VkFence single_time_command_ready;
 extern std::vector<VkCommandBuffer> command_buffers;
 extern VkDeviceSize offsets;
 extern bool started;

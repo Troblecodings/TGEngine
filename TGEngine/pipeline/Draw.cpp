@@ -15,7 +15,6 @@ void createSemaphores() {
 void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	last_result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
 	HANDEL_RECREATE(last_result)
-	offsets = 0;
 }
 
 void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
