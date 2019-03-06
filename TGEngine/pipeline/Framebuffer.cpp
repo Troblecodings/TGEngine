@@ -7,8 +7,11 @@ std::vector<VkImage> image;
 void createFramebuffer() {
 	Window* win = window_list[0];
 
+	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr);
+	HANDEL(last_result)
 	image.resize(image_count);
-	vkGetSwapchainImagesKHR(device, swapchain, &image_count, image.data());
+	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, image.data());
+	HANDEL(last_result)
 
 	frame_buffer.resize(image_count); 
 	image_view.resize(image_count); 

@@ -109,10 +109,7 @@ void destroyDescriptors() {
 	{
 		vkDestroyDescriptorSetLayout(device, var, nullptr);
 	}
-	for each (VkDescriptorSet var in descriptor_set)
-	{
-		last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &var);
-		HANDEL(last_result);
-	}
+	last_result = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
+	HANDEL(last_result);
 	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 };

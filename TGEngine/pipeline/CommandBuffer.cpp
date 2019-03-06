@@ -78,8 +78,8 @@ void startupCommands() {
 	for each(Texture* tex in texture_buffers) {
 		ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
-		vlib_buffer_image_copy.imageExtent.width = (uint32_t)window_list[0]->width;
-		vlib_buffer_image_copy.imageExtent.height = (uint32_t)window_list[0]->height;
+		vlib_buffer_image_copy.imageExtent.width = tex->width;
+		vlib_buffer_image_copy.imageExtent.height = tex->height;
 		vkCmdCopyBufferToImage(
 			command_buffers[image_count],
 			tex->buffer,

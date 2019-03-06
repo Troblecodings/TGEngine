@@ -90,6 +90,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	createCommandBuffer();
 
+	addTextures();
+
 	index_buffer.index_count = 0;
 	main_buffer.count_of_points = 0;
 	main_buffer.start();
@@ -107,8 +109,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	startupCommands();
 	createSemaphores();
-
-	addTextures();
 
 	clock_t last_time = clock();
 
@@ -164,13 +164,13 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	destroyAllTextures();
 	destroySemaphores();
 	destroyCommandBuffer();
-	destroyDescriptors();
 	destroyMemory();
 	destroyIndexBuffer(&index_buffer);
 	destroyVertexBuffer(&main_buffer);
 	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
+	destroyDescriptors();
 	destroyPipeline();
 	destroyShaders();
 	destroyRenderPass();

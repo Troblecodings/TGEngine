@@ -77,7 +77,7 @@ void createRenderpass() {
 	VkSubpassDependency subpass_dependency = {
 		0,
 		VK_SUBPASS_EXTERNAL,
-		VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+		VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
 		VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 		0,
 		0,
