@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
     <ClCompile Include="resources\ShaderData.cpp" />
+    <None Include="..\docs\docs.html" />
     <None Include="..\docs\index.html" />
     <None Include="..\docs\_config.yml" />
     <None Include="resources\Fragmentshader.glsl" />

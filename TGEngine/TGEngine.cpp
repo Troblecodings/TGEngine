@@ -81,7 +81,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 
-	setLightPosition({ 0, 1, 0 });
+	setLightPosition({ 1, 1, 1 });
 	light_buffer.descriptor.descriptor_set = 0;
 	light_buffer.descriptor.binding = 2;
 	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
@@ -122,7 +122,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		}
 		startdraw(&index_buffer, &main_buffer);
 
-		/*clock_t current_time = clock();
+		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
 
 		if (delta >= (CLOCKS_PER_SEC / 60)) {
@@ -138,24 +138,26 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			index_buffer.end();
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.size = main_buffer.stag_buf.size;
+			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlib_buffer_copy.size = (main_buffer.count_of_points - vertex_offset) * VERTEX_SIZE;
 			vkCmdCopyBuffer(
-				command_buffers[image_count],
+				SINGELTIME_COMMAND_BUFFER,
 				main_buffer.stag_buf.staging_buffer,
-				*main_buffer.stag_buf.destination,
+				main_buffer.vertex_buffer,
 				1,
 				&vlib_buffer_copy
 			);
-			vlib_buffer_copy.size = index_buffer.stag_buf.size;
+			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
+			vlib_buffer_copy.size = (index_buffer.index_count - index_offset) * sizeof(uint32_t);
 			vkCmdCopyBuffer(
-				command_buffers[image_count],
+				SINGELTIME_COMMAND_BUFFER,
 				index_buffer.stag_buf.staging_buffer,
-				*index_buffer.stag_buf.destination,
+				index_buffer.index_buffer,
 				1,
 				&vlib_buffer_copy
 			);
 			endSingleTimeCommand();
-		}*/
+		}
 
 		submit(&index_buffer, &main_buffer);
 		present(&index_buffer, &main_buffer);

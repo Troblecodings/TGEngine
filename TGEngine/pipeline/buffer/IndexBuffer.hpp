@@ -25,7 +25,10 @@ struct IndexBuffer{
 	void end();
 };
 
+extern uint32_t index_offset;
+
 SINCE(0, 0, 2)
 void createIndexBuffer(IndexBuffer* buffer);
 
+SINCE(0, 0, 2)
 void destroyIndexBuffer(IndexBuffer* buffer);

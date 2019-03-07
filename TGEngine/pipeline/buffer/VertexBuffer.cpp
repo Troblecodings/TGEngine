@@ -1,5 +1,7 @@
 #include "VertexBuffer.hpp"
 
+size_t vertex_offset = 0;
+
 void createVertexBuffer(VertexBuffer* buffer_storage) {
 	vlib_buffer_create_info.size = VERTEX_SIZE * buffer_storage->max_vertex_count;
 	vlib_buffer_create_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
@@ -28,11 +30,11 @@ void destroyVertexBuffer(VertexBuffer * buffer_storage)
 }
 
 void VertexBuffer::start() {
-	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, this->max_size, 0, &this->memory);
+	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, vertex_offset * VERTEX_SIZE, VK_WHOLE_SIZE, 0, &this->memory);
 }
 
 void VertexBuffer::add(TGVertex vert) {
-	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, VERTEX_SIZE);
+	memcpy((TGVertex*)this->memory + this->count_of_points - vertex_offset, &vert, VERTEX_SIZE);
 	this->count_of_points++;
 }
 
@@ -48,7 +50,7 @@ void VertexBuffer::addTexOnly(TGVertex vert) {
 }
 
 void VertexBuffer::addAll(TGVertex* verts, size_t count) {
-	memcpy((TGVertex*)this->memory + this->count_of_points, verts, VERTEX_SIZE * count);
+	memcpy((TGVertex*)this->memory + this->count_of_points - vertex_offset, verts, VERTEX_SIZE * count);
 	this->count_of_points += count;
 }
 

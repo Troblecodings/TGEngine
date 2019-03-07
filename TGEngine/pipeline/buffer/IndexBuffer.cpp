@@ -1,5 +1,7 @@
 #include "IndexBuffer.hpp"
 
+uint32_t index_offset = 0;
+
 void createIndexBuffer(IndexBuffer* buffer) {
 	vlib_buffer_create_info.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	vlib_buffer_create_info.size = sizeof(uint32_t) * buffer->size;
@@ -19,7 +21,6 @@ void createIndexBuffer(IndexBuffer* buffer) {
 	buffer->stag_buf.destination = &buffer->index_buffer;
 	buffer->stag_buf.size = vlib_buffer_create_info.size;
 	createStagingBuffer(&buffer->stag_buf);
-
 }
 
 void destroyIndexBuffer(IndexBuffer * buffer)
@@ -29,11 +30,11 @@ void destroyIndexBuffer(IndexBuffer * buffer)
 }
 
 void IndexBuffer::start() {
-	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, this->max_size, 0, &this->memory);
+	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, index_offset * sizeof(uint32_t), VK_WHOLE_SIZE, 0, &this->memory);
 }
 
 void IndexBuffer::addIndex(uint32_t index) {
-	memcpy((uint32_t*)this->memory + this->index_count, &index, sizeof(uint32_t));
+	memcpy((uint32_t*)this->memory + this->index_count - index_offset, &index, sizeof(uint32_t));
 	this->index_count++;
 }
 

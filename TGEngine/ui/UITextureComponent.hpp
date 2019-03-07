@@ -12,6 +12,7 @@ namespace tg_ui {
 
 	protected:
 		virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
+		virtual void update(int mouse_x, int mouse_y) override;
 
 	private:
 		Texture* texture;

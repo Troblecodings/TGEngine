@@ -5,8 +5,6 @@ VkCommandPool command_pool;
 VkFence single_time_command_ready;
 std::vector<VkCommandBuffer> command_buffers;
 VkDeviceSize offsets = 0;
-uint32_t index_offset = 0;
-size_t vertex_offset = 0;
 bool started = true;
 
 void createCommandBuffer() {
@@ -31,7 +29,7 @@ void createCommandBuffer() {
 	HANDEL(last_result)
 
 	vlib_command_buffer_allocate_info.commandBufferCount = 1;
-	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &command_buffers[image_count]);
+	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
 	HANDEL(last_result)
 
 	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
@@ -45,12 +43,12 @@ void startSingleTimeCommand() {
 
 	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
-	last_result = vkBeginCommandBuffer(command_buffers[image_count], &vlib_command_buffer_begin_info);
+	last_result = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
 	HANDEL(last_result);
 }
 
 void endSingleTimeCommand() {
-	last_result = vkEndCommandBuffer(command_buffers[image_count]);
+	last_result = vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER);
 	HANDEL(last_result);
 
 	VkSubmitInfo submitInfo = {
@@ -60,7 +58,7 @@ void endSingleTimeCommand() {
 		nullptr,
 		nullptr,
 		1,
-		&command_buffers[image_count],
+		&SINGELTIME_COMMAND_BUFFER,
 		0,
 		nullptr,
 	};
@@ -76,12 +74,12 @@ void startupCommands() {
 	startSingleTimeCommand();
 
 	for each(Texture* tex in texture_buffers) {
-		ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
 		vlib_buffer_image_copy.imageExtent.width = tex->width;
 		vlib_buffer_image_copy.imageExtent.height = tex->height;
 		vkCmdCopyBufferToImage(
-			command_buffers[image_count],
+			SINGELTIME_COMMAND_BUFFER,
 			tex->buffer,
 			tex->image,
 			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -89,18 +87,18 @@ void startupCommands() {
 			&vlib_buffer_image_copy
 		);
 
-		ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 	}
-	ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
 
 	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	ADD_IMAGE_MEMORY_BARRIER(command_buffers[image_count], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
+	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
 
 	for each(StagingBuffer* buf in staging_buffer)
 	{
 		vlib_buffer_copy.size = buf->size;
 		vkCmdCopyBuffer(
-			command_buffers[image_count],
+			SINGELTIME_COMMAND_BUFFER,
 			buf->staging_buffer,
 			*buf->destination,
 			1,

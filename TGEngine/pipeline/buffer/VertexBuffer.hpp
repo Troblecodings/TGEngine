@@ -35,6 +35,8 @@ struct VertexBuffer {
 	void end();
 };
 
+extern size_t vertex_offset;
+
 SINCE(0, 0, 1)
 void createVertexBuffer(VertexBuffer* buffer_storage);
 

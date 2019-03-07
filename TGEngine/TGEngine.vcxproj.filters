@@ -421,5 +421,8 @@
     <None Include="..\docs\index.html">
       <Filter>docs</Filter>
     </None>
+    <None Include="..\docs\docs.html">
+      <Filter>docs</Filter>
+    </None>
   </ItemGroup>
 </Project>

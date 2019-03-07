@@ -26,7 +26,7 @@ Now you can open the VisualStudios Project file and compile the Engine.
 <h3>Libraries</h3>
 
 I am using [LunarG's Vulkan-SDK](https://vulkan.lunarg.com/sdk/home).<br>
-Current built version: <strong>1.1.97.0</strong><br>
+Current built version: <strong>1.1.101</strong><br>
 Current Vulkan API version: <strong>1.1</strong>
 <br>
 <br>
