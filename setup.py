@@ -157,30 +157,10 @@ def trigger(id):
                 shutil.rmtree("dependencies")
             if os.path.exists("stb") and len(os.listdir("stb")) > 0:
                 print("Updating stb")
-                p = subprocess.Popen(["git", "pull"], cwd="stb", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                for line in iter(p.stdout.readline, b''):
-                    print(">>> " + str(line.rstrip()).replace("b'", ""))
-                b = True
-                for line in iter(p.stderr.readline, b''):
-                    if b:
-                        msg = "There were git errors while stb update!"
-                        b = False
-                    print(">>> " + line)
-                if not b:
-                    return
+                p = subprocess.Popen(["git", "pull"], cwd="stb")
             else:
                 print("Cloning stb")
-                p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                for line in iter(p.stdout.readline, b''):
-                    print(">>> " + str(line.rstrip()).replace("b'", ""))
-                b = True
-                for line in iter(p.stderr.readline, b''):
-                    if b:
-                        msg = "There were git errors while stb update!"
-                        b = False
-                    print(">>> " + line)
-                if not b:
-                    return
+                p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"])
             print("Extracting Archive")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
@@ -227,7 +207,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.1      ")
+    print("       DEPENDENCIES 2.2      ")
     print("=============================")
     print("")
     if msg is not None:

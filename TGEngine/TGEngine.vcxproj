@@ -132,6 +132,7 @@
     <None Include="..\docs\docs.html" />
     <None Include="..\docs\index.html" />
     <None Include="..\docs\_config.yml" />
+    <None Include="..\setup.py" />
     <None Include="resources\Fragmentshader.glsl" />
     <None Include="resources\Fragmentshader.spv" />
     <None Include="resources\Vertexshader.glsl" />
