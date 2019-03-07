@@ -34,8 +34,8 @@ void createSwapchain() {
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 	    used_present_mode,
-	    VK_FALSE,
-	    VK_NULL_HANDLE
+	    VK_TRUE,
+	    swapchain
 	};
 
 	last_result = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
@@ -104,9 +104,8 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createCommandBuffer();
 
 	multiplier = (window_list[0]->width / (float)window_list[0]->height);
-	multiplierx = (window_list[0]->height / (float)window_list[0]->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
-	updateCamera(window_list[0]->width, window_list[0]->height);
+	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
+	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 
 	fillCommandBuffer(ibuffer, vbuffer);
 }

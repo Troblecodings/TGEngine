@@ -31,6 +31,7 @@ namespace tg_ui {
 		void update(int mouse_x, int mouse_y);
 
 		glm::vec2 getPosition();
+		glm::vec2 UIEntity::getRenderPosition();
 
 	protected:
 		UIEntity* parent = nullptr;

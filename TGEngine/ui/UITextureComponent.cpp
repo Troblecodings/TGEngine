@@ -16,13 +16,11 @@ namespace tg_ui {
 
 	void UITextureComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
 	{
-		glm::vec2 pos = this->parent->getPosition();
-		OUT_LV_DEBUG(pos.x << " " << pos.y)
+		glm::vec2 pos = this->parent->getRenderPosition();
 		glm::vec2 ext = this->parent->extent;
 		drawRectangle(glm::vec3(pos, 0.1f), this->color, this->texture->index, ext.x, ext.y, vertex, index);
 	}
 	void UITextureComponent::update(int mouse_x, int mouse_y)
 	{
-		this->parent->local_position += glm::vec2(0.0001, 0.0001);
 	}
 }

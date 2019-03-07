@@ -133,7 +133,7 @@ def find(path):
 
 
 def callback(cob, size, total):
-    print(str(cob * size) + "/" + str(total), end="\r")
+    print(str(round(((cob * size) / total) * 100, 1)) + "%", end="\r")
 
 
 def getstb():
@@ -218,7 +218,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.3      ")
+    print("       DEPENDENCIES 2.4      ")
     print("=============================")
     print("")
     if msg is not None:

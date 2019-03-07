@@ -2,7 +2,7 @@
 
 namespace tg_ui {
 
-	UIEntity ui_scene_entity = UIEntity({}, {});
+	UIEntity ui_scene_entity = UIEntity({0, 0}, {});
 
 	UIEntity::UIEntity(glm::vec2 position, glm::vec2 extent)
 	{
@@ -76,6 +76,11 @@ namespace tg_ui {
 	{
 		if (this->parent == nullptr) return this->local_position;
 		return this->parent->getPosition() + this->local_position;
+	}
+
+	glm::vec2 UIEntity::getRenderPosition()
+	{
+		return (this->getPosition() * glm::vec2(2 * multiplier, 2)) - glm::vec2(multiplier, 1);
 	}
 
 	void UIComponent::draw(IndexBuffer * index, VertexBuffer * vertex)

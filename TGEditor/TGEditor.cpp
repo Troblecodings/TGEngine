@@ -6,7 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({0.5, 0.5}, {0.2, 0.1});
+tg_ui::UIEntity entity = tg_ui::UIEntity({0, 0}, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();

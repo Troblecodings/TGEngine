@@ -77,7 +77,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
 
 	multiplier = (window->width / (float)window->height);
-	multiplierx = (window_list[0]->height / (float)window_list[0]->width);
 	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 
