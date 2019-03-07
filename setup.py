@@ -137,6 +137,8 @@ def callback(cob, size, total):
 
 
 def getstb():
+    if os.path.exists("stb"):
+        print(len(os.listdir("stb")))
     if os.path.exists("stb") and len(os.listdir("stb")) > 0:
         print("Updating stb")
         p = subprocess.Popen(["git", "pull"], cwd="stb")
