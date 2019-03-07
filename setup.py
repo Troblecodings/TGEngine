@@ -6,6 +6,7 @@ import urllib.request
 import sys
 import subprocess
 import struct
+import shutil
 
 
 def clear(): os.system("cls")
@@ -131,6 +132,10 @@ def find(path):
                 loc += len(fl.readline())
 
 
+def callback(cob, size, total):
+    print(str(cob * size) + "/" + str(total), end="\r")
+
+
 def trigger(id):
     global msg
     global dependencies_file
@@ -145,16 +150,42 @@ def trigger(id):
         elif id == 1:
             print("Downloading")
             urllib.request.urlretrieve("http://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1",
-                                       "Dependencies.zip")
-            print("Extract Archive")
+                                       "Dependencies.zip", callback)
+            print("Finished download         ")
+            print("Deleting old")
+            if os.path.exists("dependencies"):
+                shutil.rmtree("dependencies")
+            if os.path.exists("stb") and len(os.listdir("stb")) > 0:
+                print("Updating stb")
+                p = subprocess.Popen(["git", "pull"], cwd="stb", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                for line in iter(p.stdout.readline, b''):
+                    print(">>> " + str(line.rstrip()).replace("b'", ""))
+                b = True
+                for line in iter(p.stderr.readline, b''):
+                    if b:
+                        msg = "There were git errors while stb update!"
+                        b = False
+                    print(">>> " + line)
+                if not b:
+                    return
+            else:
+                print("Cloning stb")
+                p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                for line in iter(p.stdout.readline, b''):
+                    print(">>> " + str(line.rstrip()).replace("b'", ""))
+                b = True
+                for line in iter(p.stderr.readline, b''):
+                    if b:
+                        msg = "There were git errors while stb update!"
+                        b = False
+                    print(">>> " + line)
+                if not b:
+                    return
+            print("Extracting Archive")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
             os.remove("Dependencies.zip")
-            print("Starting git subprocess")
-            p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            for line in iter(p.stdout.readline, b''):
-                print(">>> " + str(line.rstrip()).replace("b'", ""))
             msg = "Finished!"
             clear()
             return
@@ -196,7 +227,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.0      ")
+    print("       DEPENDENCIES 2.1      ")
     print("=============================")
     print("")
     if msg is not None:
