@@ -171,19 +171,19 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
-
-		vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
-
 		if (index_offset < ibuffer->index_count) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
 
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
 
-			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, index_offset, 0, 0);
+			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, 0, 0, 0);
 		}
+
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
+
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
+
+		vkCmdDrawIndexed(buffer, index_offset, 1, ibuffer->index_count - index_offset, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 

@@ -95,15 +95,19 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	main_buffer.count_of_points = 0;
 	main_buffer.start();
 	index_buffer.start();
+
 	for (Actor act : actors) {
 		act.mesh->consume(&main_buffer, &index_buffer);
 	}
 	draw(&index_buffer, &main_buffer);
+
 	index_offset = index_buffer.index_count;
 	vertex_offset = main_buffer.count_of_points;
 	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
+
 	main_buffer.end();
 	index_buffer.end();
+
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
 	startupCommands();
@@ -146,7 +150,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 				1,
 				&vlib_buffer_copy
 			);
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
+			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = 0;
 			vlib_buffer_copy.size = (index_buffer.index_count - index_offset) * sizeof(uint32_t);
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,

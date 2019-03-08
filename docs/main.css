@@ -49,4 +49,6 @@ td{
 #holder {
     box-shadow: 5px 5px 5px 5px #888888;
     padding: 15px;
+    width: 70%;
+    text-align: left;
 }
