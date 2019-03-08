@@ -1,6 +1,6 @@
 html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     color: rgb(230, 228, 228);
     background-color: rgb(73, 73, 73);
 }
@@ -8,14 +8,20 @@ a{
     text-decoration: none;
     color: rgb(115, 194, 197);
 }
+h3 {
+    font-size: 35px;
+    color: rgb(180, 223, 255);
+}
 a:hover{
     color: rgb(17, 255, 255);
     text-shadow: 1px 1px black;
 }
-li a{
+li a {
+    font-size: 24px;
     color: darkslategray;
 }
-li a:hover{
+li a:hover {
+    font-size: 24px;
     color: rgb(17, 36, 36);
     text-shadow: 1px 1px gray;
 }
@@ -27,11 +33,11 @@ li{
     color: darkslategray;
 }
 ul{
-    width: 100%;
+    width: 79%;
     list-style-type: none;
     overflow: hidden;
     background-color: white;
-    margin-left: 10px;
+    margin-left: 10%;
 }
 td{
     border-top: 1px solid white;
@@ -39,4 +45,8 @@ td{
 }
 #main{
     text-align: center;
+}
+#holder {
+    box-shadow: 5px 5px 5px 5px #888888;
+    padding: 15px;
 }

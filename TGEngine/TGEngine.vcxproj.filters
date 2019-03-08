@@ -427,5 +427,8 @@
     <None Include="..\setup.py">
       <Filter>resources</Filter>
     </None>
+    <None Include="..\docs\main.css">
+      <Filter>docs</Filter>
+    </None>
   </ItemGroup>
 </Project>
