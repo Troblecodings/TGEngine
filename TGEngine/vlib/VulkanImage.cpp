@@ -84,3 +84,20 @@ VkImageMemoryBarrier vlib_image_memory_barrier = {
 		1
 	}
 };
+
+VkImageBlit vlib_image_blit = {
+	{
+	    VK_IMAGE_ASPECT_COLOR_BIT,
+	    0,
+	    0,
+	    1
+	},
+	{ {0, 0, 0}, {0, 0, 1} },
+	{
+	    VK_IMAGE_ASPECT_COLOR_BIT,
+	    0,
+	    0,
+	    1
+	},
+	{ {0, 0, 0}, { 0, 0, 1 }}
+};

@@ -14,6 +14,7 @@
 #include "buffer/VertexBuffer.hpp"
 
 extern VkSwapchainKHR swapchain;
+extern std::vector<VkImage> swapchain_images;
 extern VkSurfaceCapabilitiesKHR surface_capabilities;
 extern VkImage color_image;
 extern VkImageView color_image_view;

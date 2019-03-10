@@ -13,3 +13,20 @@ VkCommandBufferBeginInfo vlib_command_buffer_begin_info = {
 	VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
 	nullptr
 };
+
+VkClearValue vlib_clear_values[2] = {
+	{
+		{
+			1,
+			1,
+			1,
+			1
+		}
+	},
+	{
+		{
+			1.0f,
+			0
+		}
+	}
+};

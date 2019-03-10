@@ -25,3 +25,4 @@ extern VkBufferImageCopy vlib_buffer_image_copy;
 extern VkImageCreateInfo vlib_image_create_info;
 extern VkImageViewCreateInfo vlib_image_view_create_info;
 extern VkImageMemoryBarrier vlib_image_memory_barrier;
+extern VkImageBlit vlib_image_blit;

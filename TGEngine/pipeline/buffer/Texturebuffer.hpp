@@ -13,11 +13,13 @@
 
 #define MAX_TEXTURES 4094
 #define COLOR_ONLY MAX_TEXTURES + 1
+#define AUTO_MIPMAP 0xFFFFFF
 
 struct Texture {
 	INPUT 
 	char* texture_path;
 	OPT VkFormat image_format = VK_FORMAT_R8G8B8A8_UNORM;
+	uint32_t miplevels = AUTO_MIPMAP;
 
 	OUTPUT 
 	int width;

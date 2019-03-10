@@ -2,16 +2,9 @@
 
 std::vector<VkFramebuffer> frame_buffer;
 std::vector<VkImageView> image_view;
-std::vector<VkImage> image;
 
 void createFramebuffer() {
 	Window* win = window_list[0];
-
-	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr);
-	HANDEL(last_result)
-	image.resize(image_count);
-	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, image.data());
-	HANDEL(last_result)
 
 	frame_buffer.resize(image_count); 
 	image_view.resize(image_count); 
@@ -35,7 +28,7 @@ void createFramebuffer() {
 
 	for (size_t i = 0; i < image_count; i++)
 	{
-		vlib_image_view_create_info.image = image[i];
+		vlib_image_view_create_info.image = swapchain_images[i];
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &image_view[i]);
 		HANDEL(last_result)
 

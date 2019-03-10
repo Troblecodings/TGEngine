@@ -1,5 +1,6 @@
 #include "Swapchain.hpp"
 
+std::vector<VkImage> swapchain_images;
 VkSwapchainKHR swapchain;
 VkSurfaceCapabilitiesKHR surface_capabilities;
 VkImage color_image;
@@ -39,6 +40,15 @@ void createSwapchain() {
 	};
 
 	last_result = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
+	if (last_result != VK_ERROR_INITIALIZATION_FAILED) {
+		HANDEL(last_result)
+	}
+
+	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr);
+	HANDEL(last_result)
+	
+	swapchain_images.resize(image_count);
+	last_result = vkGetSwapchainImagesKHR(device, swapchain, &image_count, swapchain_images.data());
 	HANDEL(last_result)
 }
 
@@ -48,6 +58,7 @@ void createColorResouce() {
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	vlib_image_create_info.format = used_format.format;
 	vlib_image_create_info.samples = used_msaa_flag;
+	vlib_image_create_info.mipLevels = 1;
 	last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &color_image);
 	HANDEL(last_result);
 
@@ -87,6 +98,9 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	destroyDepthTest();
 	destroySwapchain();
 
+	last_result = vkDeviceWaitIdle(device);
+	HANDEL(last_result)
+
 	last_result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, window_list[0]->surface, &surface_capabilities);
 	HANDEL(last_result)
 	window_list[0]->width = surface_capabilities.currentExtent.width;
@@ -100,6 +114,16 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 	createPipeline();
 	createSwapchain();
+	if (last_result == VK_ERROR_INITIALIZATION_FAILED) {
+		OUT_LV_DEBUG("Windows break the swapchain!")
+		for each (VkImage var in swapchain_images)
+		{
+			vkDestroyImage(device, var, nullptr);
+		}
+		swapchain = VK_NULL_HANDLE;
+		recreateSwapchain(ibuffer, vbuffer);
+		return;
+	}
 	createFramebuffer();
 	createCommandBuffer();
 

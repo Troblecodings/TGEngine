@@ -80,7 +80,7 @@ namespace tg_ui {
 
 	glm::vec2 UIEntity::getRenderPosition()
 	{
-		return (this->getPosition() * glm::vec2(2 * multiplier, 2)) - glm::vec2(multiplier, 1);
+		return (this->getPosition() - glm::vec2(0.5, 0.5)) * glm::vec2(2 * multiplier, 2);
 	}
 
 	void UIComponent::draw(IndexBuffer * index, VertexBuffer * vertex)

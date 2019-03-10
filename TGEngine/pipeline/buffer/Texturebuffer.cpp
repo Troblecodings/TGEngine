@@ -46,10 +46,7 @@ void initAllTextures() {
 	};
 	addDescriptor(&texture_descriptor);
 
-	uint32_t buffer_index;
-	FIND_INDEX(buffer_index, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
-
-	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
@@ -63,6 +60,10 @@ void initAllTextures() {
 		vlib_image_create_info.format = ptr->image_format;
 		vlib_image_create_info.extent.width = ptr->width;
 		vlib_image_create_info.extent.height = ptr->height;
+		if (ptr->miplevels = AUTO_MIPMAP) 
+			ptr->miplevels = vlib_image_create_info.mipLevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
+		else 
+			vlib_image_create_info.mipLevels = ptr->miplevels;
 		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
 		HANDEL(last_result)
 
@@ -83,7 +84,7 @@ void initAllTextures() {
 		vkGetBufferMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
 
 		vlib_buffer_memory_allocate_info.allocationSize = ptr->buffer_requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = buffer_index;
+		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
 		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->buffer_memory);
 		HANDEL(last_result)
 

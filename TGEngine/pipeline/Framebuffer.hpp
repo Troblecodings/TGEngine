@@ -10,7 +10,6 @@
 
 extern std::vector<VkFramebuffer> frame_buffer;
 extern std::vector<VkImageView> image_view;
-extern std::vector<VkImage> image;
 
 SINCE(0, 0, 1)
 void createFramebuffer();

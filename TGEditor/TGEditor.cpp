@@ -6,7 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({0, 0}, {0.3, 0.15});
+tg_ui::UIEntity entity = tg_ui::UIEntity({ 0.9, 0.925}, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -29,7 +29,7 @@ void init() {
 	loadfont(&arial);
 
 	loadFromFBX(&mesh, "resource\\loop.fbx");
-	loadFromFBX(&mesh2, "resource\\schachbrett.fbx");
+	loadFromFBX(&mesh2, "resource\\lul.fbx");
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"
@@ -40,8 +40,8 @@ void init() {
 	createTexture(&tex1);
 	createTexture(&tex2);
 
-	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
-	//createActor(&mesh2)->preScale(0.4, 0.4, 0.4)->applyPretransform();
+	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
+	createActor(&mesh2)->prePos(0.5f, 0.5f, 0.5f)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
 }

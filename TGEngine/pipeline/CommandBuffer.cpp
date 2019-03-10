@@ -21,18 +21,18 @@ void createCommandBuffer() {
 		last_result = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
 		HANDEL(last_result)
 
-		vlib_command_buffer_allocate_info.commandPool = command_pool;
+			vlib_command_buffer_allocate_info.commandPool = command_pool;
 	}
 
 	vlib_command_buffer_allocate_info.commandBufferCount = image_count;
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
 	HANDEL(last_result)
 
-	vlib_command_buffer_allocate_info.commandBufferCount = 1;
+		vlib_command_buffer_allocate_info.commandBufferCount = 1;
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
 	HANDEL(last_result)
 
-	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+		VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
 	last_result = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
 	HANDEL(last_result)
 }
@@ -41,7 +41,7 @@ void startSingleTimeCommand() {
 	last_result = vkResetFences(device, 1, &single_time_command_ready);
 	HANDEL(last_result)
 
-	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
 	last_result = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
 	HANDEL(last_result);
@@ -66,7 +66,7 @@ void endSingleTimeCommand() {
 	last_result = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
 	HANDEL(last_result)
 
-	last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
+		last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
 	HANDEL(last_result)
 }
 
@@ -74,6 +74,8 @@ void startupCommands() {
 	startSingleTimeCommand();
 
 	for each(Texture* tex in texture_buffers) {
+		vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
+		vlib_image_memory_barrier.subresourceRange.levelCount = tex->miplevels;
 		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
 		vlib_buffer_image_copy.imageExtent.width = tex->width;
@@ -87,24 +89,53 @@ void startupCommands() {
 			&vlib_buffer_image_copy
 		);
 
+		uint32_t mipwidth = tex->width, mipheight = tex->height;
+
+		vlib_image_memory_barrier.subresourceRange.levelCount = 1;
+		for (size_t i = 1; i < tex->miplevels; i++)
+		{
+			vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
+			ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+
+			vlib_image_blit.srcSubresource.mipLevel = i - 1;
+			vlib_image_blit.dstSubresource.mipLevel = i;
+			vlib_image_blit.srcOffsets[1].x = mipwidth;
+			vlib_image_blit.srcOffsets[1].y = mipheight;
+			vlib_image_blit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
+			vlib_image_blit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
+			vkCmdBlitImage(SINGELTIME_COMMAND_BUFFER, tex->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, tex->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlib_image_blit, VK_FILTER_LINEAR);
+
+			ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+
+			if (mipwidth > 1) mipwidth /= 2;
+			if (mipheight > 1) mipheight /= 2;
+		}
+
+		if (tex->miplevels > 1) {
+			vlib_image_memory_barrier.subresourceRange.baseMipLevel = tex->miplevels - 1;
+		}
+
 		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+
 	}
+	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
+	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
 
 	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
 
-	for each(StagingBuffer* buf in staging_buffer)
-	{
-		vlib_buffer_copy.size = buf->size;
-		vkCmdCopyBuffer(
-			SINGELTIME_COMMAND_BUFFER,
-			buf->staging_buffer,
-			*buf->destination,
-			1,
-			&vlib_buffer_copy
-		);
-	}
+		for each(StagingBuffer* buf in staging_buffer)
+		{
+			vlib_buffer_copy.size = buf->size;
+			vkCmdCopyBuffer(
+				SINGELTIME_COMMAND_BUFFER,
+				buf->staging_buffer,
+				*buf->destination,
+				1,
+				&vlib_buffer_copy
+			);
+		}
 
 	endSingleTimeCommand();
 
@@ -114,23 +145,6 @@ void startupCommands() {
 }
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	VkClearValue clear[2] = {
-		{
-			{
-				1,
-				1,
-				1,
-				1
-			}
-		},
-		{
-			{
-				1.0f,
-				0
-			}
-		}
-	};
-
 	for (size_t i = 0; i < image_count; i++)
 	{
 		VkCommandBuffer buffer = command_buffers[i];
@@ -163,7 +177,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 				(uint32_t)window_list[0]->height
 			},
 			2,
-			clear
+			vlib_clear_values
 		};
 		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 

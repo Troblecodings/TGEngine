@@ -22,5 +22,6 @@ namespace tg_ui {
 	}
 	void UITextureComponent::update(int mouse_x, int mouse_y)
 	{
+
 	}
 }
