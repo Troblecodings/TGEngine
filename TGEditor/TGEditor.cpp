@@ -6,7 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({ 0.9, 0.925}, {0.3, 0.15});
+tg_ui::UIEntity entity = tg_ui::UIEntity({ 0, 0}, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -28,7 +28,7 @@ void init() {
 	};
 	loadfont(&arial);
 
-	loadFromFBX(&mesh, "resource\\loop.fbx");
+	loadFromFBX(&mesh, "resource\\Chair.fbx");
 	loadFromFBX(&mesh2, "resource\\lul.fbx");
 
 	tex1 = {

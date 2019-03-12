@@ -76,8 +76,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	ui_camera_uniform.descriptor.binding = 1;
 	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
 
-	multiplier = (window->width / (float)window->height);
-	fillUniformBuffer(&ui_camera_uniform, &glm::ortho(-multiplier, multiplier, -1.0f, 1.0f), sizeof(glm::mat4));
+	multiplier = (window->height / (float)window->width);
+	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 
 	setLightPosition({ 1, 1, 1 });

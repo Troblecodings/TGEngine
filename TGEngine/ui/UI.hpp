@@ -32,6 +32,7 @@ namespace tg_ui {
 
 		glm::vec2 getPosition();
 		glm::vec2 UIEntity::getRenderPosition();
+		glm::vec2 UIEntity::getRenderExtent();
 
 	protected:
 		UIEntity* parent = nullptr;
