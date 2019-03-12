@@ -53,9 +53,18 @@ namespace tg_model {
 						material.texture = new Texture();
 						material.texture->texture_path = (char*) tex->GetFileName();
 						createTexture(material.texture);
-					} else OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
-				} else OUT_LV_DEBUG("No src object defined in fbxmodel[" << name << "]")
-			} else OUT_LV_DEBUG("No surface_lambert material defined in fbxmodel[" << name << "]")
+					}
+					else {
+						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
+					}
+				}
+				else {
+					OUT_LV_DEBUG("No src object defined in fbxmodel[" << name << "]")
+				}
+			}
+			else {
+				OUT_LV_DEBUG("No surface_lambert material defined in fbxmodel[" << name << "]")
+			}
 
 			/*
              * Proccess data
