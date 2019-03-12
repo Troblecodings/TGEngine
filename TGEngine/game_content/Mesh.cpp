@@ -8,3 +8,18 @@ void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
 		ind->addIndex(sz + nt);
 	}
 }
+
+void Mesh::operator<<(TGVertex vert)
+{
+	for (size_t b = 0; b < this->vertices.size(); b++)
+	{
+		if (this->vertices[b] == vert) {
+			this->indices.push_back((uint32_t)b);
+			return;
+		}
+	}
+	last_size = (uint32_t)this->vertices.size();
+	this->vertices.push_back(vert);
+	this->indices.push_back((uint32_t)last_size);
+}
+

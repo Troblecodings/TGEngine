@@ -24,4 +24,7 @@ struct Mesh
      */
 	SINCE(0, 0, 4)
 	void consume(VertexBuffer* vrt, IndexBuffer* ind);
+
+	SINCE(0, 0, 4)
+	void operator<<(TGVertex vrt);
 };

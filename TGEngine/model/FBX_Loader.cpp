@@ -27,9 +27,6 @@ namespace tg_model {
 
 		FbxMesh* fbxmesh = node->GetMesh();
 		if (fbxmesh && mesh) {
-			Renderer* render = new Renderer();
-			render->vbuffer = &mesh[*count].vertices;
-			render->ibuffer = &mesh[*count].indices;
 
 			FbxStringList lUVNames;
 			fbxmesh->GetUVSetNames(lUVNames);
@@ -76,23 +73,24 @@ namespace tg_model {
 				{
 					if (i == 0) {
 
+						*mesh << first_vert;
 						readVertex(fbxmesh, &last_vert, &material, lUVNames, j, 1);
-						last_vert >> render;
+						*mesh << last_vert;
 						readVertex(fbxmesh, &last_vert, &material, lUVNames, j, 2);
-						last_vert >> render;
+						*mesh << last_vert;
 						continue;
 					}
 
-					first_vert >> render;
-					last_vert >> render;
+					*mesh << first_vert;
+					*mesh << last_vert;
 
 					readVertex(fbxmesh, &last_vert, &material, lUVNames, j, i + 2);
-					last_vert >> render;
+					*mesh << last_vert;
 				}
 			}
 		}
 		if (count)
-			count++;
+			(*count)++;
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), count, mesh);
 	}

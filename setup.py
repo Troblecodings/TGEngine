@@ -152,7 +152,6 @@ def trigger(id):
     global dependencies_file
     global files
     global loc
-    global msg
     files = 0
     loc = 0
     try:
