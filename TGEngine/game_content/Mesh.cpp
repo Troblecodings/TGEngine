@@ -11,6 +11,11 @@ void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
 
 void Mesh::operator<<(TGVertex vert)
 {
+	this->add(vert);
+}
+
+void Mesh::add(TGVertex vert)
+{
 	for (size_t b = 0; b < this->vertices.size(); b++)
 	{
 		if (this->vertices[b] == vert) {

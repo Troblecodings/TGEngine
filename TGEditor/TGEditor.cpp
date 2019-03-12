@@ -16,8 +16,7 @@ int main() {
 	entity.addComponent(&texture);
 	tg_ui::ui_scene_entity.addChildren(&entity);
 
-	uint32_t count;
-	tg_model::load("resource\\lul.fbx", &count, &mesh);
+	tg_model::load("resource\\Chair.fbx", &mesh);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;

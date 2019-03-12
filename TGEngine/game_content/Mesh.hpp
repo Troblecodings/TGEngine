@@ -27,4 +27,7 @@ struct Mesh
 
 	SINCE(0, 0, 4)
 	void operator<<(TGVertex vrt);
+
+	SINCE(0, 0, 4)
+    void add(TGVertex vrt);
 };
