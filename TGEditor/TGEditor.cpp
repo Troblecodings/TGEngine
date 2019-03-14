@@ -40,7 +40,7 @@ void init() {
 	createTexture(&tex2);
 
 	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
-	createActor(&mesh)->prePos(0.5f, 0.5f, 0.5f)->applyPretransform();
+	createActor(&mesh)->preRotate(-PI / 2, 1.0f, 0, 0)->preScale(0.1, 0.1, 0.1)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
 }

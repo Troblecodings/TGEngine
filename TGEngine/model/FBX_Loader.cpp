@@ -3,19 +3,17 @@
 namespace tg_model {
 
 	INTERNAL
-	static void readVertex(FbxNode* node, FbxMesh* fbxmesh, TGVertex* vert, Material* mat, FbxStringList lUVNames, uint32_t j, uint32_t i) {
+	static void readVertex(FbxAMatrix matrix, FbxMesh* fbxmesh, TGVertex* vert, Material* mat, FbxStringList lUVNames, uint32_t j, uint32_t i) {
 		FbxVector2 uv;
 		bool uv_vert;
 		fbxsdk::FbxVector4 normal;
 
 		fbxmesh->GetPolygonVertexUV(j, i, lUVNames[0], uv, uv_vert);
 		uint32_t index = fbxmesh->GetPolygonVertex(j, i);
-		double* ptr = (double*)fbxmesh->GetControlPoints()[index];
+		FbxDouble4 ptr = matrix.MultT(fbxmesh->GetControlPoints()[index]);
 		fbxmesh->GetPolygonVertexNormal(j, i, normal);
 
-		FbxDouble3 ptr2 = node->LclTranslation.Get();
-
-		vert->position = { ptr[0] + ptr2[0], ptr[1] + ptr2[1], ptr[2] + ptr2[2] };
+		vert->position = glm::vec4( ptr[0], ptr[1], ptr[2], 1);
 		vert->color = mat->color;
 		vert->uv = { uv[0], 1 - uv[1] };
 		if(mat->texture) vert->color_only = mat->texture->index;
@@ -23,13 +21,44 @@ namespace tg_model {
 		vert->normal = { normal[0], normal[1], normal[2] };
 	}
 
+	static FbxAMatrix geometricoffset(FbxNode* pNode)
+	{
+		const FbxVector4 lT = pNode->GetGeometricTranslation(FbxNode::eSourcePivot);
+		const FbxVector4 lR = pNode->GetGeometricRotation(FbxNode::eSourcePivot);
+		const FbxVector4 lS = pNode->GetGeometricScaling(FbxNode::eSourcePivot);
+
+		return FbxAMatrix(lT, lR, lS);
+	}
+
 	INTERNAL
 	static void addMesh(char* name, FbxNode* node, Mesh* mesh) {
 		ASSERT_NONE_NULL_DB(node, "Fbx node null in mesh " << name, TG_ERR_DB_NULLPTR)
+		if (!node || !mesh) return;
 
 		FbxMesh* fbxmesh = node->GetMesh();
 
-		if (fbxmesh && mesh) {
+		if (fbxmesh) {
+			
+			FbxAMatrix matrix0;
+			matrix0.SetIdentity();
+			if (node->GetNodeAttribute())
+			{
+				const FbxVector4 lT = node->GetGeometricTranslation(FbxNode::eSourcePivot);
+				const FbxVector4 lR = node->GetGeometricRotation(FbxNode::eSourcePivot);
+				const FbxVector4 lS = node->GetGeometricScaling(FbxNode::eSourcePivot);
+				matrix0.SetT(lT);
+				matrix0.SetR(lR);
+				matrix0.SetS(lS);
+			}
+			FbxAMatrix localMatrix = node->EvaluateLocalTransform();
+
+			FbxNode* pParentNode = node->GetParent();
+			FbxAMatrix parentMatrix = pParentNode->EvaluateLocalTransform();
+			while ((pParentNode = pParentNode->GetParent()) != NULL)
+			{
+				parentMatrix = pParentNode->EvaluateLocalTransform() * parentMatrix;
+			}
+			FbxAMatrix matrix = parentMatrix * localMatrix * matrix0;
 
 			FbxStringList lUVNames;
 			fbxmesh->GetUVSetNames(lUVNames);
@@ -83,16 +112,16 @@ namespace tg_model {
 				 * This is triangulated via a fan-triangulation algorithem
 				 */
 				TGVertex first_vert, last_vert;
-				readVertex(node, fbxmesh, &first_vert, &material, lUVNames, j, 0);
+				readVertex(matrix, fbxmesh, &first_vert, &material, lUVNames, j, 0);
 
 				for (int i = 0; i < triangle_size; i++)
 				{
 					if (i == 0) {
 
 						mesh->add(first_vert);
-						readVertex(node, fbxmesh, &last_vert, &material, lUVNames, j, 1);
+						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, 1);
 						mesh->add(last_vert);
-						readVertex(node, fbxmesh, &last_vert, &material, lUVNames, j, 2);
+						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, 2);
 						mesh->add(last_vert);
 						continue;
 					}
@@ -100,7 +129,7 @@ namespace tg_model {
 					mesh->add(first_vert);
 					mesh->add(last_vert);
 
-					readVertex(node, fbxmesh, &last_vert, &material, lUVNames, j, i + 2);
+					readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, i + 2);
 					mesh->add(last_vert);
 				}
 			}
