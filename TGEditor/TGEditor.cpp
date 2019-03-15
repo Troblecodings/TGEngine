@@ -3,7 +3,7 @@
 Texture tex1;
 Texture tex2;
 Mesh mesh;
-Mesh* mesh2;
+Mesh mesh2;
 Font arial;
 Camera camera;
 tg_ui::UIEntity entity = tg_ui::UIEntity({ 0, 0}, {0.3, 0.15});
@@ -17,6 +17,7 @@ int main() {
 	tg_ui::ui_scene_entity.addChildren(&entity);
 
 	tg_model::load("resource\\Chair.fbx", &mesh);
+	tg_model::load("resource\\hall.fbx", &mesh2);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
@@ -39,10 +40,11 @@ void init() {
 	createTexture(&tex1);
 	createTexture(&tex2);
 
-	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5f, 0.5f, 0.5f)->prePos(0, 1.0f, 0)->applyPretransform();
-	createActor(&mesh)->preRotate(-PI / 2, 1.0f, 0, 0)->preScale(0.1, 0.1, 0.1)->applyPretransform();
+	createActor(&mesh2)->preScale(0.015, 0.08, 0.005)->prePos(0, -240, 840)->applyPretransform();
+	createActor(&mesh)->preRotate(-PI / 2, 1.0f, 0, 0)->preScale(0.5, 0.5, 0.5)->applyPretransform();
 
 	createFirstPersonCamera(&camera);
+
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)

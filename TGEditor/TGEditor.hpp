@@ -17,7 +17,7 @@
 extern Texture tex1;
 extern Texture tex2;
 extern Mesh mesh;
-extern Mesh* mesh2;
+extern Mesh mesh2;
 extern Font arial;
 extern Camera camera;
 extern tg_ui::UIEntity entity;

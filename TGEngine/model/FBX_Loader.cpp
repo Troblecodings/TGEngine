@@ -21,15 +21,6 @@ namespace tg_model {
 		vert->normal = { normal[0], normal[1], normal[2] };
 	}
 
-	static FbxAMatrix geometricoffset(FbxNode* pNode)
-	{
-		const FbxVector4 lT = pNode->GetGeometricTranslation(FbxNode::eSourcePivot);
-		const FbxVector4 lR = pNode->GetGeometricRotation(FbxNode::eSourcePivot);
-		const FbxVector4 lS = pNode->GetGeometricScaling(FbxNode::eSourcePivot);
-
-		return FbxAMatrix(lT, lR, lS);
-	}
-
 	INTERNAL
 	static void addMesh(char* name, FbxNode* node, Mesh* mesh) {
 		ASSERT_NONE_NULL_DB(node, "Fbx node null in mesh " << name, TG_ERR_DB_NULLPTR)
@@ -95,42 +86,16 @@ namespace tg_model {
 				OUT_LV_DEBUG("No surface_lambert material defined in fbxmodel[" << name << "]")
 			}
 
-			/*
-             * Proccess data
-             */
+			TGVertex last_vert;
+
 			for (int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
 				int triangle_size = fbxmesh->GetPolygonSize(j);
-				if (triangle_size >= 3) {
-					triangle_size -= 2; // Because every convex pylogen without holes can be triangulated with n-2 triangles
-				}
-				else if (triangle_size < 3) {
-					continue; // Don't support lines or dots
-				}
-
-				/*
-				 * Preproccess data for vertex buffer
-				 * This is triangulated via a fan-triangulation algorithem
-				 */
-				TGVertex first_vert, last_vert;
-				readVertex(matrix, fbxmesh, &first_vert, &material, lUVNames, j, 0);
-
-				for (int i = 0; i < triangle_size; i++)
-				{
-					if (i == 0) {
-
-						mesh->add(first_vert);
-						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, 1);
+				if(triangle_size == 3) {
+					for (size_t i = 0; i < 3; i++)
+					{
+						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, i);
 						mesh->add(last_vert);
-						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, 2);
-						mesh->add(last_vert);
-						continue;
 					}
-
-					mesh->add(first_vert);
-					mesh->add(last_vert);
-
-					readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, i + 2);
-					mesh->add(last_vert);
 				}
 			}
 		}
@@ -151,6 +116,9 @@ namespace tg_model {
 		FBX_CHECK(importer->Import(scene))
 
 		importer->Destroy();
+
+		FbxGeometryConverter converter(manager);
+		converter.Triangulate(scene, true);
 
 		FbxNode* fbx_node = scene->GetRootNode();
 		addMesh(name, fbx_node, mesh);
