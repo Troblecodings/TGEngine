@@ -134,8 +134,12 @@
     <None Include="..\docs\main.css" />
     <None Include="..\docs\_config.yml" />
     <None Include="..\setup.py" />
+    <None Include="resources\FragmentColorOnly.glsl" />
+    <None Include="resources\FragmentColorOnly.spv" />
     <None Include="resources\Fragmentshader.glsl" />
     <None Include="resources\Fragmentshader.spv" />
+    <None Include="resources\FragmentTextured.glsl" />
+    <None Include="resources\FragmentTextured.spv" />
     <None Include="resources\Vertexshader.glsl" />
     <None Include="resources\Vertexshader.spv" />
     <None Include="..\README.md" />

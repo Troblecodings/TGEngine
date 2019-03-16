@@ -41,7 +41,7 @@ SINCE(0, 0, 4)
 void createDesctiptorLayout();
 
 SINCE(0, 0, 4)
-void createDescriptorSet();
+void createDescriptorSet(uint32_t layout = 0);
 
 SINCE(0, 0, 2)
 void updateDescriptorSet(Descriptor* desc, uint32_t size);

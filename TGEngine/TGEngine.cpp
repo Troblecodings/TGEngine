@@ -51,7 +51,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	initDescriptors();
 
 	createDesctiptorLayout();
-	createDesctiptorLayout();
+	createPipelineLayout();
 	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
 	createPipeline();
 	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;

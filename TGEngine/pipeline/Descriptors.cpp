@@ -61,9 +61,10 @@ void createDesctiptorLayout() {
 	HANDEL(last_result)
 }
 
-void createDescriptorSet() {
-	TG_VECTOR_APPEND_NORMAL(descriptor_set, VkDescriptorSet())
-	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[last_size];
+void createDescriptorSet(uint32_t layout) {
+	last_size = descriptor_set.size();
+	descriptor_set.resize(last_size + 1);
+	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(last_result)
 }

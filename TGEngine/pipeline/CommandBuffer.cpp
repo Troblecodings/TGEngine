@@ -28,11 +28,11 @@ void createCommandBuffer() {
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
 	HANDEL(last_result)
 
-		vlib_command_buffer_allocate_info.commandBufferCount = 1;
+	vlib_command_buffer_allocate_info.commandBufferCount = 1;
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
 	HANDEL(last_result)
 
-		VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
 	last_result = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
 	HANDEL(last_result)
 }
@@ -41,7 +41,7 @@ void startSingleTimeCommand() {
 	last_result = vkResetFences(device, 1, &single_time_command_ready);
 	HANDEL(last_result)
 
-		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
 	last_result = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
 	HANDEL(last_result);
@@ -188,7 +188,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		if (index_offset < ibuffer->index_count) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
 
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
 
 			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, 0, 0, 0);
 		}

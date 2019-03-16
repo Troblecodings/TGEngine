@@ -430,5 +430,17 @@
     <None Include="..\docs\main.css">
       <Filter>docs</Filter>
     </None>
+    <None Include="resources\FragmentColorOnly.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentColorOnly.spv">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentTextured.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentTextured.spv">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
 </Project>

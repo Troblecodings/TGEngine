@@ -133,7 +133,7 @@ VkBool32 callback_debug(
 	}
 
 	std::cout << pCallbackData->pMessage << std::endl;
-	return VK_TRUE;
+	return VK_FALSE;
 }
 #endif // DEBUG
 

@@ -27,7 +27,7 @@ void main(){
 	index_id = indx;
 	uvOut = uv;
 
-	vec3 to_light = normalize(light_block.light - vec3(gl_Position));
+	vec3 to_light = normalize(light_block.light);
 	vec3 vnormal = normalize(normalIn);
 
 	float cos_angle = clamp(dot(to_light, vnormal), 0.0, 1.0);
