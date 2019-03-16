@@ -11,5 +11,10 @@ memcpy(vector.data() + last_size, to_append, sz * sizeof(*to_append));
 #define TG_VECTOR_APPEND_NORMAL(vector, to_append) last_size = vector.size();\
 vector.push_back(to_append);
 
+#define TG_VECTOR_SIZE_AND_RESIZE(last_size, vector) last_size = vector.size();\
+vector.resize(last_size + 1);
+
+#define TG_VECTOR_GET_SIZE_AND_RESIZE(vector) last_size = vector.size();\
+vector.resize(last_size + 1);
 
 extern size_t last_size;

@@ -207,6 +207,8 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 }
 
 void destroyCommandBuffer() {
+	last_result =  vkDeviceWaitIdle(device);
+	HANDEL(last_result)
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
 	vkDestroyFence(device, fence, nullptr);

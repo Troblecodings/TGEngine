@@ -9,8 +9,8 @@ uint32_t uniform_count;
 uint32_t image_sampler;
 
 void addDescriptor(Descriptor* descriptor) {
-	TG_VECTOR_APPEND_NORMAL(descriptor_bindings, VkDescriptorSetLayoutBinding())
-	descriptor->binding = (uint32_t)last_size;
+	descriptor->binding = descriptor_bindings.size();
+	descriptor_bindings.resize(descriptor->binding + 1);
 	descriptor_bindings[descriptor->binding] = {
 		descriptor->binding,
 		descriptor->type,
@@ -53,7 +53,7 @@ void initDescriptors() {
 }
 
 void createDesctiptorLayout() {
-	TG_VECTOR_APPEND_NORMAL(descriptor_set_layouts, VkDescriptorSetLayout())
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set_layouts)
 
 	vlib_descriptor_set_layout_create_info.bindingCount = (uint32_t)descriptor_bindings.size();
 	vlib_descriptor_set_layout_create_info.pBindings = descriptor_bindings.data();

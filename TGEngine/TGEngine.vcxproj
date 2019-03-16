@@ -136,13 +136,13 @@
     <None Include="..\setup.py" />
     <None Include="resources\FragmentColorOnly.glsl" />
     <None Include="resources\FragmentColorOnly.spv" />
-    <None Include="resources\Fragmentshader.glsl" />
-    <None Include="resources\Fragmentshader.spv" />
     <None Include="resources\FragmentTextured.glsl" />
     <None Include="resources\FragmentTextured.spv" />
-    <None Include="resources\Vertexshader.glsl" />
-    <None Include="resources\Vertexshader.spv" />
     <None Include="..\README.md" />
+    <None Include="resources\VertexColorOnly.glsl" />
+    <None Include="resources\VertexColorOnly.spv" />
+    <None Include="resources\VertexTextured.glsl" />
+    <None Include="resources\VertexTextured.spv" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
