@@ -6,7 +6,6 @@
 #include "../../../stb/stb_image.h"
 #include "../Descriptors.hpp"
 #include "VertexBuffer.hpp"
-#include "../Draw.hpp"
 #include "../../vlib/VulkanImage.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
 #include "../../util/VectorUtil.hpp"

@@ -66,7 +66,7 @@ void endSingleTimeCommand() {
 	last_result = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
 	HANDEL(last_result)
 
-		last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
+	last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
 	HANDEL(last_result)
 }
 
@@ -193,11 +193,13 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, 0, 0, 0);
 		}
 
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
+		for each(Actor actor in actors) {
+			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[actor.mesh->material.pipeline_index]);
 
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[actor.mesh->material.layout_index], 0, 1, &descriptor_set[actor.mesh->material.descriptor_index], 0, nullptr);
 
-		vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
+			vkCmdDrawIndexed(buffer, actor.mesh->vertices.size(), 1, actor.mesh->first_index, 0, 0);
+		}
 
 		vkCmdEndRenderPass(buffer);
 
@@ -211,5 +213,5 @@ void destroyCommandBuffer() {
 	HANDEL(last_result)
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
-	vkDestroyFence(device, fence, nullptr);
+	vkDestroyFence(device, single_time_command_ready, nullptr);
 }

@@ -12,6 +12,7 @@
 #include "../vlib/VulkanImage.hpp"
 #include "buffer/StagingBuffer.hpp"
 #include "../vlib/VulkanCommandBuffer.hpp"
+#include "../game_content/Actor.hpp"
 
 #define SINGELTIME_COMMAND_BUFFER command_buffers[image_count]
 

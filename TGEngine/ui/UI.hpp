@@ -6,6 +6,7 @@
 #include "../drawlib/DrawLib.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../io/LoadFont.hpp"
+#include "../game_content/Camera.hpp"
 
 namespace tg_ui {
 

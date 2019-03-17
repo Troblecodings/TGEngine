@@ -60,8 +60,7 @@ void createDesctiptorLayout() {
 }
 
 void createDescriptorSet(uint32_t layout) {
-	last_size = descriptor_set.size();
-	descriptor_set.resize(last_size + 1);
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
 	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(last_result)

@@ -113,21 +113,6 @@ void initAllTextures() {
 }
 
 void addTextures() {
-	uint32_t index = 0;
-	texture_descriptor.image_view = new VkImageView[MAX_TEXTURES];
-	for each (Texture* tex in texture_buffers) {
-		texture_descriptor.image_view[index] = tex->image_view;
-		index++;
-	}
-	for (; index < MAX_TEXTURES; index++) {
-		texture_descriptor.image_view[index] = texture_buffers[0]->image_view;
-	}
-	texture_descriptor.count = 1;
-	texture_descriptor.binding = 2;
-	texture_descriptor.descriptor_set = 0;
-	updateDescriptorSet(&texture_descriptor, 0);
-	texture_descriptor.descriptor_set = 1;
-	updateDescriptorSet(&texture_descriptor, 0);
 }
 
 void destroyBufferofTexture(Texture* tex) {
@@ -146,7 +131,7 @@ void destroyAllTextures() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
-		vkDestroySampler(device, tex_image_sampler, nullptr);
+	vkDestroySampler(device, tex_image_sampler, nullptr);
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
 	}

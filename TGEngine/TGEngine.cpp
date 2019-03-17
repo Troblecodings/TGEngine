@@ -53,19 +53,19 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		0,
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 		1,
-		VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
+		VK_SHADER_STAGE_VERTEX_BIT,
 		});
 	descriptor_bindings.push_back({
 		1,
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 		1,
-		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+		VK_SHADER_STAGE_FRAGMENT_BIT,
 		});
 	descriptor_bindings.push_back({
 		2,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 		1,
-		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+		VK_SHADER_STAGE_FRAGMENT_BIT,
 		});
 
 	createSwapchain();

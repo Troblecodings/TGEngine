@@ -1,7 +1,7 @@
 #include "Mesh.hpp"
 
 void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
-	this->index_offset = ind->index_count;
+	this->first_index = ind->index_count;
 	this->vertex_offset = vrt->count_of_points;
 	vrt->addAll(this->vertices.data(), this->vertices.size());
 	for(uint32_t nt : this->indices)
@@ -50,8 +50,9 @@ void Material::createMaterialPipeline()
 	}
 	createDesctiptorLayout();
 	createPipelineLayout(1, &descriptor_set_layouts[last_size]);
-	createDescriptorSet(last_size);
-	light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
+	this->layout_index = last_size;
+	createDescriptorSet(this->layout_index);
+	this->descriptor_index = light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
 
 	createPipeline(infos, 2);
 	this->pipeline_index = last_size;
@@ -62,4 +63,16 @@ void Material::createMaterialPipeline()
 
 	light_buffer.descriptor.binding = 1;
 	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+
+	VkDescriptorImageInfo info;
+	info.imageView = this->texture->image_view;
+	info.sampler = tex_image_sampler;
+	info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+	vlib_descriptor_writes.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	vlib_descriptor_writes.dstBinding = 2;
+	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptor_index];
+	vlib_descriptor_writes.pImageInfo = &info;
+	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+
 }

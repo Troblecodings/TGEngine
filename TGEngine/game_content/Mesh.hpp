@@ -7,12 +7,16 @@
 #include "../util/VectorUtil.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../game_content/Light.hpp"
+#include "../pipeline/Shader.hpp"
+#include "../pipeline/Pipe.hpp"
 
 struct Material {
 
 	Texture* texture;
 	glm::vec4 color;
 	uint32_t pipeline_index;
+	uint32_t descriptor_index;
+	uint32_t layout_index;
 
 	bool operator==(const Material& material);
 	void createMaterialPipeline();
@@ -21,20 +25,26 @@ struct Material {
 struct Mesh
 {
 	Material material;
-	uint64_t vertex_offset;
-	uint64_t index_offset;
+	uint32_t first_index;
+	uint32_t vertex_offset;
 	std::vector<TGVertex> vertices;
 	std::vector<uint32_t> indices;
 
 	/*
-     * Adds the mesh to the drawloop
+     * this is used in the internal draw -> adds the mesh to the buffer
      */
 	SINCE(0, 0, 4)
 	void consume(VertexBuffer* vrt, IndexBuffer* ind);
 
+	/*
+	 * This adds a vertex to this mesh [same as add(TGVertex vrt)]
+	 */
 	SINCE(0, 0, 4)
 	void operator<<(TGVertex vrt);
 
+	/*
+     * This adds a vertex to this mesh or the index of the vertex if it should already exist
+     */
 	SINCE(0, 0, 4)
     void add(TGVertex vrt);
 };
