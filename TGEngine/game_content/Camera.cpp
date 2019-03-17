@@ -15,6 +15,7 @@ void initCameras() {
 	createUniformBuffer(&camera_uniform);
 	if(cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
 	if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
+	camera_uniform.descriptor.binding = 0;
 
 	ui_camera_uniform = {
     sizeof(glm::mat4),

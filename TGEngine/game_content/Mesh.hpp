@@ -6,6 +6,7 @@
 #include "../pipeline/buffer/IndexBuffer.hpp"
 #include "../util/VectorUtil.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
+#include "../game_content/Light.hpp"
 
 struct Material {
 

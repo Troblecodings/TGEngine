@@ -9,15 +9,13 @@ uint32_t uniform_count;
 uint32_t image_sampler;
 
 void addDescriptor(Descriptor* descriptor) {
-	descriptor->binding = descriptor_bindings.size();
-	descriptor_bindings.resize(descriptor->binding + 1);
-	descriptor_bindings[descriptor->binding] = {
+	descriptor_bindings.push_back({
 		descriptor->binding,
 		descriptor->type,
 		descriptor->count,
 		descriptor->shader_stage,
 		nullptr
-	};
+		});
 
 	if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
 		uniform_count++;

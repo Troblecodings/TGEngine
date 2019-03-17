@@ -38,12 +38,13 @@ void initAllTextures() {
 
 	texture_descriptor = {
 		VK_SHADER_STAGE_FRAGMENT_BIT,
-		MAX_TEXTURES,
+		1,
 		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 		VK_NULL_HANDLE,
 		tex_image_sampler,
 		NULL
 	};
+	texture_descriptor.binding = 2;
 	addDescriptor(&texture_descriptor);
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;

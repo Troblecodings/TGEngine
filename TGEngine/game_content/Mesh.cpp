@@ -48,6 +48,18 @@ void Material::createMaterialPipeline()
 		infos[0] = shaders[TG_VERTEX_SHADER_COLOR_ONLY_INDEX];
 		infos[1] = shaders[TG_FRAGMENT_SHADER_COLOR_ONLY_INDEX];
 	}
+	createDesctiptorLayout();
+	createPipelineLayout(1, &descriptor_set_layouts[last_size]);
+	createDescriptorSet(last_size);
+	light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
+
 	createPipeline(infos, 2);
 	this->pipeline_index = last_size;
+
+	camera_uniform.descriptor.binding = 0;
+	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
+	light_buffer.descriptor.binding = 1;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
 }

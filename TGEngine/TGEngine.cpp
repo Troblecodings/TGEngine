@@ -68,8 +68,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
 		});
 
-	createDesctiptorLayout();
-	createPipelineLayout();
 	createSwapchain();
 	createFramebuffer();
 
@@ -83,10 +81,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	allocateAllBuffers();
 
-	createDescriptorSet();
-	createDescriptorSet();
-
 	createCommandBuffer();
+	multiplier = (window->height / (float)window->width);
 
 	index_buffer.index_count = 0;
 	main_buffer.count_of_points = 0;
@@ -106,25 +102,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	main_buffer.end();
 	index_buffer.end();
 
-	camera_uniform.descriptor.binding = 0;
-	camera_uniform.descriptor.descriptor_set = 0;
-
-	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
-	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
-
-	ui_camera_uniform.descriptor.descriptor_set = 1;
-	ui_camera_uniform.descriptor.binding = 0;
-	multiplier = (window->height / (float)window->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
-	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
-
 	setLightPosition({ 5, 5, 5 });
-	light_buffer.descriptor.shader_stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	light_buffer.descriptor.descriptor_set = 0;
-	light_buffer.descriptor.binding = 1;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
-	light_buffer.descriptor.descriptor_set = 1;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
 
 	addTextures();
 
