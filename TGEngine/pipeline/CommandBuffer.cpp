@@ -197,7 +197,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
 
-		vkCmdDrawIndexed(buffer, index_offset, 1, ibuffer->index_count - index_offset, 0, 0);
+		vkCmdDrawIndexed(buffer, index_offset, 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 

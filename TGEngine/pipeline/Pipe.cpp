@@ -3,7 +3,7 @@
 std::vector<VkPipeline> pipelines; 
 std::vector<VkPipelineLayout> layouts;
 
-void createPipeline(uint32_t layout) {
+void createPipeline(VkPipelineShaderStageCreateInfo* createinfos, uint32_t count, uint32_t layout) {
 	Window* win = window_list[0];
 	vlib_scissor.extent.height = (uint32_t) (vlib_viewport.height = (float) win->height);
 	vlib_scissor.extent.width = (uint32_t) (vlib_viewport.width = (float) win->width);
@@ -13,13 +13,12 @@ void createPipeline(uint32_t layout) {
 
 	vlib_multisample_state.rasterizationSamples = used_msaa_flag;
 
-	vlib_graphics_pipeline_create_info.stageCount = 2;
-	vlib_graphics_pipeline_create_info.pStages = &shaders.data()[2];
+	vlib_graphics_pipeline_create_info.stageCount = count;
+	vlib_graphics_pipeline_create_info.pStages = createinfos;
 	vlib_graphics_pipeline_create_info.layout = layouts[layout];
 	vlib_graphics_pipeline_create_info.renderPass = render_pass;
 
-	last_size = pipelines.size();
-	pipelines.resize(last_size + 1);
+	TG_VECTOR_GET_SIZE_AND_RESIZE(pipelines)
 	last_result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlib_graphics_pipeline_create_info, nullptr, &pipelines[last_size]);
 	HANDEL(last_result);
 }

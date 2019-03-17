@@ -39,13 +39,10 @@ void VertexBuffer::add(TGVertex vert) {
 }
 
 void VertexBuffer::addColorOnly(TGVertex vert) {
-	vert.color_only = VK_TRUE;
 	this->add(vert);
 }
 
 void VertexBuffer::addTexOnly(TGVertex vert) {
-	vert.color_only = VK_FALSE;
-	vert.color = { 1, 1, 1, 1 } ;
 	this->add(vert);
 }
 

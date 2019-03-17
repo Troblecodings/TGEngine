@@ -11,11 +11,17 @@ struct Material {
 
 	Texture* texture;
 	glm::vec4 color;
+	uint32_t pipeline_index;
 
+	bool operator==(const Material& material);
+	void createMaterialPipeline();
 };
 
 struct Mesh
 {
+	Material material;
+	uint64_t vertex_offset;
+	uint64_t index_offset;
 	std::vector<TGVertex> vertices;
 	std::vector<uint32_t> indices;
 

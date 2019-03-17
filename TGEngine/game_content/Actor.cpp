@@ -14,9 +14,8 @@ void Actor::applyPretransform()
 	{
 		mesh->vertices[i] = {
 			glm::vec3(this->model_matrix * glm::vec4(mesh->vertices[i].position, 1)),
-			mesh->vertices[i].color,
 			mesh->vertices[i].uv,
-			mesh->vertices[i].color_only
+			mesh->vertices[i].normal
 		};
 	}
 }

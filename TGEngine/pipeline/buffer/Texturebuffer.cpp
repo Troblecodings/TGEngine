@@ -121,11 +121,11 @@ void addTextures() {
 	for (; index < MAX_TEXTURES; index++) {
 		texture_descriptor.image_view[index] = texture_buffers[0]->image_view;
 	}
-	texture_descriptor.count = MAX_TEXTURES;
-	texture_descriptor.binding = 0;
-	texture_descriptor.descriptor_set = 1;
-	updateDescriptorSet(&texture_descriptor, 0);
+	texture_descriptor.count = 1;
+	texture_descriptor.binding = 2;
 	texture_descriptor.descriptor_set = 0;
+	updateDescriptorSet(&texture_descriptor, 0);
+	texture_descriptor.descriptor_set = 1;
 	updateDescriptorSet(&texture_descriptor, 0);
 }
 

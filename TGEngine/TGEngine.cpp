@@ -41,21 +41,35 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createRenderpass();
 	createShader();
 	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
-	createShaderInput(1, offsetof(TGVertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
-	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
-	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
-	createShaderInput(4, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
+	createShaderInput(1, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 	initAllTextures();
 	initCameras();
 	initLight();
 	initDescriptors();
 
+	descriptor_bindings.clear();
+	descriptor_bindings.push_back({
+		0,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		1,
+		VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
+		});
+	descriptor_bindings.push_back({
+		1,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		1,
+		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+		});
+	descriptor_bindings.push_back({
+		2,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		1,
+		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+		});
+
 	createDesctiptorLayout();
 	createPipelineLayout();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
-	createPipeline();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
-	createPipeline();
 	createSwapchain();
 	createFramebuffer();
 
@@ -68,28 +82,11 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createIndexBuffer(&index_buffer);
 
 	allocateAllBuffers();
+
 	createDescriptorSet();
 	createDescriptorSet();
-	camera_uniform.descriptor.descriptor_set = 0;
-	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
-	ui_camera_uniform.descriptor.descriptor_set = 1;
-	ui_camera_uniform.descriptor.binding = 1;
-	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
-
-	multiplier = (window->height / (float)window->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
-	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
-
-	setLightPosition({ 5, 5, 5 });
-	light_buffer.descriptor.descriptor_set = 0;
-	light_buffer.descriptor.binding = 2;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
-	light_buffer.descriptor.descriptor_set = 1;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
 
 	createCommandBuffer();
-
-	addTextures();
 
 	index_buffer.index_count = 0;
 	main_buffer.count_of_points = 0;
@@ -98,6 +95,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	for (Actor act : actors) {
 		act.mesh->consume(&main_buffer, &index_buffer);
+		act.mesh->material.createMaterialPipeline();
 	}
 	draw(&index_buffer, &main_buffer);
 
@@ -107,6 +105,28 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	main_buffer.end();
 	index_buffer.end();
+
+	camera_uniform.descriptor.binding = 0;
+	camera_uniform.descriptor.descriptor_set = 0;
+
+	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
+	ui_camera_uniform.descriptor.descriptor_set = 1;
+	ui_camera_uniform.descriptor.binding = 0;
+	multiplier = (window->height / (float)window->width);
+	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
+	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
+
+	setLightPosition({ 5, 5, 5 });
+	light_buffer.descriptor.shader_stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+	light_buffer.descriptor.descriptor_set = 0;
+	light_buffer.descriptor.binding = 1;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+	light_buffer.descriptor.descriptor_set = 1;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+
+	addTextures();
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
