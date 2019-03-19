@@ -138,5 +138,10 @@ VkBool32 callback_debug(
 #endif // DEBUG
 
 void destroyInstance() {
+#ifdef DEBUG
+	PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugReportCallback = VK_NULL_HANDLE;
+	destroyDebugReportCallback = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	destroyDebugReportCallback(instance, msger, nullptr);
+#endif
 	vkDestroyInstance(instance, nullptr);
 }
