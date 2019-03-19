@@ -198,7 +198,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[actor.mesh->material.layout_index], 0, 1, &descriptor_set[actor.mesh->material.descriptor_index], 0, nullptr);
 
-			vkCmdDrawIndexed(buffer, actor.mesh->vertices.size(), 1, actor.mesh->first_index, 0, 0);
+			vkCmdDrawIndexed(buffer, actor.mesh->indices.size(), 1, actor.mesh->first_index, 0, 0);
 		}
 
 		vkCmdEndRenderPass(buffer);
