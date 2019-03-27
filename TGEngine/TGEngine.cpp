@@ -101,7 +101,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	main_buffer.end();
 	index_buffer.end();
 
-	setLightPosition({ 5, 5, 5 });
+	setLightPosition({ 0, 0, -10 });
 
 	addTextures();
 

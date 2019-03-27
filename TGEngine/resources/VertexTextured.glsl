@@ -24,7 +24,7 @@ void main(){
     gl_Position = matrix_block.matrix * vec4(posIn, 1);
 	uvOut = uv;
 
-	vec3 to_light = normalize(light_block.light - vec3(gl_Position));
+	vec3 to_light = normalize(posIn - light_block.light);
 	vec3 vnormal = normalize(normalIn);
 
 	light_amplifier = clamp(dot(to_light, vnormal), 0.0, 1.0);
