@@ -84,8 +84,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createCommandBuffer();
 	multiplier = (window->height / (float)window->width);
 
-	index_buffer.index_count = 0;
-	main_buffer.count_of_points = 0;
 	main_buffer.start();
 	index_buffer.start();
 
@@ -97,6 +95,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	index_offset = index_buffer.index_count;
 	vertex_offset = main_buffer.count_of_points;
+
 	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 
 	main_buffer.end();
@@ -129,8 +128,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
-			main_buffer.count_of_points = vertex_offset;
-			index_buffer.index_count = index_offset;
 			tg_ui::ui_scene_entity.update(tg_io::pos.x, tg_io::pos.y);
 			main_buffer.start();
 			index_buffer.start();
@@ -139,8 +136,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			index_buffer.end();
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlib_buffer_copy.size = (main_buffer.count_of_points - vertex_offset) * VERTEX_SIZE;
+			vlib_buffer_copy.srcOffset = 0;
+			vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlib_buffer_copy.size = main_buffer.count_of_points * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				main_buffer.stag_buf.staging_buffer,
@@ -148,8 +146,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 				1,
 				&vlib_buffer_copy
 			);
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = 0;
-			vlib_buffer_copy.size = (index_buffer.index_count - index_offset) * sizeof(uint32_t);
+			vlib_buffer_copy.srcOffset = 0;
+			vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
+			vlib_buffer_copy.size = index_buffer.index_count * sizeof(uint32_t);
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				index_buffer.stag_buf.staging_buffer,
