@@ -45,9 +45,6 @@
     <Filter Include="Quelldateien\pipeline\window">
       <UniqueIdentifier>{071a9615-0ebc-4cbf-9798-d7408e251887}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\util">
-      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Headerdateien\ui">
       <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\model\util">
+      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -261,10 +261,10 @@
       <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
-      <Filter>Quelldateien\util</Filter>
+      <Filter>Quelldateien\model\util</Filter>
     </ClCompile>
     <ClCompile Include="Util\Math.cpp">
-      <Filter>Quelldateien\util</Filter>
+      <Filter>Quelldateien\model\util</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\CommandBuffer.cpp">
       <Filter>Quelldateien\pipeline</Filter>
@@ -360,7 +360,7 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="util\VectorUtil.cpp">
-      <Filter>Quelldateien\util</Filter>
+      <Filter>Quelldateien\model\util</Filter>
     </ClCompile>
     <ClCompile Include="game_content\StaticCamera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
@@ -369,7 +369,7 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="util\TGVertex.cpp">
-      <Filter>Quelldateien\util</Filter>
+      <Filter>Quelldateien\model\util</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>

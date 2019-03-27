@@ -89,7 +89,10 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	for (Actor act : actors) {
 		act.mesh->consume(&main_buffer, &index_buffer);
-		act.mesh->material.createMaterialPipeline();
+		for (size_t i = 0; i < act.mesh->materials.size(); i++)
+		{
+			act.mesh->materials[i].createMaterialPipeline();
+		}
 	}
 	draw(&index_buffer, &main_buffer);
 

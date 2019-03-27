@@ -187,11 +187,14 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
 		for each(Actor actor in actors) {
-			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[actor.mesh->material.pipeline_index]);
+			for each(Material mat in actor.mesh->materials)
+			{
+				vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[mat.pipeline_index]);
 
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[actor.mesh->material.layout_index], 0, 1, &descriptor_set[actor.mesh->material.descriptor_index], 0, nullptr);
+				vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[mat.layout_index], 0, 1, &descriptor_set[mat.descriptor_index], 0, nullptr);
 
-			vkCmdDrawIndexed(buffer, actor.mesh->indices.size(), 1, actor.mesh->first_index, 0, 0);
+				vkCmdDrawIndexed(buffer, mat.size, 1, actor.mesh->first_index + mat.offset, 0, 0);
+			}
 		}
 
 		if (index_offset < ibuffer->index_count) {

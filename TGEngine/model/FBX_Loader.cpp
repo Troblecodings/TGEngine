@@ -58,16 +58,17 @@ namespace tg_model {
 			}
 
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
+			Material mat;
 			if (surface_lambert) {
 				FbxDouble3 color_data = surface_lambert->Diffuse.Get();
-				mesh->material.color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
+				mat.color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
 				fbxsdk::FbxObject* object = surface_lambert->Diffuse.GetSrcObject();
 				if (object) {
 					fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
 					if (tex && tex->GetFileName() != nullptr) {
-						mesh->material.texture = new Texture();
-						mesh->material.texture->texture_path = (char*) tex->GetFileName();
-						createTexture(mesh->material.texture);
+						mat.texture = new Texture();
+						mat.texture->texture_path = (char*) tex->GetFileName();
+						createTexture(mat.texture);
 					}
 					else {
 						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
@@ -82,6 +83,7 @@ namespace tg_model {
 			}
 
 			TGVertex last_vert;
+			mat.offset = mesh->indices.size();
 
 			for (int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
 				int triangle_size = fbxmesh->GetPolygonSize(j);
@@ -93,6 +95,8 @@ namespace tg_model {
 					}
 				}
 			}
+			mat.size = mesh->indices.size() - mat.offset;
+			mesh->materials.push_back(mat);
 		}
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);

@@ -2,11 +2,11 @@
 
 void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
 	this->first_index = ind->index_count;
-	this->vertex_offset = vrt->count_of_points;
+	uint32_t vertex_offset = vrt->count_of_points;
 	vrt->addAll(this->vertices.data(), this->vertices.size());
 	for(uint32_t nt : this->indices)
 	{
-		ind->addIndex(this->vertex_offset + nt);
+		ind->addIndex(vertex_offset + nt);
 	}
 }
 
