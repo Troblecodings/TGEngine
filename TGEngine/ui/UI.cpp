@@ -62,6 +62,20 @@ namespace tg_ui {
 		}
 	}
 
+	void UIEntity::init()
+	{
+		for each (UIComponent* comp in this->components)
+		{
+			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
+				comp->init();
+		}
+		for each (UIEntity* entity in this->children)
+		{
+			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
+				entity->init();
+		}
+	}
+
 	void UIEntity::onAddTo(UIEntity* parent)
 	{
 		this->parent = parent;
@@ -93,6 +107,10 @@ namespace tg_ui {
 	}
 
 	void UIComponent::update(int mouse_x, int mouse_y)
+	{
+	}
+
+	void UIComponent::init()
 	{
 	}
 

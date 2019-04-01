@@ -73,7 +73,7 @@
     <Filter Include="Headerdateien\ui">
       <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\model\util">
+    <Filter Include="Quelldateien\util">
       <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -261,10 +261,10 @@
       <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
-      <Filter>Quelldateien\model\util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Util\Math.cpp">
-      <Filter>Quelldateien\model\util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\CommandBuffer.cpp">
       <Filter>Quelldateien\pipeline</Filter>
@@ -360,7 +360,7 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="util\VectorUtil.cpp">
-      <Filter>Quelldateien\model\util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="game_content\StaticCamera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
@@ -369,7 +369,7 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="util\TGVertex.cpp">
-      <Filter>Quelldateien\model\util</Filter>
+      <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>

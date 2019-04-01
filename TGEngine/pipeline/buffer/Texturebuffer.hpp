@@ -4,14 +4,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
 #include "../../../stb/stb_image.h"
-#include "../Descriptors.hpp"
+#include "../Pipe.hpp"
 #include "VertexBuffer.hpp"
 #include "../../vlib/VulkanImage.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
 #include "../../util/VectorUtil.hpp"
+#include "../../game_content/Light.hpp"
 
-#define MAX_TEXTURES 4094
-#define COLOR_ONLY MAX_TEXTURES + 1
 #define AUTO_MIPMAP 0xFFFFFF
 
 struct Texture {
@@ -32,21 +31,27 @@ struct Texture {
 	VkDeviceMemory buffer_memory;
 	VkMemoryRequirements buffer_requierments;
 	VkMemoryRequirements requierments;
-	uint32_t index;
+
+	uint32_t pipeline_index;
+	uint32_t descriptor_index;
+	uint32_t layout_index;
+
 	void* memory;
+};
 
-	DEPRECATED
-	VkExtent2D texture_extend;
-	uint32_t depth;
-	uint32_t color_type;
-	uint32_t compression_methode;
-	uint32_t filter_methode;
-	uint32_t interlace_methode;
-	END_DEPRECATED
+struct Material {
 
+	Texture* texture;
+	glm::vec4 color;
+
+	uint32_t size; // count of vertices to draw for this matirial
+	uint32_t offset; // the offset at wich this material starts (global)
+
+	bool operator==(const Material& material);
 };
 
 extern std::vector<Texture*> texture_buffers;
+extern std::vector<Material> materials;
 extern Descriptor texture_descriptor;
 extern VkSampler tex_image_sampler;
 extern uint32_t tex_array_index;

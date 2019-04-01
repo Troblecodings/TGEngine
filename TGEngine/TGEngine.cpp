@@ -43,30 +43,15 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
 	createShaderInput(1, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
-	initAllTextures();
+
 	initCameras();
 	initLight();
 	initDescriptors();
 
-	descriptor_bindings.clear();
-	descriptor_bindings.push_back({
-		0,
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		1,
-		VK_SHADER_STAGE_VERTEX_BIT,
-		});
-	descriptor_bindings.push_back({
-		1,
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		1,
-		VK_SHADER_STAGE_VERTEX_BIT,
-		});
-	descriptor_bindings.push_back({
-		2,
-		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-		1,
-		VK_SHADER_STAGE_FRAGMENT_BIT,
-		});
+	allocateAllBuffers();
+	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+
+	initAllTextures();
 
 	createSwapchain();
 	createFramebuffer();
@@ -78,22 +63,23 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	IndexBuffer index_buffer = {};
 	index_buffer.size = 9900000;
 	createIndexBuffer(&index_buffer);
-
-	allocateAllBuffers();
-
 	createCommandBuffer();
 	multiplier = (window->height / (float)window->width);
+
+	tg_ui::ui_scene_entity.init();
 
 	main_buffer.start();
 	index_buffer.start();
 
-	for (Actor act : actors) {
-		act.mesh->consume(&main_buffer, &index_buffer);
-		for (size_t i = 0; i < act.mesh->materials.size(); i++)
+	for (size_t i = 0; i < actors.size(); i++)
+	{
+		actors[i].mesh->consume(&main_buffer, &index_buffer);
+		for (size_t j = 0; j < actors[i].mesh->materials.size(); j++)
 		{
-			act.mesh->materials[i].createMaterialPipeline();
+			actors[i].mesh->materials[j]->offset += actors[i].mesh->first_index;
 		}
 	}
+
 	draw(&index_buffer, &main_buffer);
 
 	index_offset = index_buffer.index_count;

@@ -4,12 +4,17 @@ std::vector<Texture*> texture_buffers;
 Descriptor texture_descriptor;
 VkSampler tex_image_sampler;
 uint32_t tex_array_index = 0;
+std::vector<Material> materials;
 
 using namespace nio;
 
+bool Material::operator==(const Material & material)
+{
+	return material.color == this->color && material.texture == this->texture;
+}
+
 void createTexture(Texture* tex) {
-	TG_VECTOR_APPEND_NORMAL(texture_buffers, tex);
-	tex->index = (uint32_t)last_size;
+	texture_buffers.push_back(tex);
 }
 
 void initAllTextures() {
@@ -47,9 +52,34 @@ void initAllTextures() {
 	texture_descriptor.binding = 2;
 	addDescriptor(&texture_descriptor);
 
+	// TODO Fix this mess tho
+	descriptor_bindings.clear();
+	descriptor_bindings.push_back({
+		0,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		1,
+		VK_SHADER_STAGE_VERTEX_BIT,
+		});
+	descriptor_bindings.push_back({
+		1,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		1,
+		VK_SHADER_STAGE_VERTEX_BIT,
+		});
+	descriptor_bindings.push_back({
+		2,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		1,
+		VK_SHADER_STAGE_FRAGMENT_BIT,
+		});
+
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
+	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
+	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
 
 	for each(Texture* ptr in texture_buffers) {
 
@@ -109,6 +139,33 @@ void initAllTextures() {
 		vlib_image_view_create_info.image = ptr->image;
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
 		HANDEL(last_result)
+
+		createDesctiptorLayout();
+		createPipelineLayout(1, &descriptor_set_layouts[last_size]);
+		ptr->layout_index = last_size;
+		createDescriptorSet(ptr->layout_index);
+		ptr->descriptor_index = light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
+
+		createPipeline(shaders_for_tex, 2);
+		ptr->pipeline_index = last_size;
+
+		camera_uniform.descriptor.binding = 0;
+		updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
+		light_buffer.descriptor.binding = 1;
+		updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+
+		VkDescriptorImageInfo info;
+		info.imageView = ptr->image_view;
+		info.sampler = tex_image_sampler;
+		info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+		vlib_descriptor_writes.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		vlib_descriptor_writes.dstBinding = 2;
+		vlib_descriptor_writes.dstSet = descriptor_set[ptr->descriptor_index];
+		vlib_descriptor_writes.pImageInfo = &info;
+		vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+
 	}
 }
 

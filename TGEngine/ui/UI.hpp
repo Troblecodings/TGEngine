@@ -30,6 +30,7 @@ namespace tg_ui {
 
 		void draw(IndexBuffer* index, VertexBuffer* vertex);
 		void update(int mouse_x, int mouse_y);
+		void init();
 
 		glm::vec2 getPosition();
 		glm::vec2 UIEntity::getRenderPosition();
@@ -54,6 +55,7 @@ namespace tg_ui {
 	public:
 		virtual void draw(IndexBuffer* index, VertexBuffer* vertex); // default implementation, needs override
 		virtual void update(int mouse_x, int mouse_y); // default implementation, needs override
+		virtual void init(); // default implementation, needs override
 
 		void onAddTo(UIEntity* parent);
 		void onRemoveFrom(UIEntity* parent);

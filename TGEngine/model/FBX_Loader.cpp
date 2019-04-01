@@ -96,7 +96,8 @@ namespace tg_model {
 				}
 			}
 			mat.size = mesh->indices.size() - mat.offset;
-			mesh->materials.push_back(mat);
+			TG_VECTOR_APPEND_NORMAL(materials, mat)
+			mesh->materials.push_back(&materials[last_size]);
 		}
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);
