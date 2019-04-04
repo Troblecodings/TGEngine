@@ -83,8 +83,8 @@ namespace tg_model {
 			}
 
 			TGVertex last_vert;
-			mat.offset = mesh->indices.size();
-
+			RenderOffsets offsets;
+			offsets.offset = mesh->indices.size();
 			for (int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
 				int triangle_size = fbxmesh->GetPolygonSize(j);
 				if(triangle_size == 3) {
@@ -95,9 +95,10 @@ namespace tg_model {
 					}
 				}
 			}
-			mat.size = mesh->indices.size() - mat.offset;
-			TG_VECTOR_APPEND_NORMAL(materials, mat)
-			mesh->materials.push_back(&materials[last_size]);
+			mesh->materials.push_back(mat);
+			offsets.material = mat;
+			offsets.size = mesh->indices.size() - offsets.offset;
+			mesh->offsets.push_back(offsets);
 		}
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);

@@ -74,10 +74,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	for (size_t i = 0; i < actors.size(); i++)
 	{
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
-		for (size_t j = 0; j < actors[i].mesh->materials.size(); j++)
-		{
-			actors[i].mesh->materials[j]->offset += actors[i].mesh->first_index;
-		}
 	}
 
 	draw(&index_buffer, &main_buffer);

@@ -4,7 +4,7 @@ std::vector<Texture*> texture_buffers;
 Descriptor texture_descriptor;
 VkSampler tex_image_sampler;
 uint32_t tex_array_index = 0;
-std::vector<Material> materials;
+std::vector<RenderOffsets> render_offset;
 
 using namespace nio;
 
