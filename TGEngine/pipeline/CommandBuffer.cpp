@@ -28,11 +28,11 @@ void createCommandBuffer() {
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
 	HANDEL(last_result)
 
-		vlib_command_buffer_allocate_info.commandBufferCount = 1;
+	vlib_command_buffer_allocate_info.commandBufferCount = 1;
 	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
 	HANDEL(last_result)
 
-		VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
 	last_result = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
 	HANDEL(last_result)
 }
@@ -41,7 +41,7 @@ void startSingleTimeCommand() {
 	last_result = vkResetFences(device, 1, &single_time_command_ready);
 	HANDEL(last_result)
 
-		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
 	last_result = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
 	HANDEL(last_result);
@@ -66,7 +66,7 @@ void endSingleTimeCommand() {
 	last_result = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
 	HANDEL(last_result)
 
-		last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
+	last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
 	HANDEL(last_result)
 }
 
@@ -127,6 +127,7 @@ void startupCommands() {
 
 		for each(StagingBuffer* buf in staging_buffer)
 		{
+			vlib_buffer_copy.dstOffset = vlib_buffer_copy.srcOffset = 0;
 			vlib_buffer_copy.size = buf->size;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
@@ -185,19 +186,16 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		if (index_offset < ibuffer->index_count) {
-			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+		for each(RenderOffsets coffset in render_offset)
+		{
+			Material mat = materials[coffset.material];
 
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[1], 0, 1, &descriptor_set[1], 0, nullptr);
+			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[mat.pipeline_index]);
 
-			vkCmdDrawIndexed(buffer, ibuffer->index_count - index_offset, 1, 0, 0, 0);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[mat.layout_index], 0, 1, &descriptor_set[mat.descriptor_index], 0, nullptr);
+
+			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
 		}
-
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[0], 0, 1, &descriptor_set[0], 0, nullptr);
-
-		vkCmdDrawIndexed(buffer, index_offset, 1, ibuffer->index_count - index_offset, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 
@@ -207,7 +205,9 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 }
 
 void destroyCommandBuffer() {
+	last_result =  vkDeviceWaitIdle(device);
+	HANDEL(last_result)
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
-	vkDestroyFence(device, fence, nullptr);
+	vkDestroyFence(device, single_time_command_ready, nullptr);
 }

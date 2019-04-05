@@ -41,72 +41,63 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createRenderpass();
 	createShader();
 	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
-	createShaderInput(1, offsetof(TGVertex, color), VK_FORMAT_R32G32B32A32_SFLOAT);
-	createShaderInput(2, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
-	createShaderInput(3, offsetof(TGVertex, color_only), VK_FORMAT_R32_UINT);
-	createShaderInput(4, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
-	initAllTextures();
+	createShaderInput(1, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
+	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
+
+	addDescriptorBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	addDescriptorBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	addDescriptorBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
+
 	initCameras();
 	initLight();
 	initDescriptors();
 
-	createDesctiptorLayout();
-	createDesctiptorLayout();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
-	createPipeline();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
-	createPipeline();
+	allocateAllBuffers();
+	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+
+	initAllTextures();
+
 	createSwapchain();
 	createFramebuffer();
 
 	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 900000;
+	main_buffer.max_vertex_count = 9000000;
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 9900000;
+	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
-
-	allocateAllBuffers();
-	createDescriptorSet();
-	createDescriptorSet();
-	camera_uniform.descriptor.descriptor_set = 0;
-	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
-	ui_camera_uniform.descriptor.descriptor_set = 1;
-	ui_camera_uniform.descriptor.binding = 1;
-	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
-
-	multiplier = (window->height / (float)window->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
-	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
-
-	setLightPosition({ 5, 5, 5 });
-	light_buffer.descriptor.descriptor_set = 0;
-	light_buffer.descriptor.binding = 2;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
-	light_buffer.descriptor.descriptor_set = 1;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
-
 	createCommandBuffer();
+	multiplier = (window->height / (float)window->width);
 
-	addTextures();
+	tg_ui::ui_scene_entity.init();
 
-	index_buffer.index_count = 0;
-	main_buffer.count_of_points = 0;
 	main_buffer.start();
 	index_buffer.start();
 
-	for (Actor act : actors) {
-		act.mesh->consume(&main_buffer, &index_buffer);
+	for (size_t i = 0; i < actors.size(); i++)
+	{
+		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
+
+	for (size_t i = 0; i < materials.size(); i++)
+	{
+		materials[i].createMaterial();
+	}
+
 	draw(&index_buffer, &main_buffer);
 
 	index_offset = index_buffer.index_count;
 	vertex_offset = main_buffer.count_of_points;
+
 	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 
 	main_buffer.end();
 	index_buffer.end();
+
+	setLightPosition({ 0, 0, -10 });
+
+	addTextures();
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
@@ -131,8 +122,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
-			main_buffer.count_of_points = vertex_offset;
-			index_buffer.index_count = index_offset;
 			tg_ui::ui_scene_entity.update(tg_io::pos.x, tg_io::pos.y);
 			main_buffer.start();
 			index_buffer.start();
@@ -141,8 +130,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			index_buffer.end();
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlib_buffer_copy.size = (main_buffer.count_of_points - vertex_offset) * VERTEX_SIZE;
+			vlib_buffer_copy.srcOffset = 0;
+			vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlib_buffer_copy.size = main_buffer.count_of_points * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				main_buffer.stag_buf.staging_buffer,
@@ -150,8 +140,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 				1,
 				&vlib_buffer_copy
 			);
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = 0;
-			vlib_buffer_copy.size = (index_buffer.index_count - index_offset) * sizeof(uint32_t);
+			vlib_buffer_copy.srcOffset = 0;
+			vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
+			vlib_buffer_copy.size = index_buffer.index_count * sizeof(uint32_t);
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				index_buffer.stag_buf.staging_buffer,

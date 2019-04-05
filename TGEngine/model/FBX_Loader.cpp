@@ -3,7 +3,7 @@
 namespace tg_model {
 
 	INTERNAL
-	static void readVertex(FbxAMatrix matrix, FbxMesh* fbxmesh, TGVertex* vert, Material* mat, FbxStringList lUVNames, uint32_t j, uint32_t i) {
+	static void readVertex(FbxAMatrix matrix, FbxMesh* fbxmesh, TGVertex* vert, FbxStringList lUVNames, uint32_t j, uint32_t i) {
 		FbxVector2 uv;
 		bool uv_vert;
 		fbxsdk::FbxVector4 normal;
@@ -14,10 +14,7 @@ namespace tg_model {
 		fbxmesh->GetPolygonVertexNormal(j, i, normal);
 
 		vert->position = glm::vec4( ptr[0], ptr[1], ptr[2], 1);
-		vert->color = mat->color;
 		vert->uv = { uv[0], 1 - uv[1] };
-		if(mat->texture) vert->color_only = mat->texture->index;
-		else vert->color_only = COLOR_ONLY;
 		vert->normal = { normal[0], normal[1], normal[2] };
 	}
 
@@ -25,6 +22,8 @@ namespace tg_model {
 	static void addMesh(char* name, FbxNode* node, Mesh* mesh) {
 		ASSERT_NONE_NULL_DB(node, "Fbx node null in mesh " << name, TG_ERR_DB_NULLPTR)
 		if (!node || !mesh) return;
+
+		OUT_LV_DEBUG("New node [" << node->GetName() << "]")
 
 		FbxMesh* fbxmesh = node->GetMesh();
 
@@ -60,19 +59,18 @@ namespace tg_model {
 				return;
 			}
 
-			Material material = { nullptr };
-
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
+			Material mat;
 			if (surface_lambert) {
 				FbxDouble3 color_data = surface_lambert->Diffuse.Get();
-				material.color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
+				mat.color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
 				fbxsdk::FbxObject* object = surface_lambert->Diffuse.GetSrcObject();
 				if (object) {
 					fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
 					if (tex && tex->GetFileName() != nullptr) {
-						material.texture = new Texture();
-						material.texture->texture_path = (char*) tex->GetFileName();
-						createTexture(material.texture);
+						mat.texture = new Texture();
+						mat.texture->texture_path = (char*) tex->GetFileName();
+						createTexture(mat.texture);
 					}
 					else {
 						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
@@ -87,17 +85,22 @@ namespace tg_model {
 			}
 
 			TGVertex last_vert;
-
+			RenderOffsets offsets;
+			offsets.offset = mesh->indices.size();
 			for (int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
 				int triangle_size = fbxmesh->GetPolygonSize(j);
 				if(triangle_size == 3) {
 					for (size_t i = 0; i < 3; i++)
 					{
-						readVertex(matrix, fbxmesh, &last_vert, &material, lUVNames, j, i);
+						readVertex(matrix, fbxmesh, &last_vert, lUVNames, j, i);
 						mesh->add(last_vert);
 					}
 				}
 			}
+			TG_VECTOR_APPEND_NORMAL(materials, mat)
+			mesh->materials.push_back(offsets.material = last_size);
+			offsets.size = mesh->indices.size() - offsets.offset;
+			mesh->offsets.push_back(offsets);
 		}
 		for (size_t i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);

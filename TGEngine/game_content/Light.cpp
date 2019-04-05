@@ -3,11 +3,8 @@
 UniformBuffer light_buffer;
 
 void initLight() {
-	light_buffer = {
-			sizeof(glm::vec3),
-	        { VK_SHADER_STAGE_VERTEX_BIT }
-	};
-	createUniformBuffer(&light_buffer);
+	light_buffer = UniformBuffer(sizeof(glm::vec3), VK_SHADER_STAGE_FRAGMENT_BIT);
+	light_buffer.descriptor.binding = 1;
 }
 
 void setLightPosition(glm::vec3 pos) {

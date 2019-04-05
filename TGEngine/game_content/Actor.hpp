@@ -6,6 +6,8 @@
 #include "../Error.hpp"
 #include "../util/VectorUtil.hpp"
 
+struct Mesh;
+
 struct Actor
 {
 	Mesh* mesh;

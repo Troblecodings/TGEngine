@@ -2,11 +2,7 @@
 
 namespace tg_ui {
 
-	UITextureComponent::UITextureComponent(Texture * tex)
-	{
-		this->texture = tex;
-		this->color = glm::vec4(1, 1, 1, 1);
-	}
+	UITextureComponent::UITextureComponent(Texture * tex) : UITextureComponent(tex, glm::vec4(1, 1, 1, 1)) {}
 
 	UITextureComponent::UITextureComponent(Texture * tex, glm::vec4 color)
 	{
@@ -18,12 +14,14 @@ namespace tg_ui {
 	{
 		glm::vec2 pos = this->parent->getRenderPosition();
 		glm::vec2 ext = this->parent->getRenderExtent();
-		OUT_LV_DEBUG(pos.x << " " << pos.y)
-		OUT_LV_DEBUG(ext.x << " " << ext.y)
-		drawRectangle(glm::vec3(pos, 0.1f), this->color, this->texture->index, ext.x, ext.y, vertex, index);
+		drawRectangle(glm::vec3(pos, 0.1f), ext.x, ext.y, vertex, index);
 	}
 	void UITextureComponent::update(int mouse_x, int mouse_y)
 	{
+		this->parent->local_position += glm::vec2(0.00002, 0.00002);
+	}
 
+	void UITextureComponent::init()
+	{
 	}
 }

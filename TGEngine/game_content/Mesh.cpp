@@ -1,11 +1,17 @@
 #include "Mesh.hpp"
 
 void Mesh::consume(VertexBuffer * vrt, IndexBuffer * ind) {
-	uint32_t sz = (uint32_t)vrt->count_of_points;
+	this->first_index = ind->index_count;
+	for (size_t i = 0; i < this->offsets.size(); i++)
+	{
+		this->offsets[i].offset += this->first_index;
+		render_offset.push_back(this->offsets[i]);
+	}
+	uint32_t vertex_offset = vrt->count_of_points;
 	vrt->addAll(this->vertices.data(), this->vertices.size());
 	for(uint32_t nt : this->indices)
 	{
-		ind->addIndex(sz + nt);
+		ind->addIndex(vertex_offset + nt);
 	}
 }
 
@@ -27,4 +33,3 @@ void Mesh::add(TGVertex vert)
 	this->vertices.push_back(vert);
 	this->indices.push_back((uint32_t)last_size);
 }
-

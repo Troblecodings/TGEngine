@@ -18,7 +18,7 @@ void createStagingBuffer(StagingBuffer* buffer) {
 	last_result = vkBindBufferMemory(device, buffer->staging_buffer, buffer->staging_buffer_device_memory, 0);
 	HANDEL(last_result)
 
-	TG_VECTOR_APPEND_NORMAL(staging_buffer, buffer)
+	staging_buffer.push_back(buffer);
 }
 
 void destroyStagingBuffer()

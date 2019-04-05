@@ -20,7 +20,7 @@ VkDescriptorPoolCreateInfo vlib_descriptor_pool_create_info = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 	nullptr,
 	VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-	2,
+	100,
 	0,
 	nullptr
 };

@@ -30,27 +30,25 @@ void destroyVertexBuffer(VertexBuffer * buffer_storage)
 }
 
 void VertexBuffer::start() {
-	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, vertex_offset * VERTEX_SIZE, VK_WHOLE_SIZE, 0, &this->memory);
+	this->count_of_points = 0;
+	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, VK_WHOLE_SIZE, 0, &this->memory);
 }
 
 void VertexBuffer::add(TGVertex vert) {
-	memcpy((TGVertex*)this->memory + this->count_of_points - vertex_offset, &vert, VERTEX_SIZE);
+	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, VERTEX_SIZE);
 	this->count_of_points++;
 }
 
 void VertexBuffer::addColorOnly(TGVertex vert) {
-	vert.color_only = VK_TRUE;
 	this->add(vert);
 }
 
 void VertexBuffer::addTexOnly(TGVertex vert) {
-	vert.color_only = VK_FALSE;
-	vert.color = { 1, 1, 1, 1 } ;
 	this->add(vert);
 }
 
 void VertexBuffer::addAll(TGVertex* verts, size_t count) {
-	memcpy((TGVertex*)this->memory + this->count_of_points - vertex_offset, verts, VERTEX_SIZE * count);
+	memcpy((TGVertex*)this->memory + this->count_of_points, verts, VERTEX_SIZE * count);
 	this->count_of_points += count;
 }
 

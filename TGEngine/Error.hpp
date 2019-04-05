@@ -26,5 +26,4 @@ USAGE_DEBUG
 
 //Null define
 #define ASSERT_NONE_NULL_DB(ptr, msg, error)
-#define ASSERT_FILE(ptr, pth) 
 #endif

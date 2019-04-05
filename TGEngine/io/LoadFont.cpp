@@ -37,27 +37,19 @@ float Font::drawString(glm::vec3 pos,glm::vec4 color, char* text, VertexBuffer* 
 		uint32_t idcount = (uint32_t)buffer->count_of_points;
 		buffer->add({
 			{ quad.x0 * multi, quad.y0 * multi, pos.z},
-			color,
 			{ quad.s0, quad.t0 },
-			this->texture.index
 			});
 		buffer->add({
 			{ quad.x1 * multi, quad.y0 * multi, pos.z },
-			color,
 			{ quad.s1, quad.t0 },
-			this->texture.index
 			});
 		buffer->add({
 			{ quad.x1 * multi, quad.y1 * multi, pos.z },
-			color,
 			{ quad.s1, quad.t1 },
-			this->texture.index
 			});
 		buffer->add({
 			{ quad.x0 * multi, quad.y1 * multi, pos.z },
-			color,
 			{ quad.s0, quad.t1 },
-			this->texture.index
 			});
 		ibuffer->addIndex(idcount);
 		ibuffer->addIndex(idcount + 1);

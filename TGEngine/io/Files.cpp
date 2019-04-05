@@ -15,7 +15,6 @@ namespace nio {
 		File file;
 		errno_t err = fopen_s(&file, name, mode);
 		ASSERT_NONE_NULL_DB(!err, "Can not open file [" << name << "]!", TG_ERR_FILE_NOT_FOUND_OR_NO_RIGHTS)
-
 		return file;
 	}
 

@@ -10,12 +10,10 @@ void drawEllipse(TGVertex pos, float xradius, float yradius, size_t max_verticie
 		if (i != 0) {
 			vert->addColorOnly(pos);
 			vert->addColorOnly({
-				{ l_x, l_y, 0 },
-				pos.color
+				{ l_x, l_y, 0 }
 				});
 			vert->addColorOnly({
-				{ x, y, 0 },
-				pos.color
+				{ x, y, 0 }
 				});
 		}
 

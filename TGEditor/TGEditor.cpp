@@ -6,7 +6,7 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({ 0, 0}, {0.3, 0.15});
+tg_ui::UIEntity entity = tg_ui::UIEntity({ 0, 0 }, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -41,7 +41,8 @@ void init() {
 	createTexture(&tex2);
 
 	createActor(&mesh2)->preScale(0.015, 0.08, 0.005)->prePos(0, -240, 840)->applyPretransform();
-	createActor(&mesh)->preRotate(-PI / 2, 1.0f, 0, 0)->preScale(0.5, 0.5, 0.5)->applyPretransform();
+	createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5, 0.5, 0.5)->applyPretransform();
+	//createActor(&mesh);
 
 	createFirstPersonCamera(&camera);
 

@@ -6,29 +6,14 @@ std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
 std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
 
 uint32_t uniform_count;
-uint32_t image_sampler;
+uint32_t image_sampler_count;
 
-void addDescriptor(Descriptor* descriptor) {
-	TG_VECTOR_APPEND_NORMAL(descriptor_bindings, VkDescriptorSetLayoutBinding())
-	descriptor->binding = (uint32_t)last_size;
-	descriptor_bindings[descriptor->binding] = {
-		descriptor->binding,
-		descriptor->type,
-		descriptor->count,
-		descriptor->shader_stage,
-		nullptr
-	};
-
-	if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-		uniform_count++;
-	}
-	else if (descriptor->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-		image_sampler++;
-	}
+void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags) {
+	descriptor_bindings.push_back( { binding, type, 1, flags });
 }
 
 void initDescriptors() {
-	vlib_descriptor_pool_create_info.poolSizeCount = (uniform_count > 0 ? 1:0) + (image_sampler > 0 ? 1:0);
+	vlib_descriptor_pool_create_info.poolSizeCount = (uniform_count > 0 ? 1:0) + (image_sampler_count > 0 ? 1:0);
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlib_descriptor_pool_create_info.poolSizeCount];
 
 	if(uniform_count > 0)
@@ -38,10 +23,10 @@ void initDescriptors() {
 		sizes[0] = vlib_descriptor_pool_size;
 	}
 
-	if (image_sampler > 0)
+	if (image_sampler_count > 0)
 	{
 		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		vlib_descriptor_pool_size.descriptorCount = image_sampler;
+		vlib_descriptor_pool_size.descriptorCount = image_sampler_count;
 		sizes[vlib_descriptor_pool_create_info.poolSizeCount - 1] = vlib_descriptor_pool_size;
 	}
 
@@ -52,20 +37,22 @@ void initDescriptors() {
 	vlib_allocate_info.descriptorPool = descriptor_pool;
 }
 
-void createDesctiptorLayout() {
-	TG_VECTOR_APPEND_NORMAL(descriptor_set_layouts, VkDescriptorSetLayout())
+size_t createDesctiptorLayout() {
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set_layouts)
 
 	vlib_descriptor_set_layout_create_info.bindingCount = (uint32_t)descriptor_bindings.size();
 	vlib_descriptor_set_layout_create_info.pBindings = descriptor_bindings.data();
 	last_result = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[last_size]);
 	HANDEL(last_result)
+    return last_size;
 }
 
-void createDescriptorSet() {
-	TG_VECTOR_APPEND_NORMAL(descriptor_set, VkDescriptorSet())
-	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[last_size];
+size_t createDescriptorSet(uint32_t layout) {
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
+	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(last_result)
+	return last_size;
 }
 
 void updateDescriptorSet(Descriptor* desc, uint32_t size) {
@@ -113,3 +100,15 @@ void destroyDescriptors() {
 	HANDEL(last_result);
 	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 };
+
+Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type)
+{
+	this->shader_stage = stage;
+	this->type = type;
+	if (this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
+		uniform_count++;
+	}
+	else if (this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
+		image_sampler_count++;
+	}
+}

@@ -2,7 +2,7 @@
 
 namespace tg_ui {
 
-	UIEntity ui_scene_entity = UIEntity({-1, -1}, {});
+	UIEntity ui_scene_entity = UIEntity({0, 0}, {});
 
 	UIEntity::UIEntity(glm::vec2 position, glm::vec2 extent)
 	{
@@ -62,6 +62,20 @@ namespace tg_ui {
 		}
 	}
 
+	void UIEntity::init()
+	{
+		for each (UIComponent* comp in this->components)
+		{
+			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
+				comp->init();
+		}
+		for each (UIEntity* entity in this->children)
+		{
+			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
+				entity->init();
+		}
+	}
+
 	void UIEntity::onAddTo(UIEntity* parent)
 	{
 		this->parent = parent;
@@ -80,12 +94,12 @@ namespace tg_ui {
 
 	glm::vec2 UIEntity::getRenderPosition()
 	{
-		return this->getPosition() * glm::vec2(2 * multiplier, 2);
+		return this->getPosition() * glm::vec2(2 * multiplier, 2) - glm::vec2(1, 1);
 	}
 
 	glm::vec2 UIEntity::getRenderExtent()
 	{
-		return (this->extent * glm::vec2(window_list[0]->width, window_list[0]->height)) / glm::vec2(window_list[0]->width, window_list[0]->height);
+		return this->extent * glm::vec2(2 * multiplier, 2);
 	}
 
 	void UIComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
@@ -93,6 +107,10 @@ namespace tg_ui {
 	}
 
 	void UIComponent::update(int mouse_x, int mouse_y)
+	{
+	}
+
+	void UIComponent::init()
 	{
 	}
 

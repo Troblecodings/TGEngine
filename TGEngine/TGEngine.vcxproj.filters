@@ -45,9 +45,6 @@
     <Filter Include="Quelldateien\pipeline\window">
       <UniqueIdentifier>{071a9615-0ebc-4cbf-9798-d7408e251887}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\util">
-      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Headerdateien\ui">
       <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\util">
+      <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -403,18 +403,6 @@
     <None Include="..\README.md">
       <Filter>resources</Filter>
     </None>
-    <None Include="Resources\fragmentshader.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="Resources\fragmentshader.spv">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="Resources\vertexshader.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="Resources\vertexshader.spv">
-      <Filter>resources</Filter>
-    </None>
     <None Include="..\docs\_config.yml">
       <Filter>docs</Filter>
     </None>
@@ -429,6 +417,30 @@
     </None>
     <None Include="..\docs\main.css">
       <Filter>docs</Filter>
+    </None>
+    <None Include="resources\FragmentColorOnly.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentColorOnly.spv">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentTextured.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentTextured.spv">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\VertexColorOnly.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\VertexColorOnly.spv">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\VertexTextured.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\VertexTextured.spv">
+      <Filter>resources</Filter>
     </None>
   </ItemGroup>
 </Project>
