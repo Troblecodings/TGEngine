@@ -20,6 +20,7 @@ Now you can open the VisualStudios Project file and compile the Engine.
 
 | Platform | Build Status |
 |:--------:|:------------:|
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/463ead5524004360a3c1b7acb98e238b)](https://app.codacy.com/app/MrTroble_2/TGEngine?utm_source=github.com&utm_medium=referral&utm_content=Troblecodings/TGEngine&utm_campaign=Badge_Grade_Dashboard)
 | Windows (Visual Studio 2017) | [![Windows Build status](https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true)](https://ci.appveyor.com/project/MrTroble/tgengine) |
 | Linux | ![Linux Build Status](https://img.shields.io/badge/build-not%20passing-red.svg) |
 
