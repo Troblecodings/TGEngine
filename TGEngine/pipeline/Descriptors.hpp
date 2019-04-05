@@ -5,39 +5,76 @@
 #include "../pipeline/buffer/Memory.hpp"
 #include "../vlib/VulkanDescriptor.hpp"
 
-extern VkDescriptorPool descriptor_pool;
-extern std::vector<VkDescriptorSet> descriptor_set;
-extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts;
-extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
+extern VkDescriptorPool descriptor_pool; // holds the descriptor pool -> see initDescriptors()
+extern std::vector<VkDescriptorSet> descriptor_set; // contains the desciptorset handles from vulkan
+extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts; // contains the desciptorsetlayout handles from vulkan
+extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings; // contains the desciptorsetlayoutbindings from vulkan
 
-extern uint32_t uniform_count;
-extern uint32_t image_sampler_count;
+extern uint32_t uniform_count; // holds the count of uniform buffer Descriptor objects
+extern uint32_t image_sampler_count; // holds the count of image sampler buffer Descriptor objects
 
 class Descriptor {
 
 public:
 
+	/*
+	 * Initializes all values (besides default constructor)
+	 * depending on type -> increases uniform_count or image_sampler_count
+	 */
 	INTERNAL
 	SINCE(0, 0, 4)
-	Descriptor() {} // Default constructor
-	Descriptor(VkShaderStageFlags stage, VkDescriptorType type);
+	Descriptor() {} // Default constructor -> doing nothing
+	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset);
+	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding) : Descriptor(stage, type, binding, 0) {}
+	Descriptor(VkShaderStageFlags stage, VkDescriptorType type) : Descriptor(stage, type, 0) {}
 	Descriptor(VkDescriptorType type) : Descriptor(VK_SHADER_STAGE_VERTEX_BIT, type) {}
 
-	INPUT  
-	VkShaderStageFlags shader_stage;
-	uint32_t count = 1;
-	VkDescriptorType type;
-	uint32_t buffer = 0;
+	~Descriptor();
 
-	VkSampler image_sampler;
-	VkImageView* image_view;
-	uint32_t array_index = 0;
-	size_t descriptor_set = 0;
+	uint32_t descriptorset = 0; // the descriptor set this is updating in
+	uint32_t binding = 0;  // the binding within the shader
 
-	OUTPUT
-    uint32_t binding;
-	VkDescriptorImageInfo* desc_image_info;
-	VkDescriptorBufferInfo buffer_info;
+	/*
+	 * Updates the given descriptor within its descriptor set with image infos
+	 * 
+	 * param:
+	 *    sampler -> the image sampler
+	 *    view -> the image view
+	 *
+	 * - Note: for vkUpdateDescriptorSets see the Vulkan docs
+	 *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkUpdateDescriptorSets.html
+	 */
+	INTERNAL
+	SINCE(0, 0, 4)
+	void updateImageInfo(VkSampler sampler, VkImageView view);
+
+	/*
+     * Updates the given descriptor within its descriptor set with buffer infos
+     *
+     * param:
+     *    sampler -> the image sampler
+     *    view -> the image view
+     *
+     * - Note: for vkUpdateDescriptorSets see the Vulkan docs
+     *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkUpdateDescriptorSets.html
+     */
+	INTERNAL
+	SINCE(0, 0, 4)
+	void updateBufferInfo(uint32_t buffer, size_t size);
+
+private:
+	VkShaderStageFlags shaderstage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+	VkDescriptorType type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+	/*
+     * Updates the given descriptor within its descriptor set with buffer infos
+     *
+     * - Note: for VkWriteDescriptorSet see the Vulkan docs
+     *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkWriteDescriptorSet.html
+     */
+	INTERNAL
+	SINCE(0, 0, 4)
+	void update();
 };
 
 /*
@@ -51,7 +88,7 @@ void initDescriptors();
 
 /*
  * Adds a descriptor binding to the shaders applied in this pipeline
- * - Note: for VkDescriptorSetLayoutBinding  see the Vulkan docs
+ * - Note: for VkDescriptorSetLayoutBinding see the Vulkan docs
  *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorSetLayoutBinding.html
  */
 INTERNAL
@@ -70,16 +107,24 @@ SINCE(0, 0, 4)
 size_t createDesctiptorLayout();
 
 /*
- * 
+ * Creates Descriptor Set
+ *    -> returns the index of the descriptor
+ *
+ * - Note: for VkDescriptorSetLayout see the Vulkan docs 
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorSet.html
  */
 INTERNAL
 SINCE(0, 0, 4)
 size_t createDescriptorSet(uint32_t layout = 0);
 
-INTERNAL
-SINCE(0, 0, 2)
-void updateDescriptorSet(Descriptor* desc, uint32_t size);
-
+/*
+ * Destroys all descriptor resources (pool, layouts, sets, ...)
+ *
+ * - Note: see the Vulkan docs
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkDestroyDescriptorSetLayout.html
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkFreeDescriptorSets.html
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkDestroyDescriptorPool.html
+ */
 INTERNAL
 SINCE(0, 0, 2)
 void destroyDescriptors();

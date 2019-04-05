@@ -8,12 +8,11 @@ float multiplierx = 1;
 size_t active_camera = 0;
 
 void initCameras() {
-	camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
-	ui_camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
+	camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT, 0);
+	ui_camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT, 0);
 
-	if(cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
+	if (cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
 	if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
-	camera_uniform.descriptor.binding = 0;
 }
 
 void createCamera(Camera* camera) {

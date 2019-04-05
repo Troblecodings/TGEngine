@@ -50,12 +50,12 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	initCameras();
 	initLight();
-	initDescriptors();
 
 	allocateAllBuffers();
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
 	initAllTextures();
+	initDescriptors();
 
 	createSwapchain();
 	createFramebuffer();
