@@ -1,12 +1,48 @@
 #include "Texturebuffer.hpp"
 
 std::vector<Texture*> texture_buffers;
+std::vector<Material> materials;
 Descriptor texture_descriptor;
 VkSampler tex_image_sampler;
 uint32_t tex_array_index = 0;
 std::vector<RenderOffsets> render_offset;
 
 using namespace nio;
+
+void Material::createMaterial()
+{
+	// TODO Fix this mess
+	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
+	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
+	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
+	//
+
+	createDesctiptorLayout();
+	createPipelineLayout(1, &descriptor_set_layouts[last_size]);
+	this->layout_index = last_size;
+	createDescriptorSet(this->layout_index);
+	this->descriptor_index = light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
+
+	createPipeline(shaders_for_tex, 2);
+	this->pipeline_index = last_size;
+
+	camera_uniform.descriptor.binding = 0;
+	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+
+	light_buffer.descriptor.binding = 1;
+	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+
+	VkDescriptorImageInfo info;
+	info.imageView = this->texture->image_view;
+	info.sampler = tex_image_sampler;
+	info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+	vlib_descriptor_writes.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	vlib_descriptor_writes.dstBinding = 2;
+	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptor_index];
+	vlib_descriptor_writes.pImageInfo = &info;
+	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+}
 
 bool Material::operator==(const Material & material)
 {
@@ -41,45 +77,13 @@ void initAllTextures() {
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
-	texture_descriptor = {
-		VK_SHADER_STAGE_FRAGMENT_BIT,
-		1,
-		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-		VK_NULL_HANDLE,
-		tex_image_sampler,
-		NULL
-	};
+	texture_descriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	texture_descriptor.image_sampler = tex_image_sampler;
 	texture_descriptor.binding = 2;
-	addDescriptor(&texture_descriptor);
-
-	// TODO Fix this mess tho
-	descriptor_bindings.clear();
-	descriptor_bindings.push_back({
-		0,
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		1,
-		VK_SHADER_STAGE_VERTEX_BIT,
-		});
-	descriptor_bindings.push_back({
-		1,
-		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		1,
-		VK_SHADER_STAGE_VERTEX_BIT,
-		});
-	descriptor_bindings.push_back({
-		2,
-		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-		1,
-		VK_SHADER_STAGE_FRAGMENT_BIT,
-		});
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
-	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
-	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
 
 	for each(Texture* ptr in texture_buffers) {
 
@@ -91,7 +95,7 @@ void initAllTextures() {
 		vlib_image_create_info.format = ptr->image_format;
 		vlib_image_create_info.extent.width = ptr->width;
 		vlib_image_create_info.extent.height = ptr->height;
-		if (ptr->miplevels = AUTO_MIPMAP) 
+		if (ptr->miplevels == AUTO_MIPMAP) 
 			ptr->miplevels = vlib_image_create_info.mipLevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
 		else 
 			vlib_image_create_info.mipLevels = ptr->miplevels;
@@ -139,33 +143,6 @@ void initAllTextures() {
 		vlib_image_view_create_info.image = ptr->image;
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
 		HANDEL(last_result)
-
-		createDesctiptorLayout();
-		createPipelineLayout(1, &descriptor_set_layouts[last_size]);
-		ptr->layout_index = last_size;
-		createDescriptorSet(ptr->layout_index);
-		ptr->descriptor_index = light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
-
-		createPipeline(shaders_for_tex, 2);
-		ptr->pipeline_index = last_size;
-
-		camera_uniform.descriptor.binding = 0;
-		updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
-
-		light_buffer.descriptor.binding = 1;
-		updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
-
-		VkDescriptorImageInfo info;
-		info.imageView = ptr->image_view;
-		info.sampler = tex_image_sampler;
-		info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-		vlib_descriptor_writes.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		vlib_descriptor_writes.dstBinding = 2;
-		vlib_descriptor_writes.dstSet = descriptor_set[ptr->descriptor_index];
-		vlib_descriptor_writes.pImageInfo = &info;
-		vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
-
 	}
 }
 

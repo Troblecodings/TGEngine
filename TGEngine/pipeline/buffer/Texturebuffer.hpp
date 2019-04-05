@@ -32,10 +32,6 @@ struct Texture {
 	VkMemoryRequirements buffer_requierments;
 	VkMemoryRequirements requierments;
 
-	uint32_t pipeline_index;
-	uint32_t descriptor_index;
-	uint32_t layout_index;
-
 	void* memory;
 };
 
@@ -44,18 +40,25 @@ struct Material {
 	Texture* texture;
 	glm::vec4 color;
 
+	uint32_t pipeline_index;
+	uint32_t descriptor_index;
+	uint32_t layout_index;
+
+	void createMaterial();
+
 	bool operator==(const Material& material);
 };
 
 struct RenderOffsets {
 
-	Material material;
+	uint32_t material;
 	
 	uint32_t size; // count of vertices to draw for this matirial
 	uint32_t offset; // the offset at wich this material starts (global)
 };
 
 extern std::vector<Texture*> texture_buffers;
+extern std::vector<Material> materials;
 extern std::vector<RenderOffsets> render_offset;
 extern Descriptor texture_descriptor;
 extern VkSampler tex_image_sampler;

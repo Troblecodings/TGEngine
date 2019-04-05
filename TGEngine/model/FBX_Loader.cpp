@@ -23,6 +23,8 @@ namespace tg_model {
 		ASSERT_NONE_NULL_DB(node, "Fbx node null in mesh " << name, TG_ERR_DB_NULLPTR)
 		if (!node || !mesh) return;
 
+		OUT_LV_DEBUG("New node [" << node->GetName() << "]")
+
 		FbxMesh* fbxmesh = node->GetMesh();
 
 		if (fbxmesh) {
@@ -95,8 +97,8 @@ namespace tg_model {
 					}
 				}
 			}
-			mesh->materials.push_back(mat);
-			offsets.material = mat;
+			TG_VECTOR_APPEND_NORMAL(materials, mat)
+			mesh->materials.push_back(offsets.material = last_size);
 			offsets.size = mesh->indices.size() - offsets.offset;
 			mesh->offsets.push_back(offsets);
 		}

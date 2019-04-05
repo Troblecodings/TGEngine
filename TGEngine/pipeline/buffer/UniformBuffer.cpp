@@ -1,8 +1,12 @@
 #include "UniformBuffer.hpp"
 
-void createUniformBuffer(UniformBuffer* buffer){
-	buffer->descriptor.count = 1;
-	buffer->descriptor.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t buffer) {
+	if (!this->size) return;
+	this->size = size;
+	this->descriptor = Descriptor(flags, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+
+	this->descriptor.count = 1;
+	this->descriptor.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 
 	VkBuffer uniform_buffer;
 
@@ -10,7 +14,7 @@ void createUniformBuffer(UniformBuffer* buffer){
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 		nullptr,
 		0,
-		buffer->size,
+		this->size,
 		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		VK_SHARING_MODE_EXCLUSIVE,
 		0,
@@ -20,9 +24,11 @@ void createUniformBuffer(UniformBuffer* buffer){
 	last_result = vkCreateBuffer(device, &uniform_buffer_create_info, nullptr, &uniform_buffer);
 	HANDEL(last_result)
 
-	buffer->index = addBuffer(uniform_buffer);
-	buffer->descriptor.buffer = buffer->index;
-	addDescriptor(&buffer->descriptor);
+	this->index = addBuffer(uniform_buffer);
+	if (buffer == 0xFFFFFFFF)
+		this->descriptor.buffer = this->index;
+	else
+		this->descriptor.buffer = buffer;
 }
 
 void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size) {

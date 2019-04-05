@@ -44,6 +44,10 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createShaderInput(1, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
 	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 
+	addDescriptorBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	addDescriptorBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	addDescriptorBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
+
 	initCameras();
 	initLight();
 	initDescriptors();
@@ -57,11 +61,11 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createFramebuffer();
 
 	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 900000;
+	main_buffer.max_vertex_count = 9000000;
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 9900000;
+	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
 	multiplier = (window->height / (float)window->width);
@@ -74,6 +78,11 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	for (size_t i = 0; i < actors.size(); i++)
 	{
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
+	}
+
+	for (size_t i = 0; i < materials.size(); i++)
+	{
+		materials[i].createMaterial();
 	}
 
 	draw(&index_buffer, &main_buffer);

@@ -186,13 +186,15 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		for each(RenderOffsets mat in render_offset)
+		for each(RenderOffsets coffset in render_offset)
 		{
-			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[mat.material.texture->pipeline_index]);
+			Material mat = materials[coffset.material];
 
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[mat.material.texture->layout_index], 0, 1, &descriptor_set[mat.material.texture->descriptor_index], 0, nullptr);
+			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[mat.pipeline_index]);
 
-			vkCmdDrawIndexed(buffer, mat.size, 1, mat.offset, 0, 0);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[mat.layout_index], 0, 1, &descriptor_set[mat.descriptor_index], 0, nullptr);
+
+			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
 		}
 
 		vkCmdEndRenderPass(buffer);
