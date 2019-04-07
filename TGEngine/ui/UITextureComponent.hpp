@@ -18,7 +18,7 @@ namespace tg_ui {
 	private:
 		Texture* texture;
 		glm::vec4 color;
-		uint32_t pipelineidx;
+		uint32_t offset_index = -1;
 	};
 
 }

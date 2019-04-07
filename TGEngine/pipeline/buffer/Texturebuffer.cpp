@@ -15,7 +15,23 @@ void Material::createMaterial()
 	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
 	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
 	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
+	
+	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
+	for (size_t i = 0; i < 4; i++)
+	{
+		map_entrys[i].constantID = i;
+		map_entrys[i].offset = i * sizeof(float);
+		map_entrys[i].size = sizeof(float);
+	}
+
+	VkSpecializationInfo pSpecialization;
+	pSpecialization.mapEntryCount = 4;
+	pSpecialization.pData = &this->color;
+	pSpecialization.dataSize = sizeof(float) * 4;
+	pSpecialization.pMapEntries = map_entrys;
 	//
+
+	shaders_for_tex[1].pSpecializationInfo = &pSpecialization;
 
 	createPipelineLayout(1, &descriptor_set_layouts[createDesctiptorLayout()]);
 	this->layout_index = last_size;

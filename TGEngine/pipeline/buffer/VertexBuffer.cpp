@@ -30,7 +30,6 @@ void destroyVertexBuffer(VertexBuffer * buffer_storage)
 }
 
 void VertexBuffer::start() {
-	this->count_of_points = 0;
 	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, VK_WHOLE_SIZE, 0, &this->memory);
 }
 
