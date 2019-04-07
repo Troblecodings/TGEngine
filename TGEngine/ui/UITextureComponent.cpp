@@ -2,14 +2,6 @@
 
 namespace tg_ui {
 
-	UITextureComponent::UITextureComponent(Texture * tex) : UITextureComponent(tex, glm::vec4(1, 1, 1, 1)) {}
-
-	UITextureComponent::UITextureComponent(Texture * tex, glm::vec4 color)
-	{
-		this->texture = tex;
-		this->color = color;
-	}
-
 	void UITextureComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
 	{
 		if (this->offset_index == -1) {

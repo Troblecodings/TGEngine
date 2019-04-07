@@ -10,6 +10,15 @@
 
 namespace tg_ui {
 
+	/*
+	 * Defines the anchor that is used for the component
+	 */
+	enum Anchor {
+		TOP_LEFT, TOP_CENTER, TOP_RIGHT,
+		CENTER_LEFT, CENTER, CENTER_RIGHT,
+		BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT
+	};
+
 	class UIComponent; // See defenition below
 
 	/*
@@ -53,6 +62,8 @@ namespace tg_ui {
 	class UIComponent {
 
 	public:
+		UIComponent(Anchor anchor) : anchor(anchor) {}
+
 		virtual void draw(IndexBuffer* index, VertexBuffer* vertex); // default implementation, needs override
 		virtual void update(int mouse_x, int mouse_y); // default implementation, needs override
 		virtual void init(); // default implementation, needs override
@@ -62,6 +73,7 @@ namespace tg_ui {
 
 	protected:
 		UIEntity* parent;
+		Anchor anchor;
 	};
 
 	extern UIEntity ui_scene_entity;
