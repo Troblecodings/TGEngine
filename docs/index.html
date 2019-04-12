@@ -1,53 +1,52 @@
 <!doctype html>
 <html>
-<head>
-    <title>TGEngine Documentations</title>
-    <link rel="icon" href="logo.png" type="image/x-icon" sizes="16x16">
-    <script type="text/javascript">
-		    window._idl = {};
-		    _idl.variant = "modal";
-		    (function() {
-		    	var idl = document.createElement('script');
-                idl.async = true;
-                idl.src = 'https://members.internetdefenseleague.org/include/?url=' + (_idl.url || '') + '&campaign=' + (_idl.campaign || '') + '&variant=' + (_idl.variant || 'modal');
-                document.getElementsByTagName('body')[0].appendChild(idl);
-		    })();
-    </script>
-    <link rel="stylesheet" type="text/css" href="main.css" />
-</head>
+    <head>
+        <title>TGEngine Documentations</title>
+        <link rel="icon" href="logo.png" type="image/x-icon" sizes="16x16">
+        <script type="text/javascript">
+                window._idl = {};
+                _idl.variant = "modal";
+                (function() {
+                    var idl = document.createElement('script');
+                    idl.async = true;
+                    idl.src = 'https://members.internetdefenseleague.org/include/?url=' + (_idl.url || '') + '&campaign=' + (_idl.campaign || '') + '&variant=' + (_idl.variant || 'modal');
+                    document.getElementsByTagName('body')[0].appendChild(idl);
+                })();
+        </script>
+        <link rel="stylesheet" type="text/css" href="main.css" />
+    </head>
     <body>
-		<div id="main">
-			<h1>TGEngine</h1>
-			<ul>
-				<li><a href="#what">What is the TGEngine?</a></li>
-				<li><a href="#status">Status</a></li>
-				<li><a href="#build">Build on your own</a></li>
-				<li><a href="#build_status">Build Status</a></li>
-				<li><a href="#libs">Libraries</a></li>
-				<li><a href="#license">License</a></li>
-				<li><a href="#contribute">Wanna contribute?</a></li>
-				<li><a href="./docs.html">Documentations</a></li>
-			</ul>
-		</div>
+        
+        <h1>TGEngine</h1>
+			
+        <div class="menu">
+            <a href="#what">What is the TGEngine?</a>
+            <a href="#status">Status</a>
+            <a href="#build">Build on your own</a>
+            <a href="#build_status">Build Status</a>
+            <a href="#libs">Libraries</a>
+            <a href="#license">License</a>
+            <a href="#contribute">Wanna contribute?</a>
+            <a href="./docs.html">Documentations</a>
+        </div>
 
-		<div style="align-content: center" align="center">
 		<div id="holder">
 			<h3 id="what">What is the TGEngine?</h3>
 			
-			It should be or better to say it will be a Game Engine, hopefully...<br>
-			Go to the repository <a href="https://github.com/Troblecodings/TGEngine">TGEngine</a>
+			It should be, or better to say, <em>it will be</em> a game engine (hopefully...).<br>
+			Repository: <a href="https://github.com/Troblecodings/TGEngine">TGEngine</a>
 			
 			<h3 id="status">Status</h3>
 			
-			still working on it...<br>
-			For updates please follow the <a href="https://twitter.com/Troblecodings">official twitter account of Troblecodings</a>
+			I'm still working on it.<br>
+			Please follow the official Twitter account of <a href="https://twitter.com/Troblecodings">Troblecodings</a> for updates.
 			
 			<h3 id="build">Build on your own</h3>
 			
-			To compile your own build you have to install the dependencies.
-			To do so you need tu run <strong>python setup.py</strong>.
-			There you have to select <strong>1 Get dependencies</strong>
-			Now you can open the VisualStudios Project file and compile the Engine.
+			You have to install the dependencies to compile your own build.
+			You need to run <strong>python setup.py</strong> to do so.
+			There, you have to select <strong>1 Get dependencies</strong>.
+			Now you can open the Visual Studio project file and compile the Engine.
 			
 			<h3 id="build_status">Build Status</h3>
 			
@@ -58,54 +57,53 @@
 				</tr>
 				<tr>
 					<td>Windows (Visual Studio 2017)</td>
-					<td><a href="https://ci.appveyor.com/project/MrTroble/tgengine">
+					<td class="centered_cell"><a href="https://ci.appveyor.com/project/MrTroble/tgengine">
 						<img src="https://ci.appveyor.com/api/projects/status/xkqlankoj873h3xh?svg=true" /></a></td>
 				</tr>
 				<tr>
 						<td>Linux</td>
-						<td><img src="https://img.shields.io/badge/build-not%20passing-red.svg" /></a></td>
+						<td class="centered_cell"><img src="https://img.shields.io/badge/build-not%20passing-red.svg" /></td>
 				</tr>			
 			</table>
 			<h3 id="libs">Libraries</h3>
 			
-			I am using <a href="https://vulkan.lunarg.com/sdk/home">LunarG's Vulkan-SDK</a>.<br>
-			Current built version: <strong>1.1.101</strong><br>
-			Current Vulkan API version: <strong>1.1</strong>
-			<br>
-			<br>
-			and Autodesk <a href="https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2019-2">FBX SDK</a>
-			Current built version: <strong>2019.2</strong>
-			<br>
-			<br>
-			For image loading and font loading is <a href="https://github.com/nothings/stb">STB</a> currently being used.
-			This is planned to be replaced in the future.
-			<em>SIDE NOTE: The file library <a href="https://github.com/Troblecodings/TGVertex">TGVL</a> maybe needed in the future to compile newer versions of the TGEngine 
-			but currently it is not supported!</em>
+			<p>I am using <a href="https://vulkan.lunarg.com/sdk/home">LunarG's Vulkan-SDK</a>.<br>
+			Current build version: <strong>1.1.101</strong><br>
+			Current Vulkan API version: <strong>1.1</strong></p>
+            
+			<p>Autodesk: <a href="https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2019-2">FBX SDK</a>
+			Current build version: <strong>2019.2</strong></p>
+            
+			<p><a href="https://github.com/nothings/stb">STB</a> is currently being used for image and font loading .
+            This is going to be replaced in the future.</p>
+                
+			<em>SIDE NOTE: The file library <a href="https://github.com/Troblecodings/TGVertex">TGVL</a> may be needed in the future to compile newer versions of the TGEngine, but currently it is not supported!</em>
 			
 			<h3 id="license">License</h3>
 			
-			Can be found in the <a href="https://github.com/MrTroble/TGEngine/blob/master/LICENSE">License File</a>
-			<br>
+			<p>The license can be found in the <a href="https://github.com/MrTroble/TGEngine/blob/master/LICENSE">License File</a></p>
+            
 			<h4>Library</h4>
 			
-			Every library used is Open-Source or free to use.<br>
-			<br>
-			STB is published under a <a href="https://github.com/nothings/stb">Public domain</a> License (or MIT)
-			LunarG's Vulkan-SDK is published under <a href="https://creativecommons.org/licenses/by-nd/4.0/">Creative Commons</a>, see <a href="https://vulkan.lunarg.com/doc/sdk/1.1.82.0/windows/getting_started.html">LunarG.com</a>
-			Vulkan itself is distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>, see Vulkan.h
-			The FBX Model loader library SDK from Autodesk is <a href="http://download.autodesk.com/us/fbx/2019/2019.0/FBX%20SDK%202019%20About%20Box%20Final.pdf">Licensed</a> under there owne license.
+            <p>Every library used is open-source or free to use.</p>
+            
+			<p>STB is published under a <a href="https://github.com/nothings/stb">Public domain</a> License (or MIT)</p>
+            
+			<p>LunarG's Vulkan-SDK is published under <a href="https://creativecommons.org/licenses/by-nd/4.0/">Creative Commons</a>, see <a href="https://vulkan.lunarg.com/doc/sdk/1.1.82.0/windows/getting_started.html">LunarG.com</a></p>
+            
+			<p>Vulkan itself is distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>, see Vulkan.h</p>
+            
+			<p>The FBX Model loader library SDK from Autodesk is <a href="http://download.autodesk.com/us/fbx/2019/2019.0/FBX%20SDK%202019%20About%20Box%20Final.pdf">Licensed</a> under their own license.</p>
 			
-			All other brand names, product names or trademarks belong to their respective holders.
+			<p>All other brand names, product names or trademarks belong to their respective holders.</p>
 			
-			<h3 id="contribute">Wanna contribute?</h3>
+			<h3 id="contribute">Want to contribute?</h3>
 			
-			Everyone is welcome to help in development!
-			I am thankful for every improvment, addition or fix.<br><br>
+			<p>Everyone is welcome to help in development! I am thankful for every improvement, addition or fix.</p>
 			
-            <em><strong>Please review the <a href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before contributing in anyway to the repository!</strong></em>
-			<br>
-			Additional information can be found <a href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a>	
-		</div>
-	</div>	
+            <p><em><strong>Please review the <a href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before contributing in any way to the repository!</strong></em></p>
+			
+			<p>Additional information can be found <a href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a></p>
+        </div>
 	</body>
 </html>
