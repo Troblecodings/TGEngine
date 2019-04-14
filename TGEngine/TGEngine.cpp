@@ -68,7 +68,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
-	multiplier = (window->height / (float)window->width);
+	multiplier = (window->width / (float)window->height);
 	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 
 	tg_ui::ui_scene_entity.init();

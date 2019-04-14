@@ -94,12 +94,12 @@ namespace tg_ui {
 
 	glm::vec2 UIEntity::getRenderPosition()
 	{
-		return this->getPosition() * glm::vec2(2 * multiplier, 2) - glm::vec2(1, 1);
+		return (((this->getPosition() * glm::vec2(multiplier, 1)) * glm::vec2(2, 2))) - glm::vec2(1.0f);
 	}
 
 	glm::vec2 UIEntity::getRenderExtent()
 	{
-		return this->extent * glm::vec2(2 * multiplier, 2);
+		return this->extent;
 	}
 
 	void UIComponent::draw(IndexBuffer * index, VertexBuffer * vertex)
@@ -108,6 +108,7 @@ namespace tg_ui {
 
 	void UIComponent::update(int mouse_x, int mouse_y)
 	{
+
 	}
 
 	void UIComponent::init()
