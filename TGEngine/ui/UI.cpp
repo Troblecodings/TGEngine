@@ -99,7 +99,7 @@ namespace tg_ui {
 
 	glm::vec2 UIEntity::getRenderExtent()
 	{
-		return this->extent * glm::vec2(multiplier, 1);
+		return this->extent * glm::vec2(2 * multiplier, 2);
 	}
 
 	void UIComponent::draw(IndexBuffer * index, VertexBuffer * vertex)

@@ -8,10 +8,9 @@ void createFirstPersonCamera(Camera * camera)
 	createCamera(camera);
 }
 
-void __impl_mouseinputhandlerFPC(Camera * camera, glm::vec2 pos, glm::vec2 delta)
+void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta)
 {
-	camera->applyCameraRotation(0, 0, 1, delta.x * -(float)camera->speed);
-	camera->applyCameraRotation(1, 0, 0, delta.y * (float)camera->speed);
+	camera->applyCameraRotation(delta.y, delta.x, 0, camera->speed);
 	updateCamera(window_list[0]->width, window_list[0]->height);
 }
 

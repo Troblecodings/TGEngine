@@ -37,7 +37,9 @@ void Camera::applyWorldScale(double x, double y, double z)
 
 void Camera::applyCameraRotation(double x, double y, double z, double angle)
 {
-	this->direction = glm::rotate(this->direction, (float)angle, glm::vec3(x, y, z));
+	glm::quat key_quat = glm::quat(glm::vec3(x, y, z) * (float)angle);
+	this->camera_quat = key_quat * this->camera_quat;
+	this->camera_quat = glm::normalize(this->camera_quat);
 }
 
 void Camera::applyCameraTranslation(double x, double y, double z)
@@ -47,7 +49,7 @@ void Camera::applyCameraTranslation(double x, double y, double z)
 
 void updateCamera(int width, int height) {
 	Camera* ptr = cameras_on_scene[active_camera];
-	ptr->camera = glm::lookAt(ptr->position, ptr->position + ptr->direction, glm::vec3(0.0f, 0.0f, 1.0f));
+	ptr->camera = glm::mat4_cast(ptr->camera_quat) * glm::translate(glm::mat4(1.0f), -ptr->position);
 	glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
 	projection[1][1] *= -1;
 	ptr->matrix = projection * ptr->camera * ptr->world_transform;

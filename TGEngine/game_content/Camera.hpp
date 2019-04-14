@@ -6,6 +6,7 @@
 #include "../io/Keyboard.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 struct Camera {
 	OPT INPUT
@@ -22,6 +23,7 @@ struct Camera {
 	glm::mat4 matrix; // The actual computed matrix -> Calculated: perspective * camera * world_transform
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.5f); // The position of the camera in world space
 	glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f); // The direction into which the camera faces
+	glm::quat camera_quat = glm::quat(); // represents a quaternion to avoid gimbal lock
 	size_t camera_index;
 
 	/*  
