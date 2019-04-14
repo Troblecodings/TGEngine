@@ -18,5 +18,12 @@ void createPipeline(VkPipelineShaderStageCreateInfo* createinfos, uint32_t count
 SINCE(0, 0, 4)
 uint32_t createPipelineLayout(uint32_t layout_count = 1, VkDescriptorSetLayout* descriptor_set_layout = &descriptor_set_layouts[0]);
 
+SINCE(0, 0, 4)
+void destroyPipelineLayout(uint32_t layout);
+
+
+SINCE(0, 0, 4)
+void destroyPipeline(uint32_t layout);
+
 SINCE(0, 0, 1)
 void destroyPipeline();

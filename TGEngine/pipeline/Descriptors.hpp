@@ -118,6 +118,26 @@ SINCE(0, 0, 4)
 size_t createDescriptorSet(uint32_t layout = 0);
 
 /*
+ * Destroys the DescriptorLayout given by the index
+ *
+ * - Note: see the Vulkan docs
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkDestroyDescriptorSetLayout.html
+ */
+INTERNAL
+SINCE(0, 0, 4)
+void destroyDesctiptorLayout(uint32_t layout_index);
+
+/*
+ * Destroys the DescriptorSet given by the index
+ *
+ * - Note: see the Vulkan docs
+ *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkFreeDescriptorSets.html
+ */
+INTERNAL
+SINCE(0, 0, 4)
+void destroyDesctiptorSet(uint32_t set_index);
+
+/*
  * Destroys all descriptor resources (pool, layouts, sets, ...)
  *
  * - Note: see the Vulkan docs

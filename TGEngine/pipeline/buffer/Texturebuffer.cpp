@@ -38,7 +38,7 @@ void Material::createMaterial()
 	
 	this->descriptor_index = texture_descriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
 
-	createPipeline(shaders_for_tex, 2);
+	createPipeline(shaders_for_tex, 2, this->layout_index);
 	this->pipeline_index = last_size;
 
 	camera_uniform.descriptor.binding = 0;
@@ -48,6 +48,14 @@ void Material::createMaterial()
 	light_buffer.updateDescriptor();
 
 	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->image_view);
+}
+
+void Material::destroy()
+{
+	destroyDesctiptorSet(this->descriptor_index);
+	//destroyDesctiptorLayout(this->layout_index);
+	destroyPipeline(this->pipeline_index);
+	destroyPipelineLayout(this->layout_index);
 }
 
 bool Material::operator==(const Material & material)
@@ -173,4 +181,17 @@ void destroyAllTextures() {
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
 	}
+}
+
+void Material::createUIMaterial()
+{
+	OUT_LV_DEBUG("Created UI")
+	vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
+	Material::createMaterial();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	vlib_depth_stencil_state.depthTestEnable = VK_TRUE;
+	ui_camera_uniform.descriptor.descriptorset = this->descriptor_index;
+	ui_camera_uniform.descriptor.binding = 0;
+	ui_camera_uniform.updateDescriptor();
 }

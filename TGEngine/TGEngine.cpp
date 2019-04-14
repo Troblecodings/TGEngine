@@ -68,7 +68,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
-	multiplier = (window->width / (float)window->height);
+	multiplier = (window->height / (float)window->width);
 	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 
 	tg_ui::ui_scene_entity.init();
@@ -80,10 +80,14 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	{
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
-
 	for (size_t i = 0; i < materials.size(); i++)
 	{
-		materials[i].createMaterial();
+		if (materials[i].isUI) {
+			materials[i].createUIMaterial();
+		}
+		else {
+			materials[i].createMaterial();
+		}
 	}
 
 	draw(&index_buffer, &main_buffer);
@@ -168,6 +172,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyDescriptors();
+	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 	destroyPipeline();
 	destroyShaders();
 	destroyRenderPass();

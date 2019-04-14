@@ -47,6 +47,15 @@ size_t createDesctiptorLayout() {
     return last_size;
 }
 
+void destroyDesctiptorLayout(uint32_t layout) {
+	vkDestroyDescriptorSetLayout(device, descriptor_set_layouts[layout], nullptr);
+}
+
+void destroyDesctiptorSet(uint32_t layout) {
+	last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
+	HANDEL(last_result);
+}
+
 size_t createDescriptorSet(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
 	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
@@ -62,7 +71,8 @@ void destroyDescriptors() {
 	}
 	last_result = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
 	HANDEL(last_result);
-	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
+	descriptor_set.clear();
+	descriptor_set_layouts.clear();
 };
 
 Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), binding(binding), type(type), descriptorset(descriptorset)

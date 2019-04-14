@@ -35,16 +35,22 @@ struct Texture {
 	void* memory;
 };
 
-struct Material {
+class Material {
 
+public:
 	Texture* texture;
 	glm::vec4 color;
+
+	bool isUI = false;
 
 	uint32_t pipeline_index;
 	uint32_t descriptor_index;
 	uint32_t layout_index;
 
-	void createMaterial();
+	virtual void createMaterial();
+	virtual void createUIMaterial();
+
+	void destroy();
 
 	bool operator==(const Material& material);
 };
