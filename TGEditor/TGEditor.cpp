@@ -6,13 +6,13 @@ Mesh mesh;
 Mesh mesh2;
 Font arial;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({ 1.0f, 0 }, {0.3, 0.15});
+tg_ui::UIEntity entity = tg_ui::UIEntity({ 1.0f, 1.0f }, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
 
-	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(2.0f), tg_ui::TOP_RIGHT);
+	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(2.0f), tg_ui::BOTTOM_RIGHT);
 	entity.addComponent(&texture);
 	tg_ui::ui_scene_entity.addChildren(&entity);
 

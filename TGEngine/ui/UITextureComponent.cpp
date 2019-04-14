@@ -36,13 +36,13 @@ namespace tg_ui {
 			pos -= (ext / 2.0f);
 			break;
 		case CENTER_RIGHT:
-			pos -= (ext / glm::vec2(2, 1));
+			pos -= (ext / glm::vec2(1, 2));
 			break;
 		case BOTTOM_LEFT:
 			pos.y -= ext.y;
 			break;
 		case BOTTOM_CENTER:
-			pos -= (ext / glm::vec2(1, 2));
+			pos -= (ext / glm::vec2(2, 1));
 			break;
 		case BOTTOM_RIGHT:
 			pos -= ext;
