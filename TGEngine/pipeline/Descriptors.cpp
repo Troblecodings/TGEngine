@@ -47,48 +47,21 @@ size_t createDesctiptorLayout() {
     return last_size;
 }
 
+void destroyDesctiptorLayout(uint32_t layout) {
+	vkDestroyDescriptorSetLayout(device, descriptor_set_layouts[layout], nullptr);
+}
+
+void destroyDesctiptorSet(uint32_t layout) {
+	last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
+	HANDEL(last_result);
+}
+
 size_t createDescriptorSet(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
 	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
 	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(last_result)
 	return last_size;
-}
-
-void updateDescriptorSet(Descriptor* desc, uint32_t size) {
-	vlib_descriptor_writes.descriptorType = desc->type;
-	vlib_descriptor_writes.dstArrayElement = desc->array_index;
-	vlib_descriptor_writes.dstBinding = desc->binding;
-	vlib_descriptor_writes.descriptorCount = desc->count;
-	vlib_descriptor_writes.dstSet = descriptor_set[desc->descriptor_set];
-
-	if (desc->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-		desc->buffer_info = {
-			buffers[desc->buffer],
-			0ULL,
-			size,
-		};
-
-		vlib_descriptor_writes.pImageInfo = nullptr;
-		vlib_descriptor_writes.pBufferInfo = &desc->buffer_info;
-	}
-	else if (desc->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-		desc->desc_image_info = new VkDescriptorImageInfo[desc->count];
-		for (size_t i = 0; i < desc->count; i++)
-		{
-			desc->desc_image_info[i] = {
-				desc->image_sampler,
-				desc->image_view[i],
-				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-			};
-		}
-
-		vlib_descriptor_writes.pBufferInfo = nullptr;
-		vlib_descriptor_writes.pImageInfo = desc->desc_image_info;
-	}
-
-	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
-
 }
 
 void destroyDescriptors() {
@@ -98,17 +71,71 @@ void destroyDescriptors() {
 	}
 	last_result = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
 	HANDEL(last_result);
-	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
+	descriptor_set.clear();
+	descriptor_set_layouts.clear();
 };
 
-Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type)
+Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), binding(binding), type(type), descriptorset(descriptorset)
 {
-	this->shader_stage = stage;
-	this->type = type;
 	if (this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
 		uniform_count++;
 	}
 	else if (this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
 		image_sampler_count++;
 	}
+}
+
+Descriptor::~Descriptor()
+{
+	// TODO Destructor
+
+	//if (this->shaderstage == VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM) return;
+
+	//if (this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
+	//	uniform_count--;
+	//}
+	//else if (this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
+	//	image_sampler_count--;
+	//}
+}
+
+void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view)
+{
+	if (this->type != VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) return;
+	update();
+
+	VkDescriptorImageInfo imageinfo;
+	imageinfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	imageinfo.imageView = view;
+	imageinfo.sampler = sampler;
+
+	vlib_descriptor_writes.pBufferInfo = nullptr;
+	vlib_descriptor_writes.pImageInfo = &imageinfo;
+
+	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+}
+
+void Descriptor::updateBufferInfo(uint32_t buffer, size_t size)
+{
+	if (this->type != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) return;
+	update();
+
+	VkDescriptorBufferInfo bufferinfo;
+	bufferinfo.buffer = buffers[buffer];
+	bufferinfo.range = size;
+	bufferinfo.offset = 0;
+
+	vlib_descriptor_writes.pBufferInfo = &bufferinfo;
+	vlib_descriptor_writes.pImageInfo = nullptr;
+
+	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+}
+
+void Descriptor::update()
+{
+	vlib_descriptor_writes.descriptorType = this->type;
+	vlib_descriptor_writes.dstArrayElement = 0;
+	vlib_descriptor_writes.dstBinding = this->binding;
+	vlib_descriptor_writes.descriptorCount = 1;
+	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptorset];
 }

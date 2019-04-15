@@ -92,6 +92,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
+	destroyDescriptors();
 	destroyPipeline();
 	destroyRenderPass();
 	destroyColorResouce();
@@ -109,6 +110,15 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
+	for (size_t i = 0; i < materials.size(); i++)
+	{
+		if (materials[i].isUI) {
+			materials[i].createUIMaterial();
+		}
+		else {
+			materials[i].createMaterial();
+		}
+	}
 	createSwapchain();
 	if (last_result == VK_ERROR_INITIALIZATION_FAILED) {
 		OUT_LV_DEBUG("Windows break the swapchain!")
@@ -124,8 +134,6 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createCommandBuffer();
 
 	multiplier = (window_list[0]->height / (float)window_list[0]->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
-	updateDescriptorSet(&ui_camera_uniform.descriptor, sizeof(glm::mat4));
 
 	fillCommandBuffer(ibuffer, vbuffer);
 }

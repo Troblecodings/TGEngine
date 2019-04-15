@@ -35,6 +35,15 @@ uint32_t createPipelineLayout(uint32_t layout_count, VkDescriptorSetLayout* desc
 	return last_size;
 }
 
+void destroyPipelineLayout(uint32_t layout) {
+	vkDestroyPipelineLayout(device, layouts[layout], nullptr);
+}
+
+void destroyPipeline(uint32_t layout)
+{
+	vkDestroyPipeline(device, pipelines[layout], nullptr);
+}
+
 void destroyPipeline() {
 	for each (VkPipelineLayout var in layouts)
 	{

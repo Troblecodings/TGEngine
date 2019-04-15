@@ -3,6 +3,8 @@
 #include "UI.hpp"
 
 namespace tg_ui {
+	
+	// TODO implement constructor with anchor
 
 	class UITextComponent : public UIComponent
 	{

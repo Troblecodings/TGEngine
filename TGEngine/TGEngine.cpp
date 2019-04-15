@@ -50,12 +50,12 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	initCameras();
 	initLight();
-	initDescriptors();
 
 	allocateAllBuffers();
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
 	initAllTextures();
+	initDescriptors();
 
 	createSwapchain();
 	createFramebuffer();
@@ -69,6 +69,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
 	multiplier = (window->height / (float)window->width);
+	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 
 	tg_ui::ui_scene_entity.init();
 
@@ -79,10 +80,14 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	{
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
-
 	for (size_t i = 0; i < materials.size(); i++)
 	{
-		materials[i].createMaterial();
+		if (materials[i].isUI) {
+			materials[i].createUIMaterial();
+		}
+		else {
+			materials[i].createMaterial();
+		}
 	}
 
 	draw(&index_buffer, &main_buffer);
@@ -123,6 +128,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			last_time = current_time;
 
 			tg_ui::ui_scene_entity.update(tg_io::pos.x, tg_io::pos.y);
+			main_buffer.count_of_points = vertex_offset;
 			main_buffer.start();
 			index_buffer.start();
 			tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
@@ -130,8 +136,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			index_buffer.end();
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.srcOffset = 0;
-			vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
 			vlib_buffer_copy.size = main_buffer.count_of_points * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
@@ -167,6 +172,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyDescriptors();
+	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 	destroyPipeline();
 	destroyShaders();
 	destroyRenderPass();

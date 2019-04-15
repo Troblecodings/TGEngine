@@ -15,33 +15,47 @@ void Material::createMaterial()
 	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
 	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
 	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
+	
+	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
+	for (size_t i = 0; i < 4; i++)
+	{
+		map_entrys[i].constantID = i;
+		map_entrys[i].offset = i * sizeof(float);
+		map_entrys[i].size = sizeof(float);
+	}
+
+	VkSpecializationInfo pSpecialization;
+	pSpecialization.mapEntryCount = 4;
+	pSpecialization.pData = &this->color;
+	pSpecialization.dataSize = sizeof(float) * 4;
+	pSpecialization.pMapEntries = map_entrys;
 	//
 
-	createDesctiptorLayout();
-	createPipelineLayout(1, &descriptor_set_layouts[last_size]);
-	this->layout_index = last_size;
-	createDescriptorSet(this->layout_index);
-	this->descriptor_index = light_buffer.descriptor.descriptor_set = camera_uniform.descriptor.descriptor_set = last_size;
+	shaders_for_tex[1].pSpecializationInfo = &pSpecialization;
 
-	createPipeline(shaders_for_tex, 2);
+	createPipelineLayout(1, &descriptor_set_layouts[createDesctiptorLayout()]);
+	this->layout_index = last_size;
+	
+	this->descriptor_index = texture_descriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
+
+	createPipeline(shaders_for_tex, 2, this->layout_index);
 	this->pipeline_index = last_size;
 
 	camera_uniform.descriptor.binding = 0;
-	updateDescriptorSet(&camera_uniform.descriptor, sizeof(glm::mat4));
+	camera_uniform.updateDescriptor();
 
 	light_buffer.descriptor.binding = 1;
-	updateDescriptorSet(&light_buffer.descriptor, sizeof(glm::vec3));
+	light_buffer.updateDescriptor();
 
-	VkDescriptorImageInfo info;
-	info.imageView = this->texture->image_view;
-	info.sampler = tex_image_sampler;
-	info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->image_view);
+}
 
-	vlib_descriptor_writes.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	vlib_descriptor_writes.dstBinding = 2;
-	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptor_index];
-	vlib_descriptor_writes.pImageInfo = &info;
-	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+void Material::destroy()
+{
+	destroyDesctiptorSet(this->descriptor_index);
+	//destroyDesctiptorLayout(this->layout_index);
+	destroyPipeline(this->pipeline_index);
+	destroyPipelineLayout(this->layout_index);
 }
 
 bool Material::operator==(const Material & material)
@@ -77,9 +91,7 @@ void initAllTextures() {
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
-	texture_descriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-	texture_descriptor.image_sampler = tex_image_sampler;
-	texture_descriptor.binding = 2;
+	texture_descriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -169,4 +181,17 @@ void destroyAllTextures() {
 	for each(Texture* tex in texture_buffers) {
 		destroyTexture(tex);
 	}
+}
+
+void Material::createUIMaterial()
+{
+	OUT_LV_DEBUG("Created UI")
+	vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
+	Material::createMaterial();
+	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+	vlib_depth_stencil_state.depthTestEnable = VK_TRUE;
+	ui_camera_uniform.descriptor.descriptorset = this->descriptor_index;
+	ui_camera_uniform.descriptor.binding = 0;
+	ui_camera_uniform.updateDescriptor();
 }

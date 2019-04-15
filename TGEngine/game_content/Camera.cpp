@@ -8,12 +8,11 @@ float multiplierx = 1;
 size_t active_camera = 0;
 
 void initCameras() {
-	camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
-	ui_camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
+	camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT, 0);
+	ui_camera_uniform = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT, 0);
 
-	if(cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
+	if (cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
 	if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
-	camera_uniform.descriptor.binding = 0;
 }
 
 void createCamera(Camera* camera) {
@@ -36,19 +35,22 @@ void Camera::applyWorldScale(double x, double y, double z)
 	this->world_transform = glm::scale(this->world_transform, glm::vec3(x, y, z));
 }
 
-void Camera::applyCameraRotation(double x, double y, double z, double angle)
+void Camera::applyCameraRotation(glm::vec2 in)
 {
-	this->direction = glm::rotate(this->direction, (float)angle, glm::vec3(x, y, z));
+	this->rotations += in;
 }
 
 void Camera::applyCameraTranslation(double x, double y, double z)
 {
-	this->position += glm::vec3(x, y, z);
+	glm::quat qut = glm::angleAxis((float)(this->rotations.y * -this->speed), glm::vec3(0, 0, 1));
+	this->position += glm::mat3_cast(qut) * glm::vec3((float)x, (float)y, (float)z);
 }
 
 void updateCamera(int width, int height) {
 	Camera* ptr = cameras_on_scene[active_camera];
-	ptr->camera = glm::lookAt(ptr->position, ptr->position + ptr->direction, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::quat qut = glm::angleAxis((float)(ptr->rotations.x * ptr->speed), glm::vec3(1, 0, 0));
+	qut *= glm::angleAxis((float)(ptr->rotations.y * ptr->speed), glm::vec3(0, 0, 1));
+	ptr->camera = glm::mat4_cast(qut) * glm::translate(glm::mat4(1.0f), -ptr->position);
 	glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
 	projection[1][1] *= -1;
 	ptr->matrix = projection * ptr->camera * ptr->world_transform;

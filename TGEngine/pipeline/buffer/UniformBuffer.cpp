@@ -1,13 +1,6 @@
 #include "UniformBuffer.hpp"
 
-UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t buffer) {
-	if (!this->size) return;
-	this->size = size;
-	this->descriptor = Descriptor(flags, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-
-	this->descriptor.count = 1;
-	this->descriptor.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-
+UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t binding) : size(size), descriptor(Descriptor(flags, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, binding)) {
 	VkBuffer uniform_buffer;
 
 	VkBufferCreateInfo uniform_buffer_create_info = {
@@ -25,10 +18,11 @@ UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t b
 	HANDEL(last_result)
 
 	this->index = addBuffer(uniform_buffer);
-	if (buffer == 0xFFFFFFFF)
-		this->descriptor.buffer = this->index;
-	else
-		this->descriptor.buffer = buffer;
+}
+
+void UniformBuffer::updateDescriptor()
+{
+	this->descriptor.updateBufferInfo(this->index, this->size);
 }
 
 void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size) {
