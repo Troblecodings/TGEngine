@@ -42,7 +42,8 @@ void Camera::applyCameraRotation(glm::vec2 in)
 
 void Camera::applyCameraTranslation(double x, double y, double z)
 {
-	this->position += glm::vec3(x, y, z);
+	glm::quat qut = glm::angleAxis((float)(this->rotations.y * -this->speed), glm::vec3(0, 0, 1));
+	this->position += glm::mat3_cast(qut) * glm::vec3((float)x, (float)y, (float)z);
 }
 
 void updateCamera(int width, int height) {
