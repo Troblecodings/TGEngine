@@ -84,7 +84,7 @@ void initAllTextures() {
 		VK_TRUE,
 		VK_COMPARE_OP_ALWAYS,
 		0,
-		1,
+		10,
 		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		VK_FALSE
 	};
@@ -151,6 +151,7 @@ void initAllTextures() {
 			delete[] ptr->image_data;
 		}
 
+		vlib_image_view_create_info.subresourceRange.levelCount = vlib_image_create_info.mipLevels;
 		vlib_image_view_create_info.format = ptr->image_format;
 		vlib_image_view_create_info.image = ptr->image;
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
