@@ -7,7 +7,7 @@ import sys
 import subprocess
 import struct
 import shutil
-
+from shutil import copyfile
 
 def clear(): os.system("cls")
 
@@ -202,6 +202,22 @@ def trigger(id):
             msg = "Finished!"
             clear()
             return
+        elif id == 7:
+            print("Put in project name")
+            prname = input()
+            os.mkdir(prname)
+            for x in os.listdir("default_project"):
+                shutil.copyfile("default_project/" + x, prname + "/" + x.replace("%projectname%", prname))
+            for x in os.listdir(prname):
+                fls = ""
+                with open(prname + "/" + x, "r") as file:
+                    for line in file:
+                        fls += line.replace("%projectname%", prname) + "\n"
+                with open(prname + "/" + x, "w") as file:
+                    file.write(fls)
+            msg = "Finished!"
+            clear()
+            return
     except IOError or ValueError:
         clear()
         print(traceback.format_exc())
@@ -229,6 +245,7 @@ while True:
     print("4. Deploy engine")
     print("5. Get states")
     print("6. Get stb only")
+    print("7. Create project")
     print("0. Close")
     try:
         trigger(int(input()))

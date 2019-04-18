@@ -90,7 +90,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		}
 	}
 
-	draw(&index_buffer, &main_buffer);
+	//draw(&index_buffer, &main_buffer);
 
 	index_offset = index_buffer.index_count;
 	vertex_offset = main_buffer.count_of_points;
