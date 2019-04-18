@@ -2,14 +2,7 @@
 
 namespace tg_ui {
 
-	UITextComponent::UITextComponent(Font * font, char * string) : UIComponent(TOP_LEFT)
-	{
-		this->font = font;
-		this->string = string;
-		this->font_color = glm::vec4(1, 1, 1, 1);
-	}
-
-	UITextComponent::UITextComponent(Font * font, glm::vec4 font_color, char * string) : UIComponent(TOP_LEFT)
+	UITextComponent::UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color, Anchor anchor) : UIComponent(anchor)
 	{
 		this->font = font;
 		this->string = string;

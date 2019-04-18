@@ -11,18 +11,29 @@
 #include "../drawlib/Rectangle.hpp"
 #include "../io/Files.hpp"
 
-struct Font {
-	INPUT
-	char* path;
-	OPT float height = 30;
+namespace tg_font {
 
-	OUTPUT
-	Texture texture;
-	stbtt_bakedchar cdata[256];
+	SINCE(0, 0, 4)
+	class Font {
 
-	SINCE(0, 0, 3)
-	float drawString(glm::vec3 pos, glm::vec4 color, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi = 0.0015);
-};
+		public:
+			/*
+			 * Initializes all values (besides default constructor)
+			 * Adds new font to the cache and adds the generated texture +  it's material (UI)
+			 */
+			Font() {}
+			Font(char* path) : Font(path, 30) {}
+			Font(char* path, int height);
 
-SINCE(0, 0, 3)
-void loadfont(Font* font);
+			/*
+			 * Draws a string to the screen (UI only)
+			 */
+			SINCE(0, 0, 3)
+			float drawString(glm::vec3 pos, glm::vec4 color, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi = 0.0015);
+
+		private:
+			Texture texture;
+			stbtt_bakedchar cdata[256];
+			uint32_t material;
+	};
+}

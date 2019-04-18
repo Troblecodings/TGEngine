@@ -1,66 +1,78 @@
 #include "LoadFont.hpp"
 
-void loadfont(Font* font) {
-	long size_of_file;
-	nio::File file = nio::readFileSize(font->path, "rb", &size_of_file);
-	unsigned char * temp_buffer = new unsigned char[size_of_file];
-	font->texture.width = (int)font->height;
-	font->texture.height = (int)font->height * 255;
-	font->texture.image_data = new stbi_uc[font->texture.width * font->texture.height * 4];
+namespace tg_font {
 
-	stbi_uc* tempbitmap = new stbi_uc[font->texture.width * font->texture.height];
+	Font::Font(char* path, int height) {
+		this->texture.texture_path = nullptr;
+		this->texture.width = height;
+		this->texture.height = height * 255;
+		this->texture.image_data = new stbi_uc[this->texture.width * (size_t)this->texture.height * 4];
 
-	fread(temp_buffer, sizeof(unsigned char), size_of_file, file);
+		stbi_uc* tempbitmap = new stbi_uc[this->texture.width * (size_t)this->texture.height];
 
-	stbtt_BakeFontBitmap(temp_buffer, 0, font->height, tempbitmap, font->texture.width, font->texture.height, 0, 256, font->cdata);
-	delete[] temp_buffer;
+		stbtt_BakeFontBitmap(nio::readAll(path), 0, height, tempbitmap, this->texture.width, this->texture.height, 0, 256, this->cdata);
 
-	for (size_t i = 0; i < (size_t)(font->texture.width * font->texture.height); i++)
-	{
-		font->texture.image_data[i * 4] = tempbitmap[i];
-		font->texture.image_data[i * 4 + 1] = tempbitmap[i];
-		font->texture.image_data[i * 4 + 2] = tempbitmap[i];
-		font->texture.image_data[i * 4 + 3] = tempbitmap[i];
-	}
-	delete[] tempbitmap;
-	createTexture(&font->texture);
-}
-
-float Font::drawString(glm::vec3 pos,glm::vec4 color, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
-	pos.x /= multi;
-	pos.y /= multi;
-	float width = 0;
-	while (*text)
-	{
-		stbtt_aligned_quad quad;
-		stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &pos.x, &pos.y, &quad, 0);
-		uint32_t idcount = (uint32_t)buffer->count_of_points;
-		buffer->add({
-			{ quad.x0 * multi, quad.y0 * multi, pos.z},
-			{ quad.s0, quad.t0 },
-			});
-		buffer->add({
-			{ quad.x1 * multi, quad.y0 * multi, pos.z },
-			{ quad.s1, quad.t0 },
-			});
-		buffer->add({
-			{ quad.x1 * multi, quad.y1 * multi, pos.z },
-			{ quad.s1, quad.t1 },
-			});
-		buffer->add({
-			{ quad.x0 * multi, quad.y1 * multi, pos.z },
-			{ quad.s0, quad.t1 },
-			});
-		ibuffer->addIndex(idcount);
-		ibuffer->addIndex(idcount + 1);
-		ibuffer->addIndex(idcount + 2);
-		ibuffer->addIndex(idcount);
-		ibuffer->addIndex(idcount + 2);
-		ibuffer->addIndex(idcount + 3);
-		text++;
-		if (text == nullptr) {
-			width = pos.x;
+		for (size_t i = 0; i < (this->texture.width * (size_t)this->texture.height); i++)
+		{
+			this->texture.image_data[i * 4] = tempbitmap[i];
+			this->texture.image_data[i * 4 + 1] = tempbitmap[i];
+			this->texture.image_data[i * 4 + 2] = tempbitmap[i];
+			this->texture.image_data[i * 4 + 3] = tempbitmap[i];
 		}
+		delete[] tempbitmap;
+		createTexture(&this->texture);
+
+		Material mat;
+		mat.texture = &this->texture;
+		mat.isUI = true;
+		mat.color = glm::vec4(1, 1, 1, 1);
+		TG_VECTOR_APPEND_NORMAL(materials, mat)
+		this->material = last_size;
 	}
-	return width;
+
+	float Font::drawString(glm::vec3 pos, glm::vec4 color, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
+		pos.x /= multi;
+		pos.y /= multi;
+		float width = 0;
+
+		RenderOffsets off;
+		off.material = this->material;
+		off.offset = ibuffer->index_count;
+		while (*text)
+		{
+			stbtt_aligned_quad quad;
+			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &pos.x, &pos.y, &quad, 0);
+			uint32_t idcount = (uint32_t)buffer->count_of_points;
+			buffer->add({
+				{ quad.x0 * multi, quad.y0 * multi, pos.z},
+				{ quad.s0, quad.t0 },
+				});
+			buffer->add({
+				{ quad.x1 * multi, quad.y0 * multi, pos.z },
+				{ quad.s1, quad.t0 },
+				});
+			buffer->add({
+				{ quad.x1 * multi, quad.y1 * multi, pos.z },
+				{ quad.s1, quad.t1 },
+				});
+			buffer->add({
+				{ quad.x0 * multi, quad.y1 * multi, pos.z },
+				{ quad.s0, quad.t1 },
+				});
+			ibuffer->addIndex(idcount);
+			ibuffer->addIndex(idcount + 1);
+			ibuffer->addIndex(idcount + 2);
+			ibuffer->addIndex(idcount);
+			ibuffer->addIndex(idcount + 2);
+			ibuffer->addIndex(idcount + 3);
+			text++;
+			if (text == nullptr) {
+				width = pos.x;
+			}
+		}
+		off.size = ibuffer->index_count - off.offset;
+		render_offset.push_back(off);
+		return width;
+	}
+
 }

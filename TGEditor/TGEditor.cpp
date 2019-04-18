@@ -4,15 +4,18 @@ Texture tex1;
 Texture tex2;
 Mesh mesh;
 Mesh mesh2;
-Font arial;
+tg_font::Font arial;
 Camera camera;
 tg_ui::UIEntity entity = tg_ui::UIEntity({ 0.0f, 1.0f }, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
+	arial = tg_font::Font("resource\\arial.ttf", 60.0f);
 
-	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(2.0f), tg_ui::BOTTOM_LEFT);
+	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(1.0f), tg_ui::BOTTOM_LEFT);
+	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test");
+	entity.addComponent(&text);
 	entity.addComponent(&texture);
 	tg_ui::ui_scene_entity.addChildren(&entity);
 
@@ -25,11 +28,6 @@ int main() {
 }
 
 void init() {
-	arial = {
-	    "resource\\arial.ttf",
-		60.0f
-	};
-	loadfont(&arial);
 
 	tex1 = {
 		"resource\\ODST_Helmet.png"

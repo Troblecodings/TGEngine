@@ -151,7 +151,7 @@ void initAllTextures() {
 			delete[] ptr->image_data;
 		}
 
-		vlib_image_view_create_info.subresourceRange.levelCount = vlib_image_create_info.mipLevels;
+		vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 		vlib_image_view_create_info.format = ptr->image_format;
 		vlib_image_view_create_info.image = ptr->image;
 		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
@@ -186,7 +186,6 @@ void destroyAllTextures() {
 
 void Material::createUIMaterial()
 {
-	OUT_LV_DEBUG("Created UI")
 	vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
 	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 	Material::createMaterial();
