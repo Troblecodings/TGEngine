@@ -15,8 +15,8 @@ int main() {
 
 	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(1.0f), tg_ui::BOTTOM_LEFT);
 	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test");
-	entity.addComponent(&text);
 	entity.addComponent(&texture);
+	entity.addComponent(&text);
 	tg_ui::ui_scene_entity.addChildren(&entity);
 
 	tg_model::load("resource\\Chair.fbx", &mesh);

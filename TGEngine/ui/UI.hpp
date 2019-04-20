@@ -5,7 +5,7 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../drawlib/DrawLib.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
-#include "../io/LoadFont.hpp"
+#include "../io/Font.hpp"
 #include "../game_content/Camera.hpp"
 
 namespace tg_ui {

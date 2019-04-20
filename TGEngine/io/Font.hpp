@@ -22,14 +22,20 @@ namespace tg_font {
 			 * Adds new font to the cache and adds the generated texture +  it's material (UI)
 			 */
 			Font() {}
-			Font(char* path) : Font(path, 30) {}
+			Font(char* path) : Font(path, 100) {}
 			Font(char* path, int height);
 
 			/*
 			 * Draws a string to the screen (UI only)
 			 */
 			SINCE(0, 0, 3)
-			float drawString(glm::vec3 pos, glm::vec4 color, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi = 0.0015);
+			void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer);
+
+			SINCE(0, 0, 4)
+			uint32_t getMaterialIndex();
+
+			SINCE(0, 0, 4)
+			glm::vec2 getExtent(char* chr);
 
 		private:
 			Texture texture;

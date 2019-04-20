@@ -5,7 +5,7 @@
 #include <model/FBX_Loader.hpp>
 #include <TGEngine.hpp>
 #include <drawlib/DrawLib.hpp>
-#include <io/LoadFont.hpp>
+#include <io/Font.hpp>
 #include <pipeline/CommandBuffer.hpp>
 #include <util/TGVertex.hpp>
 #include "game_content/Mesh.hpp"

@@ -1,4 +1,4 @@
-#include "LoadFont.hpp"
+#include "Font.hpp"
 
 namespace tg_font {
 
@@ -25,38 +25,33 @@ namespace tg_font {
 		Material mat;
 		mat.texture = &this->texture;
 		mat.isUI = true;
-		mat.color = glm::vec4(1, 1, 1, 1);
+		mat.color = glm::vec4(1, 0, 0, 1);
 		TG_VECTOR_APPEND_NORMAL(materials, mat)
 		this->material = last_size;
 	}
 
-	float Font::drawString(glm::vec3 pos, glm::vec4 color, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, float multi) {
-		pos.x /= multi;
-		pos.y /= multi;
-		float width = 0;
-
-		RenderOffsets off;
-		off.material = this->material;
-		off.offset = ibuffer->index_count;
+	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer) {
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
 			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &pos.x, &pos.y, &quad, 0);
 			uint32_t idcount = (uint32_t)buffer->count_of_points;
+			//quad.x0 *= multiplier;
+			//quad.x1 *= multiplier;
 			buffer->add({
-				{ quad.x0 * multi, quad.y0 * multi, pos.z},
+				{ quad.x0, quad.y0, 0.1 },
 				{ quad.s0, quad.t0 },
 				});
 			buffer->add({
-				{ quad.x1 * multi, quad.y0 * multi, pos.z },
+				{ quad.x1, quad.y0, 0.1 },
 				{ quad.s1, quad.t0 },
 				});
 			buffer->add({
-				{ quad.x1 * multi, quad.y1 * multi, pos.z },
+				{ quad.x1, quad.y1, 0.1 },
 				{ quad.s1, quad.t1 },
 				});
 			buffer->add({
-				{ quad.x0 * multi, quad.y1 * multi, pos.z },
+				{ quad.x0, quad.y1, 0.1 },
 				{ quad.s0, quad.t1 },
 				});
 			ibuffer->addIndex(idcount);
@@ -66,13 +61,22 @@ namespace tg_font {
 			ibuffer->addIndex(idcount + 2);
 			ibuffer->addIndex(idcount + 3);
 			text++;
-			if (text == nullptr) {
-				width = pos.x;
-			}
 		}
-		off.size = ibuffer->index_count - off.offset;
-		render_offset.push_back(off);
-		return width;
+	}
+
+	uint32_t Font::getMaterialIndex()
+	{
+		return this->material;
+	}
+
+	glm::vec2 Font::getExtent(char* chr) {
+		glm::vec2 pos;
+		while (*chr)
+		{
+			stbtt_aligned_quad quad;
+			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *chr, &pos.x, &pos.y, &quad, 0);
+		}
+		return pos;
 	}
 
 }

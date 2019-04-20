@@ -57,7 +57,7 @@ public:
 
 struct RenderOffsets {
 
-	uint32_t material;
+	uint32_t material; // index in the @materials array of the material to use
 	
 	uint32_t size; // count of vertices to draw for this matirial
 	uint32_t offset; // the offset at wich this material starts (global)

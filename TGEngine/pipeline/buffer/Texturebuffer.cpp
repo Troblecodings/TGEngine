@@ -104,13 +104,22 @@ void initAllTextures() {
 			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
 		}
 
-		vlib_image_create_info.format = ptr->image_format;
+		vlib_image_create_info.format = ptr->image_format; // Gonna fix thus
 		vlib_image_create_info.extent.width = ptr->width;
 		vlib_image_create_info.extent.height = ptr->height;
+
+		// TODO FIX THIS MESS
+        // TODO AUTO QUERRY
+		VkImageFormatProperties props;
+		last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
+			vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &props);
+		HANDEL(last_result)
+		//
+
 		if (ptr->miplevels == AUTO_MIPMAP) 
-			ptr->miplevels = vlib_image_create_info.mipLevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
-		else 
-			vlib_image_create_info.mipLevels = ptr->miplevels;
+			ptr->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
+
+		vlib_image_create_info.mipLevels = ptr->miplevels;// = math::u_min(props.maxMipLevels, ptr->miplevels);
 		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
 		HANDEL(last_result)
 

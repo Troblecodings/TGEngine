@@ -27,7 +27,7 @@ VkImageCreateInfo vlib_image_create_info = {
 	nullptr,
 	0,
 	VK_IMAGE_TYPE_2D,
-	VK_FORMAT_UNDEFINED,
+	VK_FORMAT_B8G8R8A8_UNORM,
 	{
 		0,
 		0,
