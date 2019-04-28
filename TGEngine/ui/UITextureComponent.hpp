@@ -3,7 +3,12 @@
 #include "UI.hpp"
 
 namespace tg_ui {
-
+	
+	/*
+	 * A component for texture rendering on the UI
+	 * with the bounds of the entity
+	 */
+	SINCE(0, 0, 4)
 	class UITextureComponent : public UIComponent {
 
 	public:

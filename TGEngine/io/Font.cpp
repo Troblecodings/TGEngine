@@ -2,10 +2,11 @@
 
 namespace tg_font {
 
-	Font::Font(char* path, int height) {
+	Font::Font(char* path, uint32_t height) {
+		this->height = height;
 		this->texture.texture_path = nullptr;
-		this->texture.width = height;
-		this->texture.height = height * 255;
+		this->texture.width = height * 64;
+		this->texture.height = height * 64;
 		this->texture.image_data = new stbi_uc[this->texture.width * (size_t)this->texture.height * 4];
 
 		stbi_uc* tempbitmap = new stbi_uc[this->texture.width * (size_t)this->texture.height];
@@ -31,13 +32,17 @@ namespace tg_font {
 	}
 
 	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer) {
+		pos.y /= 0.002;
+		pos.x /= multiplier * 0.002;
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
 			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &pos.x, &pos.y, &quad, 0);
 			uint32_t idcount = (uint32_t)buffer->count_of_points;
-			//quad.x0 *= multiplier;
-			//quad.x1 *= multiplier;
+			quad.x0 *= multiplier * 0.002;
+			quad.x1 *= multiplier * 0.002;
+			quad.y0 *= 0.002;
+			quad.y1 *= 0.002;
 			buffer->add({
 				{ quad.x0, quad.y0, 0.1 },
 				{ quad.s0, quad.t0 },

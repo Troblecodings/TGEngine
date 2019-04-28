@@ -22,8 +22,8 @@ namespace tg_font {
 			 * Adds new font to the cache and adds the generated texture +  it's material (UI)
 			 */
 			Font() {}
-			Font(char* path) : Font(path, 100) {}
-			Font(char* path, int height);
+			Font(char* path) : Font(path, 30) {}
+			Font(char* path, uint32_t height);
 
 			/*
 			 * Draws a string to the screen (UI only)
@@ -38,6 +38,7 @@ namespace tg_font {
 			glm::vec2 getExtent(char* chr);
 
 		private:
+			uint32_t height;
 			Texture texture;
 			stbtt_bakedchar cdata[256];
 			uint32_t material;

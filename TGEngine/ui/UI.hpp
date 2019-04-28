@@ -41,9 +41,12 @@ namespace tg_ui {
 		void update(int mouse_x, int mouse_y);
 		void init();
 
+		bool isEnabled();
+		void setEnabled(bool enabled);
+
 		glm::vec2 getPosition();
-		glm::vec2 UIEntity::getRenderPosition();
-		glm::vec2 UIEntity::getRenderExtent();
+		glm::vec2 getRenderPosition();
+		glm::vec2 getRenderExtent();
 
 	protected:
 		UIEntity* parent = nullptr;
@@ -53,6 +56,9 @@ namespace tg_ui {
 
 		void onAddTo(UIEntity* parent);
 		void onRemoveFrom(UIEntity* parent);
+
+	private:
+		bool enabled = true;
 	};
 
 	/*
@@ -71,9 +77,15 @@ namespace tg_ui {
 		void onAddTo(UIEntity* parent);
 		void onRemoveFrom(UIEntity* parent);
 
+		bool isEnabled();
+		void setEnabled(bool enabled);
+
 	protected:
 		UIEntity* parent;
 		Anchor anchor;
+		
+	private:
+		bool enabled = true;
 	};
 
 	extern UIEntity ui_scene_entity;

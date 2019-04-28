@@ -33,9 +33,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &size, sizeof(RAWINPUTHEADER));
 		RAWINPUT input;
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
-		if (a_window->consume_input) {
-			SetCursorPos(a_window->middleX, a_window->middleY);
-		}
 		switch (input.header.dwType)
 		{
 		case RIM_TYPEMOUSE:
@@ -46,6 +43,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			break;
 		default:
 			break;
+		}
+		if (a_window->consume_input) {
+			SetCursorPos(a_window->middleX, a_window->middleY);
 		}
 		break;
 	case WM_LBUTTONDOWN:

@@ -39,11 +39,13 @@ namespace tg_ui {
 		for each (UIComponent* comp in this->components)
 		{
 			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
+			if(comp->isEnabled())
 				comp->draw(index, vertex);
 		}
 		for each (UIEntity* entity in this->children)
 		{
 			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
+			if (entity->isEnabled())
 				entity->draw(index, vertex);
 		}
 	}
@@ -53,11 +55,13 @@ namespace tg_ui {
 		for each (UIComponent* comp in this->components)
 		{
 			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
+			if (comp->isEnabled())
 				comp->update(mouse_x, mouse_y);
 		}
 		for each (UIEntity* entity in this->children)
 		{
 			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
+			if(entity->isEnabled())
 				entity->update(mouse_x, mouse_y);
 		}
 	}
@@ -84,6 +88,16 @@ namespace tg_ui {
 	void UIEntity::onRemoveFrom(UIEntity* parent)
 	{
 		this->parent = nullptr;
+	}
+
+	bool UIEntity::isEnabled()
+	{
+		return this->enabled;
+	}
+
+	void UIEntity::setEnabled(bool enabled)
+	{
+		this->enabled = enabled;
 	}
 
 	glm::vec2 UIEntity::getPosition()
@@ -117,14 +131,22 @@ namespace tg_ui {
 
 	void UIComponent::onAddTo(UIEntity* parent)
 	{
-		if (this->parent) {
+		if (this->parent)
 			this->parent->removeComponent(this);
-		}
 		this->parent = parent;
 	}
 
 	void UIComponent::onRemoveFrom(UIEntity* parent)
 	{
 		this->parent = nullptr;
+	}
+	bool UIComponent::isEnabled()
+	{
+		return this->enabled;
+	}
+
+	void UIComponent::setEnabled(bool enabled)
+	{
+		this->enabled = enabled;
 	}
 }

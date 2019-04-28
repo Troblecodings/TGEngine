@@ -11,7 +11,7 @@ tg_ui::UIEntity entity = tg_ui::UIEntity({ 0.0f, 1.0f }, {0.3, 0.15});
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
-	arial = tg_font::Font("resource\\arial.ttf", 60.0f);
+	arial = tg_font::Font("resource\\arial.ttf", 20);
 
 	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(1.0f), tg_ui::BOTTOM_LEFT);
 	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test");
