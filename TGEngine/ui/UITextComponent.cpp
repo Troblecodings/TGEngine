@@ -20,26 +20,39 @@ namespace tg_ui {
 			this->index = last_size;
 		}
 
+		glm::vec2 ext = this->font->getExtent(this->string);
 		glm::vec2 pos = this->parent->getRenderPosition();
 		switch (anchor)
 		{
 		case tg_ui::TOP_LEFT:
+			pos.y += ext.y;
 			break;
 		case tg_ui::TOP_CENTER:
+			pos.y += ext.y;
+			pos.x -= ext.x / 2;
 			break;
 		case tg_ui::TOP_RIGHT:
+			pos.y += ext.y;
+			pos.x -= ext.x;
 			break;
 		case tg_ui::CENTER_LEFT:
+			pos.y += ext.y / 2;
 			break;
 		case tg_ui::CENTER:
+			pos.y += ext.y / 2;
+			pos.x -= ext.x / 2;
 			break;
 		case tg_ui::CENTER_RIGHT:
+			pos.y += ext.y / 2;
+			pos.x -= ext.x;
 			break;
 		case tg_ui::BOTTOM_LEFT:
 			break;
 		case tg_ui::BOTTOM_CENTER:
+			pos.x -= ext.x / 2;
 			break;
 		case tg_ui::BOTTOM_RIGHT:
+			pos.x -= ext.x;
 			break;
 		default:
 			break;

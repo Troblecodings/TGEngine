@@ -67,10 +67,6 @@ namespace tg_ui {
 		index->addIndex(idcount + 3);
 	}
 
-	void UITextureComponent::update(int mouse_x, int mouse_y)
-	{
-	}
-
 	void UITextureComponent::init()
 	{
 		Material mat;

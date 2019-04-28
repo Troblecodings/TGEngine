@@ -26,7 +26,7 @@ namespace tg_font {
 		Material mat;
 		mat.texture = &this->texture;
 		mat.isUI = true;
-		mat.color = glm::vec4(1, 0, 0, 1);
+		mat.color = glm::vec4(1, 1, 1, 1);
 		TG_VECTOR_APPEND_NORMAL(materials, mat)
 		this->material = last_size;
 	}
@@ -75,12 +75,15 @@ namespace tg_font {
 	}
 
 	glm::vec2 Font::getExtent(char* chr) {
-		glm::vec2 pos;
+		glm::vec2 pos = glm::vec2(0, 0);
 		while (*chr)
 		{
 			stbtt_aligned_quad quad;
 			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *chr, &pos.x, &pos.y, &quad, 0);
+			chr++;
 		}
+		pos.y = this->height * 0.0015;
+		pos.x *= multiplier * 0.002;
 		return pos;
 	}
 

@@ -1,5 +1,6 @@
 #version 460
 #extension GL_ARB_separate_shader_objects : enable
+#extension GL_KHR_vulkan_glsl : enable
 
 layout(constant_id = 0) const float r = 1;
 layout(constant_id = 1) const float g = 1;

@@ -28,9 +28,10 @@ namespace tg_ui {
 	class UIEntity {
 
 	public:
-		UIEntity(glm::vec2 position, glm::vec2 extent);
-		glm::vec2 local_position;
-		glm::vec2 extent;
+		UIEntity(Anchor anchor) : anchor(anchor) {}
+		UIEntity(Anchor anchor, glm::vec2 extent) : anchor(anchor), extent(extent) {}
+		UIEntity(glm::vec2 position) : UIEntity(position, glm::vec2(0)) {}
+		UIEntity(glm::vec2 position, glm::vec2 extent) : local_position(position), extent(extent) {}
 
 		void addComponent(UIComponent* component);
 		void addChildren(UIEntity* children);
@@ -50,6 +51,10 @@ namespace tg_ui {
 
 	protected:
 		UIEntity* parent = nullptr;
+
+		glm::vec2 local_position = glm::vec2(0);
+		glm::vec2 extent = glm::vec2(0);
+		Anchor anchor = TOP_LEFT;
 
 		std::vector<UIComponent*> components;
 		std::vector<UIEntity*> children;

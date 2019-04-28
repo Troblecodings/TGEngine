@@ -4,6 +4,19 @@
 
 namespace tg_ui {
 	
+	/*
+     * A component for text rendering on the UI
+     * with the bounds of the font (ignores parent bounds)
+     *	-----------------------------------------------------------
+     *  Currently this adds the render offset on the first draw call
+     *  this behavior is probably going to change
+     *  -> The material is created in for each font
+	 *     for that the color nor the texture can be changed
+     *     while runtime in contrast to the position which
+     *     can be changed
+     *	-----------------------------------------------------------
+     */
+	SINCE(0, 0, 4)
 	class UITextComponent : public UIComponent
 	{
 	public:

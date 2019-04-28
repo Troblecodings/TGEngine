@@ -7,6 +7,14 @@ namespace tg_ui {
 	/*
 	 * A component for texture rendering on the UI
 	 * with the bounds of the entity
+	 *	-----------------------------------------------------------
+	 *  Currently this creates a new material in the init call
+	 *  and adds the render offset on the first draw call
+	 *  this behavior is probably going to change
+	 *  -> for that the color nor the texture can be changed 
+	 *     while runtime in contrast to the position which 
+	 *     can be changed
+	 *	-----------------------------------------------------------
 	 */
 	SINCE(0, 0, 4)
 	class UITextureComponent : public UIComponent {
@@ -18,7 +26,6 @@ namespace tg_ui {
 
 	protected:
 		virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
-		virtual void update(int mouse_x, int mouse_y) override;
 		virtual void init() override;
 
 	private:

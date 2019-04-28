@@ -4,12 +4,6 @@ namespace tg_ui {
 
 	UIEntity ui_scene_entity = UIEntity({0, 0}, {});
 
-	UIEntity::UIEntity(glm::vec2 position, glm::vec2 extent)
-	{
-		this->local_position = position;
-		this->extent = extent;
-	}
-
 	void UIEntity::addComponent(UIComponent* component)
 	{
 		this->components.push_back(component);
