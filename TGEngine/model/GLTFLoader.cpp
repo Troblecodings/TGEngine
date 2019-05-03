@@ -1,4 +1,4 @@
-#include "GLTFLoader.hpp"
+/*#include "GLTFLoader.hpp"
 
 namespace tg_model {
 
@@ -14,4 +14,4 @@ namespace tg_model {
 		}
 	}
 
-}
+}*/

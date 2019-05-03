@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -12,4 +12,4 @@ namespace tg_model {
 	SINCE(0, 0, 4)
 	void loadGLTFModel(char* name);
 
-}
+}*/
