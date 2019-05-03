@@ -41,7 +41,7 @@ html {
     margin-bottom: 50px;
     line-height:175%;
     padding: 10px;
-    width: 20%;
+    display: inline-block
 }
 
 @media screen and (min-width: 1024px) {.menu {width: 70%; max-width: 1000px;}}
@@ -65,7 +65,7 @@ a{
     color: rgb(115, 194, 197);
 }
 
-h1{
+h1,h2{
     text-align: center;
 }
 
