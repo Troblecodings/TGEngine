@@ -18,15 +18,30 @@ html {
     width: 80%;
 }
 
-.menu a{
+.menu a, .submenu a{
     color: black;
     padding: 3px;
     border-radius: 5px;
 }
-
-.menu a:hover{
+.menu a:hover,.submenu a:hover{
     color: black;
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.subcontainer{
+    width: 80%;
+}
+
+.submenu{
+    text-align: left;
+    box-sizing: border-box;
+    background-color: white;
+    line-height: 30px;
+    margin: 0;
+    margin-bottom: 50px;
+    line-height:175%;
+    padding: 10px;
+    width: 20%;
 }
 
 @media screen and (min-width: 1024px) {.menu {width: 70%; max-width: 1000px;}}
@@ -75,7 +90,7 @@ td{
     font-size: 20px;
 }
 
-td img{
+img{
     display: block;
     margin: 0 auto;
 }
