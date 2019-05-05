@@ -3,7 +3,7 @@
 namespace prop {
 
 	using namespace std;
-	using namespace nio;
+	using namespace tge::nio;
 
 	void readProperties(char* path, Properties* prop) {
 		File file = open(path, "rb");

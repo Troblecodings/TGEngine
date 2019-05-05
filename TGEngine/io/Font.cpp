@@ -11,7 +11,7 @@ namespace tg_font {
 
 		stbi_uc* tempbitmap = new stbi_uc[this->texture.width * (size_t)this->texture.height];
 
-		stbtt_BakeFontBitmap(nio::readAll(path), 0, height, tempbitmap, this->texture.width, this->texture.height, 0, 256, this->cdata);
+		stbtt_BakeFontBitmap(tge::nio::readAll(path), 0, height, tempbitmap, this->texture.width, this->texture.height, 0, 256, this->cdata);
 
 		for (size_t i = 0; i < (this->texture.width * (size_t)this->texture.height); i++)
 		{

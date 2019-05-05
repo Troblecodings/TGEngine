@@ -7,7 +7,7 @@ VkSampler tex_image_sampler;
 uint32_t tex_array_index = 0;
 std::vector<RenderOffsets> render_offset;
 
-using namespace nio;
+using namespace tge::nio;
 
 void Material::createMaterial()
 {

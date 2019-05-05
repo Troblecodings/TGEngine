@@ -38,6 +38,7 @@ struct Texture {
 class Material {
 
 public:
+
 	Texture* texture;
 	glm::vec4 color;
 

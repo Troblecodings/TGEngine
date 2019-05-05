@@ -18,6 +18,13 @@ html {
     width: 80%;
 }
 
+.mark {
+    color: #1a1a1a;
+    background-color: whitesmoke;
+    padding: 1px;
+    border-radius: 5px;
+}
+
 .menu a, .submenu a{
     color: black;
     padding: 3px;

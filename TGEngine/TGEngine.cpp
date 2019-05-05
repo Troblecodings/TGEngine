@@ -3,7 +3,7 @@
 using namespace std;
 
 void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void)) {
-	nio::initFileSystem();
+	tge::nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
 
