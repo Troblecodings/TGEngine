@@ -25,21 +25,17 @@ html {
     border-radius: 5px;
 }
 
-.menu a, .submenu a{
+.menu a, .submenu a {
     color: black;
     padding: 3px;
     border-radius: 5px;
 }
-.menu a:hover,.submenu a:hover{
+.menu a:hover,.submenu a:hover {
     color: black;
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.subcontainer{
-    width: 80%;
-}
-
-.submenu{
+.submenu {
     text-align: left;
     box-sizing: border-box;
     background-color: white;
@@ -48,7 +44,10 @@ html {
     margin-bottom: 50px;
     line-height:175%;
     padding: 10px;
-    display: inline-block
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 0 25%;
 }
 
 @media screen and (min-width: 1024px) {.menu {width: 70%; max-width: 1000px;}}
@@ -67,22 +66,22 @@ html {
 @media screen and (max-width: 1023px) {.container {width: 80%;}}
 @media screen and (max-width: 700px) {.container {width: 90%; min-width: 500px; font-size: 15px;}}
 
-a{
+a {
     text-decoration: none;
     color: rgb(115, 194, 197);
 }
 
-h1,h2{
+h1,h2,h3 {
     text-align: center;
+    margin: 75px 0px 20px 0px;
 }
 
 h3 {
-    margin: 75px 0px 20px 0px;
     font-size: 35px;
     color: white;
 }
 
-a:hover{
+a:hover {
     color: rgb(17, 255, 255);
 }
 
@@ -91,17 +90,21 @@ table {
     
 }
 
-td{
+td {
     border-top: 1px solid white;
     border-spacing: 10px;
     font-size: 20px;
 }
 
-img{
+img {
     display: block;
     margin: 0 auto;
 }
 
-#what{
+#what {
     margin: 0px 0px 20px 0px;
+}
+
+.prettyprint {
+    padding-left: 10px;
 }
