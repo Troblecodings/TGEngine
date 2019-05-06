@@ -22,7 +22,7 @@
 			
         <div class="menu">
             <a href="#contribute">Want to contribute?</a>
-            <a href="#standarts">Standarts</a>
+            <a href="#standards">Standards</a>
             <a href="./index.html">Home</a>
         </div>
         
@@ -32,36 +32,38 @@
 			<p>Everyone is welcome to help in development! I am thankful for every improvement, addition or fix.</p>
             <p><em><strong>Please review the <a href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before contributing in any way to the repository!</strong></em></p>
 			<p>Additional information can be found <a href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a></p>
-            <h1 id="standarts">Standarts</h1>
-            <p>Every pull request needs to meet certain standarts. And thus are as following.</p>
-            <p><em>Note: Currently most standarts are not used yet by the engine itself. This is going to be changed asap</em></p>
+            <h1 id="standards">Standards</h1>
+            <p>Every pull request has to meet certain standards.</p>
+            <p><em>Note: Most standards are not used yet by the engine itself right now. This is going to be changed as soon as possible.</em></p>
             <div id="subcontainer">
                 <div class="submenu">
                     <a href="#includes">Includes / Header</a><br>
-                    <a href="#variables">Variables / Makros</a><br>
-                    <a href="#methodes">Methodes</a><br>
+                    <a href="#variables">Variables / Macros</a><br>
+                    <a href="#methods">Methods</a><br>
                     <a href="#modules">Modules</a>
                 </div>
             </div>
+            
             <h2 id="includes">Includes / Header</h2>
             <ul>
                 <li>The first statement in a header file should be<br>
                     <pre class="prettyprint">#pragma once</pre>
-                    <em><p>Note: due to the pragma preprocessor not being a standart this might not be possible for your compiler</p></em>
+                    <em><p>Note: Due to the pragma preprocessor not being a standard, this might not be possible for your compiler</p></em>
                 </li>
                 <li>Includes must be defined after the pragma definition</li>
                 <li>Includes defined with <strong class="mark">&gt; &lt;</strong> must only be used for dependencies</li>
                 <li>Includes defined with <strong class="mark">&quot; &quot;</strong> must only be used for internal engine header files</li>
-                <li>Each .cpp source file should include it's according header file and nothing else</li>
-                <li>Subfolders should be seppareted by a slash <strong class="mark">(/)</strong></li>
+                <li>Each .cpp source file should include its according header file and nothing else</li>
+                <li>Subfolders should be separated by a slash <strong class="mark">(/)</strong></li>
                 <li><strong class="mark">../</strong> should be used for includes</li>
-                <li>Each dependencie should be in the <strong class="mark">root</strong> folder or in the <strong class="mark">dependencies</strong> folder</li>
+                <li>Each dependency should be in the <strong class="mark">root</strong> folder or in the <strong class="mark">dependencies</strong> folder</li>
                 <li>Each header must be part of a module</li>
             </ul>
-            <h2 id="variables">Variables / Makros</h2>
+            
+            <h2 id="variables">Variables / Macros</h2>
             <ul>
-                <li>Every normal variable should be <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a></li>
-                <li>Every makro, enum or const variable needs to be written in caps and with underscores</li>
+                <li>Every normal variable should named using the <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a> standard</li>
+                <li>Every macro, enum or const variable needs to be written in caps and with underscores</li>
                 <li>Attributes are at the top of the class, union or struct</li>
                 <li>Attribute order in classes:
                     <ul>
@@ -73,15 +75,16 @@
                         <li>private</li>
                     </ul>
                 </li>
-                <li>Makros should be the first definition in the header files after includes</li>
+                <li>Macros should be the first definition in the header files after includes</li>
                 <li>You should not use static variables (except for dependencies)</li>
             </ul>
-            <h2 id="methodes">Methodes</h2>
+            
+            <h2 id="methods">Methods</h2>
             <ul>
-                <li>Every methode should be <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a></li>
-                <li>Every static methode must start with two underscores <strong class="mark">(__)</strong></li>
-                <li>Methodes are underneath attributes in classes, unions or structs</li>
-                <li>Methodes order in classes:
+                <li>Every method should be should named using the <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a> standard</li>
+                <li>Every static method must start with two underscores <strong class="mark">(__)</strong></li>
+                <li>Methods are underneath attributes in classes, unions or structs</li>
+                <li>Methods order in classes:
                     <ul>
                         <li>const public</li>
                         <li>const protected</li>
@@ -92,15 +95,16 @@
                         <li>private</li>
                     </ul>
                 </li>
-                <li>Constructors must be the first not const methodes</li>
-                <li>Thus are ordered from least parameters to highest parameters</li>
+                <li>Constructors have to be the first not-const methods</li>
+                <li>Following that, methods are ordered from the least amount of parameters to highest amount of parameters</li>
             </ul>
+            
             <h2 id="modules">Modules</h2>
             <ul>
                 <li>Modules are namespaces</li>
                 <li>Each module is a submodule of <em><strong class="mark">tge</strong></em>
                     <pre class="prettyprint">namespace tge {
-    namespace nio {</pre><p><em>Note that we are not using C++17 standarts for compiling so nested namespace defenitions are not allowed</em></p>
+    namespace nio {</pre><p><em>Note, that we are not using C++17 standards for compiling, so nested namespace defenitions are not allowed</em></p>
                 </li>
                 <li>You must not use spaces or underscores in module names</li>
             </ul>
