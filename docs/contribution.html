@@ -49,18 +49,20 @@
                     <pre class="prettyprint">#pragma once</pre>
                     <em><p>Note: due to the pragma preprocessor not being a standart this might not be possible for your compiler</p></em>
                 </li>
-                <li>The second statements are the includes</li>
+                <li>Includes must be defined after the pragma definition</li>
+                <li>Includes defined with <strong class="mark">&gt; &lt;</strong> must only be used for dependencies</li>
+                <li>Includes defined with <strong class="mark">&quot; &quot;</strong> must only be used for internal engine header files</li>
                 <li>Each .cpp source file should include it's according header file and nothing else</li>
                 <li>Subfolders should be seppareted by a slash <strong class="mark">(/)</strong></li>
-                <li><strong class="mark">../</strong> are allowed and must be used if you use dependencies</li>
+                <li><strong class="mark">../</strong> should be used for includes</li>
                 <li>Each dependencie should be in the <strong class="mark">root</strong> folder or in the <strong class="mark">dependencies</strong> folder</li>
-                <li>Each header must be part of a moduel</li>
+                <li>Each header must be part of a module</li>
             </ul>
             <h2 id="variables">Variables / Makros</h2>
             <ul>
-                <li>Every normal variable should be <a href="https://en.wikipedia.org/wiki/Snake_case">snake case</a> and lower case</li>
-                <li>Every makro or const variable needs to be written in caps and snake case</li>
-                <li>Attributes are at the top of the class or struct</li>
+                <li>Every normal variable should be <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a></li>
+                <li>Every makro, enum or const variable needs to be written in caps and with underscores</li>
+                <li>Attributes are at the top of the class, union or struct</li>
                 <li>Attribute order in classes:
                     <ul>
                         <li>const public</li>
@@ -76,24 +78,27 @@
             </ul>
             <h2 href="#methodes">Methodes</h2>
             <ul>
-                <li>Every methode should be <a href="https://en.wikipedia.org/wiki/Snake_case">snake case</a> and lower case</li>
-                <li>Every static methode must start with an underscore <strong class="mark">(_)</strong></li>
-                <li>Methodes are underneath attributes in classes or structs</li>
+                <li>Every methode should be <a href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a></li>
+                <li>Every static methode must start with two underscores <strong class="mark">(__)</strong></li>
+                <li>Methodes are underneath attributes in classes, unions or structs</li>
                 <li>Methodes order in classes:
                     <ul>
                         <li>const public</li>
                         <li>const protected</li>
                         <li>const private</li>
+                        <li>constructor</li>
                         <li>public</li>
                         <li>protected</li>
                         <li>private</li>
                     </ul>
                 </li>
+                <li>Constructors must be the first not const methodes</li>
+                <li>Thus are ordered from least parameters to highest parameters</li>
             </ul>
             <h2 href="#modules">Modules</h2>
             <ul>
                 <li>Modules are namespaces</li>
-                <li>Each moduel is a submodule of <em><strong class="mark">tge</strong></em>
+                <li>Each module is a submodule of <em><strong class="mark">tge</strong></em>
                     <pre class="prettyprint">namespace tge {
     namespace nio {</pre><p><em>Note that we are not using C++17 standarts for compiling so nested namespace defenitions are not allowed</em></p>
                 </li>
