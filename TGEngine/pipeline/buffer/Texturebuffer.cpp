@@ -4,7 +4,6 @@ std::vector<Texture*> texture_buffers;
 std::vector<Material> materials;
 Descriptor texture_descriptor;
 VkSampler tex_image_sampler;
-uint32_t tex_array_index = 0;
 std::vector<RenderOffsets> render_offset;
 
 using namespace tge::nio;
@@ -47,7 +46,7 @@ void Material::createMaterial()
 	light_buffer.descriptor.binding = 1;
 	light_buffer.updateDescriptor();
 
-	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->image_view);
+	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->vulkanTexture );
 }
 
 void Material::destroy()
@@ -63,8 +62,38 @@ bool Material::operator==(const Material & material)
 	return material.color == this->color && material.texture == this->texture;
 }
 
-void createTexture(Texture* tex) {
-	texture_buffers.push_back(tex);
+Texture::Texture() {
+	texture_buffers.push_back(this);
+}
+
+void Texture::initTexture()
+{
+	// Load texture if not build in (textureName == nulptr)
+	if (this->textureName) {
+		File file = open(this->textureName, "rb");
+		this->imageData = stbi_load_from_file(file, &this->width, &this->height, &this->channel, STBI_rgb_alpha);
+	}
+
+	// Imageview create parameters
+	vlib_image_create_info.extent.width = this->width;
+	vlib_image_create_info.extent.height = this->height;
+
+	// Mipmaplevels
+	if (this->miplevels == AUTO_MIPMAP)
+		this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
+	vlib_image_create_info.mipLevels = this->miplevels;
+
+	this->vulkanTexture.initVulkan();
+	void* memory = this->vulkanTexture.map(this->width + this->height * 4);
+	memcpy(memory, this->imageData, this->width * this->height * 4);
+
+	// Destroy unneeded resources
+	if (this->textureName) {
+		stbi_image_free(this->imageData);
+	}
+	else {
+		delete[] this->imageData;
+	}
 }
 
 void initAllTextures() {
@@ -98,89 +127,8 @@ void initAllTextures() {
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
 	for each(Texture* ptr in texture_buffers) {
-
-		if (ptr->texture_path) {
-			File file = open(ptr->texture_path, "rb");
-			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
-		}
-
-		vlib_image_create_info.format = ptr->image_format; // Gonna fix thus
-		vlib_image_create_info.extent.width = ptr->width;
-		vlib_image_create_info.extent.height = ptr->height;
-
-		// TODO FIX THIS MESS
-        // TODO AUTO QUERRY
-		VkImageFormatProperties props;
-		last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
-			vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &props);
-		HANDEL(last_result)
-		//
-
-		if (ptr->miplevels == AUTO_MIPMAP) 
-			ptr->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
-
-		vlib_image_create_info.mipLevels = ptr->miplevels;// = math::u_min(props.maxMipLevels, ptr->miplevels);
-		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
-		HANDEL(last_result)
-
-		vkGetImageMemoryRequirements(device, ptr->image, &ptr->requierments);
-
-		vlib_buffer_memory_allocate_info.allocationSize = ptr->requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
-		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->d_memory);
-		HANDEL(last_result)
-
-		last_result = vkBindImageMemory(device, ptr->image, ptr->d_memory, 0);
-		HANDEL(last_result)
-
-		vlib_buffer_create_info.size = ptr->width * ptr->height * 4;
-		last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &ptr->buffer);
-		HANDEL(last_result)
-
-		vkGetBufferMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
-
-		vlib_buffer_memory_allocate_info.allocationSize = ptr->buffer_requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
-		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->buffer_memory);
-		HANDEL(last_result)
-
-		last_result = vkBindBufferMemory(device, ptr->buffer, ptr->buffer_memory, 0);
-		HANDEL(last_result)
-
-		last_result = vkMapMemory(device, ptr->buffer_memory, 0, ptr->width * ptr->height * 4, 0, &ptr->memory);
-		HANDEL(last_result);
-
-		memcpy(ptr->memory, ptr->image_data, ptr->width * ptr->height * 4);
-		vkUnmapMemory(device, ptr->buffer_memory);
-
-		if (ptr->texture_path) {
-			stbi_image_free(ptr->image_data);
-		}
-		else {
-			delete[] ptr->image_data;
-		}
-
-		vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-		vlib_image_view_create_info.format = ptr->image_format;
-		vlib_image_view_create_info.image = ptr->image;
-		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
-		HANDEL(last_result)
+		ptr->initTexture();
 	}
-}
-
-void addTextures() {
-}
-
-void destroyBufferofTexture(Texture* tex) {
-	vkFreeMemory(device, tex->buffer_memory, nullptr);
-	vkDestroyBuffer(device, tex->buffer, nullptr);
-}
-
-
-void destroyTexture(Texture* tex) {
-	vkDestroyImageView(device, tex->image_view, nullptr);
-	vkFreeMemory(device, tex->d_memory, nullptr);
-	vkDestroyImage(device, tex->image, nullptr);
 }
 
 void destroyAllTextures() {
@@ -189,7 +137,7 @@ void destroyAllTextures() {
 
 	vkDestroySampler(device, tex_image_sampler, nullptr);
 	for each(Texture* tex in texture_buffers) {
-		destroyTexture(tex);
+		tex->vulkanTexture.destroy();
 	}
 }
 
@@ -203,4 +151,72 @@ void Material::createUIMaterial()
 	ui_camera_uniform.descriptor.descriptorset = this->descriptor_index;
 	ui_camera_uniform.descriptor.binding = 0;
 	ui_camera_uniform.updateDescriptor();
+}
+
+void VulkanTexture::initVulkan()
+{
+	vlib_image_create_info.format = this->imageFormat; // TODO Auto querry
+
+	// TODO FIX THIS MESS
+	// TODO AUTO QUERRY
+	VkImageFormatProperties imageFormatProperties;
+	last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
+	vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
+	HANDEL(last_result)
+	//
+	
+	// Image
+	last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
+	HANDEL(last_result)
+
+	QUERRY_IMAGE_REQUIREMENTS(this->image, vlib_device_local_memory_index)
+	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &this->imageMemory);
+	HANDEL(last_result)
+
+	last_result = vkBindImageMemory(device, this->image, this->imageMemory, 0);
+	HANDEL(last_result)
+
+	// Buffer
+	last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &this->buffer);
+	HANDEL(last_result)
+
+	QUERRY_BUFFER_REQUIREMENTS(this->buffer, vlib_device_host_visible_coherent_index)
+	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &bufferMemory);
+	HANDEL(last_result)
+
+	last_result = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
+	HANDEL(last_result)
+
+	// Imageview
+	vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+	vlib_image_view_create_info.format = this->imageFormat;
+	vlib_image_view_create_info.image = this->image;
+	last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
+	HANDEL(last_result)
+}
+
+void* VulkanTexture::map(uint32_t size)
+{
+	void* memory;
+	last_result = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
+	HANDEL(last_result);
+	return memory;
+}
+
+void VulkanTexture::unmap()
+{
+	vkUnmapMemory(device, this->bufferMemory);
+}
+
+void VulkanTexture::dispose()
+{
+	vkFreeMemory(device, this->bufferMemory, nullptr);
+	vkDestroyBuffer(device, this->buffer, nullptr);
+}
+
+void VulkanTexture::destroy()
+{
+	vkDestroyImageView(device, this->imageView, nullptr);
+	vkFreeMemory(device, this->imageMemory, nullptr);
+	vkDestroyImage(device, this->image, nullptr);
 }

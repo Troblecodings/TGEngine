@@ -7,8 +7,7 @@ namespace tge {
 
 		char current_working_dir[FILENAME_MAX];
 
-		void initFileSystem()
-		{
+		void initFileSystem() {
 			GetCurrentDir(current_working_dir, sizeof(current_working_dir));
 		}
 
@@ -16,7 +15,7 @@ namespace tge {
 			File file;
 			errno_t err = fopen_s(&file, name, mode);
 			ASSERT_NONE_NULL_DB(!err, "Can not open file [" << name << "]!", TG_ERR_FILE_NOT_FOUND_OR_NO_RIGHTS)
-				return file;
+			return file;
 		}
 
 		File readFileSize(char* name, char* mode, OUTPUT long* file_length) {

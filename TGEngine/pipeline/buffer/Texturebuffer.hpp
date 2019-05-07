@@ -13,26 +13,46 @@
 
 #define AUTO_MIPMAP 0xFFFFFF
 
-struct Texture {
-	INPUT 
-	char* texture_path;
-	OPT VkFormat image_format = VK_FORMAT_R8G8B8A8_UNORM;
+class VulkanTexture {
+
+private:
+	VkImage image; // The image vulkan representation
+	VkImageView imageView; // The view of the image ... to view the image LOL
+	VkBuffer buffer; // Buffer to store the image in befor it is transfered to the actual image -> deleted after transfer
+
+	VkDeviceMemory imageMemory; // The bound image memory
+	VkDeviceMemory bufferMemory; // The bound buffer memory -> deleted after transfer
+
+	VkFormat imageFormat = VK_FORMAT_R8G8B8A8_UNORM; // TODO Needs auto querry
+
+public:
+	void initVulkan();
+
+	void* map(uint32_t size);
+	void unmap();
+
+	void dispose(); // Disposes unneeded resources
+	void destroy(); // Destroys the whole texture
+};
+
+class Texture {
+
+public:
+	VulkanTexture vulkanTexture;
+
+private:
+	char* textureName;
 	uint32_t miplevels = AUTO_MIPMAP;
 
-	OUTPUT 
 	int width;
 	int height;
 	int channel;
-	stbi_uc* image_data;
-	VkImage image;
-	VkImageView image_view;
-	VkBuffer buffer;
-	VkDeviceMemory d_memory;
-	VkDeviceMemory buffer_memory;
-	VkMemoryRequirements buffer_requierments;
-	VkMemoryRequirements requierments;
+	uint8_t* imageData;
 
-	void* memory;
+public:
+	Texture();
+
+	void initTexture();
 };
 
 class Material {
@@ -72,19 +92,10 @@ extern VkSampler tex_image_sampler;
 extern uint32_t tex_array_index;
 
 SINCE(0, 0, 2)
-void createTexture(Texture* tex);
-
-SINCE(0, 0, 2)
 void initAllTextures();
-
-SINCE(0, 0, 3)
-void addTextures();
 
 SINCE(0, 0, 2)
 void destroyBufferofTexture(Texture* tex);
-
-SINCE(0, 0, 2)
-void destroyTexture(Texture* tex);
 
 SINCE(0, 0, 2)
 void destroyAllTextures();
