@@ -1,69 +1,13 @@
 #include "Texturebuffer.hpp"
 
-std::vector<Texture*> texture_buffers;
-std::vector<Material> materials;
-Descriptor texture_descriptor;
-VkSampler tex_image_sampler;
-std::vector<RenderOffsets> render_offset;
+std::vector<Texture*> textures;
+Descriptor textureDescriptor;
+VkSampler imageSampler;
 
 using namespace tge::nio;
 
-void Material::createMaterial()
-{
-	// TODO Fix this mess
-	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
-	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
-	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
-	
-	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
-	for (size_t i = 0; i < 4; i++)
-	{
-		map_entrys[i].constantID = i;
-		map_entrys[i].offset = i * sizeof(float);
-		map_entrys[i].size = sizeof(float);
-	}
-
-	VkSpecializationInfo pSpecialization;
-	pSpecialization.mapEntryCount = 4;
-	pSpecialization.pData = &this->color;
-	pSpecialization.dataSize = sizeof(float) * 4;
-	pSpecialization.pMapEntries = map_entrys;
-	//
-
-	shaders_for_tex[1].pSpecializationInfo = &pSpecialization;
-
-	createPipelineLayout(1, &descriptor_set_layouts[createDesctiptorLayout()]);
-	this->layout_index = last_size;
-	
-	this->descriptor_index = texture_descriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
-
-	createPipeline(shaders_for_tex, 2, this->layout_index);
-	this->pipeline_index = last_size;
-
-	camera_uniform.descriptor.binding = 0;
-	camera_uniform.updateDescriptor();
-
-	light_buffer.descriptor.binding = 1;
-	light_buffer.updateDescriptor();
-
-	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->vulkanTexture );
-}
-
-void Material::destroy()
-{
-	destroyDesctiptorSet(this->descriptor_index);
-	//destroyDesctiptorLayout(this->layout_index);
-	destroyPipeline(this->pipeline_index);
-	destroyPipelineLayout(this->layout_index);
-}
-
-bool Material::operator==(const Material & material)
-{
-	return material.color == this->color && material.texture == this->texture;
-}
-
 Texture::Texture() {
-	texture_buffers.push_back(this);
+	textures.push_back(this);
 }
 
 void Texture::initTexture()
@@ -96,6 +40,10 @@ void Texture::initTexture()
 	}
 }
 
+void VulkanTexture::updateDescriptor() {
+	textureDescriptor.updateImageInfo(imageSampler, this->imageView);
+}
+
 void initAllTextures() {
 	VkSamplerCreateInfo sampler_create_info = {
 		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
@@ -120,13 +68,13 @@ void initAllTextures() {
 	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
 	HANDEL(last_result)
 
-	texture_descriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
+	textureDescriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
-	for each(Texture* ptr in texture_buffers) {
+	for each(Texture* ptr in textures) {
 		ptr->initTexture();
 	}
 }
@@ -135,22 +83,10 @@ void destroyAllTextures() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
-	vkDestroySampler(device, tex_image_sampler, nullptr);
-	for each(Texture* tex in texture_buffers) {
+	vkDestroySampler(device, imageSampler, nullptr);
+	for each(Texture* tex in textures) {
 		tex->vulkanTexture.destroy();
 	}
-}
-
-void Material::createUIMaterial()
-{
-	vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
-	Material::createMaterial();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
-	vlib_depth_stencil_state.depthTestEnable = VK_TRUE;
-	ui_camera_uniform.descriptor.descriptorset = this->descriptor_index;
-	ui_camera_uniform.descriptor.binding = 0;
-	ui_camera_uniform.updateDescriptor();
 }
 
 void VulkanTexture::initVulkan()

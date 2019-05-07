@@ -13,6 +13,10 @@
 
 #define AUTO_MIPMAP 0xFFFFFF
 
+/*
+ * Holder for Vulkan specific image components
+ */
+SINCE(0, 0, 4)
 class VulkanTexture {
 
 private:
@@ -30,6 +34,7 @@ public:
 
 	void* map(uint32_t size);
 	void unmap();
+	void updateDescriptor();
 
 	void dispose(); // Disposes unneeded resources
 	void destroy(); // Destroys the whole texture
@@ -55,47 +60,12 @@ public:
 	void initTexture();
 };
 
-class Material {
-
-public:
-
-	Texture* texture;
-	glm::vec4 color;
-
-	bool isUI = false;
-
-	uint32_t pipeline_index;
-	uint32_t descriptor_index;
-	uint32_t layout_index;
-
-	virtual void createMaterial();
-	virtual void createUIMaterial();
-
-	void destroy();
-
-	bool operator==(const Material& material);
-};
-
-struct RenderOffsets {
-
-	uint32_t material; // index in the @materials array of the material to use
-	
-	uint32_t size; // count of vertices to draw for this matirial
-	uint32_t offset; // the offset at wich this material starts (global)
-};
-
-extern std::vector<Texture*> texture_buffers;
-extern std::vector<Material> materials;
-extern std::vector<RenderOffsets> render_offset;
-extern Descriptor texture_descriptor;
-extern VkSampler tex_image_sampler;
-extern uint32_t tex_array_index;
+extern std::vector<Texture*> textures;
+extern Descriptor textureDescriptor;
+extern VkSampler imageSampler;
 
 SINCE(0, 0, 2)
 void initAllTextures();
-
-SINCE(0, 0, 2)
-void destroyBufferofTexture(Texture* tex);
 
 SINCE(0, 0, 2)
 void destroyAllTextures();

@@ -135,7 +135,7 @@ void destroyDesctiptorLayout(uint32_t layout_index);
  */
 INTERNAL
 SINCE(0, 0, 4)
-void destroyDesctiptorSet(uint32_t set_index);
+void destroyDescriptorSet(uint32_t set_index);
 
 /*
  * Destroys all descriptor resources (pool, layouts, sets, ...)

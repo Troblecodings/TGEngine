@@ -246,6 +246,9 @@
     <ClInclude Include="io\Font.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
+    <ClInclude Include="game_content\Material.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -397,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="game_content\Material.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
