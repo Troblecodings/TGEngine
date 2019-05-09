@@ -7,12 +7,13 @@ VkSampler imageSampler;
 using namespace tge::nio;
 
 Texture::Texture(char* textureName) : textureName(textureName) {
+	ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
+	ASSERT_NONE_NULL_DB(*textureName == 0, "File name null [points to an empty string]", TG_ERR_DB_NULLPTR)
 	textures.push_back(this);
 }
 
-Texture::Texture(uint8_t* data, int width, int height)
-{
-	Texture(nullptr);
+Texture::Texture(uint8_t* data, int width, int height) {
+	textures.push_back(this);
 	this->imageData = data;
 	this->width = width;
 	this->height = height;
@@ -80,6 +81,7 @@ void VulkanTexture::updateDescriptor() {
 
 void VulkanTexture::queueLoading(VkCommandBuffer buffer)
 {
+	// Copys the buffer to the image
 	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, this->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
 	vkCmdCopyBufferToImage(
@@ -112,7 +114,7 @@ void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
 
 		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 
-			if (mipwidth > 1) mipwidth /= 2;
+		if (mipwidth > 1) mipwidth /= 2;
 		if (mipheight > 1) mipheight /= 2;
 	}
 
@@ -125,6 +127,8 @@ void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
 
 void initAllTextures() {
 	// TODO per texture sampler ?
+	// Maybe a default sampler + custome sampler?
+	// Maybe separeted  functions?
 	VkSamplerCreateInfo sampler_create_info = {
 		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
 		nullptr,

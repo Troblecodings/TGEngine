@@ -59,6 +59,8 @@ namespace tg_model {
 				return;
 			}
 
+			// TODO test material
+			// Maybe different shaders
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
 			Material mat;
 			if (surface_lambert) {
