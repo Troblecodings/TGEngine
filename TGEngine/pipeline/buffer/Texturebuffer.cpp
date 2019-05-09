@@ -6,8 +6,16 @@ VkSampler imageSampler;
 
 using namespace tge::nio;
 
-Texture::Texture() {
+Texture::Texture(char* textureName) : textureName(textureName) {
 	textures.push_back(this);
+}
+
+Texture::Texture(uint8_t* data, int width, int height)
+{
+	Texture(nullptr);
+	this->imageData = data;
+	this->width = width;
+	this->height = height;
 }
 
 void Texture::initTexture()
@@ -30,6 +38,7 @@ void Texture::initTexture()
 	this->vulkanTexture.initVulkan();
 	void* memory = this->vulkanTexture.map(this->width + this->height * 4);
 	memcpy(memory, this->imageData, this->width * this->height * 4);
+	this->vulkanTexture.unmap();
 
 	// Destroy unneeded resources
 	if (this->textureName) {
@@ -40,11 +49,82 @@ void Texture::initTexture()
 	}
 }
 
+void Texture::generateMipMaps(VkCommandBuffer buffer)
+{
+	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
+	vlib_image_memory_barrier.subresourceRange.levelCount = this->miplevels;
+
+	vlib_buffer_image_copy.imageExtent.width = this->width;
+	vlib_buffer_image_copy.imageExtent.height = this->height;
+
+	this->vulkanTexture.queueLoading(buffer);
+
+	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
+
+	this->vulkanTexture.generateMipmaps(buffer);
+}
+
+int Texture::getWidth()
+{
+	return this->width;
+}
+
+int Texture::getHeight()
+{
+	return this->height;
+}
+
 void VulkanTexture::updateDescriptor() {
 	textureDescriptor.updateImageInfo(imageSampler, this->imageView);
 }
 
+void VulkanTexture::queueLoading(VkCommandBuffer buffer)
+{
+	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, this->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+
+	vkCmdCopyBufferToImage(
+		buffer,
+		this->buffer,
+		this->image,
+		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+		1,
+		&vlib_buffer_image_copy
+	);
+}
+
+void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
+{
+	// TODO Fix this mess
+	uint32_t mipwidth = vlib_buffer_image_copy.imageExtent.width, mipheight = vlib_buffer_image_copy.imageExtent.height, mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
+
+	for (size_t i = 1; i < mipmapLevels; i++)
+	{
+		vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
+		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+
+		vlib_image_blit.srcSubresource.mipLevel = i - 1;
+		vlib_image_blit.dstSubresource.mipLevel = i;
+		vlib_image_blit.srcOffsets[1].x = mipwidth;
+		vlib_image_blit.srcOffsets[1].y = mipheight;
+		vlib_image_blit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
+		vlib_image_blit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
+		vkCmdBlitImage(buffer, this->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlib_image_blit, VK_FILTER_LINEAR);
+
+		ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+
+			if (mipwidth > 1) mipwidth /= 2;
+		if (mipheight > 1) mipheight /= 2;
+	}
+
+	if (mipmapLevels > 1) {
+		vlib_image_memory_barrier.subresourceRange.baseMipLevel = mipmapLevels - 1;
+	}
+
+	ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+}
+
 void initAllTextures() {
+	// TODO per texture sampler ?
 	VkSamplerCreateInfo sampler_create_info = {
 		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
 		nullptr,
@@ -65,9 +145,10 @@ void initAllTextures() {
 		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		VK_FALSE
 	};
-	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
+	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &imageSampler);
 	HANDEL(last_result)
-
+	//
+	
 	textureDescriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;

@@ -68,9 +68,7 @@ namespace tg_model {
 				if (object) {
 					fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
 					if (tex && tex->GetFileName() != nullptr) {
-						mat.texture = new Texture();
-						mat.texture->texture_path = (char*) tex->GetFileName();
-						createTexture(mat.texture);
+						mat.texture = new Texture(const_cast<char*>(tex->GetFileName()));
 					}
 					else {
 						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")

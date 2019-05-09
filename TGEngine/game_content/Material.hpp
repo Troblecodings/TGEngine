@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../pipeline/buffer/Texturebuffer.hpp"
+#include "../pipeline/Pipe.hpp"
 
 /*
  * Material can hold a texture and a color
@@ -11,7 +12,6 @@ SINCE(0, 0, 4)
 class Material {
 
 public:
-
 	Texture* texture;
 	glm::vec4 color;
 

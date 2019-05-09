@@ -73,51 +73,10 @@ void endSingleTimeCommand() {
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each(Texture* tex in texture_buffers) {
-		vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
-		vlib_image_memory_barrier.subresourceRange.levelCount = tex->miplevels;
-		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, tex->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
-
-		vlib_buffer_image_copy.imageExtent.width = tex->width;
-		vlib_buffer_image_copy.imageExtent.height = tex->height;
-		vkCmdCopyBufferToImage(
-			SINGELTIME_COMMAND_BUFFER,
-			tex->buffer,
-			tex->image,
-			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-			1,
-			&vlib_buffer_image_copy
-		);
-
-		uint32_t mipwidth = tex->width, mipheight = tex->height;
-
-		vlib_image_memory_barrier.subresourceRange.levelCount = 1;
-		for (size_t i = 1; i < tex->miplevels; i++)
-		{
-			vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
-			ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
-
-			vlib_image_blit.srcSubresource.mipLevel = i - 1;
-			vlib_image_blit.dstSubresource.mipLevel = i;
-			vlib_image_blit.srcOffsets[1].x = mipwidth;
-			vlib_image_blit.srcOffsets[1].y = mipheight;
-			vlib_image_blit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
-			vlib_image_blit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
-			vkCmdBlitImage(SINGELTIME_COMMAND_BUFFER, tex->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, tex->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlib_image_blit, VK_FILTER_LINEAR);
-
-			ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
-
-			if (mipwidth > 1) mipwidth /= 2;
-			if (mipheight > 1) mipheight /= 2;
-		}
-
-		if (tex->miplevels > 1) {
-			vlib_image_memory_barrier.subresourceRange.baseMipLevel = tex->miplevels - 1;
-		}
-
-		ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, tex->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
-
+	for each(Texture* tex in textures) {
+		tex->generateMipMaps(SINGELTIME_COMMAND_BUFFER);
 	}
+
 	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
@@ -125,23 +84,23 @@ void startupCommands() {
 	vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
 
-		for each(StagingBuffer* buf in staging_buffer)
-		{
-			vlib_buffer_copy.dstOffset = vlib_buffer_copy.srcOffset = 0;
-			vlib_buffer_copy.size = buf->size;
-			vkCmdCopyBuffer(
-				SINGELTIME_COMMAND_BUFFER,
-				buf->staging_buffer,
-				*buf->destination,
-				1,
-				&vlib_buffer_copy
-			);
-		}
+	for each(StagingBuffer* buf in staging_buffer)
+	{
+		vlib_buffer_copy.dstOffset = vlib_buffer_copy.srcOffset = 0;
+		vlib_buffer_copy.size = buf->size;
+		vkCmdCopyBuffer(
+			SINGELTIME_COMMAND_BUFFER,
+			buf->staging_buffer,
+			*buf->destination,
+			1,
+			&vlib_buffer_copy
+		);
+	}
 
 	endSingleTimeCommand();
 
-	for each(Texture* tex in texture_buffers) {
-		destroyBufferofTexture(tex);
+	for each(Texture* tex in textures) {
+		tex->vulkanTexture.dispose();
 	}
 }
 

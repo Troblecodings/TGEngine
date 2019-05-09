@@ -1,5 +1,8 @@
 #include "Material.hpp"
 
+std::vector<Material> materials;
+std::vector<RenderOffsets> render_offset;
+
 void Material::createMaterial()
 {
 	// TODO Fix this mess

@@ -4,8 +4,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
 #include "../../../stb/stb_image.h"
-#include "../Pipe.hpp"
-#include "VertexBuffer.hpp"
 #include "../../vlib/VulkanImage.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
 #include "../../util/VectorUtil.hpp"
@@ -32,9 +30,11 @@ private:
 public:
 	void initVulkan();
 
-	void* map(uint32_t size);
-	void unmap();
-	void updateDescriptor();
+	void* map(uint32_t size); // Maps the buffer memory
+	void unmap(); // Unmaps buffer memory
+	void updateDescriptor(); // Updates the predifined descriptor
+	void queueLoading(VkCommandBuffer buffer); // Queues the loading of the image data, from the buffer to the image, to the singletime command buffer
+	void generateMipmaps(VkCommandBuffer buffer); // Queues the generation of mip maps
 
 	void dispose(); // Disposes unneeded resources
 	void destroy(); // Destroys the whole texture
@@ -55,9 +55,15 @@ private:
 	uint8_t* imageData;
 
 public:
-	Texture();
+	Texture() {}
+	Texture(char* textureName);
+	Texture(uint8_t* data, int width, int height);
 
 	void initTexture();
+	void generateMipMaps(VkCommandBuffer buffer);
+
+	int getWidth();
+	int getHeight();
 };
 
 extern std::vector<Texture*> textures;

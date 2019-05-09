@@ -9,6 +9,7 @@
 #define STBTT_STATIC
 #include "../stb/stb_truetype.h"
 #include "../drawlib/Rectangle.hpp"
+#include "../game_content/Material.hpp"
 #include "../io/Files.hpp"
 
 namespace tg_font {
