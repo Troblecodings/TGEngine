@@ -46,7 +46,7 @@ public:
 	VulkanTexture vulkanTexture;
 
 private:
-	char* textureName;
+	const char* textureName = nullptr;
 	uint32_t miplevels = AUTO_MIPMAP;
 
 	int width;
@@ -55,8 +55,7 @@ private:
 	uint8_t* imageData;
 
 public:
-	Texture() {}
-	Texture(char* textureName);
+	Texture(const char* textureName);
 	Texture(uint8_t* data, int width, int height);
 
 	void initTexture();

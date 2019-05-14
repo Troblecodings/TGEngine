@@ -22,7 +22,6 @@ namespace tg_font {
 			 * Initializes all values (besides default constructor)
 			 * Adds new font to the cache and adds the generated texture +  it's material (UI)
 			 */
-			Font() {}
 			Font(char* path) : Font(path, 30) {}
 			Font(char* path, uint32_t height);
 
@@ -40,7 +39,7 @@ namespace tg_font {
 
 		private:
 			uint32_t height;
-			Texture texture;
+			Texture* texture;
 			stbtt_bakedchar cdata[256];
 			uint32_t material;
 	};

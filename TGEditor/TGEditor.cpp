@@ -2,14 +2,13 @@
 
 Mesh mesh;
 Mesh mesh2;
-tg_font::Font arial;
 Camera camera;
 tg_ui::UIEntity entity = tg_ui::UIEntity({ 1.0f, 1.0f }, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
-	arial = tg_font::Font("resource\\arial.ttf", 40);
+	tg_font::Font arial = tg_font::Font("resource\\arial.ttf", 40);
 
 	Texture tex1 = Texture("resource\\ODST_Helmet.png");
 	Texture tex2 = Texture("resource\\test_logo.png");

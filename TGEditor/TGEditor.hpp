@@ -18,7 +18,6 @@
 
 extern Mesh mesh;
 extern Mesh mesh2;
-extern tg_font::Font arial;
 extern Camera camera;
 extern tg_ui::UIEntity entity;
 

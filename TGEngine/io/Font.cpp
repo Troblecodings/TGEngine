@@ -3,12 +3,17 @@
 namespace tg_font {
 
 	Font::Font(char* path, uint32_t height) : height(height){
-		stbi_uc* colorData = new stbi_uc[height * 16384 * (size_t)height];
+		uint8_t* fileData = tge::nio::readAll(path);
+		ASSERT_NONE_NULL_DB(fileData, "File data nullptr!", TG_ERR_DB_NULLPTR)
 
-		stbi_uc* tempbitmap = new stbi_uc[height * 4096 * (size_t)height];
-		stbtt_BakeFontBitmap(tge::nio::readAll(path), 0, height, tempbitmap, height * 64, height * 64, 0, 256, this->cdata);
+		uint8_t* tempbitmap = new uint8_t[(size_t)height * (size_t)4096 * (size_t)height];
+		stbtt_BakeFontBitmap(fileData, 0, height, tempbitmap, height * 64, height * 64, 0, 256, this->cdata);
 
-		for (size_t i = 0; i < (height * 128 * (size_t)height); i++)
+		delete[] fileData;
+
+		uint8_t* colorData = new uint8_t[(size_t)height * (size_t)16384 * (size_t)height];
+
+		for (size_t i = 0; i < ((size_t)height * (size_t)4096 * (size_t)height); i++)
 		{
 			colorData[i * 4] = tempbitmap[i];
 			colorData[i * 4 + 1] = tempbitmap[i];
@@ -16,10 +21,11 @@ namespace tg_font {
 			colorData[i * 4 + 3] = tempbitmap[i];
 		}
 		delete[] tempbitmap;
-		this->texture = Texture(colorData, height * 64, height * 64);
+
+		this->texture = new Texture(colorData, height * 64, height * 64);
 
 		Material mat;
-		mat.texture = &this->texture;
+		mat.texture = this->texture;
 		mat.isUI = true;
 		mat.color = glm::vec4(1, 1, 1, 1);
 		TG_VECTOR_APPEND_NORMAL(materials, mat)
@@ -32,7 +38,7 @@ namespace tg_font {
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
-			stbtt_GetBakedQuad(this->cdata, this->texture.getWidth(), this->texture.getHeight(), *text, &pos.x, &pos.y, &quad, 0);
+			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
 			uint32_t idcount = (uint32_t)buffer->count_of_points;
 			quad.x0 *= multiplier * 0.002;
 			quad.x1 *= multiplier * 0.002;
@@ -74,7 +80,7 @@ namespace tg_font {
 		while (*chr)
 		{
 			stbtt_aligned_quad quad;
-			stbtt_GetBakedQuad(this->cdata, this->texture.getWidth(), this->texture.getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
+			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
 			chr++;
 		}
 		pos.y = this->height * 0.0015;

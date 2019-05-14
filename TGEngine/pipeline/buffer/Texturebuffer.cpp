@@ -6,9 +6,9 @@ VkSampler imageSampler;
 
 using namespace tge::nio;
 
-Texture::Texture(char* textureName) : textureName(textureName) {
+Texture::Texture(const char* textureName) : textureName(textureName) {
 	ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
-	ASSERT_NONE_NULL_DB(*textureName == 0, "File name null [points to an empty string]", TG_ERR_DB_NULLPTR)
+	ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
 	textures.push_back(this);
 }
 
@@ -23,13 +23,16 @@ void Texture::initTexture()
 {
 	// Load texture if not build in (textureName == nulptr)
 	if (this->textureName) {
-		File file = open(this->textureName, "rb");
+		File file = open(const_cast<char*> (this->textureName), "rb");
 		this->imageData = stbi_load_from_file(file, &this->width, &this->height, &this->channel, STBI_rgb_alpha);
 	}
 
 	// Imageview create parameters
 	vlib_image_create_info.extent.width = this->width;
 	vlib_image_create_info.extent.height = this->height;
+
+	// Buffer size
+	vlib_buffer_create_info.size = (uint32_t)this->width * (uint32_t)this->height * (uint32_t)4;
 
 	// Mipmaplevels
 	if (this->miplevels == AUTO_MIPMAP)
@@ -38,15 +41,12 @@ void Texture::initTexture()
 
 	this->vulkanTexture.initVulkan();
 	void* memory = this->vulkanTexture.map(this->width + this->height * 4);
-	memcpy(memory, this->imageData, this->width * this->height * 4);
+	memcpy(memory, this->imageData, vlib_buffer_create_info.size);
 	this->vulkanTexture.unmap();
 
 	// Destroy unneeded resources
 	if (this->textureName) {
 		stbi_image_free(this->imageData);
-	}
-	else {
-		delete[] this->imageData;
 	}
 }
 
@@ -59,8 +59,6 @@ void Texture::generateMipMaps(VkCommandBuffer buffer)
 	vlib_buffer_image_copy.imageExtent.height = this->height;
 
 	this->vulkanTexture.queueLoading(buffer);
-
-	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 
 	this->vulkanTexture.generateMipmaps(buffer);
 }
@@ -98,6 +96,8 @@ void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
 {
 	// TODO Fix this mess
 	uint32_t mipwidth = vlib_buffer_image_copy.imageExtent.width, mipheight = vlib_buffer_image_copy.imageExtent.height, mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
+	
+	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 
 	for (size_t i = 1; i < mipmapLevels; i++)
 	{

@@ -21,7 +21,7 @@ void createCommandBuffer() {
 		last_result = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
 		HANDEL(last_result)
 
-			vlib_command_buffer_allocate_info.commandPool = command_pool;
+		vlib_command_buffer_allocate_info.commandPool = command_pool;
 	}
 
 	vlib_command_buffer_allocate_info.commandBufferCount = image_count;
