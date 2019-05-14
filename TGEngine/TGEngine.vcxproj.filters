@@ -249,6 +249,9 @@
     <ClInclude Include="game_content\Material.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
+    <ClInclude Include="model\GLTFLoader.hpp">
+      <Filter>Headerdateien\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -403,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="game_content\Material.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="model\GLTFLoader.cpp">
+      <Filter>Quelldateien\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

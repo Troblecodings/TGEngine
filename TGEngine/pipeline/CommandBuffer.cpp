@@ -74,7 +74,7 @@ void startupCommands() {
 	startSingleTimeCommand();
 
 	for each(Texture* tex in textures) {
-		tex->generateMipMaps(SINGELTIME_COMMAND_BUFFER);
+		tex->load(SINGELTIME_COMMAND_BUFFER);
 	}
 
 	vlib_image_memory_barrier.subresourceRange.levelCount = 1;

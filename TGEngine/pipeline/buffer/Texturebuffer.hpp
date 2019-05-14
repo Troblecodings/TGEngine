@@ -40,37 +40,49 @@ public:
 	void destroy(); // Destroys the whole texture
 };
 
+/*
+ * Wrapper for all textures
+ *   -> API independent
+ */
+SINCE(0, 0, 4)
 class Texture {
 
 public:
-	VulkanTexture vulkanTexture;
+	VulkanTexture vulkanTexture; // stores the vulken implementation
 
 private:
-	const char* textureName = nullptr;
-	uint32_t miplevels = AUTO_MIPMAP;
+	const char* textureName = nullptr; // name
+	uint32_t miplevels = AUTO_MIPMAP; // the maximum mipmap levels -> currently not changable
+	// TODO changable
 
-	int width;
-	int height;
-	int channel;
-	uint8_t* imageData;
+	int width; // stores the width -> see stb
+	int height; // stores the height -> see stb
+	int channel; // stores the channel -> see stb
+	uint8_t* imageData; // stores the image data -> see stb
 
 public:
-	Texture(const char* textureName);
-	Texture(uint8_t* data, int width, int height);
+	Texture(const char* textureName); // Loads texture from file
+	Texture(uint8_t* data, int width, int height); // Uses generated texture
 
-	void initTexture();
-	void generateMipMaps(VkCommandBuffer buffer);
+	void initTexture(); // inits all image resources
+	void load(VkCommandBuffer buffer); // loads the image and it's according mip levels
 
-	int getWidth();
-	int getHeight();
+	int getWidth(); // gets the width
+	int getHeight(); // gets the height
 };
 
-extern std::vector<Texture*> textures;
+extern std::vector<Texture*> textures; // All textures
 extern Descriptor textureDescriptor;
 extern VkSampler imageSampler;
 
+/*
+ * Inits all textures
+ */
 SINCE(0, 0, 2)
 void initAllTextures();
 
+/*
+ * Destroys all textures
+ */
 SINCE(0, 0, 2)
 void destroyAllTextures();

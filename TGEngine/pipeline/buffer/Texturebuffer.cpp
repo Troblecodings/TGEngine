@@ -50,7 +50,7 @@ void Texture::initTexture()
 	}
 }
 
-void Texture::generateMipMaps(VkCommandBuffer buffer)
+void Texture::load(VkCommandBuffer buffer)
 {
 	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
 	vlib_image_memory_barrier.subresourceRange.levelCount = this->miplevels;
