@@ -12,12 +12,25 @@
 #define AUTO_MIPMAP 0xFFFFFF
 
 /*
+ * Holder struct for sampler
+ *  -> API independency layer
+ */
+SINCE(0, 0, 4)
+typedef VkSampler* Sampler;
+
+extern VkSampler defaultImageSampler;  // The default sampler if none is provided
+
+class Texture; // pre defintion
+
+/*
  * Holder for Vulkan specific image components
  */
 SINCE(0, 0, 4)
 class VulkanTexture {
 
 private:
+	Texture* texture;
+
 	VkImage image; // The image vulkan representation
 	VkImageView imageView; // The view of the image ... to view the image LOL
 	VkBuffer buffer; // Buffer to store the image in befor it is transfered to the actual image -> deleted after transfer
@@ -28,6 +41,8 @@ private:
 	VkFormat imageFormat = VK_FORMAT_R8G8B8A8_UNORM; // TODO Needs auto querry
 
 public:
+	VulkanTexture(Texture* texture) : texture(texture) {}
+
 	void initVulkan();
 
 	void* map(uint32_t size); // Maps the buffer memory
@@ -48,7 +63,8 @@ SINCE(0, 0, 4)
 class Texture {
 
 public:
-	VulkanTexture vulkanTexture; // stores the vulken implementation
+	VulkanTexture* vulkanTexture; // stores the vulken implementation
+	Sampler sampler = &defaultImageSampler;// holds a custom sampler
 
 private:
 	const char* textureName = nullptr; // name
@@ -69,17 +85,23 @@ public:
 
 	int getWidth(); // gets the width
 	int getHeight(); // gets the height
+
 };
 
 extern std::vector<Texture*> textures; // All textures
-extern Descriptor textureDescriptor;
-extern VkSampler imageSampler;
+extern Descriptor textureDescriptor; // The descritor for the textures
 
 /*
  * Inits all textures
  */
 SINCE(0, 0, 2)
 void initAllTextures();
+
+/*
+ * Creates a custom sampler
+ */
+SINCE(0, 0, 4)
+void createSampler(Sampler sampler);
 
 /*
  * Destroys all textures

@@ -41,7 +41,7 @@ void Material::createMaterial()
 	light_buffer.descriptor.binding = 1;
 	light_buffer.updateDescriptor();
 
-	this->texture->vulkanTexture.updateDescriptor();
+	this->texture->vulkanTexture->updateDescriptor();
 }
 
 void Material::createUIMaterial()

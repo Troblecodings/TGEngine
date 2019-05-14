@@ -100,7 +100,7 @@ void startupCommands() {
 	endSingleTimeCommand();
 
 	for each(Texture* tex in textures) {
-		tex->vulkanTexture.dispose();
+		tex->vulkanTexture->dispose();
 	}
 }
 

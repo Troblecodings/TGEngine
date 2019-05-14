@@ -2,17 +2,19 @@
 
 std::vector<Texture*> textures;
 Descriptor textureDescriptor;
-VkSampler imageSampler;
+VkSampler defaultImageSampler;
 
 using namespace tge::nio;
 
 Texture::Texture(const char* textureName) : textureName(textureName) {
+	this->vulkanTexture = new VulkanTexture(this);
 	ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
 	ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
 	textures.push_back(this);
 }
 
 Texture::Texture(uint8_t* data, int width, int height) {
+	this->vulkanTexture = new VulkanTexture(this);
 	textures.push_back(this);
 	this->imageData = data;
 	this->width = width;
@@ -39,10 +41,10 @@ void Texture::initTexture()
 		this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
 	vlib_image_create_info.mipLevels = this->miplevels;
 
-	this->vulkanTexture.initVulkan();
-	void* memory = this->vulkanTexture.map(this->width + this->height * 4);
+	this->vulkanTexture->initVulkan();
+	void* memory = this->vulkanTexture->map(this->width + this->height * 4);
 	memcpy(memory, this->imageData, vlib_buffer_create_info.size);
-	this->vulkanTexture.unmap();
+	this->vulkanTexture->unmap();
 
 	// Destroy unneeded resources
 	if (this->textureName) {
@@ -58,9 +60,8 @@ void Texture::load(VkCommandBuffer buffer)
 	vlib_buffer_image_copy.imageExtent.width = this->width;
 	vlib_buffer_image_copy.imageExtent.height = this->height;
 
-	this->vulkanTexture.queueLoading(buffer);
-
-	this->vulkanTexture.generateMipmaps(buffer);
+	this->vulkanTexture->queueLoading(buffer);
+	this->vulkanTexture->generateMipmaps(buffer);
 }
 
 int Texture::getWidth()
@@ -74,7 +75,7 @@ int Texture::getHeight()
 }
 
 void VulkanTexture::updateDescriptor() {
-	textureDescriptor.updateImageInfo(imageSampler, this->imageView);
+	textureDescriptor.updateImageInfo(*this->texture->sampler, this->imageView);
 }
 
 void VulkanTexture::queueLoading(VkCommandBuffer buffer)
@@ -94,8 +95,9 @@ void VulkanTexture::queueLoading(VkCommandBuffer buffer)
 
 void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
 {
-	// TODO Fix this mess
-	uint32_t mipwidth = vlib_buffer_image_copy.imageExtent.width, mipheight = vlib_buffer_image_copy.imageExtent.height, mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
+	uint32_t mipwidth = this->texture->getWidth(), 
+		mipheight = this->texture->getHeight(),
+		mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
 	
 	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 
@@ -126,66 +128,47 @@ void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
 }
 
 void initAllTextures() {
-	// TODO per texture sampler ?
-	// Maybe a default sampler + custome sampler?
-	// Maybe separeted  functions?
-	VkSamplerCreateInfo sampler_create_info = {
-		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-		nullptr,
-		0,
-		VK_FILTER_LINEAR,
-		VK_FILTER_LINEAR,
-		VK_SAMPLER_MIPMAP_MODE_LINEAR,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		0,
-		VK_TRUE,
-		16.0f,
-		VK_TRUE,
-		VK_COMPARE_OP_ALWAYS,
-		0,
-		10,
-		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
-		VK_FALSE
-	};
-	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &imageSampler);
-	HANDEL(last_result)
-	//
-	
+	// Creates default sampler
+	createSampler(&defaultImageSampler);
+
 	textureDescriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
 
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
+	// Get default 
+	VkImageFormatProperties imageFormatProperties;
+	last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
+		vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
+	HANDEL(last_result)
+
 	for each(Texture* ptr in textures) {
 		ptr->initTexture();
 	}
+}
+
+void createSampler(Sampler sampler)
+{
+	last_result = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
+	HANDEL(last_result)
 }
 
 void destroyAllTextures() {
 	last_result = vkDeviceWaitIdle(device);
 	HANDEL(last_result)
 
-	vkDestroySampler(device, imageSampler, nullptr);
+	vkDestroySampler(device, defaultImageSampler, nullptr);
 	for each(Texture* tex in textures) {
-		tex->vulkanTexture.destroy();
+		tex->vulkanTexture->destroy();
 	}
 }
 
 void VulkanTexture::initVulkan()
 {
+	vkGetPhysicalDeviceImage
 	vlib_image_create_info.format = this->imageFormat; // TODO Auto querry
 
-	// TODO FIX THIS MESS
-	// TODO AUTO QUERRY
-	VkImageFormatProperties imageFormatProperties;
-	last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
-	vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
-	HANDEL(last_result)
-	//
-	
 	// Image
 	last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
 	HANDEL(last_result)
