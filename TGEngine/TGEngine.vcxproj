@@ -34,7 +34,6 @@
     <ClInclude Include="game_content\Mesh.hpp" />
     <ClInclude Include="game_content\StaticCamera.hpp" />
     <ClInclude Include="io\Files.hpp" />
-    <ClInclude Include="io\ImagePNG.hpp" />
     <ClInclude Include="io\Keyboard.hpp" />
     <ClInclude Include="io\Font.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
@@ -89,7 +88,6 @@
     <ClCompile Include="game_content\Mesh.cpp" />
     <ClCompile Include="game_content\StaticCamera.cpp" />
     <ClCompile Include="io\Files.cpp" />
-    <ClCompile Include="io\ImagePNG.cpp" />
     <ClCompile Include="io\Keyboard.cpp" />
     <ClCompile Include="io\Font.cpp" />
     <ClCompile Include="io\Mouse.cpp" />

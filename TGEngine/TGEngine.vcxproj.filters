@@ -171,9 +171,6 @@
     <ClInclude Include="io\Files.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="io\ImagePNG.hpp">
-      <Filter>Headerdateien\io</Filter>
-    </ClInclude>
     <ClInclude Include="io\Mouse.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
@@ -327,9 +324,6 @@
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
     <ClCompile Include="io\Files.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="io\ImagePNG.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
     <ClCompile Include="io\Mouse.cpp">

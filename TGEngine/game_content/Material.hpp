@@ -3,6 +3,8 @@
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../pipeline/Pipe.hpp"
 
+using namespace tge::tex;
+
 /*
  * Material can hold a texture and a color
  * -> Can not be changed in vulkan runtime

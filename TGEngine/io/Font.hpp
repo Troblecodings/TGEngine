@@ -14,6 +14,8 @@
 
 namespace tg_font {
 
+	using namespace tge::tex;
+
 	SINCE(0, 0, 4)
 	class Font {
 
