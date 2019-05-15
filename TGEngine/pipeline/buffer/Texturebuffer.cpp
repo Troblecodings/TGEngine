@@ -166,7 +166,6 @@ void destroyAllTextures() {
 
 void VulkanTexture::initVulkan()
 {
-	vkGetPhysicalDeviceImage
 	vlib_image_create_info.format = this->imageFormat; // TODO Auto querry
 
 	// Image
