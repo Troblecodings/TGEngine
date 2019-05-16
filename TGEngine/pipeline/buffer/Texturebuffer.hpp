@@ -41,7 +41,7 @@ namespace tge {
 				VkDeviceMemory imageMemory; // The bound image memory
 				VkDeviceMemory bufferMemory; // The bound buffer memory -> deleted after transfer
 
-				VkFormat imageFormat = VK_FORMAT_R8G8B8A8_UNORM; // TODO Needs auto querry
+				VkFormat imageFormat; // Auto generated!
 
 			public:
 				VulkanTexture(Texture* texture) : texture(texture) {}
