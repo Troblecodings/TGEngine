@@ -24,15 +24,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createDevice({}, {});
 	prePipeline();
 
-	Texture no_texture = {};
-	no_texture.width = 1;
-	no_texture.height = 1;
-	no_texture.image_data = new stbi_uc[4];
-	no_texture.image_data[0] = 1;
-	no_texture.image_data[1] = 0;
-	no_texture.image_data[2] = 1;
-	no_texture.image_data[3] = 1;
-	createTexture(&no_texture);
+	uint8_t imageData[4] = { 1, 1, 1, 1 };
+	Texture defaultTexture = Texture(imageData, 1, 1);
 
 	init();
 
@@ -101,8 +94,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.end();
 
 	setLightPosition({ 0, 0, -10 });
-
-	addTextures();
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
