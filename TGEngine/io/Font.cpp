@@ -2,29 +2,30 @@
 
 namespace tg_font {
 
-	Font::Font(char* path, uint32_t height) {
-		this->height = height;
-		this->texture.texture_path = nullptr;
-		this->texture.width = height * 64;
-		this->texture.height = height * 64;
-		this->texture.image_data = new stbi_uc[this->texture.width * (size_t)this->texture.height * 4];
+	Font::Font(char* path, uint32_t height) : height(height){
+		uint8_t* fileData = tge::nio::readAll(path);
+		ASSERT_NONE_NULL_DB(fileData, "File data nullptr!", TG_ERR_DB_NULLPTR)
 
-		stbi_uc* tempbitmap = new stbi_uc[this->texture.width * (size_t)this->texture.height];
+		uint8_t* tempbitmap = new uint8_t[(size_t)height * (size_t)4096 * (size_t)height];
+		stbtt_BakeFontBitmap(fileData, 0, height, tempbitmap, height * 64, height * 64, 0, 256, this->cdata);
 
-		stbtt_BakeFontBitmap(tge::nio::readAll(path), 0, height, tempbitmap, this->texture.width, this->texture.height, 0, 256, this->cdata);
+		delete[] fileData;
 
-		for (size_t i = 0; i < (this->texture.width * (size_t)this->texture.height); i++)
+		uint8_t* colorData = new uint8_t[(size_t)height * (size_t)16384 * (size_t)height];
+
+		for (size_t i = 0; i < ((size_t)height * (size_t)4096 * (size_t)height); i++)
 		{
-			this->texture.image_data[i * 4] = tempbitmap[i];
-			this->texture.image_data[i * 4 + 1] = tempbitmap[i];
-			this->texture.image_data[i * 4 + 2] = tempbitmap[i];
-			this->texture.image_data[i * 4 + 3] = tempbitmap[i];
+			colorData[i * 4] = tempbitmap[i];
+			colorData[i * 4 + 1] = tempbitmap[i];
+			colorData[i * 4 + 2] = tempbitmap[i];
+			colorData[i * 4 + 3] = tempbitmap[i];
 		}
 		delete[] tempbitmap;
-		createTexture(&this->texture);
+
+		this->texture = new Texture(colorData, height * 64, height * 64);
 
 		Material mat;
-		mat.texture = &this->texture;
+		mat.texture = this->texture;
 		mat.isUI = true;
 		mat.color = glm::vec4(1, 1, 1, 1);
 		TG_VECTOR_APPEND_NORMAL(materials, mat)
@@ -37,7 +38,7 @@ namespace tg_font {
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
-			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *text, &pos.x, &pos.y, &quad, 0);
+			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
 			uint32_t idcount = (uint32_t)buffer->count_of_points;
 			quad.x0 *= multiplier * 0.002;
 			quad.x1 *= multiplier * 0.002;
@@ -79,7 +80,7 @@ namespace tg_font {
 		while (*chr)
 		{
 			stbtt_aligned_quad quad;
-			stbtt_GetBakedQuad(this->cdata, this->texture.width, this->texture.height, *chr, &pos.x, &pos.y, &quad, 0);
+			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
 			chr++;
 		}
 		pos.y = this->height * 0.0015;

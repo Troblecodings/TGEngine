@@ -8,9 +8,9 @@ void createStagingBuffer(StagingBuffer* buffer) {
 	last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &buffer->staging_buffer);
 	HANDEL(last_result)
 
-	vkGetBufferMemoryRequirements(device, buffer->staging_buffer, &last_requirements);
+	vkGetBufferMemoryRequirements(device, buffer->staging_buffer, &lastRequirements);
 
-	vlib_buffer_memory_allocate_info.allocationSize = last_requirements.size;
+	vlib_buffer_memory_allocate_info.allocationSize = lastRequirements.size;
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
 	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &buffer->staging_buffer_device_memory);
 	HANDEL(last_result)

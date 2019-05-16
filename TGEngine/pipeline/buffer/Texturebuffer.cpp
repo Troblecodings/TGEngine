@@ -1,206 +1,242 @@
 #include "Texturebuffer.hpp"
 
-std::vector<Texture*> texture_buffers;
-std::vector<Material> materials;
-Descriptor texture_descriptor;
-VkSampler tex_image_sampler;
-uint32_t tex_array_index = 0;
-std::vector<RenderOffsets> render_offset;
+namespace tge {
+	namespace tex {
 
-using namespace tge::nio;
+		std::vector<Texture*> textures;
+		Descriptor textureDescriptor;
+		VkSampler defaultImageSampler;
+		VkFormat defaultImageFormat;
 
-void Material::createMaterial()
-{
-	// TODO Fix this mess
-	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
-	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
-	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
-	
-	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
-	for (size_t i = 0; i < 4; i++)
-	{
-		map_entrys[i].constantID = i;
-		map_entrys[i].offset = i * sizeof(float);
-		map_entrys[i].size = sizeof(float);
-	}
+		using namespace tge::nio;
 
-	VkSpecializationInfo pSpecialization;
-	pSpecialization.mapEntryCount = 4;
-	pSpecialization.pData = &this->color;
-	pSpecialization.dataSize = sizeof(float) * 4;
-	pSpecialization.pMapEntries = map_entrys;
-	//
-
-	shaders_for_tex[1].pSpecializationInfo = &pSpecialization;
-
-	createPipelineLayout(1, &descriptor_set_layouts[createDesctiptorLayout()]);
-	this->layout_index = last_size;
-	
-	this->descriptor_index = texture_descriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
-
-	createPipeline(shaders_for_tex, 2, this->layout_index);
-	this->pipeline_index = last_size;
-
-	camera_uniform.descriptor.binding = 0;
-	camera_uniform.updateDescriptor();
-
-	light_buffer.descriptor.binding = 1;
-	light_buffer.updateDescriptor();
-
-	texture_descriptor.updateImageInfo(tex_image_sampler, this->texture->image_view);
-}
-
-void Material::destroy()
-{
-	destroyDesctiptorSet(this->descriptor_index);
-	//destroyDesctiptorLayout(this->layout_index);
-	destroyPipeline(this->pipeline_index);
-	destroyPipelineLayout(this->layout_index);
-}
-
-bool Material::operator==(const Material & material)
-{
-	return material.color == this->color && material.texture == this->texture;
-}
-
-void createTexture(Texture* tex) {
-	texture_buffers.push_back(tex);
-}
-
-void initAllTextures() {
-	VkSamplerCreateInfo sampler_create_info = {
-		VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-		nullptr,
-		0,
-		VK_FILTER_LINEAR,
-		VK_FILTER_LINEAR,
-		VK_SAMPLER_MIPMAP_MODE_LINEAR,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
-		0,
-		VK_TRUE,
-		16.0f,
-		VK_TRUE,
-		VK_COMPARE_OP_ALWAYS,
-		0,
-		10,
-		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
-		VK_FALSE
-	};
-	last_result = vkCreateSampler(device, &sampler_create_info, nullptr, &tex_image_sampler);
-	HANDEL(last_result)
-
-	texture_descriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
-
-	vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
-	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-	for each(Texture* ptr in texture_buffers) {
-
-		if (ptr->texture_path) {
-			File file = open(ptr->texture_path, "rb");
-			ptr->image_data = stbi_load_from_file(file, &ptr->width, &ptr->height, &ptr->channel, STBI_rgb_alpha);
+		Texture::Texture(const char* textureName) : textureName(textureName) {
+			this->vulkanTexture = new VulkanTexture(this);
+			ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
+				ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
+				textures.push_back(this);
 		}
 
-		vlib_image_create_info.format = ptr->image_format; // Gonna fix thus
-		vlib_image_create_info.extent.width = ptr->width;
-		vlib_image_create_info.extent.height = ptr->height;
-
-		// TODO FIX THIS MESS
-        // TODO AUTO QUERRY
-		VkImageFormatProperties props;
-		last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
-			vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &props);
-		HANDEL(last_result)
-		//
-
-		if (ptr->miplevels == AUTO_MIPMAP) 
-			ptr->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
-
-		vlib_image_create_info.mipLevels = ptr->miplevels;// = math::u_min(props.maxMipLevels, ptr->miplevels);
-		last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &ptr->image);
-		HANDEL(last_result)
-
-		vkGetImageMemoryRequirements(device, ptr->image, &ptr->requierments);
-
-		vlib_buffer_memory_allocate_info.allocationSize = ptr->requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
-		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->d_memory);
-		HANDEL(last_result)
-
-		last_result = vkBindImageMemory(device, ptr->image, ptr->d_memory, 0);
-		HANDEL(last_result)
-
-		vlib_buffer_create_info.size = ptr->width * ptr->height * 4;
-		last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &ptr->buffer);
-		HANDEL(last_result)
-
-		vkGetBufferMemoryRequirements(device, ptr->buffer, &ptr->buffer_requierments);
-
-		vlib_buffer_memory_allocate_info.allocationSize = ptr->buffer_requierments.size;
-		vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
-		last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &ptr->buffer_memory);
-		HANDEL(last_result)
-
-		last_result = vkBindBufferMemory(device, ptr->buffer, ptr->buffer_memory, 0);
-		HANDEL(last_result)
-
-		last_result = vkMapMemory(device, ptr->buffer_memory, 0, ptr->width * ptr->height * 4, 0, &ptr->memory);
-		HANDEL(last_result);
-
-		memcpy(ptr->memory, ptr->image_data, ptr->width * ptr->height * 4);
-		vkUnmapMemory(device, ptr->buffer_memory);
-
-		if (ptr->texture_path) {
-			stbi_image_free(ptr->image_data);
-		}
-		else {
-			delete[] ptr->image_data;
+		Texture::Texture(uint8_t * data, int width, int height) {
+			this->vulkanTexture = new VulkanTexture(this);
+			textures.push_back(this);
+			this->imageData = data;
+			this->width = width;
+			this->height = height;
 		}
 
-		vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-		vlib_image_view_create_info.format = ptr->image_format;
-		vlib_image_view_create_info.image = ptr->image;
-		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &ptr->image_view);
-		HANDEL(last_result)
+		void Texture::initTexture()
+		{
+			// Load texture if not build in (textureName == nulptr)
+			if (this->textureName) {
+				File file = open(const_cast<char*> (this->textureName), "rb");
+				this->imageData = stbi_load_from_file(file, &this->width, &this->height, &this->channel, STBI_rgb_alpha);
+			}
+
+			// Imageview create parameters
+			vlib_image_create_info.extent.width = this->width;
+			vlib_image_create_info.extent.height = this->height;
+
+			// Buffer size
+			vlib_buffer_create_info.size = (uint32_t)this->width * (uint32_t)this->height * (uint32_t)4;
+
+			// Mipmaplevels
+			if (this->miplevels == AUTO_MIPMAP)
+				this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
+			vlib_image_create_info.mipLevels = this->miplevels;
+
+			this->vulkanTexture->initVulkan();
+			void* memory = this->vulkanTexture->map(this->width + this->height * 4);
+			memcpy(memory, this->imageData, vlib_buffer_create_info.size);
+			this->vulkanTexture->unmap();
+
+			// Destroy unneeded resources
+			if (this->textureName) {
+				stbi_image_free(this->imageData);
+			}
+		}
+
+		void Texture::load(VkCommandBuffer buffer)
+		{
+			vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
+			vlib_image_memory_barrier.subresourceRange.levelCount = this->miplevels;
+
+			vlib_buffer_image_copy.imageExtent.width = this->width;
+			vlib_buffer_image_copy.imageExtent.height = this->height;
+
+			this->vulkanTexture->queueLoading(buffer);
+			this->vulkanTexture->generateMipmaps(buffer);
+		}
+
+		int Texture::getWidth()
+		{
+			return this->width;
+		}
+
+		int Texture::getHeight()
+		{
+			return this->height;
+		}
+
+		void VulkanTexture::updateDescriptor() {
+			textureDescriptor.updateImageInfo(*this->texture->sampler, this->imageView);
+		}
+
+		void VulkanTexture::queueLoading(VkCommandBuffer buffer)
+		{
+			// Copys the buffer to the image
+			ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, this->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+
+				vkCmdCopyBufferToImage(
+					buffer,
+					this->buffer,
+					this->image,
+					VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+					1,
+					&vlib_buffer_image_copy
+				);
+		}
+
+		void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
+		{
+			uint32_t mipwidth = this->texture->getWidth(),
+				mipheight = this->texture->getHeight(),
+				mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
+
+			vlib_image_memory_barrier.subresourceRange.levelCount = 1;
+
+			for (size_t i = 1; i < mipmapLevels; i++)
+			{
+				vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
+				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
+
+					vlib_image_blit.srcSubresource.mipLevel = i - 1;
+				vlib_image_blit.dstSubresource.mipLevel = i;
+				vlib_image_blit.srcOffsets[1].x = mipwidth;
+				vlib_image_blit.srcOffsets[1].y = mipheight;
+				vlib_image_blit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
+				vlib_image_blit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
+				vkCmdBlitImage(buffer, this->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlib_image_blit, VK_FILTER_LINEAR);
+
+				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+
+					if (mipwidth > 1) mipwidth /= 2;
+				if (mipheight > 1) mipheight /= 2;
+			}
+
+			if (mipmapLevels > 1) {
+				vlib_image_memory_barrier.subresourceRange.baseMipLevel = mipmapLevels - 1;
+			}
+
+			ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+		}
+
+		void initAllTextures() {
+			// Querries formats
+			for (VkFormat format : { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_A2B10G10R10_UNORM_PACK32, VK_FORMAT_B10G11R11_UFLOAT_PACK32}) {
+				VkFormatProperties prop;
+				vkGetPhysicalDeviceFormatProperties(used_physical_device, format, &prop);
+				if ((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
+					defaultImageFormat = format;
+					break;
+				}
+			}
+
+			// Creates default sampler
+			createSampler(&defaultImageSampler);
+
+			textureDescriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
+
+			vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+			vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+			vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+			// Get default 
+			VkImageFormatProperties imageFormatProperties;
+			last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
+				vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
+			HANDEL(last_result)
+
+				for each (Texture * ptr in textures) {
+					ptr->initTexture();
+				}
+		}
+
+		void createSampler(Sampler sampler)
+		{
+			last_result = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
+			HANDEL(last_result)
+		}
+
+		void destroyAllTextures() {
+			last_result = vkDeviceWaitIdle(device);
+			HANDEL(last_result)
+
+				vkDestroySampler(device, defaultImageSampler, nullptr);
+			for each (Texture * tex in textures) {
+				tex->vulkanTexture->destroy();
+			}
+		}
+
+		void VulkanTexture::initVulkan()
+		{
+			vlib_image_create_info.format = defaultImageFormat;
+
+			// Image
+			last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
+			HANDEL(last_result)
+
+				QUERRY_IMAGE_REQUIREMENTS(this->image, vlib_device_local_memory_index)
+				last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &this->imageMemory);
+			HANDEL(last_result)
+
+				last_result = vkBindImageMemory(device, this->image, this->imageMemory, 0);
+			HANDEL(last_result)
+
+				// Buffer
+				last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &this->buffer);
+			HANDEL(last_result)
+
+				QUERRY_BUFFER_REQUIREMENTS(this->buffer, vlib_device_host_visible_coherent_index)
+				last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &bufferMemory);
+			HANDEL(last_result)
+
+				last_result = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
+			HANDEL(last_result)
+
+				// Imageview
+				vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			vlib_image_view_create_info.format = this->imageFormat;
+			vlib_image_view_create_info.image = this->image;
+			last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
+			HANDEL(last_result)
+		}
+
+		void* VulkanTexture::map(uint32_t size)
+		{
+			void* memory;
+			last_result = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
+			HANDEL(last_result);
+			return memory;
+		}
+
+		void VulkanTexture::unmap()
+		{
+			vkUnmapMemory(device, this->bufferMemory);
+		}
+
+		void VulkanTexture::dispose()
+		{
+			vkFreeMemory(device, this->bufferMemory, nullptr);
+			vkDestroyBuffer(device, this->buffer, nullptr);
+		}
+
+		void VulkanTexture::destroy()
+		{
+			vkDestroyImageView(device, this->imageView, nullptr);
+			vkFreeMemory(device, this->imageMemory, nullptr);
+			vkDestroyImage(device, this->image, nullptr);
+		}
+
 	}
-}
-
-void addTextures() {
-}
-
-void destroyBufferofTexture(Texture* tex) {
-	vkFreeMemory(device, tex->buffer_memory, nullptr);
-	vkDestroyBuffer(device, tex->buffer, nullptr);
-}
-
-
-void destroyTexture(Texture* tex) {
-	vkDestroyImageView(device, tex->image_view, nullptr);
-	vkFreeMemory(device, tex->d_memory, nullptr);
-	vkDestroyImage(device, tex->image, nullptr);
-}
-
-void destroyAllTextures() {
-	last_result = vkDeviceWaitIdle(device);
-	HANDEL(last_result)
-
-	vkDestroySampler(device, tex_image_sampler, nullptr);
-	for each(Texture* tex in texture_buffers) {
-		destroyTexture(tex);
-	}
-}
-
-void Material::createUIMaterial()
-{
-	vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
-	Material::createMaterial();
-	vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
-	vlib_depth_stencil_state.depthTestEnable = VK_TRUE;
-	ui_camera_uniform.descriptor.descriptorset = this->descriptor_index;
-	ui_camera_uniform.descriptor.binding = 0;
-	ui_camera_uniform.updateDescriptor();
 }

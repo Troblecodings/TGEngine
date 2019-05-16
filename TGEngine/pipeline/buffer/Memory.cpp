@@ -5,20 +5,20 @@ std::vector<VkDeviceSize> buffer_sizes = {};
 std::vector<VkDeviceSize> buffer_offsets = { 0 };
 VkDeviceMemory device_memory;
 VkDeviceSize _impl_size;
-VkMemoryRequirements last_requirements;
+VkMemoryRequirements lastRequirements;
 
 uint32_t addBuffer(VkBuffer buffer) {
-	vkGetBufferMemoryRequirements(device, buffer, &last_requirements);
+	vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);
 
-	_impl_size += last_requirements.size;
+	_impl_size += lastRequirements.size;
 
 	size_t csize = buffer_offsets.size();
 	buffer_offsets.resize(csize + 1);
-	buffer_offsets[csize] = buffer_offsets[csize - 1] + last_requirements.size;
+	buffer_offsets[csize] = buffer_offsets[csize - 1] + lastRequirements.size;
 
 	csize = buffer_sizes.size();
 	buffer_sizes.resize(csize + 1);
-	buffer_sizes[csize] = last_requirements.size;
+	buffer_sizes[csize] = lastRequirements.size;
 
 	buffers.resize(csize + 1);
 	buffers[csize] = buffer;

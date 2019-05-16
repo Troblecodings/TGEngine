@@ -51,7 +51,7 @@ void destroyDesctiptorLayout(uint32_t layout) {
 	vkDestroyDescriptorSetLayout(device, descriptor_set_layouts[layout], nullptr);
 }
 
-void destroyDesctiptorSet(uint32_t layout) {
+void destroyDescriptorSet(uint32_t layout) {
 	last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
 	HANDEL(last_result);
 }

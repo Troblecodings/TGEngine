@@ -11,7 +11,7 @@
 #include "../vlib/VulkanImage.hpp"
 #include "buffer/StagingBuffer.hpp"
 #include "../vlib/VulkanCommandBuffer.hpp"
-#include "buffer/Texturebuffer.hpp"
+#include "../game_content/Material.hpp"
 
 #define SINGELTIME_COMMAND_BUFFER command_buffers[image_count]
 

@@ -9,9 +9,12 @@
 #define STBTT_STATIC
 #include "../stb/stb_truetype.h"
 #include "../drawlib/Rectangle.hpp"
+#include "../game_content/Material.hpp"
 #include "../io/Files.hpp"
 
 namespace tg_font {
+
+	using namespace tge::tex;
 
 	SINCE(0, 0, 4)
 	class Font {
@@ -21,7 +24,6 @@ namespace tg_font {
 			 * Initializes all values (besides default constructor)
 			 * Adds new font to the cache and adds the generated texture +  it's material (UI)
 			 */
-			Font() {}
 			Font(char* path) : Font(path, 30) {}
 			Font(char* path, uint32_t height);
 
@@ -39,7 +41,7 @@ namespace tg_font {
 
 		private:
 			uint32_t height;
-			Texture texture;
+			Texture* texture;
 			stbtt_bakedchar cdata[256];
 			uint32_t material;
 	};
