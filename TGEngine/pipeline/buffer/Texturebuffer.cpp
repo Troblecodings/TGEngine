@@ -204,9 +204,8 @@ namespace tge {
 				last_result = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
 			HANDEL(last_result)
 
-				// Imageview
-				vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			vlib_image_view_create_info.format = this->imageFormat;
+			// Imageview
+			vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 			vlib_image_view_create_info.image = this->image;
 			last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
 			HANDEL(last_result)

@@ -77,6 +77,41 @@ namespace tg_ui {
 	void UIEntity::onAddTo(UIEntity* parent)
 	{
 		this->parent = parent;
+		switch (this->anchor)
+		{
+		case tg_ui::TOP_LEFT:
+			break;
+		case tg_ui::TOP_CENTER:
+			this->local_position.x = parent->extent.x / 2;
+			break;
+		case tg_ui::TOP_RIGHT:
+			this->local_position.x = parent->extent.x;
+			break;
+		case tg_ui::CENTER_LEFT:
+			this->local_position.y = parent->extent.y / 2;
+			break;
+		case tg_ui::CENTER:
+			this->local_position = parent->extent / 2.0f;
+			break;
+		case tg_ui::CENTER_RIGHT:
+			this->local_position.y = parent->extent.y / 2;
+			this->local_position.x = parent->extent.x;
+			break;
+		case tg_ui::BOTTOM_LEFT:
+			this->local_position.y = parent->extent.y;
+			break;
+		case tg_ui::BOTTOM_CENTER:
+			this->local_position.y = parent->extent.y;
+			this->local_position.x = parent->extent.x / 2;
+			break;
+		case tg_ui::BOTTOM_RIGHT:
+			this->local_position.y = parent->extent.y;
+			this->local_position.x = parent->extent.x;
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	void UIEntity::onRemoveFrom(UIEntity* parent)
