@@ -33,7 +33,7 @@ namespace tg_ui {
 		for each (UIComponent* comp in this->components)
 		{
 			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
-			if(comp->isEnabled())
+			if (comp->isEnabled())
 				comp->draw(index, vertex);
 		}
 		for each (UIEntity* entity in this->children)
@@ -44,19 +44,19 @@ namespace tg_ui {
 		}
 	}
 
-	void UIEntity::update(int mouse_x, int mouse_y)
+	void UIEntity::update()
 	{
 		for each (UIComponent* comp in this->components)
 		{
 			ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
 			if (comp->isEnabled())
-				comp->update(mouse_x, mouse_y);
+				comp->update();
 		}
 		for each (UIEntity* entity in this->children)
 		{
 			ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
 			if(entity->isEnabled())
-				entity->update(mouse_x, mouse_y);
+				entity->update();
 		}
 	}
 
@@ -149,7 +149,7 @@ namespace tg_ui {
 	{
 	}
 
-	void UIComponent::update(int mouse_x, int mouse_y)
+	void UIComponent::update()
 	{
 
 	}
@@ -160,7 +160,7 @@ namespace tg_ui {
 
 	void UIComponent::onAddTo(UIEntity* parent)
 	{
-		if (this->parent)
+		if (this->parent) 
 			this->parent->removeComponent(this);
 		this->parent = parent;
 	}

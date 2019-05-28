@@ -6,6 +6,8 @@ It should be or better to say it will be a Game Engine, hopefully...
 
 <h3>Status</h3>
 
+Visit our [Roadmap](https://trello.com/b/CvHhdjVN)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/463ead5524004360a3c1b7acb98e238b)](https://app.codacy.com/app/MrTroble_2/TGEngine?utm_source=github.com&utm_medium=referral&utm_content=Troblecodings/TGEngine&utm_campaign=Badge_Grade_Dashboard)
 
 still working on it...<br>

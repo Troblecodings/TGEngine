@@ -16,9 +16,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		"VK_LAYER_VALVE_steam_overlay",
 		"VK_LAYER_NV_optimus"
 		}, {
-#ifdef DEBUG
-		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-#endif
 		});
 	createWindowSurfaces();
 	createDevice({}, {});
@@ -118,7 +115,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
-			tg_ui::ui_scene_entity.update(tg_io::pos.x, tg_io::pos.y);
+			tg_ui::ui_scene_entity.update();
 			main_buffer.count_of_points = vertex_offset;
 			main_buffer.start();
 			index_buffer.start();

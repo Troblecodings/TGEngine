@@ -37,6 +37,10 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 		}
 	}
 
+#ifdef DEBUG
+	extensions_to_enable.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+#endif
+
     #ifdef _WIN32
 	extensions_to_enable.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
 	extensions_to_enable.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
@@ -77,18 +81,20 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	HANDEL(last_result)
 
 #ifdef DEBUG
-	VkDebugUtilsMessengerCreateInfoEXT util_message = {
-		VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
-		nullptr,
-		0,
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
-		VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
-		(PFN_vkDebugUtilsMessengerCallbackEXT)&callback_debug,
-		VK_NULL_HANDLE
-	};
-	PFN_vkCreateDebugUtilsMessengerEXT CreateDebugReportCallback = VK_NULL_HANDLE;
-	CreateDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	last_result = CreateDebugReportCallback(instance, &util_message, nullptr, &msger);
+	VkDebugUtilsMessengerCreateInfoEXT util_message;
+	util_message.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	util_message.flags = 0;
+	util_message.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	util_message.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+	util_message.pfnUserCallback = (PFN_vkDebugUtilsMessengerCallbackEXT)& callback_debug;
+	util_message.pUserData = 0;
+	util_message.pNext = 0;
+
+	PFN_vkCreateDebugUtilsMessengerEXT createDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	if (!createDebugReportCallback) {
+		TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
+	}
+	last_result = createDebugReportCallback(instance, &util_message, nullptr, &msger);
 	HANDEL(last_result)
 #endif
 }
