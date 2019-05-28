@@ -16,7 +16,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 #ifdef DEBUG
 USAGE_DEBUG
 SINCE(0, 0, 4)
-VkBool32 debugCallback(
+VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
 	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,

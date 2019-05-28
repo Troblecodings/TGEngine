@@ -89,11 +89,12 @@ void createInstance(std::vector<const char*> layersToEnable, std::vector<const c
 	utilMessagerCreateInfo.flags = 0;
 	utilMessagerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 	utilMessagerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-	utilMessagerCreateInfo.pfnUserCallback = (PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
+	utilMessagerCreateInfo.pfnUserCallback = debugCallback;
 	utilMessagerCreateInfo.pUserData = 0;
 	utilMessagerCreateInfo.pNext = 0;
 
 	PFN_vkCreateDebugUtilsMessengerEXT createDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	OUT_LV_DEBUG(createDebugReportCallback)
 	if (!createDebugReportCallback) {
 		TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
 	}
@@ -103,7 +104,7 @@ void createInstance(std::vector<const char*> layersToEnable, std::vector<const c
 }
 
 #ifdef DEBUG
-VkBool32 debugCallback(
+VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
 	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
