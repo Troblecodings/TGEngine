@@ -12,25 +12,25 @@ void createDepthTest()
 	vlib_image_create_info.format = used_depth_format;
 	vlib_image_create_info.samples = used_msaa_flag;
 	vlib_image_create_info.mipLevels = 1;
-	last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &depth_image);
-	HANDEL(last_result);
+	lastResult = vkCreateImage(device, &vlib_image_create_info, nullptr, &depth_image);
+	HANDEL(lastResult);
 
 	VkMemoryRequirements requierments;
 	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlib_buffer_memory_allocate_info.allocationSize = requierments.size;
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
-	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &depth_image_memory);
-	HANDEL(last_result);
+	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &depth_image_memory);
+	HANDEL(lastResult);
 
-	last_result = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
-	HANDEL(last_result);
+	lastResult = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
+	HANDEL(lastResult);
 
 	vlib_image_view_create_info.format = used_depth_format;
 	vlib_image_view_create_info.image = depth_image;
 	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &depth_image_view);
-	HANDEL(last_result);
+	lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &depth_image_view);
+	HANDEL(lastResult);
 }
 
 void destroyDepthTest()

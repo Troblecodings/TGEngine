@@ -29,14 +29,14 @@ void createFramebuffer() {
 	for (size_t i = 0; i < image_count; i++)
 	{
 		vlib_image_view_create_info.image = swapchain_images[i];
-		last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &image_view[i]);
-		HANDEL(last_result)
+		lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &image_view[i]);
+		HANDEL(lastResult)
 
 		views[2] = image_view[i];
 		framebuffer_create_info.pAttachments = views;
 
-		last_result = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);
-		HANDEL(last_result)
+		lastResult = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);
+		HANDEL(lastResult)
 	}
 }
 

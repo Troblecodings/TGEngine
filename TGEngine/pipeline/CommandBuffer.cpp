@@ -18,38 +18,38 @@ void createCommandBuffer() {
 			queue_index
 		};
 
-		last_result = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
-		HANDEL(last_result)
+		lastResult = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
+		HANDEL(lastResult)
 
 		vlib_command_buffer_allocate_info.commandPool = command_pool;
 	}
 
 	vlib_command_buffer_allocate_info.commandBufferCount = image_count;
-	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
-	HANDEL(last_result)
+	lastResult = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
+	HANDEL(lastResult)
 
 	vlib_command_buffer_allocate_info.commandBufferCount = 1;
-	last_result = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
-	HANDEL(last_result)
+	lastResult = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
+	HANDEL(lastResult)
 
 	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-	last_result = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
-	HANDEL(last_result)
+	lastResult = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
+	HANDEL(lastResult)
 }
 
 void startSingleTimeCommand() {
-	last_result = vkResetFences(device, 1, &single_time_command_ready);
-	HANDEL(last_result)
+	lastResult = vkResetFences(device, 1, &single_time_command_ready);
+	HANDEL(lastResult)
 
 	vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
-	last_result = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
-	HANDEL(last_result);
+	lastResult = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
+	HANDEL(lastResult);
 }
 
 void endSingleTimeCommand() {
-	last_result = vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER);
-	HANDEL(last_result);
+	lastResult = vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER);
+	HANDEL(lastResult);
 
 	VkSubmitInfo submitInfo = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -63,11 +63,11 @@ void endSingleTimeCommand() {
 		nullptr,
 	};
 
-	last_result = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
-	HANDEL(last_result)
+	lastResult = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
+	HANDEL(lastResult)
 
-	last_result = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
-	HANDEL(last_result)
+	lastResult = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
+	HANDEL(lastResult)
 }
 
 void startupCommands() {
@@ -122,8 +122,8 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		vlib_command_buffer_begin_info.pInheritanceInfo = &command_buffer_inheritance_info;
-		last_result = vkBeginCommandBuffer(buffer, &vlib_command_buffer_begin_info);
-		HANDEL(last_result);
+		lastResult = vkBeginCommandBuffer(buffer, &vlib_command_buffer_begin_info);
+		HANDEL(lastResult);
 
 		VkRenderPassBeginInfo render_pass_begin_info = {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -158,14 +158,14 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdEndRenderPass(buffer);
 
-		last_result = vkEndCommandBuffer(buffer);
-		HANDEL(last_result)
+		lastResult = vkEndCommandBuffer(buffer);
+		HANDEL(lastResult)
 	}
 }
 
 void destroyCommandBuffer() {
-	last_result =  vkDeviceWaitIdle(device);
-	HANDEL(last_result)
+	lastResult =  vkDeviceWaitIdle(device);
+	HANDEL(lastResult)
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
 	vkDestroyFence(device, single_time_command_ready, nullptr);

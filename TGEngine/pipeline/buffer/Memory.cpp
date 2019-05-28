@@ -28,18 +28,18 @@ uint32_t addBuffer(VkBuffer buffer) {
 void allocateAllBuffers() {
 	vlib_buffer_memory_allocate_info.allocationSize = _impl_size;
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
-	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &device_memory);
-	HANDEL(last_result)
+	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &device_memory);
+	HANDEL(lastResult)
 	
 	for (size_t i = 0; i < buffers.size();i++) {
-		last_result = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
-		HANDEL(last_result)
+		lastResult = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
+		HANDEL(lastResult)
 	}
 }
 
 void mapMemory(uint32_t buffer_index, void** mapped_memory) {
-	last_result = vkMapMemory(device, device_memory, buffer_offsets[buffer_index], buffer_sizes[buffer_index], 0, mapped_memory);
-	HANDEL(last_result)
+	lastResult = vkMapMemory(device, device_memory, buffer_offsets[buffer_index], buffer_sizes[buffer_index], 0, mapped_memory);
+	HANDEL(lastResult)
 }
 
 void unmapMemory() {

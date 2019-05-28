@@ -13,12 +13,12 @@ void createSemaphores() {
 }
 
 void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	last_result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
-	HANDEL_RECREATE(last_result)
-	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
-	HANDEL(last_result)
-	last_result = vkResetFences(device, 1, &fence);
-	HANDEL(last_result)
+	lastResult = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, fence, &image_index);
+	HANDEL_RECREATE(lastResult)
+	lastResult = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
+	HANDEL(lastResult)
+	lastResult = vkResetFences(device, 1, &fence);
+	HANDEL(lastResult)
 }
 
 void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
@@ -33,15 +33,15 @@ void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		0,
 		nullptr
 	};
-	last_result = vkQueueSubmit(queue, 1, &submit_info, fence);
-	HANDEL_RECREATE(last_result)
+	lastResult = vkQueueSubmit(queue, 1, &submit_info, fence);
+	HANDEL_RECREATE(lastResult)
 }
 
 void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	last_result = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
-	HANDEL(last_result)
-	last_result = vkResetFences(device, 1, &fence);
-	HANDEL(last_result)
+	lastResult = vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX);
+	HANDEL(lastResult)
+	lastResult = vkResetFences(device, 1, &fence);
+	HANDEL(lastResult)
 	VkPresentInfoKHR present_info = {
 		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		nullptr,
@@ -52,13 +52,13 @@ void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		&image_index,
 		nullptr
 	};
-	last_result = vkQueuePresentKHR(queue, &present_info);
-	HANDEL_RECREATE(last_result);
+	lastResult = vkQueuePresentKHR(queue, &present_info);
+	HANDEL_RECREATE(lastResult);
 }
 
 void destroySemaphores() {
-	last_result = vkDeviceWaitIdle(device);
-	HANDEL(last_result)
+	lastResult = vkDeviceWaitIdle(device);
+	HANDEL(lastResult)
 
 	vkDestroyFence(device, fence, nullptr);
 }

@@ -31,8 +31,8 @@ void initDescriptors() {
 	}
 
 	vlib_descriptor_pool_create_info.pPoolSizes = sizes;
-	last_result = vkCreateDescriptorPool(device, &vlib_descriptor_pool_create_info, nullptr, &descriptor_pool);
-	HANDEL(last_result)
+	lastResult = vkCreateDescriptorPool(device, &vlib_descriptor_pool_create_info, nullptr, &descriptor_pool);
+	HANDEL(lastResult)
 
 	vlib_allocate_info.descriptorPool = descriptor_pool;
 }
@@ -42,8 +42,8 @@ size_t createDesctiptorLayout() {
 
 	vlib_descriptor_set_layout_create_info.bindingCount = (uint32_t)descriptor_bindings.size();
 	vlib_descriptor_set_layout_create_info.pBindings = descriptor_bindings.data();
-	last_result = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[last_size]);
-	HANDEL(last_result)
+	lastResult = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptor_set_layouts[last_size]);
+	HANDEL(lastResult)
     return last_size;
 }
 
@@ -52,15 +52,15 @@ void destroyDesctiptorLayout(uint32_t layout) {
 }
 
 void destroyDescriptorSet(uint32_t layout) {
-	last_result = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
-	HANDEL(last_result);
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
+	HANDEL(lastResult);
 }
 
 size_t createDescriptorSet(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
 	vlib_allocate_info.pSetLayouts = &descriptor_set_layouts[layout];
-	last_result = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
-	HANDEL(last_result)
+	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
+	HANDEL(lastResult)
 	return last_size;
 }
 
@@ -69,8 +69,8 @@ void destroyDescriptors() {
 	{
 		vkDestroyDescriptorSetLayout(device, var, nullptr);
 	}
-	last_result = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
-	HANDEL(last_result);
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
+	HANDEL(lastResult);
 	descriptor_set.clear();
 	descriptor_set_layouts.clear();
 };

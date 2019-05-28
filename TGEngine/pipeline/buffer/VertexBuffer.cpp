@@ -5,18 +5,18 @@ size_t vertex_offset = 0;
 void createVertexBuffer(VertexBuffer* buffer_storage) {
 	vlib_buffer_create_info.size = VERTEX_SIZE * buffer_storage->max_vertex_count;
 	vlib_buffer_create_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-	last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &buffer_storage->vertex_buffer);
-	HANDEL(last_result)
+	lastResult = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &buffer_storage->vertex_buffer);
+	HANDEL(lastResult)
 		
 	vkGetBufferMemoryRequirements(device, buffer_storage->vertex_buffer, &lastRequirements);
 
 	buffer_storage->max_size = vlib_buffer_memory_allocate_info.allocationSize = lastRequirements.size;
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
-	last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &buffer_storage->vertex_buffer_memory);
-	HANDEL(last_result)
+	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &buffer_storage->vertex_buffer_memory);
+	HANDEL(lastResult)
 
-	last_result = vkBindBufferMemory(device, buffer_storage->vertex_buffer, buffer_storage->vertex_buffer_memory, 0);
-	HANDEL(last_result)
+	lastResult = vkBindBufferMemory(device, buffer_storage->vertex_buffer, buffer_storage->vertex_buffer_memory, 0);
+	HANDEL(lastResult)
 
 	buffer_storage->stag_buf.destination = &buffer_storage->vertex_buffer;
 	buffer_storage->stag_buf.size = vlib_buffer_create_info.size;

@@ -153,9 +153,9 @@ namespace tge {
 
 			// Get default 
 			VkImageFormatProperties imageFormatProperties;
-			last_result = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
+			lastResult = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
 				vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
-			HANDEL(last_result)
+			HANDEL(lastResult)
 
 				for each (Texture * ptr in textures) {
 					ptr->initTexture();
@@ -164,13 +164,13 @@ namespace tge {
 
 		void createSampler(Sampler sampler)
 		{
-			last_result = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
-			HANDEL(last_result)
+			lastResult = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
+			HANDEL(lastResult)
 		}
 
 		void destroyAllTextures() {
-			last_result = vkDeviceWaitIdle(device);
-			HANDEL(last_result)
+			lastResult = vkDeviceWaitIdle(device);
+			HANDEL(lastResult)
 
 				vkDestroySampler(device, defaultImageSampler, nullptr);
 			for each (Texture * tex in textures) {
@@ -183,39 +183,39 @@ namespace tge {
 			vlib_image_create_info.format = defaultImageFormat;
 
 			// Image
-			last_result = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
-			HANDEL(last_result)
+			lastResult = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
+			HANDEL(lastResult)
 
 				QUERRY_IMAGE_REQUIREMENTS(this->image, vlib_device_local_memory_index)
-				last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &this->imageMemory);
-			HANDEL(last_result)
+				lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &this->imageMemory);
+			HANDEL(lastResult)
 
-				last_result = vkBindImageMemory(device, this->image, this->imageMemory, 0);
-			HANDEL(last_result)
+				lastResult = vkBindImageMemory(device, this->image, this->imageMemory, 0);
+			HANDEL(lastResult)
 
 				// Buffer
-				last_result = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &this->buffer);
-			HANDEL(last_result)
+				lastResult = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &this->buffer);
+			HANDEL(lastResult)
 
 				QUERRY_BUFFER_REQUIREMENTS(this->buffer, vlib_device_host_visible_coherent_index)
-				last_result = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &bufferMemory);
-			HANDEL(last_result)
+				lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &bufferMemory);
+			HANDEL(lastResult)
 
-				last_result = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
-			HANDEL(last_result)
+				lastResult = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
+			HANDEL(lastResult)
 
 			// Imageview
 			vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 			vlib_image_view_create_info.image = this->image;
-			last_result = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
-			HANDEL(last_result)
+			lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
+			HANDEL(lastResult)
 		}
 
 		void* VulkanTexture::map(uint32_t size)
 		{
 			void* memory;
-			last_result = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
-			HANDEL(last_result);
+			lastResult = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
+			HANDEL(lastResult);
 			return memory;
 		}
 

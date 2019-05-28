@@ -301,8 +301,8 @@ void createWindowSurfaces() {
 			sys_module,
 			var->__impl_window
 		};
-		last_result = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface);
-		HANDEL(last_result)
+		lastResult = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface);
+		HANDEL(lastResult)
 #endif 
 	}
 }

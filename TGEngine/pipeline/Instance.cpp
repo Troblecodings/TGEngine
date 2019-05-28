@@ -1,10 +1,10 @@
 #include "Instance.hpp"
 
-VkResult last_result;
+VkResult lastResult;
 VkInstance instance;
-VkDebugUtilsMessengerEXT msger;
+VkDebugUtilsMessengerEXT debugMessager;
 
-void createInstance(std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable) {
+void createInstance(std::vector<const char*> layersToEnable, std::vector<const char*> extensionsToEnable) {
 
 	VkApplicationInfo app_info = { 
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -18,19 +18,19 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 
 	uint32_t count;
 	//Validation for the instance layers
-	std::vector<const char*> enable_layer;
-	if (layers_to_enable.size() > 0) {
-		last_result = vkEnumerateInstanceLayerProperties(&count, nullptr);
-		HANDEL(last_result)
-		std::vector<VkLayerProperties> usable_layers(count);
-		last_result = vkEnumerateInstanceLayerProperties(&count, usable_layers.data());
-		HANDEL(last_result)
-		for each(VkLayerProperties layer in usable_layers) {
+	std::vector<const char*> enabledLayerNames;
+	if (layersToEnable.size() > 0) {
+		lastResult = vkEnumerateInstanceLayerProperties(&count, nullptr);
+		HANDEL(lastResult)
+		std::vector<VkLayerProperties> usableLayerNames(count);
+		lastResult = vkEnumerateInstanceLayerProperties(&count, usableLayerNames.data());
+		HANDEL(lastResult)
+		for each(VkLayerProperties layer in usableLayerNames) {
 			OUT_LV_DEBUG("Available " << layer.layerName)
-			for each(const char* name in layers_to_enable) {
+			for each(const char* name in layersToEnable) {
 				if (strcmp(layer.layerName, name) == 0) {
-					enable_layer.push_back(name);
-					OUT_LV_DEBUG("Active " << name)
+					enabledLayerNames.push_back(name);
+					OUT_LV_DEBUG("Activate Layer: " << name)
 					break;
 				}
 			}
@@ -38,27 +38,27 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	}
 
 #ifdef DEBUG
-	extensions_to_enable.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	extensionsToEnable.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 
     #ifdef _WIN32
-	extensions_to_enable.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-	extensions_to_enable.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+	extensionsToEnable.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+	extensionsToEnable.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
     #endif
 
 	//Validation for the intance extensions
-	std::vector<const char*> enable_extensions;
-	if (extensions_to_enable.size() > 0) {
-		last_result = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
-		HANDEL(last_result)
-		std::vector<VkExtensionProperties> usable_extensions(count);
-		last_result = vkEnumerateInstanceExtensionProperties(nullptr, &count, usable_extensions.data());
-		HANDEL(last_result)
-		for each(VkExtensionProperties extension in usable_extensions) {	
+	std::vector<const char*> enabledExtensionNames;
+	if (extensionsToEnable.size() > 0) {
+		lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
+		HANDEL(lastResult)
+		std::vector<VkExtensionProperties> usableExtensionNames(count);
+		lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, usableExtensionNames.data());
+		HANDEL(lastResult)
+		for each(VkExtensionProperties extension in usableExtensionNames) {	
 			OUT_LV_DEBUG("Available " << extension.extensionName)
-			for each(const char* name in extensions_to_enable) {
+			for each(const char* name in extensionsToEnable) {
 				if (strcmp(extension.extensionName, name) == 0) {
-					enable_extensions.push_back(name);
+					enabledExtensionNames.push_back(name);
 					OUT_LV_DEBUG("Active " << name)
 					break;
 				}
@@ -72,39 +72,43 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 	    nullptr,
 	    0,
 	    &app_info,
-		(uint32_t)enable_layer.size(),
-	    enable_layer.data(),
-		(uint32_t)enable_extensions.size(),
-	    enable_extensions.data()
+		(uint32_t)enabledLayerNames.size(),
+	    enabledLayerNames.data(),
+		(uint32_t)enabledExtensionNames.size(),
+	    enabledExtensionNames.data()
 	};
-	last_result = vkCreateInstance(&instance_create_info, nullptr, &instance);
-	HANDEL(last_result)
+	lastResult = vkCreateInstance(&instance_create_info, nullptr, &instance);
+	HANDEL(lastResult)
 
 #ifdef DEBUG
-	VkDebugUtilsMessengerCreateInfoEXT util_message;
-	util_message.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	util_message.flags = 0;
-	util_message.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	util_message.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-	util_message.pfnUserCallback = (PFN_vkDebugUtilsMessengerCallbackEXT)& callback_debug;
-	util_message.pUserData = 0;
-	util_message.pNext = 0;
+	/*
+	 * Create a debug messenger
+	 */
+	VkDebugUtilsMessengerCreateInfoEXT utilMessagerCreateInfo;
+	utilMessagerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	utilMessagerCreateInfo.flags = 0;
+	utilMessagerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	utilMessagerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+	utilMessagerCreateInfo.pfnUserCallback = (PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
+	utilMessagerCreateInfo.pUserData = 0;
+	utilMessagerCreateInfo.pNext = 0;
 
 	PFN_vkCreateDebugUtilsMessengerEXT createDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 	if (!createDebugReportCallback) {
 		TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
 	}
-	last_result = createDebugReportCallback(instance, &util_message, nullptr, &msger);
-	HANDEL(last_result)
+	lastResult = createDebugReportCallback(instance, &utilMessagerCreateInfo, nullptr, &debugMessager);
+	HANDEL(lastResult)
 #endif
 }
 
 #ifdef DEBUG
-VkBool32 callback_debug(
+VkBool32 debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
 	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
 	void *pUserData) {
+
 	switch (messageSeverity)
 	{
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
@@ -145,9 +149,11 @@ VkBool32 callback_debug(
 
 void destroyInstance() {
 #ifdef DEBUG
-	PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugReportCallback = VK_NULL_HANDLE;
-	destroyDebugReportCallback = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	destroyDebugReportCallback(instance, msger, nullptr);
+	PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugReportCallback = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	if (!destroyDebugReportCallback) {
+		TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
+	}
+	destroyDebugReportCallback(instance, debugMessager, nullptr);
 #endif
 	vkDestroyInstance(instance, nullptr);
 }

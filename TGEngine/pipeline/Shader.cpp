@@ -13,8 +13,8 @@ void createShader() {
 			data.size(),
 			reinterpret_cast<const uint32_t*>(data.data())
 		};
-		last_result = vkCreateShaderModule(device, &info, nullptr, &shader_module);
-		HANDEL(last_result)
+		lastResult = vkCreateShaderModule(device, &info, nullptr, &shader_module);
+		HANDEL(lastResult)
 		TG_VECTOR_APPEND_NORMAL(shaders, VkPipelineShaderStageCreateInfo())
 		shaders[last_size] = {
 			VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,

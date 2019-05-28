@@ -19,8 +19,8 @@ void createPipeline(VkPipelineShaderStageCreateInfo* createinfos, uint32_t count
 	vlib_graphics_pipeline_create_info.renderPass = render_pass;
 
 	TG_VECTOR_GET_SIZE_AND_RESIZE(pipelines)
-	last_result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlib_graphics_pipeline_create_info, nullptr, &pipelines[last_size]);
-	HANDEL(last_result);
+	lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlib_graphics_pipeline_create_info, nullptr, &pipelines[last_size]);
+	HANDEL(lastResult);
 }
 
 uint32_t createPipelineLayout(uint32_t layout_count, VkDescriptorSetLayout* descriptor_set_layout) {
@@ -29,8 +29,8 @@ uint32_t createPipelineLayout(uint32_t layout_count, VkDescriptorSetLayout* desc
 
 	vlib_layout_info.setLayoutCount = layout_count;
 	vlib_layout_info.pSetLayouts = descriptor_set_layout;
-	last_result = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
-	HANDEL(last_result);
+	lastResult = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
+	HANDEL(lastResult);
 
 	return last_size;
 }

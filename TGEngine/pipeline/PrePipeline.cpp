@@ -10,19 +10,19 @@ VkSampleCountFlagBits  used_msaa_flag;
 void prePipeline() {
 	uint32_t count = 0;
 
-	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
-	HANDEL(last_result)
+	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
+	HANDEL(lastResult)
 
 	surface_format.resize(count);
-	last_result = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, surface_format.data());
-	HANDEL(last_result)
+	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, surface_format.data());
+	HANDEL(lastResult)
 
-	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
-	HANDEL(last_result)
+	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
+	HANDEL(lastResult)
 
 	present_mode.resize(count);
-	last_result = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, present_mode.data());
-	HANDEL(last_result)
+	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, present_mode.data());
+	HANDEL(lastResult)
 
 	used_msaa_flag = (VkSampleCountFlagBits)properties->getInt("msaa");
 

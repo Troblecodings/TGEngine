@@ -3,9 +3,9 @@
 #include "../Stdbase.hpp"
 #include "../util/VectorUtil.hpp"
 
-extern VkResult last_result;
+extern VkResult lastResult;
 extern VkInstance instance;
-extern VkDebugUtilsMessengerEXT msger;
+extern VkDebugUtilsMessengerEXT debugMessager;
 
 SINCE(0, 0, 1)
 void createInstance(std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable);
@@ -16,7 +16,7 @@ void createInstance(std::vector<const char*> layers_to_enable, std::vector<const
 #ifdef DEBUG
 USAGE_DEBUG
 SINCE(0, 0, 4)
-VkBool32 callback_debug(
+VkBool32 debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
 	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,

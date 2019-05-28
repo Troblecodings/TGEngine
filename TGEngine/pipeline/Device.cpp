@@ -12,11 +12,11 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 
 	//Query Physical Devices
 	uint32_t count;
-	last_result = vkEnumeratePhysicalDevices(instance, &count, nullptr);
-	HANDEL(last_result);
+	lastResult = vkEnumeratePhysicalDevices(instance, &count, nullptr);
+	HANDEL(lastResult);
 	VkPhysicalDevice*  physical_devices = new VkPhysicalDevice[count];
-	last_result = vkEnumeratePhysicalDevices(instance, &count, physical_devices);
-	HANDEL(last_result);
+	lastResult = vkEnumeratePhysicalDevices(instance, &count, physical_devices);
+	HANDEL(lastResult);
 
 	//Get best Physical Device
 	uint32_t points = 0;
@@ -69,11 +69,11 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	//Validation for the device layers
 	std::vector<const char*> enable_layer;
 	if (layers_to_enable.size() > 0) {
-		last_result = vkEnumerateDeviceLayerProperties(used_physical_device, &count, nullptr);
-		HANDEL(last_result)
+		lastResult = vkEnumerateDeviceLayerProperties(used_physical_device, &count, nullptr);
+		HANDEL(lastResult)
 		std::vector<VkLayerProperties> usable_layers(count);
-		last_result = vkEnumerateDeviceLayerProperties(used_physical_device, &count, usable_layers.data());
-		HANDEL(last_result)
+		lastResult = vkEnumerateDeviceLayerProperties(used_physical_device, &count, usable_layers.data());
+		HANDEL(lastResult)
 		for each(VkLayerProperties layer in usable_layers) {
 			for each(const char* name in layers_to_enable) {
 				if (std::string(layer.layerName).compare(name) == 0) {
@@ -96,11 +96,11 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	//Validation for the device extensions
 	std::vector<const char*> enable_extensions;
 	if (extensions_to_enable.size() > 0) {
-		last_result = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, nullptr);
-		HANDEL(last_result)
+		lastResult = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, nullptr);
+		HANDEL(lastResult)
 		std::vector<VkExtensionProperties> usable_extensions(count);
-		last_result = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, usable_extensions.data());
-		HANDEL(last_result)
+		lastResult = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, usable_extensions.data());
+		HANDEL(lastResult)
 		for each(VkExtensionProperties extension in usable_extensions) {
 			for each(const char* name in extensions_to_enable) {
 				if (std::string(extension.extensionName).compare(name) == 0) {
@@ -138,15 +138,15 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 	    &device_features_to_enable
 	};
 
-	last_result = vkCreateDevice(used_physical_device, &device_create_info, nullptr, &device);
-	HANDEL(last_result)
+	lastResult = vkCreateDevice(used_physical_device, &device_create_info, nullptr, &device);
+	HANDEL(lastResult)
 
 	//Get queue
 	vkGetDeviceQueue(device, queue_index, 0, &queue);
 
 	VkBool32 isSupported;
-	last_result = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, window_list[0]->surface, &isSupported);
-	HANDEL(last_result)
+	lastResult = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, window_list[0]->surface, &isSupported);
+	HANDEL(lastResult)
 
 	ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
 

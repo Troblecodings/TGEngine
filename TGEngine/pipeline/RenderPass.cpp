@@ -99,8 +99,8 @@ void createRenderpass() {
 	    &subpass_dependency
 	};
 
-	last_result = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
-	HANDEL(last_result);
+	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
+	HANDEL(lastResult);
 }
 
 void destroyRenderPass() {
