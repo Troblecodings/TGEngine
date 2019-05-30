@@ -13,8 +13,8 @@ namespace tge {
 		Texture::Texture(const char* textureName) : textureName(textureName) {
 			this->vulkanTexture = new VulkanTexture(this);
 			ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
-				ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
-				textures.push_back(this);
+			ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
+			textures.push_back(this);
 		}
 
 		Texture::Texture(uint8_t * data, int width, int height) {

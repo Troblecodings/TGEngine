@@ -86,8 +86,8 @@ namespace tg_ui {
 		void setEnabled(bool enabled);
 
 	protected:
-		UIEntity* parent;
-		Anchor anchor;
+		UIEntity* parent = nullptr;
+		Anchor anchor = CENTER;
 		
 	private:
 		bool enabled = true;

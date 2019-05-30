@@ -29,8 +29,8 @@ namespace tg_ui {
 		virtual void init() override;
 
 	private:
-		Texture* texture;
-		glm::vec4 color;
+		Texture* texture = nullptr;
+		glm::vec4 color = glm::vec4(1.0f);
 		uint32_t material_index = -1;
 		uint32_t offset_index = -1;
 	};

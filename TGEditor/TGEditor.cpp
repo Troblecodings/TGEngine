@@ -10,20 +10,21 @@ int main() {
 	std::cout << "Starting Editor" << std::endl;
 	tg_font::Font arial = tg_font::Font("resource\\arial.ttf", 40);
 
-	Texture tex1 = Texture("resource\\ODST_Helmet.png");
-	Texture tex2 = Texture("resource\\test_logo.png");
+	Texture texture1 = Texture("resource\\test_logo.png");
+	Texture texture2 = Texture("resource\\ODST_Helmet.png");
 
-	tg_ui::UITextureComponent texture = tg_ui::UITextureComponent(&tex2, glm::vec4(1.0f), tg_ui::TOP_LEFT);
-
-	tg_ui::UITextureComponent texcomp2 = tg_ui::UITextureComponent(&tex1, glm::vec4(1.0f), tg_ui::CENTER);
 	tg_ui::UIEntity entity2 = tg_ui::UIEntity(tg_ui::CENTER, glm::vec2(0.1, 0.1));
-	entity2.addComponent(&texcomp2);
-
 	entity.addChildren(&entity2);
 
-	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test", glm::vec4(1.0f), tg_ui::BOTTOM_LEFT);
-	entity.addComponent(&texture);
+	tg_ui::UITextureComponent textureComponent1 = tg_ui::UITextureComponent(&texture1, glm::vec4(1.0f), tg_ui::TOP_LEFT);
+	entity.addComponent(&textureComponent1);
+
+	tg_ui::UITextureComponent textureComponent2 = tg_ui::UITextureComponent(&texture2, glm::vec4(1.0f), tg_ui::CENTER);
+	entity2.addComponent(&textureComponent2);
+
+	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test", glm::vec4(1.0f), tg_ui::TOP_LEFT);
 	entity.addComponent(&text);
+
 	tg_ui::ui_scene_entity.addChildren(&entity);
 
 	tg_model::load("resource\\Chair.fbx", &mesh);

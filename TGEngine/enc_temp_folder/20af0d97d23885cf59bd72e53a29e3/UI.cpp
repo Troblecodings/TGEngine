@@ -6,6 +6,7 @@ namespace tg_ui {
 
 	void UIEntity::addComponent(UIComponent* component)
 	{
+		std::cout << component << std::endl;
 		ASSERT_NONE_NULL_DB(component, "UIComponent null", TG_ERR_DB_NULLPTR)
 		this->components.push_back(component);
 		component->onAddTo(this);
