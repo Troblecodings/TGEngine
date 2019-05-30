@@ -192,6 +192,17 @@ def trigger(id):
         elif id == 3:
             compileshader()
             return
+        elif id == 4:
+            print("Starting deployment...")
+            dependencies_file = zipfile.ZipFile("Release.zip", mode="w")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Release\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Release\\TGEngine.lib")
+            wrt(os.getcwd(), "\\LICENSE")
+            dependencies_file.close()
+            msg = "Finished!"
+            clear()
         elif id == 5:
             find(os.getcwd())
             msg = "Found " + str(files) + " files\nWith " + str(loc) + " lines of code"
