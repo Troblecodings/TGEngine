@@ -17,13 +17,13 @@ int main() {
 	entity.addChildren(&entity2);
 
 	tg_ui::UITextureComponent textureComponent1 = tg_ui::UITextureComponent(&texture1, glm::vec4(1.0f), tg_ui::TOP_LEFT);
-	entity.addComponent(&textureComponent1);
+	entity.addDrawable(&textureComponent1);
 
 	tg_ui::UITextureComponent textureComponent2 = tg_ui::UITextureComponent(&texture2, glm::vec4(1.0f), tg_ui::CENTER);
-	entity2.addComponent(&textureComponent2);
+	entity2.addDrawable(&textureComponent2);
 
 	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test", glm::vec4(1.0f), tg_ui::TOP_LEFT);
-	entity.addComponent(&text);
+	entity.addDrawable(&text);
 
 	tg_ui::ui_scene_entity.addChildren(&entity);
 

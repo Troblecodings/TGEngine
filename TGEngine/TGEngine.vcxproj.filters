@@ -222,9 +222,6 @@
     <ClInclude Include="vlib\VulkanPipeline.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UI.hpp">
-      <Filter>Headerdateien\ui</Filter>
-    </ClInclude>
     <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
@@ -248,6 +245,15 @@
     </ClInclude>
     <ClInclude Include="model\GLTFLoader.hpp">
       <Filter>Headerdateien\model</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEntity.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIDrawable.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIUpdatable.hpp">
+      <Filter>Headerdateien\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -377,9 +383,6 @@
     <ClCompile Include="vlib\VulkanPipeline.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UI.cpp">
-      <Filter>Quelldateien\ui</Filter>
-    </ClCompile>
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
@@ -403,6 +406,15 @@
     </ClCompile>
     <ClCompile Include="model\GLTFLoader.cpp">
       <Filter>Quelldateien\model</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEntity.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDrawable.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIUpdatable.cpp">
+      <Filter>Quelldateien\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,36 +1,39 @@
 #pragma once
 
-#include "UI.hpp"
+#include "UIDrawable.hpp"
 
-namespace tg_ui {
-	
-	/*
-     * A component for text rendering on the UI
-     * with the bounds of the font (ignores parent bounds)
-     *	-----------------------------------------------------------
-     *  Currently this adds the render offset on the first draw call
-     *  this behavior is probably going to change
-     *  -> The material is created in for each font
-	 *     for that the color nor the texture can be changed
-     *     while runtime in contrast to the position which
-     *     can be changed
-     *	-----------------------------------------------------------
-     */
-	SINCE(0, 0, 4)
-	class UITextComponent : public UIComponent
-	{
-	public:
-		UITextComponent(tg_font::Font* font, char* string) : UITextComponent(font, string, glm::vec4(1, 1, 1, 1)) {}
-		UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color) : UITextComponent(font, string, font_color, Anchor::CENTER) {}
-		UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color, Anchor anchor);
+namespace tge {
+	namespace ui {
 
-	protected:
-		virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
+		/*
+		 * A component for text rendering on the UI
+		 * with the bounds of the font (ignores parent bounds)
+		 *	-----------------------------------------------------------
+		 *  Currently this adds the render offset on the first draw call
+		 *  this behavior is probably going to change
+		 *  -> The material is created in for each font
+		 *     for that the color nor the texture can be changed
+		 *     while runtime in contrast to the position which
+		 *     can be changed
+		 *	-----------------------------------------------------------
+		 */
+		SINCE(0, 0, 4)
+		class UITextComponent : public UIDrawable {
 
-	private:
-		glm::vec4 font_color;
-		char* string;
-		tg_font::Font* font;
-		uint32_t index = -1;
-	};
+		private:
+			glm::vec4 font_color;
+			char* string;
+			tg_font::Font* font;
+			uint32_t index = -1;
+
+		public:
+			UITextComponent(tg_font::Font* font, char* string) : UITextComponent(font, string, glm::vec4(1, 1, 1, 1)) {}
+			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color) : UITextComponent(font, string, font_color, Anchor::CENTER) {}
+			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color, Anchor anchor);
+
+		protected:
+			virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
+
+		};
+	}
 }
