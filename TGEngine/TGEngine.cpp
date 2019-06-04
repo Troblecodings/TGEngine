@@ -61,7 +61,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	multiplier = (window->height / (float)window->width);
 	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
 
-	tg_ui::ui_scene_entity.init();
+	tge::ui::ui_scene_entity.init();
 
 	main_buffer.start();
 	index_buffer.start();
@@ -85,7 +85,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_offset = index_buffer.index_count;
 	vertex_offset = main_buffer.count_of_points;
 
-	tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
+	tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 
 	main_buffer.end();
 	index_buffer.end();
@@ -115,11 +115,11 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
-			tg_ui::ui_scene_entity.update();
+			tge::ui::ui_scene_entity.update();
 			main_buffer.count_of_points = vertex_offset;
 			main_buffer.start();
 			index_buffer.start();
-			tg_ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
+			tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 			main_buffer.end();
 			index_buffer.end();
 

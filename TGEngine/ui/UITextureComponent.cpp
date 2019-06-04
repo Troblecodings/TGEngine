@@ -16,7 +16,7 @@ namespace tge {
 			}
 
 			glm::vec2 pos = this->cachedPosition;
-			glm::vec2 ext = this->parent->getRenderExtent();
+			glm::vec2 ext = this->parent->getExtent();
 
 			uint32_t idcount = (uint32_t)vertex->count_of_points;
 

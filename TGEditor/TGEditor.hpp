@@ -14,12 +14,13 @@
 #include "game_content/StaticCamera.hpp"
 #include "ui/UITextureComponent.hpp"
 #include "ui/UITextComponent.hpp"
-#include "ui/UI.hpp"
+
+using namespace tge::ui;
 
 extern Mesh mesh;
 extern Mesh mesh2;
 extern Camera camera;
-extern tg_ui::UIEntity entity;
+extern UIEntity entity;
 
 struct Editor : App
 {

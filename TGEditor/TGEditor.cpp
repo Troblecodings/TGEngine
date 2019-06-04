@@ -3,7 +3,7 @@
 Mesh mesh;
 Mesh mesh2;
 Camera camera;
-tg_ui::UIEntity entity = tg_ui::UIEntity({ 0.0f, 0.0f }, {0.3, 0.15});
+UIEntity entity = UIEntity({ 0.0f, 0.0f }, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -13,19 +13,19 @@ int main() {
 	Texture texture1 = Texture("resource\\test_logo.png");
 	Texture texture2 = Texture("resource\\ODST_Helmet.png");
 
-	tg_ui::UIEntity entity2 = tg_ui::UIEntity(tg_ui::CENTER, glm::vec2(0.1, 0.1));
+	UIEntity entity2 = UIEntity(CENTER, glm::vec2(0.1, 0.1));
 	entity.addChildren(&entity2);
 
-	tg_ui::UITextureComponent textureComponent1 = tg_ui::UITextureComponent(&texture1, glm::vec4(1.0f), tg_ui::TOP_LEFT);
+	UITextureComponent textureComponent1 = UITextureComponent(&texture1, glm::vec4(1.0f), TOP_LEFT);
 	entity.addDrawable(&textureComponent1);
 
-	tg_ui::UITextureComponent textureComponent2 = tg_ui::UITextureComponent(&texture2, glm::vec4(1.0f), tg_ui::CENTER);
+	UITextureComponent textureComponent2 = UITextureComponent(&texture2, glm::vec4(1.0f), CENTER);
 	entity2.addDrawable(&textureComponent2);
 
-	tg_ui::UITextComponent text = tg_ui::UITextComponent(&arial, "Test", glm::vec4(1.0f), tg_ui::TOP_LEFT);
+	UITextComponent text = UITextComponent(&arial, "Test", glm::vec4(1.0f), TOP_LEFT);
 	entity.addDrawable(&text);
 
-	tg_ui::ui_scene_entity.addChildren(&entity);
+	ui_scene_entity.addChildren(&entity);
 
 	tg_model::load("resource\\Chair.fbx", &mesh);
 	tg_model::load("resource\\hall.fbx", &mesh2);
