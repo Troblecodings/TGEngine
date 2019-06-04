@@ -79,6 +79,8 @@ namespace tge {
 
 		void UIEntity::init()
 		{
+			if (parent == nullptr)
+	            this->__update();
 			for each (UIDrawable * comp in this->drawComponents)
 			{
 				ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
@@ -157,16 +159,14 @@ namespace tge {
 
 		glm::vec2 UIEntity::__getPosition()
 		{
-			glm::vec2 tmp_pos = (this->localPosition * glm::vec2(2, 2)) - glm::vec2(1.0f);
-			if (this->parent == nullptr) return tmp_pos;
-			return this->parent->cachedPosition + tmp_pos;
+			if (this->parent == nullptr) 
+				return this->localPosition;
+			return this->parent->localPosition + this->localPosition;
 		}
 
 		void UIEntity::__update() {
-			this->cachedPosition = this->__getPosition();
+			this->cachedPosition = (this->__getPosition() * glm::vec2(2, 2)) - glm::vec2(1.0f);
 			this->cachedExtent = this->extent * glm::vec2(2 * multiplier, 2);
-
-			// TODO Anchor
 
 			for each (UIEntity* entity in this->children)
 			{

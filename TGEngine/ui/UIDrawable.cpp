@@ -17,6 +17,9 @@ namespace tge {
 			this->cachedPosition = this->parent->getPosition();
 			glm::vec2 extent = this->parent->getExtent();
 
+			OUT_LV_DEBUG(this->cachedPosition.x << " " << this->cachedPosition.y)
+			OUT_LV_DEBUG(extent.x << " " << extent.y)
+
 			switch (this->anchor)
 			{
 			case TOP_LEFT:
