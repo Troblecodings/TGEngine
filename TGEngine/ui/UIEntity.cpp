@@ -4,7 +4,7 @@
 
 namespace tge {
 	namespace ui {
-		UIEntity ui_scene_entity = UIEntity({ 0, 0 }, {});
+		UIEntity ui_scene_entity = UIEntity({ 0, 0 }, { 1, 1 });
 
 		void UIEntity::addDrawable(UIDrawable* component)
 		{
@@ -96,6 +96,39 @@ namespace tge {
 		void UIEntity::onAddTo(UIEntity* parent)
 		{
 			this->parent = parent;
+
+			switch (this->anchor)
+			{
+			case TOP_LEFT:
+				break;
+			case TOP_CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				break;
+			case TOP_RIGHT:
+				this->localPosition.x = this->parent->extent.x;
+				break;
+			case CENTER_LEFT:
+				this->localPosition.y = (this->parent->extent.y / 2);
+				break;
+			case CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				this->localPosition.y = (this->parent->extent.y / 2);
+				break;
+			case CENTER_RIGHT:
+				this->localPosition = (this->parent->extent / glm::vec2(1, 2));
+				break;
+			case BOTTOM_LEFT:
+				this->localPosition.y = this->parent->extent.y;
+				break;
+			case BOTTOM_CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				this->localPosition.y = this->parent->extent.y;
+				break;
+			case BOTTOM_RIGHT:
+				this->localPosition = this->parent->extent;
+				break;
+			}
+
 			this->__update();
 		}
 
@@ -145,6 +178,11 @@ namespace tge {
 			return this->cachedExtent;
 		}
 
+		glm::vec2 UIEntity::getOffset()
+		{
+			return glm::vec2();
+		}
+
 		void UIEntity::setPosition(glm::vec2 position)
 		{
 			this->localPosition = position;
@@ -157,11 +195,49 @@ namespace tge {
 			__update();
 		}
 
+		void UIEntity::setOffset(glm::vec2 offset)
+		{
+			this->offsetPoint = offset;
+			this->__update();
+		}
+
+		void UIEntity::setOffset(Anchor anchor)
+		{
+			switch (this->anchor){
+            case TOP_LEFT:
+            	break;
+            case TOP_CENTER:
+            	this->setOffset(glm::vec2(extent.x / 2, 0));
+            	break;
+            case TOP_RIGHT:
+				this->setOffset(glm::vec2(extent.x, 0));
+            	break;
+            case CENTER_LEFT:
+				this->setOffset(glm::vec2(0, extent.y / 2));
+            	break;
+            case CENTER:
+				this->setOffset(glm::vec2(extent / 2.0f));
+            	break;
+            case CENTER_RIGHT:
+				this->setOffset(glm::vec2(extent.x, extent.y / 2));
+            	break;
+            case BOTTOM_LEFT:
+				this->setOffset(glm::vec2(0, extent.y));
+            	break;
+            case BOTTOM_CENTER:
+				this->setOffset(glm::vec2(extent.x / 2, extent.y));
+				break;
+            case BOTTOM_RIGHT:
+				this->setOffset(glm::vec2(extent.x, extent.y));
+				break;
+            }
+		}
+
 		glm::vec2 UIEntity::__getPosition()
 		{
 			if (this->parent == nullptr) 
-				return this->localPosition;
-			return this->parent->localPosition + this->localPosition;
+				return this->localPosition - glm::vec2(this->offsetPoint.x * multiplier, this->offsetPoint.y);
+			return this->parent->__getPosition() + this->localPosition - glm::vec2(this->offsetPoint.x * multiplier, this->offsetPoint.y);
 		}
 
 		void UIEntity::__update() {

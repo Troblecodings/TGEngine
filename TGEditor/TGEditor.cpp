@@ -3,7 +3,7 @@
 Mesh mesh;
 Mesh mesh2;
 Camera camera;
-UIEntity entity = UIEntity({ 0.0f, 0.0f }, {0.3, 0.15});
+UIEntity entity = UIEntity(CENTER, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -14,7 +14,10 @@ int main() {
 	Texture texture2 = Texture("resource\\ODST_Helmet.png");
 
 	UIEntity entity2 = UIEntity(CENTER, glm::vec2(0.1, 0.1));
+	entity2.setOffset(CENTER);
 	entity.addChildren(&entity2);
+
+	entity.setOffset(CENTER);
 
 	UITextureComponent textureComponent1 = UITextureComponent(&texture1, glm::vec4(1.0f), TOP_LEFT);
 	entity.addDrawable(&textureComponent1);

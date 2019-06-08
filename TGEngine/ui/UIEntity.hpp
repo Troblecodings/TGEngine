@@ -41,6 +41,7 @@ namespace tge {
 			// Local position and extent
 			glm::vec2 localPosition = glm::vec2(0);
 			glm::vec2 extent = glm::vec2(0);
+			glm::vec2 offsetPoint = glm::vec2(0);
 
 			// Cached postion and extent-> Calculated on position/extent change
 			glm::vec2 cachedPosition = glm::vec2(0);
@@ -51,8 +52,10 @@ namespace tge {
 			bool visible = true; // if not visible this wont draw but will still update
 
 		public:
-			UIEntity(Anchor anchor) : anchor(anchor) {}
+			// If an anchor is set the position is always automatically calculated
+			UIEntity(Anchor anchor) : UIEntity(anchor, glm::vec2(0)) {}
 			UIEntity(Anchor anchor, glm::vec2 extent) : anchor(anchor), extent(extent) {}
+			//
 			UIEntity(glm::vec2 position) : UIEntity(position, glm::vec2(0)) {}
 			UIEntity(glm::vec2 position, glm::vec2 extent) : localPosition(position), extent(extent) {}
 
@@ -84,11 +87,14 @@ namespace tge {
 			// Getter for unprocessed values
 			glm::vec2 getLocalPosition();
 			glm::vec2 getLocalExtent();
+			glm::vec2 getOffset();
 
 			// Setter for locals
 			// Updates cached values
 			void setPosition(glm::vec2 position);
 			void setExtent(glm::vec2 extent);
+			void setOffset(glm::vec2 offset);
+			void setOffset(Anchor anchor);
 
 		protected:
 			void onAddTo(UIEntity* parent);
