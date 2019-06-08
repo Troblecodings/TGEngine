@@ -135,6 +135,8 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 	multiplier = (window_list[0]->height / (float)window_list[0]->width);
 
+	tge::ui::ui_scene_entity.init();
+
 	fillCommandBuffer(ibuffer, vbuffer);
 }
 

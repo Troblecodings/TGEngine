@@ -12,6 +12,7 @@
 #include "../game_content/Camera.hpp"
 #include "buffer/IndexBuffer.hpp"
 #include "buffer/VertexBuffer.hpp"
+#include "../ui/UIEntity.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern std::vector<VkImage> swapchain_images;
