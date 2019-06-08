@@ -22,7 +22,7 @@ namespace tge {
 			}
 
 			glm::vec2 ext = this->font->getExtent(this->string);
-			glm::vec2 pos = this->cachedPosition;
+			glm::vec2 pos = this->parent->getPosition();
 			switch (anchor)
 			{
 			case TOP_LEFT:

@@ -103,6 +103,7 @@ namespace tge {
 		private:
 			INTERNAL
 			glm::vec2 __getPosition();
+			glm::vec2 __getOffset();
 			void __update();
 		};
 

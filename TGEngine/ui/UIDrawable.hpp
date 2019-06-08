@@ -16,8 +16,6 @@ namespace tge {
 			UIEntity* parent = nullptr;
 			// Anchor to calculate position updates
 			Anchor anchor = CENTER;
-			// cached value
-			glm::vec2 cachedPosition = glm::vec2(0.0f);
 
 		private:
 			bool enabled = true; // if enabled this will be draw it will still recieve updates
@@ -27,8 +25,6 @@ namespace tge {
 
 			virtual void draw(IndexBuffer* index, VertexBuffer* vertex); // default implementation, needs override
 			virtual void init(); // default implementation, needs override
-
-			void update();
 
 			void onAddTo(UIEntity* parent);
 			void onRemoveFrom(UIEntity* parent);

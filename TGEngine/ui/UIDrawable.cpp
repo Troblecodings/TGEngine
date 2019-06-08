@@ -11,13 +11,6 @@ namespace tge {
 		{
 		}
 
-		void UIDrawable::update()
-		{
-			ASSERT_NONE_NULL_DB(this->parent, "Parent null in update call", TG_ERR_DB_NULLPTR)
-			this->cachedPosition = this->parent->getPosition();
-			glm::vec2 extent = this->parent->getExtent();
-		}
-
 		void UIDrawable::onAddTo(UIEntity* parent)
 		{
 			if (this->parent)

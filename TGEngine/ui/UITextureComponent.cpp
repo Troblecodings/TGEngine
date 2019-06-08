@@ -15,7 +15,7 @@ namespace tge {
 					this->offset_index = last_size;
 			}
 
-			glm::vec2 pos = this->cachedPosition;
+			glm::vec2 pos = this->parent->getPosition();
 			glm::vec2 ext = this->parent->getExtent();
 
 			uint32_t idcount = (uint32_t)vertex->count_of_points;
@@ -40,12 +40,14 @@ namespace tge {
 
 		void UITextureComponent::init()
 		{
-			Material mat;
-			mat.color = this->color;
-			mat.texture = this->texture;
-			mat.isUI = true;
-			TG_VECTOR_APPEND_NORMAL(materials, mat)
-			this->material_index = last_size;
+			if (this->material_index == -1) {
+				Material mat;
+				mat.color = this->color;
+				mat.texture = this->texture;
+				mat.isUI = true;
+				TG_VECTOR_APPEND_NORMAL(materials, mat)
+				this->material_index = last_size;
+			}
 		}
 	}
 }
