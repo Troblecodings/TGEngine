@@ -3,7 +3,7 @@
 Mesh mesh;
 Mesh mesh2;
 Camera camera;
-UIEntity entity = UIEntity(CENTER, {0.3, 0.15});
+UIEntity entity = UIEntity(TOP_LEFT, {0.3, 0.15});
 
 int main() {
 	Editor editor = Editor();
@@ -19,13 +19,13 @@ int main() {
 
 	entity.setOffset(CENTER);
 
-	UITextureComponent textureComponent1 = UITextureComponent(&texture1, glm::vec4(1.0f), TOP_LEFT);
+	UITextureComponent textureComponent1 = UITextureComponent(&texture1, glm::vec4(1.0f));
 	entity.addDrawable(&textureComponent1);
 
-	UITextureComponent textureComponent2 = UITextureComponent(&texture2, glm::vec4(1.0f), CENTER);
+	UITextureComponent textureComponent2 = UITextureComponent(&texture2, glm::vec4(1.0f));
 	entity2.addDrawable(&textureComponent2);
 
-	UITextComponent text = UITextComponent(&arial, "Test", glm::vec4(1.0f), TOP_LEFT);
+	UITextComponent text = UITextComponent(&arial, "Test", glm::vec4(1.0f));
 	entity.addDrawable(&text);
 
 	ui_scene_entity.addChildren(&entity);
