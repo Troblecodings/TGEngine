@@ -28,8 +28,7 @@ namespace tge {
 
 		public:
 			UITextComponent(tg_font::Font* font, char* string) : UITextComponent(font, string, glm::vec4(1, 1, 1, 1)) {}
-			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color) : UITextComponent(font, string, font_color, Anchor::CENTER) {}
-			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color, Anchor anchor);
+			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color);
 
 		protected:
 			virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;

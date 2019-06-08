@@ -14,15 +14,11 @@ namespace tge {
 			// Parent this belongs to
 			// if null this is unbound
 			UIEntity* parent = nullptr;
-			// Anchor to calculate position updates
-			Anchor anchor = CENTER;
 
 		private:
 			bool enabled = true; // if enabled this will be draw it will still recieve updates
 
 		public:
-			UIDrawable(Anchor anchor) : anchor(anchor) {}
-
 			virtual void draw(IndexBuffer* index, VertexBuffer* vertex); // default implementation, needs override
 			virtual void init(); // default implementation, needs override
 
