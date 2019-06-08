@@ -150,6 +150,10 @@ namespace tge {
 			vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 			vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
 			vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			// TODO Look into this
+			vlib_image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_B;
+			vlib_image_view_create_info.components.b = VK_COMPONENT_SWIZZLE_R;
+			//
 
 			// Get default 
 			VkImageFormatProperties imageFormatProperties;
