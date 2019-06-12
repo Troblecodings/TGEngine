@@ -140,15 +140,14 @@
     <None Include="..\docs\main.css" />
     <None Include="..\docs\_config.yml" />
     <None Include="..\setup.py" />
-    <None Include="resources\FragmentColorOnly.glsl" />
-    <None Include="resources\FragmentColorOnly.spv" />
-    <None Include="resources\FragmentTextured.glsl" />
-    <None Include="resources\FragmentTextured.spv" />
     <None Include="..\README.md" />
+    <None Include="resources\FragmentColorOnly.glsl" />
+    <None Include="resources\FragmentTextured.glsl" />
+    <None Include="resources\FragmentUIColor.glsl" />
+    <None Include="resources\FragmentUITextured.glsl" />
     <None Include="resources\VertexColorOnly.glsl" />
-    <None Include="resources\VertexColorOnly.spv" />
     <None Include="resources\VertexTextured.glsl" />
-    <None Include="resources\VertexTextured.spv" />
+    <None Include="resources\VertexUI.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

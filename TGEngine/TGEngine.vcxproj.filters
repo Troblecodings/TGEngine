@@ -439,25 +439,22 @@
     <None Include="resources\FragmentColorOnly.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\FragmentColorOnly.spv">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\FragmentTextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\FragmentTextured.spv">
+    <None Include="resources\FragmentUIColor.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentUITextured.glsl">
       <Filter>resources</Filter>
     </None>
     <None Include="resources\VertexColorOnly.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\VertexColorOnly.spv">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\VertexTextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\VertexTextured.spv">
+    <None Include="resources\VertexUI.glsl">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>
