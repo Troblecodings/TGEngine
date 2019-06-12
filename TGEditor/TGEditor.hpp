@@ -21,6 +21,7 @@ extern Mesh mesh;
 extern Mesh mesh2;
 extern Camera camera;
 extern UIEntity entity;
+extern Mesh map;
 
 struct Editor : App
 {
