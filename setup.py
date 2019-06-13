@@ -40,9 +40,9 @@ def compileshader():
             print("Deleted " + name + " due cleanup")
     shader_data = open("TGEngine\\resources\\ShaderData.cpp", "w")
     shader_data.write("#include \"ShaderData.hpp\"\n\n")
-    shader_data.write("std::vector<std::vector<char>> shader_data = {\n")
     shader_stages = []
-    first = True
+    shader_header = open("TGEngine\\resources\\ShaderData.hpp", "w")
+    shader_header.write("#pragma once\n\n")
     for name in os.listdir(c_path + "\\TGEngine\\resources"):
         try:
             pth = c_path + "\\TGEngine\\resources\\" + name
@@ -68,34 +68,21 @@ def compileshader():
                 if not b:
                     continue
                 print("Reading " + pth.replace(".glsl", "") + ".spv")
-                cshader = open(pth.replace(".glsl", "") + ".spv", "a")
-                size = cshader.tell()
-                cshader.close()
-                cshader = open(pth.replace(".glsl", "") + ".spv", "rb")
-                cchar = cshader.read(1)
-                if not first:
-                    shader_data.write(",")
-                first = False
-                shader_data.write( "{ " + str(readtoint(cchar)))
-                for x in range(0, size - 1):
-                    cchar = cshader.read(1)
-                    shader_data.write(", " + str(readtoint(cchar)))
-                shader_data.write( " }\n")
-                cshader.close()
+                shader_data.write( "unsigned char " + name.replace(".glsl", "") + "[] = { ")
+                shader_header.write("extern unsigned char " + name.replace(".glsl", "") + "[];\n" )
+                with open(pth.replace(".glsl", "") + ".spv", "rb") as compiled_shader_file:
+                    list_of_chars = compiled_shader_file.read()
+                    for char in list_of_chars:
+                        shader_data.write(str(char) + ",")
+                shader_data.seek(shader_data.tell() - 1)
+                shader_data.write( " };\n")
                 print("Successfully added shader")
                 finished += 1
         except Exception:
             msg = "Shader " + name + " failed to Compile"
             traceback.print_exc()
             continue
-    shader_data.write( "};\nVkShaderStageFlagBits shader_flags[] = {\n")
-    first = True
-    for stage in shader_stages:
-        if not first:
-            shader_data.write(",")
-        first = False
-        shader_data.write(stage + "\n")
-    shader_data.write("};")
+    shader_header.close()
     shader_data.close()
     msg = "Compiled " + str(finished) + " out of " + str(total) + " shaders"
     if total == finished:
