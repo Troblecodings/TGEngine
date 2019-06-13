@@ -10,37 +10,61 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TGEditor", "..\TGEditor\TGE
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9} = {C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderTool", "..\ShaderTool\ShaderTool.csproj", "{E311FDAC-DE4E-495D-AE80-970D637B02EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|ARM.ActiveCfg = Debug|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|ARM.Build.0 = Debug|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|x64.ActiveCfg = Debug|x64
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|x64.Build.0 = Debug|x64
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|x86.ActiveCfg = Debug|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Debug|x86.Build.0 = Debug|Win32
+		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|Any CPU.ActiveCfg = Release|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|ARM.ActiveCfg = Release|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|x64.ActiveCfg = Release|x64
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|x64.Build.0 = Release|x64
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|x86.ActiveCfg = Release|Win32
 		{C196E2E9-1255-4264-ACDB-EAB1AD33C6F9}.Release|x86.Build.0 = Release|Win32
+		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|ARM.ActiveCfg = Debug|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|x64.ActiveCfg = Debug|x64
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|x64.Build.0 = Debug|x64
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|x86.ActiveCfg = Debug|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Debug|x86.Build.0 = Debug|Win32
+		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|Any CPU.ActiveCfg = Release|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|ARM.ActiveCfg = Release|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|x64.ActiveCfg = Release|x64
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|x64.Build.0 = Release|x64
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|x86.ActiveCfg = Release|Win32
 		{0EA5D562-8D37-4B79-B114-DE52512C3005}.Release|x86.Build.0 = Release|Win32
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|ARM.Build.0 = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|x64.Build.0 = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{E311FDAC-DE4E-495D-AE80-970D637B02EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
