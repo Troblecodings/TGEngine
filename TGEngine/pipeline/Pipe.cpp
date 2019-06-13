@@ -7,10 +7,7 @@ void createPipeline(VkPipelineShaderStageCreateInfo* createinfos, uint32_t count
 	Window* win = window_list[0];
 	vlib_scissor.extent.height = (uint32_t) (vlib_viewport.height = (float) win->height);
 	vlib_scissor.extent.width = (uint32_t) (vlib_viewport.width = (float) win->width);
-
-	vlib_vertex_input_state.vertexAttributeDescriptionCount = (uint32_t)description_attributes.size();
-	vlib_vertex_input_state.pVertexAttributeDescriptions = description_attributes.data();
-
+	
 	vlib_multisample_state.rasterizationSamples = used_msaa_flag;
 
 	vlib_graphics_pipeline_create_info.stageCount = count;

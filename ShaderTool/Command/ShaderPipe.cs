@@ -15,13 +15,13 @@
 
         public override string ToString()
         {
-            string ShaderModule = "new VkPipelineShaderStageCreateInfo[]{";
+            string ShaderModule = "new VkPipelineShaderStageCreateInfo[" + ShaderNames.Length + "]{";
             foreach (string str in ShaderNames) {
                 ShaderModule += str + ",";
             }
             ShaderModule = ShaderModule.Substring(0, ShaderModule.Length - 1) + "}";
 
-            string Input = "new VkVertexInputAttributeDescription[]{";
+            string Input = "new VkVertexInputAttributeDescription[" + Inputs.Length + "]{";
             foreach (Input str in Inputs)
             {
                 Input += str + ",";
