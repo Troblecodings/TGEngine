@@ -21,3 +21,13 @@ VkPipelineShaderStageCreateInfo createShader(unsigned char data[], VkShaderStage
 			nullptr
 	};
 }
+
+ShaderPipe createShaderPipe(VkPipelineShaderStageCreateInfo shaderModule[], uint32_t shaderCount, VkVertexInputAttributeDescription vertexInputDescription[], uint32_t vertexInputDescriptionCount)
+{
+	ShaderPipe retur;
+	retur.shader = shaderModule;
+	retur.shaderCount = shaderCount;
+	retur.vertexInputDescription = vertexInputDescription;
+	retur.vertexInputDescriptionCount = vertexInputDescriptionCount;
+	return retur;
+}

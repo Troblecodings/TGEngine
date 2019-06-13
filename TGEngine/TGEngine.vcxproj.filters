@@ -258,6 +258,9 @@
     <ClInclude Include="ShaderCreation.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="resources\ShaderPipes.hpp">
+      <Filter>resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="ShaderCreation.cpp">
       <Filter>Quelldateien\pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="resources\ShaderPipes.cpp">
+      <Filter>resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
