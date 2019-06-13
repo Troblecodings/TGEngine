@@ -7,8 +7,8 @@ void Material::createMaterial()
 {
 	// TODO Fix this mess
 	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
-	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
-	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
+	shaders_for_tex[0] = FragmentTextured;
+	shaders_for_tex[1] = VertexTextured;
 
 	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
 	for (size_t i = 0; i < 4; i++)

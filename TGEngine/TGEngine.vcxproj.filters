@@ -255,6 +255,9 @@
     <ClInclude Include="ui\UIUpdatable.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderCreation.hpp">
+      <Filter>Headerdateien\pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -415,6 +418,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIUpdatable.cpp">
       <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCreation.cpp">
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

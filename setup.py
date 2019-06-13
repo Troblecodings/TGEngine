@@ -68,9 +68,10 @@ def compileshader():
                 print("Reading " + pth.replace(".glsl", "") + ".spv")
                 var_name = name.replace(".glsl", "") + "Module"
                 create_var = name.replace(".glsl", "")
+                shader_data.write( "VkPipelineShaderStageCreateInfo " + create_var + ";\n")
                 shader_data.write( "unsigned char " + var_name + "[] = { ")
                 shader_header.write("extern unsigned char " + var_name + "[];\n" )
-                shader_header.write("VkPipelineShaderStageCreateInfo " + create_var + ";\n" )
+                shader_header.write("extern VkPipelineShaderStageCreateInfo " + create_var + ";\n" )
                 with open(pth.replace(".glsl", "") + ".spv", "rb") as compiled_shader_file:
                     list_of_chars = compiled_shader_file.read()
                     if shaderstage == "frag":

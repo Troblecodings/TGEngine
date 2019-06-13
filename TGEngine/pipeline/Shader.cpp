@@ -1,6 +1,5 @@
 #include "Shader.hpp"
 
-std::vector<VkPipelineShaderStageCreateInfo> shaders;
 std::vector<VkVertexInputAttributeDescription> description_attributes;
 
 void createShaderInput(uint32_t location, uint32_t offset, VkFormat format) {
@@ -12,7 +11,4 @@ void createShaderInput(uint32_t location, uint32_t offset, VkFormat format) {
 }
 
 void destroyShaders() {
-	for (VkPipelineShaderStageCreateInfo stage_info : shaders) {
-		vkDestroyShaderModule(device, stage_info.module, nullptr);
-	}
 }
