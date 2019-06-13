@@ -22,18 +22,22 @@ namespace ShaderTool
 
         public static int Main(string[] args)
         {
-            if(args.Length < 1)
-            {
-                Console.WriteLine("No input given please enter!");
-                args = Console.ReadLine().Split(" ");
-            }
-
-            if(args.Length < 1) {
-                Console.WriteLine("Not enough parameter!");
-                return NOT_ENOUGH_PARAMS;
-            }
-
             CWD = Environment.CurrentDirectory + "../../../../../TGEngine/resources";
+
+            if (args.Length < 1)
+            {
+                while (true) {
+                    Console.WriteLine("Enter input!");
+                    args = Console.ReadLine().Split(" ");
+                    AsssertValues(args, 1);
+                    int rcode = Execute(args[0], GetParams(args));
+                    if(rcode != 0)
+                    {
+                        return rcode;
+                    }
+                }
+            }
+            AsssertValues(args, 1);
             return Execute(args[0], GetParams(args));
         }
 

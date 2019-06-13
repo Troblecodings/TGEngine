@@ -48,20 +48,25 @@ namespace ShaderTool
                 return ALREADY_EXIST;
             }
 
-            string[] vertex = Array.FindAll(Shader, pth => pth.StartsWith("Vertex"));
+            foreach(string FileN in Shader)
+            {
 
-            if (vertex.Length != 1)
+            }
+
+            string[] Vertex = Array.FindAll(Shader, pth => pth.StartsWith("Vertex"));
+
+            if (Vertex.Length != 1)
             {
                 Console.WriteLine("VertexShader count != 1");
                 return WRONG_SHADER_COUNT;
             }
 
-            string[] ot = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + vertex[0] + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
-            Input[] Inputs = new Input[ot.Length];
+            string[] InputLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + Vertex[0] + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
+            Input[] Inputs = new Input[InputLines.Length];
 
             Regex rx = new Regex("[^0-9]");
 
-            Array.ForEach(ot, line => {
+            Array.ForEach(InputLines, line => {
                 uint Id = 0;
                 string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
                 if (!UInt32.TryParse(Strid, out Id))
@@ -82,7 +87,7 @@ namespace ShaderTool
             }
 
             File.Create(FileName).Close();
-            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs));
+            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs), Formatting.Indented);
             File.WriteAllText(FileName, str);
             return SUCESS;
         }
