@@ -1,9 +1,19 @@
 #pragma once
+#include "..\ShaderCreation.hpp"
 
-extern unsigned char FragmentColorOnly[];
-extern unsigned char FragmentTextured[];
-extern unsigned char FragmentUIColor[];
-extern unsigned char FragmentUITextured[];
-extern unsigned char VertexColorOnly[];
-extern unsigned char VertexTextured[];
-extern unsigned char VertexUI[];
+void initShader();
+
+extern unsigned char FragmentColorOnlyModule[];
+VkPipelineShaderStageCreateInfo FragmentColorOnly;
+extern unsigned char FragmentTexturedModule[];
+VkPipelineShaderStageCreateInfo FragmentTextured;
+extern unsigned char FragmentUIColorModule[];
+VkPipelineShaderStageCreateInfo FragmentUIColor;
+extern unsigned char FragmentUITexturedModule[];
+VkPipelineShaderStageCreateInfo FragmentUITextured;
+extern unsigned char VertexColorOnlyModule[];
+VkPipelineShaderStageCreateInfo VertexColorOnly;
+extern unsigned char VertexTexturedModule[];
+VkPipelineShaderStageCreateInfo VertexTextured;
+extern unsigned char VertexUIModule[];
+VkPipelineShaderStageCreateInfo VertexUI;

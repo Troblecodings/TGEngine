@@ -3,31 +3,6 @@
 std::vector<VkPipelineShaderStageCreateInfo> shaders;
 std::vector<VkVertexInputAttributeDescription> description_attributes;
 
-void createShader() {
-	for each(std::vector<char> data in shader_data) {
-		VkShaderModule shader_module;
-		VkShaderModuleCreateInfo info = {
-			VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-			nullptr,
-			0,
-			data.size(),
-			reinterpret_cast<const uint32_t*>(data.data())
-		};
-		lastResult = vkCreateShaderModule(device, &info, nullptr, &shader_module);
-		HANDEL(lastResult)
-		TG_VECTOR_APPEND_NORMAL(shaders, VkPipelineShaderStageCreateInfo())
-		shaders[last_size] = {
-			VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-			nullptr,
-			0,
-			shader_flags[last_size],
-			shader_module,
-			"main",
-			nullptr
-		};
-	}
-}
-
 void createShaderInput(uint32_t location, uint32_t offset, VkFormat format) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(description_attributes)
 	description_attributes[last_size].location = location;

@@ -40,9 +40,11 @@ def compileshader():
             print("Deleted " + name + " due cleanup")
     shader_data = open("TGEngine\\resources\\ShaderData.cpp", "w")
     shader_data.write("#include \"ShaderData.hpp\"\n\n")
-    shader_stages = []
+    shader_infos = []
     shader_header = open("TGEngine\\resources\\ShaderData.hpp", "w")
-    shader_header.write("#pragma once\n\n")
+    shader_header.write("#pragma once\n")
+    shader_header.write("#include \"..\\ShaderCreation.hpp\"\n\n")
+    shader_header.write("void initShader();\n\n")
     for name in os.listdir(c_path + "\\TGEngine\\resources"):
         try:
             pth = c_path + "\\TGEngine\\resources\\" + name
@@ -52,10 +54,6 @@ def compileshader():
                 shaderstage = "frag"
                 if name.startswith("Vertex"):
                     shaderstage = "vert"
-                    print("Detected vertex shader")
-                    shader_stages.append("VK_SHADER_STAGE_VERTEX_BIT")
-                else:
-                    shader_stages.append("VK_SHADER_STAGE_FRAGMENT_BIT")
                 p = subprocess.Popen([os.getenv("VULKAN_SDK") + "\\Bin\\glslangValidator.exe", "-V", "-o", pth.replace(".glsl", "") + ".spv", "-H", "-S",  shaderstage, pth],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 for line in iter(p.stdout.readline, b''):
                     print(">>> " + str(line.rstrip()).replace("b'", ""))
@@ -68,10 +66,17 @@ def compileshader():
                 if not b:
                     continue
                 print("Reading " + pth.replace(".glsl", "") + ".spv")
-                shader_data.write( "unsigned char " + name.replace(".glsl", "") + "[] = { ")
-                shader_header.write("extern unsigned char " + name.replace(".glsl", "") + "[];\n" )
+                var_name = name.replace(".glsl", "") + "Module"
+                create_var = name.replace(".glsl", "")
+                shader_data.write( "unsigned char " + var_name + "[] = { ")
+                shader_header.write("extern unsigned char " + var_name + "[];\n" )
+                shader_header.write("VkPipelineShaderStageCreateInfo " + create_var + ";\n" )
                 with open(pth.replace(".glsl", "") + ".spv", "rb") as compiled_shader_file:
                     list_of_chars = compiled_shader_file.read()
+                    if shaderstage == "frag":
+                        shader_infos.append((var_name, "VK_SHADER_STAGE_FRAGMENT_BIT", len(list_of_chars)))
+                    else:
+                        shader_infos.append((var_name, "VK_SHADER_STAGE_VERTEX_BIT", len(list_of_chars)))
                     for char in list_of_chars:
                         shader_data.write(str(char) + ",")
                 shader_data.seek(shader_data.tell() - 1)
@@ -82,6 +87,10 @@ def compileshader():
             msg = "Shader " + name + " failed to Compile"
             traceback.print_exc()
             continue
+    shader_data.write("\nvoid initShader(){\n")
+    for x in shader_infos:
+        shader_data.write("    " + x[0].replace("Module", "") + " = createShader(" + x[0] + ", " + x[1] + ", " + str(x[2]) + ");\n")
+    shader_data.write("}")
     shader_header.close()
     shader_data.close()
     msg = "Compiled " + str(finished) + " out of " + str(total) + " shaders"
