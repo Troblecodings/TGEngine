@@ -25,10 +25,12 @@ void Material::createMaterial()
 
 	this->descriptor_index = textureDescriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
 
-	vlib_vertex_input_state.pVertexAttributeDescriptions = TexturedBasic.vertexInputDescription;
-	vlib_vertex_input_state.vertexAttributeDescriptionCount = TexturedBasic.vertexInputDescriptionCount;
+	vlib_vertex_input_state.pVertexAttributeDescriptions = TexturedBasicInput;
+	vlib_vertex_input_state.vertexAttributeDescriptionCount = TexturedBasicInputCount;
+	vlib_graphics_pipeline_create_info.stageCount = TexturedBasicShaderCount;
+	vlib_graphics_pipeline_create_info.pStages = TexturedBasicShader;
 
-	createPipeline(TexturedBasic.shader, TexturedBasic.shaderCount, this->layout_index);
+	createPipeline(TexturedBasicShader, TexturedBasicShaderCount, this->layout_index);
 	this->pipeline_index = last_size;
 
 	camera_uniform.descriptor.binding = 0;

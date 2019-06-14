@@ -118,38 +118,44 @@ namespace ShaderTool
 
         public static int PipeMake()
         {
+            // Get path
             string HeaderFileName = Program.CWD + "\\ShaderPipes.hpp";
             string SourceFileName = Program.CWD + "\\ShaderPipes.cpp";
 
+            // Recreate files
             StreamWriter HeaderWriter = File.CreateText(HeaderFileName);
             StreamWriter SourceWriter = File.CreateText(SourceFileName);
 
+            // Auto generated header and source
             HeaderWriter.WriteLine("#pragma once");
             HeaderWriter.WriteLine("#include \"ShaderData.hpp\"");
+            HeaderWriter.WriteLine("// Auto generated / Don't change");
             HeaderWriter.WriteLine();
 
             SourceWriter.WriteLine("#include \"ShaderPipes.hpp\"");
+            SourceWriter.WriteLine("// Auto generated / Don't change");
             SourceWriter.WriteLine();
 
             string[] PipeFiles = Directory.GetFiles(Program.CWD, "*Pipe.json");
 
             ShaderPipe[] ShaderPipes = new ShaderPipe[PipeFiles.Length];
-
+            // Load shader pipes
             for (int i = 0; i < PipeFiles.Length; i++) {
                 string Text = File.ReadAllText(PipeFiles[i]);
                 ShaderPipes[i] = JsonConvert.DeserializeObject<ShaderPipe>(Text);
+                SourceWriter.WriteLine(ShaderPipes[i]);
+                HeaderWriter.WriteLine(ShaderPipes[i].GenHeader());
             }
 
-            Array.ForEach(ShaderPipes, pipe => { SourceWriter.WriteLine("ShaderPipe " + pipe.Name + ";"); HeaderWriter.WriteLine("extern ShaderPipe " + pipe.Name + ";"); } );
-
+            // Initalize shader pipes
             HeaderWriter.WriteLine();
-            SourceWriter.WriteLine();
             HeaderWriter.WriteLine("void initShaderPipes();");
-            SourceWriter.WriteLine("void initShaderPipes() {");
+            SourceWriter.WriteLine();
+            SourceWriter.WriteLine("void initShaderPipes(){");
 
-            Array.ForEach(ShaderPipes, pipe => SourceWriter.WriteLine("    " + pipe.Name + " = createShaderPipe(" + pipe + ");"));
+            Array.ForEach(ShaderPipes, Pipe => SourceWriter.WriteLine(Pipe.GenCreation()));
+
             SourceWriter.WriteLine("}");
-
             SourceWriter.Close();
             HeaderWriter.Close();
             return SUCESS;

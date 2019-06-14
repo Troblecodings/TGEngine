@@ -1,7 +1,14 @@
 #include "ShaderPipes.hpp"
+// Auto generated / Don't change
 
-ShaderPipe TexturedBasic;
+VkPipelineShaderStageCreateInfo TexturedBasicShader[2];
+const VkVertexInputAttributeDescription TexturedBasicInput[] = {{ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,12},{ 2, 0, VK_FORMAT_R32G32B32_SFLOAT,20}};
+const unsigned int TexturedBasicShaderCount = 2;
+const unsigned int TexturedBasicInputCount = 3;
 
-void initShaderPipes() {
-    TexturedBasic = createShaderPipe(new VkPipelineShaderStageCreateInfo[2]{VertexTextured,FragmentTextured},2,new VkVertexInputAttributeDescription[3]{{ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,12},{ 2, 0, VK_FORMAT_R32G32B32_SFLOAT,20}},3);
+
+void initShaderPipes(){
+    TexturedBasicShader[0] = VertexTextured;
+    TexturedBasicShader[1] = FragmentTextured;
+
 }

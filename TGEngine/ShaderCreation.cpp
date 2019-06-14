@@ -1,6 +1,6 @@
 #include "ShaderCreation.hpp"
 
-VkPipelineShaderStageCreateInfo createShader(unsigned char data[], VkShaderStageFlagBits flag, uint32_t size) {
+VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size) {
 	VkShaderModule shader_module;
 	VkShaderModuleCreateInfo info = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
@@ -20,14 +20,4 @@ VkPipelineShaderStageCreateInfo createShader(unsigned char data[], VkShaderStage
 			"main",
 			nullptr
 	};
-}
-
-ShaderPipe createShaderPipe(VkPipelineShaderStageCreateInfo shaderModule[], uint32_t shaderCount, VkVertexInputAttributeDescription vertexInputDescription[], uint32_t vertexInputDescriptionCount)
-{
-	ShaderPipe retur;
-	retur.shader = shaderModule;
-	retur.shaderCount = shaderCount;
-	retur.vertexInputDescription = vertexInputDescription;
-	retur.vertexInputDescriptionCount = vertexInputDescriptionCount;
-	return retur;
 }

@@ -15,20 +15,37 @@
 
         public override string ToString()
         {
-            string ShaderModule = "new VkPipelineShaderStageCreateInfo[" + ShaderNames.Length + "]{";
-            foreach (string str in ShaderNames) {
-                ShaderModule += str + ",";
-            }
-            ShaderModule = ShaderModule.Substring(0, ShaderModule.Length - 1) + "}";
+            string ShaderModule = "VkPipelineShaderStageCreateInfo " + this.Name + "Shader[" + this.ShaderNames.Length + "];\r\n";
 
-            string Input = "new VkVertexInputAttributeDescription[" + Inputs.Length + "]{";
+            string Input = "const VkVertexInputAttributeDescription " + this.Name + "Input[] = {";
             foreach (Input str in Inputs)
             {
                 Input += str + ",";
             }
-            Input = Input.Substring(0, Input.Length - 1) + "}";
+            Input = Input.Substring(0, Input.Length - 1) + "};\r\n";
 
-            return ShaderModule + "," + ShaderNames.Length + "," + Input + "," + Inputs.Length;
+            return ShaderModule + Input 
+                + "const unsigned int " + this.Name + "ShaderCount = " + ShaderNames.Length + ";\r\n" 
+                + "const unsigned int " + this.Name + "InputCount = " + Inputs.Length + ";\r\n";
+        }
+
+        public string GenCreation()
+        {
+            string ShaderModule = "";
+            uint i = 0;
+            foreach (string str in ShaderNames)
+            {
+                ShaderModule += "    " + this.Name + "Shader[" + i++ + "] = " + str + ";\r\n";
+            }
+            return ShaderModule;
+        }
+
+        public string GenHeader()
+        {
+            return "extern VkPipelineShaderStageCreateInfo " + this.Name + "Shader[" + this.ShaderNames.Length + "];\r\n" 
+                + "extern const VkVertexInputAttributeDescription " + this.Name + "Input[];\r\n" 
+                + "extern const unsigned int " + this.Name + "ShaderCount;\r\n"
+                + "extern const unsigned int " + this.Name + "InputCount;\r\n";
         }
     }
 

@@ -3,17 +3,17 @@
 
 void initShader();
 
-extern unsigned char FragmentColorOnlyModule[];
+extern const unsigned char FragmentColorOnlyModule[];
 extern VkPipelineShaderStageCreateInfo FragmentColorOnly;
-extern unsigned char FragmentTexturedModule[];
+extern const unsigned char FragmentTexturedModule[];
 extern VkPipelineShaderStageCreateInfo FragmentTextured;
-extern unsigned char FragmentUIColorModule[];
+extern const unsigned char FragmentUIColorModule[];
 extern VkPipelineShaderStageCreateInfo FragmentUIColor;
-extern unsigned char FragmentUITexturedModule[];
+extern const unsigned char FragmentUITexturedModule[];
 extern VkPipelineShaderStageCreateInfo FragmentUITextured;
-extern unsigned char VertexColorOnlyModule[];
+extern const unsigned char VertexColorOnlyModule[];
 extern VkPipelineShaderStageCreateInfo VertexColorOnly;
-extern unsigned char VertexTexturedModule[];
+extern const unsigned char VertexTexturedModule[];
 extern VkPipelineShaderStageCreateInfo VertexTextured;
-extern unsigned char VertexUIModule[];
+extern const unsigned char VertexUIModule[];
 extern VkPipelineShaderStageCreateInfo VertexUI;
