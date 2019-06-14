@@ -12,5 +12,6 @@ namespace ShaderTool
         public const int ALREADY_EXIST = -3;
         public const int WRONG_SHADER_COUNT = -4;
         public const int VERTEX_INPUT_ERR = -5;
+        public const int SHADER_DOESNT_EXIST = -6;
     }
 }

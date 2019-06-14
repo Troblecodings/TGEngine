@@ -27,7 +27,7 @@ namespace ShaderTool
             if (args.Length < 1)
             {
                 while (true) {
-                    Console.WriteLine("Enter input!");
+                    Console.Write(">>> ");
                     args = Console.ReadLine().Split(" ");
                     AsssertValues(args, 1);
                     int rcode = Execute(args[0], GetParams(args));

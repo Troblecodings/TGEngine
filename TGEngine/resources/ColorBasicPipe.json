@@ -1,24 +1,24 @@
 {
-  "Name": "UIColor",
+  "Name": "ColorBasic",
   "ShaderNames": [
-    "VertexUI",
-    "FragmentUIColor"
+    "VertexColorOnly",
+    "FragmentColorOnly"
   ],
   "Inputs": [
     {
       "Id": 0,
       "Offset": 0,
-      "Layout": 103
+      "Layout": 106
     },
     {
       "Id": 1,
-      "Offset": 8,
+      "Offset": 12,
       "Layout": 103
     },
     {
       "Id": 2,
-      "Offset": 16,
-      "Layout": 109
+      "Offset": 20,
+      "Layout": 106
     }
   ]
 }

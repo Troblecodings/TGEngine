@@ -1,8 +1,8 @@
 {
-  "Name": "UIColor",
+  "Name": "UITextured",
   "ShaderNames": [
     "VertexUI",
-    "FragmentUIColor"
+    "FragmentUITextured"
   ],
   "Inputs": [
     {

@@ -27,10 +27,63 @@ namespace ShaderTool
                     return PipeDelete(GetParams(args));
                 case "make":
                     return PipeMake();
+                case "show":
+                    return PipeShow(GetParams(args));
+                case "update":
+                    return PipeUpdate(GetParams(args));
             }
 
-            Console.WriteLine("Wrong parameters! Must be create/list/delete/make!");
+            Console.WriteLine("Wrong parameters! Must be create/list/delete/make/Show!");
             return WRONG_PARAMS;
+        }
+
+        // Updates inputs
+        public static int PipeUpdate(string[] args)
+        {
+            AsssertNoneNull(args);
+            string Path = Program.CWD + "\\" + args[0] + "Pipe.json";
+            if (File.Exists(Path))
+            {
+                // Getting old Pipe
+                string Text = File.ReadAllText(Path);
+                ShaderPipe Pipe = JsonConvert.DeserializeObject<ShaderPipe>(Text);
+                string VertexShader = Array.Find(Pipe.ShaderNames, Name => Name.StartsWith("Vertex"));
+                string VsPath = Program.CWD + "\\" + VertexShader + ".glsl";
+                if (File.Exists(VsPath))
+                {
+                    // Updating inputs
+                    Pipe.Inputs = GetInputs(VertexShader);
+                    File.WriteAllText(VsPath, JsonConvert.SerializeObject(Pipe, Formatting.Indented));
+                    return SUCESS;
+                }
+                Console.WriteLine("Shader doesn't exist!");
+                return SHADER_DOESNT_EXIST;
+            }
+            Console.WriteLine("Pipe doesn't exist!");
+            return SHADER_DOESNT_EXIST;
+        }
+
+        public static int PipeShow(string[] args)
+        {
+            AsssertNoneNull(args);
+            string Path = Program.CWD + "\\" + args[0] + "Pipe.json";
+            if (File.Exists(Path))
+            {
+                string Text = File.ReadAllText(Path);
+                ShaderPipe Pipe = JsonConvert.DeserializeObject<ShaderPipe>(Text);
+                Console.WriteLine();
+                Console.WriteLine(Pipe.Name);
+                Console.WriteLine("Shader count " + Pipe.ShaderNames.Length);
+                Console.WriteLine("Input count " + Pipe.Inputs.Length);
+                Console.WriteLine();
+                Array.ForEach(Pipe.ShaderNames, Console.WriteLine);
+                Console.WriteLine();
+                Array.ForEach(Pipe.Inputs, Inpt => Console.WriteLine(Inpt.Id + ": layout=" + Inpt.Layout + ", offset=" + Inpt.Offset));
+                Console.WriteLine();
+                return SUCESS;
+            }
+            Console.WriteLine("Pipe doesn't exist!");
+            return SHADER_DOESNT_EXIST;
         }
 
         // Create pipe
@@ -53,7 +106,11 @@ namespace ShaderTool
 
             foreach(string FileN in Shader)
             {
-                
+                if(!File.Exists(Program.CWD + "\\" + FileN + ".glsl"))
+                {
+                    Console.WriteLine(FileN + " doesn't exist!");
+                    return SHADER_DOESNT_EXIST;
+                }
             }
 
             // Get vertex shader
@@ -66,8 +123,19 @@ namespace ShaderTool
                 return WRONG_SHADER_COUNT;
             }
 
+            Input[] Inputs = GetInputs(Vertex[0]);
+
+            // Create shader pipe
+            File.Create(FileName).Close();
+            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs), Formatting.Indented);
+            File.WriteAllText(FileName, str);
+            return SUCESS;
+        }
+
+        public static Input[] GetInputs(string Path)
+        {
             // Getting lines with input
-            string[] InputLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + Vertex[0] + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
+            string[] InputLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + Path + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
             Input[] Inputs = new Input[InputLines.Length];
 
             Regex rx = new Regex("[^0-9]");
@@ -92,18 +160,13 @@ namespace ShaderTool
             {
                 Inputs[i].Offset = Inputs[i - 1].Offset + VulkanLookups.LookupSize(Inputs[i - 1].Layout);
             }
-
-            // Create shader pipe
-            File.Create(FileName).Close();
-            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs), Formatting.Indented);
-            File.WriteAllText(FileName, str);
-            return SUCESS;
+            return Inputs;
         }
 
         // List pipes
         public static int PipeList()
         {
-            Array.ForEach(Directory.GetFiles(Program.CWD, "*Pipe.json"), pth => Console.WriteLine(pth.Replace(Program.CWD + "\\", "")));
+            Array.ForEach(Directory.GetFiles(Program.CWD, "*Pipe.json"), pth => Console.WriteLine(pth.Replace(Program.CWD + "\\", "").Replace("Pipe.json", "")));
             return SUCESS;
         }
 
