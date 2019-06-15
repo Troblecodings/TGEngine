@@ -5,11 +5,6 @@ std::vector<RenderOffsets> render_offset;
 
 void Material::createMaterial()
 {
-	// TODO Fix this mess
-	VkPipelineShaderStageCreateInfo* shaders_for_tex = new VkPipelineShaderStageCreateInfo[2];
-	shaders_for_tex[0] = shaders[TG_VERTEX_SHADER_TEXTURED_INDEX];
-	shaders_for_tex[1] = shaders[TG_FRAGMENT_SHADER_TEXTURED_INDEX];
-
 	VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -23,16 +18,19 @@ void Material::createMaterial()
 	pSpecialization.pData = &this->color;
 	pSpecialization.dataSize = sizeof(float) * 4;
 	pSpecialization.pMapEntries = map_entrys;
-	//
-
-	shaders_for_tex[1].pSpecializationInfo = &pSpecialization;
+	VertexTextured.pSpecializationInfo = &pSpecialization;
 
 	createPipelineLayout(1, &descriptor_set_layouts[createDesctiptorLayout()]);
 	this->layout_index = last_size;
 
 	this->descriptor_index = textureDescriptor.descriptorset = light_buffer.descriptor.descriptorset = camera_uniform.descriptor.descriptorset = createDescriptorSet(this->layout_index);
 
-	createPipeline(shaders_for_tex, 2, this->layout_index);
+	vlib_vertex_input_state.pVertexAttributeDescriptions = TexturedBasicInput;
+	vlib_vertex_input_state.vertexAttributeDescriptionCount = TexturedBasicInputCount;
+	vlib_graphics_pipeline_create_info.stageCount = TexturedBasicShaderCount;
+	vlib_graphics_pipeline_create_info.pStages = TexturedBasicShader;
+
+	createPipeline(TexturedBasicShader, TexturedBasicShaderCount, this->layout_index);
 	this->pipeline_index = last_size;
 
 	camera_uniform.descriptor.binding = 0;

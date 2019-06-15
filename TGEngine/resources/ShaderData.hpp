@@ -1,9 +1,19 @@
-#include "..\Stdbase.hpp"
+#pragma once
+#include "..\ShaderCreation.hpp"
 
-extern std::vector<std::vector<char>> shader_data;
-extern VkShaderStageFlagBits shader_flags[];
+void initShader();
 
-#define TG_FRAGMENT_SHADER_COLOR_ONLY_INDEX 0
-#define TG_FRAGMENT_SHADER_TEXTURED_INDEX 1
-#define TG_VERTEX_SHADER_COLOR_ONLY_INDEX 2
-#define TG_VERTEX_SHADER_TEXTURED_INDEX 3
+extern unsigned char FragmentColorOnlyModule[];
+extern VkPipelineShaderStageCreateInfo FragmentColorOnly;
+extern unsigned char FragmentTexturedModule[];
+extern VkPipelineShaderStageCreateInfo FragmentTextured;
+extern unsigned char FragmentUIColorModule[];
+extern VkPipelineShaderStageCreateInfo FragmentUIColor;
+extern unsigned char FragmentUITexturedModule[];
+extern VkPipelineShaderStageCreateInfo FragmentUITextured;
+extern unsigned char VertexColorOnlyModule[];
+extern VkPipelineShaderStageCreateInfo VertexColorOnly;
+extern unsigned char VertexTexturedModule[];
+extern VkPipelineShaderStageCreateInfo VertexTextured;
+extern unsigned char VertexUIModule[];
+extern VkPipelineShaderStageCreateInfo VertexUI;

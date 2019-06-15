@@ -1,0 +1,24 @@
+{
+  "Name": "ColorBasic",
+  "ShaderNames": [
+    "VertexColorOnly",
+    "FragmentColorOnly"
+  ],
+  "Inputs": [
+    {
+      "Id": 0,
+      "Offset": 0,
+      "Layout": 106
+    },
+    {
+      "Id": 1,
+      "Offset": 12,
+      "Layout": 103
+    },
+    {
+      "Id": 2,
+      "Offset": 20,
+      "Layout": 106
+    }
+  ]
+}

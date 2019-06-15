@@ -255,6 +255,12 @@
     <ClInclude Include="ui\UIUpdatable.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderCreation.hpp">
+      <Filter>Headerdateien\pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="resources\ShaderPipes.hpp">
+      <Filter>resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -416,6 +422,12 @@
     <ClCompile Include="ui\UIUpdatable.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderCreation.cpp">
+      <Filter>Quelldateien\pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="resources\ShaderPipes.cpp">
+      <Filter>resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -439,25 +451,22 @@
     <None Include="resources\FragmentColorOnly.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\FragmentColorOnly.spv">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\FragmentTextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\FragmentTextured.spv">
+    <None Include="resources\FragmentUITextured.glsl">
       <Filter>resources</Filter>
     </None>
     <None Include="resources\VertexColorOnly.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\VertexColorOnly.spv">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\VertexTextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\VertexTextured.spv">
+    <None Include="resources\VertexUI.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentUIColor.glsl">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <title>Documentations - Shader Tool</title>
+    <link rel="icon" href="logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+    <body>
+        
+        <h3>Documentations - Shader Tool</h3>
+			
+        <div class="menu">
+            <a href="./index.html">Home</a>
+            <a href="./docs.html">Docs</a>
+        </div>
+        
+        <div class="container">
+            <h3>The Shader Tool</h3>
+            <p><em>Note: The ShaderTool is currently under development and not yet finished</em></p>
+            <p>The Shader Tool is a dotnet tool written in C#. Unlike the previous tools this one is more likely a unix pipeline tool. 
+                So your are able to pipe commands in it and use the minimal output or the return codes for tool chaining. It has a command interface for starting it without parameters. 
+                But currently there is no GUI for the tool. This might change in the future.</p>
+
+            <h2>Commands</h2>
+            <p>pipe commands</p>
+            <p>Used to manage shader pipelines</p>
+                <table>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe list</strong></p></td>
+                        <td class="cmd"><p>Lists all created pipes.</p></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe create &lt;name&gt; &lt;shader&gt; [moreshader...]</strong></p></td>
+                        <td class="cmd"><p>Creates a new Shader pipe with the given name and shader.</p></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe show &lt;name&gt;</strong></p></td>
+                        <td class="cmd"><p>Shows details to the given pipe.</p></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe make</strong></p></td>
+                        <td class="cmd"><p>Generates the C++ code for all created pipes.</p></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe update &lt;name&gt;</strong></p></td>
+                        <td class="cmd"><p>Updates the PipelineInputAttributes.</p></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd"><p><strong>pipe delete &lt;name&gt;</strong></p></td>
+                        <td class="cmd"><p>Deltetes the given pipeline.</p></td>
+                    </tr>        
+                </table>
+        </div>
+    </body>
+</html>
