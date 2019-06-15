@@ -33,7 +33,7 @@ namespace ShaderTool
                     return PipeUpdate(GetParams(args));
             }
 
-            Console.WriteLine("Wrong parameters! Must be create/list/delete/make/Show!");
+            Console.WriteLine("Wrong parameters! Must be create/list/delete/make/show/update!");
             return WRONG_PARAMS;
         }
 
