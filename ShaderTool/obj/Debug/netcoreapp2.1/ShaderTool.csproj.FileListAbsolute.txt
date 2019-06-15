@@ -1,0 +1,11 @@
+D:\Projects\TGEngine\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.deps.json
+D:\Projects\TGEngine\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.runtimeconfig.json
+D:\Projects\TGEngine\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.runtimeconfig.dev.json
+D:\Projects\TGEngine\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.csproj.CoreCompileInputs.cache
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.AssemblyInfoInputs.cache
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.AssemblyInfo.cs
+D:\Projects\TGEngine\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.pdb
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.dll
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.pdb
+D:\Projects\TGEngine\ShaderTool\obj\Debug\netcoreapp2.1\ShaderTool.csprojAssemblyReference.cache
