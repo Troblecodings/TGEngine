@@ -54,7 +54,7 @@ def compileshader():
                 shaderstage = "frag"
                 if name.startswith("Vertex"):
                     shaderstage = "vert"
-                p = subprocess.Popen([os.getenv("VULKAN_SDK") + "\\Bin\\glslangValidator.exe", "-V", "-o", pth.replace(".glsl", "") + ".spv", "-H", "-S",  shaderstage, pth],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([os.getenv("VULKAN_SDK") + "\\Bin\\glslangValidator.exe", "-V", "-o", pth.replace(".glsl", "") + ".spv", "-S",  shaderstage, pth],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 for line in iter(p.stdout.readline, b''):
                     print(">>> " + str(line.rstrip()).replace("b'", ""))
                 b = True

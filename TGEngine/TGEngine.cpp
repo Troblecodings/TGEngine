@@ -36,7 +36,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
 
 	addDescriptorBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
-	addDescriptorBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	addDescriptorBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT);
 	addDescriptorBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	initCameras();
@@ -91,7 +91,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	main_buffer.end();
 	index_buffer.end();
 
-	setLightPosition({ 0, 0, -10 });
+	setLightPosition({ 0, 10, 0 });
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 
@@ -99,6 +99,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createSemaphores();
 
 	clock_t last_time = clock();
+	float light = 0;
+	bool ret = true;
 
 	while (true) {
 		window->pollevents();
@@ -123,6 +125,19 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 			main_buffer.end();
 			index_buffer.end();
+
+			setLightPosition({ 0, light, 0 });
+			if (ret) {
+				light += 0.08f;
+				if (light > 10)
+					ret = !ret;
+			}
+			else
+			{
+				light -= 0.08f;
+				if (light < -10)
+					ret = !ret;
+			}
 
 			startSingleTimeCommand();
 			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;

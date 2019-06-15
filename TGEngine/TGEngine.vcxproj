@@ -147,7 +147,10 @@
     <None Include="..\README.md" />
     <None Include="resources\FragmentColorOnly.glsl" />
     <None Include="resources\FragmentTextured.glsl" />
-    <None Include="resources\FragmentUIColor.glsl" />
+    <None Include="resources\FragmentUIColor.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
     <None Include="resources\FragmentUITextured.glsl" />
     <None Include="resources\VertexColorOnly.glsl" />
     <None Include="resources\VertexTextured.glsl" />
@@ -275,8 +278,8 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>
-      </Command>
+      <Command>cd $(ProjectDir)..\
+python setup.py 3 0</Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>

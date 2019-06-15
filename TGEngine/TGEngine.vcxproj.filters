@@ -454,9 +454,6 @@
     <None Include="resources\FragmentTextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\FragmentUIColor.glsl">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\FragmentUITextured.glsl">
       <Filter>resources</Filter>
     </None>
@@ -467,6 +464,9 @@
       <Filter>resources</Filter>
     </None>
     <None Include="resources\VertexUI.glsl">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FragmentUIColor.glsl">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>
