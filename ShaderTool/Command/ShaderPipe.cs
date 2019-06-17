@@ -1,3 +1,4 @@
+
 ﻿namespace ShaderTool.Command
 {
     class ShaderPipe
