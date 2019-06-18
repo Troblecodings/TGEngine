@@ -1,4 +1,5 @@
 ﻿using System;
+using ShaderTool.Command;
 using static ShaderTool.Error;
 using static ShaderTool.Util;
 
@@ -14,6 +15,8 @@ namespace ShaderTool
             switch (id) {
                 case "pipe":
                     return Pipe.PipeCommand(arg);
+                case "shader":
+                    return Shader.ShaderCommand(arg);
             }
 
             Console.WriteLine("Wrong parameters! Possible: pipe!");

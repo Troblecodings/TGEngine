@@ -281,3 +281,6 @@ dependencies/deps.zip
 /Chess
 /test
 /Release.zip
+
+/ShaderTool/bin
+/ShaderTool/obj
