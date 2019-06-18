@@ -4,45 +4,57 @@
 #include "../pipeline/Pipe.hpp"
 #include "../resources/ShaderPipes.hpp"
 
-using namespace tge::tex;
+namespace tge {
+	namespace tex {
 
-/*
- * Material can hold a texture and a color
- * -> Can not be changed in vulkan runtime
- * -> needs pipeline recreation
- */
-SINCE(0, 0, 4)
-class Material {
+		/*
+		 * Material can hold a texture and a color
+		 * -> Can not be changed in vulkan runtime
+		 * -> needs pipeline recreation
+		 */
+		SINCE(0, 0, 4)
+		class Material {
 
-public:
-	Texture* texture;
-	glm::vec4 color;
+		private:
+			Texture* texture;
+			glm::vec4 color;
 
-	bool isUI = false;
+			const VkVertexInputAttributeDescription* inputAttributes;
+			uint32_t inputCount;
+			VkPipelineShaderStageCreateInfo* shader;
+			uint32_t shaderCount;
 
-	uint32_t pipeline_index;
-	uint32_t descriptor_index;
-	uint32_t layout_index;
+			uint32_t pipelineIndex = 0;
+			uint32_t descriptorIndex = 0;
+			uint32_t layoutIndex = 0;
 
-	virtual void createMaterial();
-	virtual void createUIMaterial();
+		public:
+			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
+			Material(glm::vec4 color) : Material(nullptr, color) {}
+			Material(Texture* texture, glm::vec4 color);
+			Material(const VkVertexInputAttributeDescription* inputAttributes, const uint32_t inputCount,
+				VkPipelineShaderStageCreateInfo* shader, const uint32_t shaderCount);
 
-	void destroy();
+			virtual void createMaterial();
 
-	bool operator==(const Material& material);
-};
+			void destroy();
 
-/*
- * Defines which part of the buffer has which material
- */
-SINCE(0, 0, 4)
-struct RenderOffsets {
+			bool operator==(const Material& material);
+		};
 
-	uint32_t material; // index in the @materials array of the material to use
+		/*
+		 * Defines which part of the buffer has which material
+		 */
+		SINCE(0, 0, 4)
+		struct RenderOffsets {
 
-	uint32_t size; // count of vertices to draw for this matirial
-	uint32_t offset; // the offset at wich this material starts (global)
-};
+			uint32_t material; // index in the @materials array of the material to use
 
-extern std::vector<Material> materials;
-extern std::vector<RenderOffsets> render_offset;
+			uint32_t size; // count of vertices to draw for this matirial
+			uint32_t offset; // the offset at wich this material starts (global)
+		};
+
+		extern std::vector<Material*> materials;
+		extern std::vector<RenderOffsets> render_offset;
+	}
+}

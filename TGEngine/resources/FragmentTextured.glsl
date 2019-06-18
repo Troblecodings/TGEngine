@@ -38,8 +38,9 @@ float fall(float dist) {
 
 // Light calculation with at least 1 distance
 vec4 applyLight(float dist) {
+    float fallof = fall(dist) * window(dist);
     vec4 Ccolor = getColor();
-    return vec4(vec3(Ccolor * fall(dist) * window(dist)), Ccolor.a);
+    return vec4(vec3(Ccolor * fallof), Ccolor.a);
 }
 
 void main(){

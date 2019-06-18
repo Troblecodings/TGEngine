@@ -10,6 +10,8 @@
 #include "../pipeline/Shader.hpp"
 #include "../pipeline/Pipe.hpp"
 
+using namespace tge::tex;
+
 struct Mesh
 {
 	uint32_t first_index; // the first index for this mesh

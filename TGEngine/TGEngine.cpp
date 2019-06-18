@@ -1,6 +1,7 @@
 #include "TGEngine.hpp"
 
 using namespace std;
+using namespace tge::tex;
 
 void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void)) {
 	tge::nio::initFileSystem();
@@ -99,8 +100,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createSemaphores();
 
 	clock_t last_time = clock();
-	float light = 0;
-	bool ret = true;
 
 	while (true) {
 		window->pollevents();
@@ -125,19 +124,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 			main_buffer.end();
 			index_buffer.end();
-
-			setLightPosition({ 0, light, 0 });
-			if (ret) {
-				light += 0.08f;
-				if (light > 10)
-					ret = !ret;
-			}
-			else
-			{
-				light -= 0.08f;
-				if (light < -10)
-					ret = !ret;
-			}
 
 			startSingleTimeCommand();
 			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;

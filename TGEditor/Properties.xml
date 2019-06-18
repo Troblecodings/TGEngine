@@ -6,7 +6,7 @@
     <int name="msaa" value="4"/>
   </app>
   <window>
-    <boolean name="fullscreen" value="false"/>
+    <boolean name="fullscreen" value="true"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
     <boolean name="cursor" value="true" />

@@ -3,7 +3,7 @@
 std::vector<VkPipeline> pipelines; 
 std::vector<VkPipelineLayout> layouts;
 
-void createPipeline(const VkPipelineShaderStageCreateInfo createinfos[], uint32_t count, uint32_t layout) {
+void createPipeline(uint32_t layout) {
 	Window* win = window_list[0];
 	vlib_scissor.extent.height = (uint32_t) (vlib_viewport.height = (float) win->height);
 	vlib_scissor.extent.width = (uint32_t) (vlib_viewport.width = (float) win->width);

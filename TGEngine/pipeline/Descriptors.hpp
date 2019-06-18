@@ -7,7 +7,7 @@
 
 extern VkDescriptorPool descriptor_pool; // holds the descriptor pool -> see initDescriptors()
 extern std::vector<VkDescriptorSet> descriptor_set; // contains the desciptorset handles from vulkan
-extern std::vector<VkDescriptorSetLayout> descriptor_set_layouts; // contains the desciptorsetlayout handles from vulkan
+extern std::vector<VkDescriptorSetLayout> descriptorSetLayouts; // contains the desciptorsetlayout handles from vulkan
 extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings; // contains the desciptorsetlayoutbindings from vulkan
 
 extern uint32_t uniform_count; // holds the count of uniform buffer Descriptor objects

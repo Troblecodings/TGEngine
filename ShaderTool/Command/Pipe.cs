@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using static ShaderTool.Error;
 using static ShaderTool.Util;
+using System.Collections.Generic;
+
 namespace ShaderTool.Command
 {
     /**
@@ -52,7 +54,10 @@ namespace ShaderTool.Command
                 {
                     // Updating inputs
                     Pipe.Inputs = GetInputs(VertexShader);
-                    File.WriteAllText(VsPath, JsonConvert.SerializeObject(Pipe, Formatting.Indented));
+                    // Updatign descriptors
+                    Pipe.Descriptors = (Descriptor[])GetDescriptors(Pipe.ShaderNames).Clone();
+
+                    File.WriteAllText(Path, JsonConvert.SerializeObject(Pipe, Formatting.Indented));
                     return SUCESS;
                 }
                 Console.WriteLine("Shader doesn't exist!");
@@ -74,10 +79,13 @@ namespace ShaderTool.Command
                 Console.WriteLine(Pipe.Name);
                 Console.WriteLine("Shader count " + Pipe.ShaderNames.Length);
                 Console.WriteLine("Input count " + Pipe.Inputs.Length);
+                Console.WriteLine("Descriptor count " + Pipe.Descriptors.Length);
                 Console.WriteLine();
                 Array.ForEach(Pipe.ShaderNames, Console.WriteLine);
                 Console.WriteLine();
                 Array.ForEach(Pipe.Inputs, Inpt => Console.WriteLine(Inpt.Id + ": layout=" + Inpt.Layout + ", offset=" + Inpt.Offset));
+                Console.WriteLine();
+                Array.ForEach(Pipe.Descriptors, Desc => Console.WriteLine(Desc.Binding + ": flag=" + Desc.flag + ", type=" + Desc.Type));
                 Console.WriteLine();
                 return SUCESS;
             }
@@ -124,14 +132,16 @@ namespace ShaderTool.Command
 
             Input[] Inputs = GetInputs(Vertex[0]);
 
+            Descriptor[] descriptors = GetDescriptors(Shader);
+
             // Create shader pipe
             File.Create(FileName).Close();
-            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs), Formatting.Indented);
+            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs, descriptors), Formatting.Indented);
             File.WriteAllText(FileName, str);
             return SUCESS;
         }
 
-        public static Input[] GetInputs(string Path)
+        private static Input[] GetInputs(string Path)
         {
             // Getting lines with input
             string[] InputLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + Path + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
@@ -160,6 +170,36 @@ namespace ShaderTool.Command
                 Inputs[i].Offset = Inputs[i - 1].Offset + VulkanLookups.LookupSize(Inputs[i - 1].Layout);
             }
             return Inputs;
+        }
+
+        private static Descriptor[] GetDescriptors(string[] Paths)
+        {
+            List<Descriptor> list = new List<Descriptor>();
+
+            foreach (string path in Paths)
+            {
+                // Getting lines with descriptors
+                string[] DesciptorLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + path + ".glsl"), line => line.Contains("binding") && line.Contains("layout"));
+
+                Regex rx = new Regex("[^0-9]");
+                // Processing desciptors
+                Array.ForEach(DesciptorLines, line =>
+                {
+                    uint Id = 0;
+                    string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
+                    if (!UInt32.TryParse(Strid, out Id))
+                    {
+                        Console.WriteLine("Descriptor id not found!");
+                        Environment.Exit(VERTEX_INPUT_ERR);
+                    }
+                    Descriptor desc = new Descriptor();
+                    desc.Binding = Id;
+                    desc.Type = VulkanLookups.GetTypeFromLine(line);
+                    desc.flag = VulkanLookups.GetFlagBitsAfterName(path);
+                    list.Add(desc);
+                });
+            }
+            return list.ToArray();
         }
 
         // List pipes
