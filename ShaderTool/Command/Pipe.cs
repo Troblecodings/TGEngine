@@ -4,8 +4,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using static ShaderTool.Error;
 using static ShaderTool.Util;
-
-namespace ShaderTool
+namespace ShaderTool.Command
 {
     /**
      *  Command: pipe
