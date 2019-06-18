@@ -13,6 +13,8 @@ Visit our [Roadmap](https://trello.com/b/CvHhdjVN)
 still working on it...<br>
 For updates please follow the [official twitter account of Troblecodings](https://twitter.com/Troblecodings)
 
+<strong>To run the app your build you need to install the Lunarg Vulkan SDK. A mirrow can be found [here](https://drive.google.com/drive/folders/18_ucs58vY9T3xB5lfVoYFKtjZm3DqF4v?usp=sharing)</strong>
+
 <h3>Build your own</h3>
 
 To compile your own build you have to install the dependencies.<br>
