@@ -21,7 +21,7 @@ dependencies_file = None
 msg = None
 
 def isValidFile(name):
-    return name.endswith(".h") or name.endswith(".xml") or name.endswith(".hpp") or name.endswith(".md") or name.endswith(".cpp") or name.endswith(".c") or name.endswith(".bat") or name.endswith(".py") or name.endswith(".html")
+    return name.endswith(".h") or name.endswith(".xml") or name.endswith(".hpp") or name.endswith(".md") or name.endswith(".cpp") or name.endswith(".c") or name.endswith(".bat") or name.endswith(".py") or name.endswith(".html") or name.endswith(".cs")
 
 def compileshader():
     global msg
@@ -155,8 +155,21 @@ def trigger(id):
         if id == 0:
             exit(0)
         elif id == 1:
+            print("Thanks to David Quenzer for giving me access to his cloud storage!")
             getstb()
-            print("Downloading")
+            print("Checking version!")
+            version = ""
+            if os.path.exists("dependencies/dependencie_version.txt"):
+                with open("dependencies/dependencie_version.txt") as versionfile:
+                    version = versionfile.read();
+            urllib.request.urlretrieve("http://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
+                                       "dependencies/dependencie_version.txt", callback)
+            with open("dependencies/dependencie_version.txt") as versionfile:
+                if versionfile.read() == version:
+                    msg = "Already up to date!"
+                    clear()
+                    return
+            print("Downloading... this can take a while")
             urllib.request.urlretrieve("http://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1",
                                        "Dependencies.zip", callback)
             print("Finished download         ")
@@ -167,6 +180,8 @@ def trigger(id):
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
+            urllib.request.urlretrieve("http://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
+                                       "dependencies/dependencie_version.txt", callback)
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()
@@ -196,6 +211,10 @@ def trigger(id):
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.lib")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Release\\TGEngine.lib")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Release\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.pdb")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.pdb")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Release\\TGEngine.pdb")
+            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Release\\TGEngine.pdb")
             wrt(os.getcwd(), "\\LICENSE")
             dependencies_file.close()
             msg = "Finished!"
