@@ -15,6 +15,8 @@
 
 #define SINGELTIME_COMMAND_BUFFER command_buffers[image_count]
 
+using namespace tge::tex;
+
 extern VkCommandPool command_pool;
 extern VkFence single_time_command_ready;
 extern std::vector<VkCommandBuffer> command_buffers;

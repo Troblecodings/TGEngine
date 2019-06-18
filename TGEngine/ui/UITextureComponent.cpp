@@ -5,14 +5,14 @@ namespace tge {
 
 		void UITextureComponent::draw(IndexBuffer* index, VertexBuffer* vertex)
 		{
-			if (this->offset_index == -1) {
+			if (this->offsetIndex == -1) {
 				RenderOffsets offset;
-				offset.material = this->material_index;
+				offset.material = this->materialIndex;
 				offset.size = 6;
 				offset.offset = index->index_count;
 
 				TG_VECTOR_APPEND_NORMAL(render_offset, offset)
-					this->offset_index = last_size;
+					this->offsetIndex = (uint32_t)last_size;
 			}
 
 			glm::vec2 pos = this->parent->getPosition();
@@ -40,13 +40,10 @@ namespace tge {
 
 		void UITextureComponent::init()
 		{
-			if (this->material_index == -1) {
-				Material mat;
-				mat.color = this->color;
-				mat.texture = this->texture;
-				mat.isUI = true;
-				TG_VECTOR_APPEND_NORMAL(materials, mat)
-				this->material_index = last_size;
+			if (this->materialIndex == -1) {
+				Material mat = Material(this->texture, this->color);
+				TG_VECTOR_APPEND_NORMAL(materials, &mat)
+				this->materialIndex = (uint32_t)last_size;
 			}
 		}
 	}

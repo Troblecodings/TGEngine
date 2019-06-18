@@ -16,8 +16,8 @@ void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta)
 void __impl_keyboard_handleFPC(Camera * camera, uint16_t chr, bool down) {
 	if (!down) {
 		glm::vec2 rot = glm::normalize(camera->rotations);
-		if (rot.x < 0) rot.x *= -1;
-		rot.x *= PIx2;
+		if (rot.x < 0) rot.x *= -1.0f;
+		rot.x *= (float)PIx2;
 		OUT_LV_DEBUG(rot.x << " - " << rot.y)
 		switch (chr)
 		{

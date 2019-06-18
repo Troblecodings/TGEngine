@@ -3,7 +3,7 @@
 std::vector<VkPipeline> pipelines; 
 std::vector<VkPipelineLayout> layouts;
 
-void createPipeline(uint32_t layout) {
+uint32_t createPipeline(uint32_t layout) {
 	Window* win = window_list[0];
 	vlib_scissor.extent.height = (uint32_t) (vlib_viewport.height = (float) win->height);
 	vlib_scissor.extent.width = (uint32_t) (vlib_viewport.width = (float) win->width);
@@ -16,18 +16,18 @@ void createPipeline(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(pipelines)
 	lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlib_graphics_pipeline_create_info, nullptr, &pipelines[last_size]);
 	HANDEL(lastResult);
+	return (uint32_t)last_size;
 }
 
 uint32_t createPipelineLayout(uint32_t layout_count, VkDescriptorSetLayout* descriptor_set_layout) {
-	last_size = layouts.size();
-	layouts.resize(last_size + 1);
-
+	TG_VECTOR_GET_SIZE_AND_RESIZE(layouts)
+		
 	vlib_layout_info.setLayoutCount = layout_count;
 	vlib_layout_info.pSetLayouts = descriptor_set_layout;
 	lastResult = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &layouts[last_size]);
 	HANDEL(lastResult);
 
-	return last_size;
+	return (uint32_t)last_size;
 }
 
 void destroyPipelineLayout(uint32_t layout) {

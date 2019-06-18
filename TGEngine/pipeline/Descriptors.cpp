@@ -37,11 +37,11 @@ void initDescriptors() {
 	vlib_allocate_info.descriptorPool = descriptor_pool;
 }
 
-size_t createDesctiptorLayout() {
+uint32_t createDesctiptorLayout() {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSetLayouts)
 	lastResult = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptorSetLayouts[last_size]);
 	HANDEL(lastResult)
-    return last_size;
+    return (uint32_t)last_size;
 }
 
 void destroyDesctiptorLayout(uint32_t layout) {
@@ -53,12 +53,12 @@ void destroyDescriptorSet(uint32_t layout) {
 	HANDEL(lastResult);
 }
 
-size_t createDescriptorSet(uint32_t layout) {
+uint32_t createDescriptorSet(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
 	vlib_allocate_info.pSetLayouts = &descriptorSetLayouts[layout];
 	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(lastResult)
-	return last_size;
+	return (uint32_t)last_size;
 }
 
 void destroyDescriptors() {

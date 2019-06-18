@@ -13,5 +13,5 @@ ShaderPipe TexturedBasicPipe;
 void initShaderPipes(){
     TexturedBasicShader[0] = VertexTextured;
     TexturedBasicShader[1] = FragmentTextured;
-	TexturedBasicPipe = ShaderPipe(TexturedBasicShader, TexturedBasicInput, TexturedBasicLayoutBinding, TexturedBasicShaderCount, TexturedBasicInputCount, TexturedBasicLayoutBindingCount);
+    TexturedBasicPipe = ShaderPipe(TexturedBasicShader, TexturedBasicInput, TexturedBasicLayoutBinding, TexturedBasicShaderCount, TexturedBasicInputCount, TexturedBasicLayoutBindingCount);
 }

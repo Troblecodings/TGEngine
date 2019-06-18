@@ -16,26 +16,22 @@ namespace tge {
 		class Material {
 
 		private:
-			Texture* texture;
+			Texture* texture = nullptr;
 			glm::vec4 color;
 
-			const VkVertexInputAttributeDescription* inputAttributes;
-			uint32_t inputCount;
-			VkPipelineShaderStageCreateInfo* shader;
-			uint32_t shaderCount;
+			ShaderPipe* pipe;
 
 			uint32_t pipelineIndex = 0;
-			uint32_t descriptorIndex = 0;
-			uint32_t layoutIndex = 0;
 
 		public:
 			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
 			Material(glm::vec4 color) : Material(nullptr, color) {}
 			Material(Texture* texture, glm::vec4 color);
-			Material(const VkVertexInputAttributeDescription* inputAttributes, const uint32_t inputCount,
-				VkPipelineShaderStageCreateInfo* shader, const uint32_t shaderCount);
+			Material(ShaderPipe* pipe);
 
 			virtual void createMaterial();
+
+			void addToBuffer(VkCommandBuffer buffer);
 
 			void destroy();
 

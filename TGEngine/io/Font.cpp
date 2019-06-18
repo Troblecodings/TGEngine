@@ -7,7 +7,7 @@ namespace tg_font {
 		ASSERT_NONE_NULL_DB(fileData, "File data nullptr!", TG_ERR_DB_NULLPTR)
 
 		uint8_t* tempbitmap = new uint8_t[(size_t)height * (size_t)4096 * (size_t)height];
-		stbtt_BakeFontBitmap(fileData, 0, height, tempbitmap, height * 64, height * 64, 0, 256, this->cdata);
+		stbtt_BakeFontBitmap(fileData, 0, (float)height, tempbitmap, height * 64, height * 64, 0, 256, this->cdata);
 
 		delete[] fileData;
 
@@ -24,26 +24,23 @@ namespace tg_font {
 
 		this->texture = new Texture(colorData, height * 64, height * 64);
 
-		Material mat;
-		mat.texture = this->texture;
-		mat.isUI = true;
-		mat.color = glm::vec4(1, 1, 1, 1);
-		TG_VECTOR_APPEND_NORMAL(materials, mat)
-		this->material = last_size;
+		Material mat = Material(this->texture);
+		TG_VECTOR_APPEND_NORMAL(materials, &mat)
+		this->material = (uint32_t)last_size;
 	}
 
 	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer) {
-		pos.y /= 0.002;
-		pos.x /= multiplier * 0.002;
+		pos.y /= 0.002f;
+		pos.x /= multiplier * 0.002f;
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
 			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
 			uint32_t idcount = (uint32_t)buffer->count_of_points;
-			quad.x0 *= multiplier * 0.002;
-			quad.x1 *= multiplier * 0.002;
-			quad.y0 *= 0.002;
-			quad.y1 *= 0.002;
+			quad.x0 *= multiplier * 0.002f;
+			quad.x1 *= multiplier * 0.002f;
+			quad.y0 *= 0.002f;
+			quad.y1 *= 0.002f;
 			buffer->add({
 				{ quad.x0, quad.y0, 0.1 },
 				{ quad.s0, quad.t0 },
@@ -83,8 +80,8 @@ namespace tg_font {
 			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
 			chr++;
 		}
-		pos.y = this->height * 0.0015;
-		pos.x *= multiplier * 0.002;
+		pos.y = this->height * 0.0015f;
+		pos.x *= multiplier * 0.002f;
 		return pos;
 	}
 

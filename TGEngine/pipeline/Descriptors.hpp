@@ -104,7 +104,7 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
  */
 INTERNAL
 SINCE(0, 0, 4)
-size_t createDesctiptorLayout();
+uint32_t createDesctiptorLayout();
 
 /*
  * Creates Descriptor Set
@@ -115,7 +115,7 @@ size_t createDesctiptorLayout();
  */
 INTERNAL
 SINCE(0, 0, 4)
-size_t createDescriptorSet(uint32_t layout = 0);
+uint32_t createDescriptorSet(uint32_t layout = 0);
 
 /*
  * Destroys the DescriptorLayout given by the index

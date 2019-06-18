@@ -2,6 +2,8 @@
 
 #include "UIDrawable.hpp"
 
+using namespace tge::tex;
+
 namespace tge {
 	namespace ui {
 
@@ -23,8 +25,8 @@ namespace tge {
 		private:
 			Texture* texture = nullptr;
 			glm::vec4 color = glm::vec4(1.0f);
-			uint32_t material_index = -1;
-			uint32_t offset_index = -1;
+			uint32_t materialIndex = -1;
+			uint32_t offsetIndex = -1;
 
 		public:
 			UITextureComponent(Texture* texture) : UITextureComponent(texture, glm::vec4(1.0f)) {}

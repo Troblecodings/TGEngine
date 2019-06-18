@@ -74,12 +74,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	}
 	for (size_t i = 0; i < materials.size(); i++)
 	{
-		if (materials[i].isUI) {
-			materials[i].createUIMaterial();
-		}
-		else {
-			materials[i].createMaterial();
-		}
+		materials[i]->createMaterial();
 	}
 
 	//draw(&index_buffer, &main_buffer);

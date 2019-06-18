@@ -16,9 +16,9 @@ namespace tge {
 				RenderOffsets off;
 				off.material = this->font->getMaterialIndex();
 				off.offset = index->index_count;
-				off.size = strlen(this->string) * 6;
+				off.size = (uint32_t)strlen(this->string) * 6;
 				TG_VECTOR_APPEND_NORMAL(render_offset, off)
-					this->index = last_size;
+					this->index = (uint32_t)last_size;
 			}
 
 			glm::vec2 ext = this->font->getExtent(this->string);

@@ -54,7 +54,7 @@ namespace tg_model {
 			fbxmesh->GetUVSetNames(lUVNames);
 			if (lUVNames.GetCount() < 1) {
 				OUT_LV_DEBUG("No UV map in fbxmodel[" << name << "]")
-				for (size_t i = 0; i < node->GetChildCount(); i++)
+				for (int i = 0; i < node->GetChildCount(); i++)
 					addMesh(name, node->GetChild(i), mesh);
 				return;
 			}
@@ -62,15 +62,16 @@ namespace tg_model {
 			// TODO test material
 			// Maybe different shaders
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
-			Material mat;
+			Texture* texture;
+			glm::vec4 color;
 			if (surface_lambert) {
 				FbxDouble3 color_data = surface_lambert->Diffuse.Get();
-				mat.color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
+				color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
 				fbxsdk::FbxObject* object = surface_lambert->Diffuse.GetSrcObject();
 				if (object) {
 					fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
 					if (tex && tex->GetFileName() != nullptr) {
-						mat.texture = new Texture(const_cast<char*>(tex->GetFileName()));
+						texture = new Texture(const_cast<char*>(tex->GetFileName()));
 					}
 					else {
 						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
@@ -86,23 +87,24 @@ namespace tg_model {
 
 			TGVertex last_vert;
 			RenderOffsets offsets;
-			offsets.offset = mesh->indices.size();
+			offsets.offset = (uint32_t)mesh->indices.size();
 			for (int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
 				int triangle_size = fbxmesh->GetPolygonSize(j);
 				if(triangle_size == 3) {
-					for (size_t i = 0; i < 3; i++)
+					for (uint32_t i = 0; i < 3; i++)
 					{
 						readVertex(matrix, fbxmesh, &last_vert, lUVNames, j, i);
 						mesh->add(last_vert);
 					}
 				}
 			}
-			TG_VECTOR_APPEND_NORMAL(materials, mat)
-			mesh->materials.push_back(offsets.material = last_size);
-			offsets.size = mesh->indices.size() - offsets.offset;
+			Material mat = Material(texture, color);
+			TG_VECTOR_APPEND_NORMAL(materials, &mat)
+			mesh->materials.push_back(offsets.material = (uint32_t)last_size);
+			offsets.size = (uint32_t)mesh->indices.size() - offsets.offset;
 			mesh->offsets.push_back(offsets);
 		}
-		for (size_t i = 0; i < node->GetChildCount(); i++)
+		for (int i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);
 	}
 

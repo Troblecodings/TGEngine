@@ -105,12 +105,12 @@ namespace tge {
 
 			vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 
-			for (size_t i = 1; i < mipmapLevels; i++)
+			for (uint32_t i = 1; i < mipmapLevels; i++)
 			{
 				vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
 				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
-					vlib_image_blit.srcSubresource.mipLevel = i - 1;
+				vlib_image_blit.srcSubresource.mipLevel = i - 1;
 				vlib_image_blit.dstSubresource.mipLevel = i;
 				vlib_image_blit.srcOffsets[1].x = mipwidth;
 				vlib_image_blit.srcOffsets[1].y = mipheight;
