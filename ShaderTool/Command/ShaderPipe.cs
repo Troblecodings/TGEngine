@@ -50,7 +50,7 @@
                 ShaderModule += "    " + this.Name + "Shader[" + i++ + "] = " + str + ";\r\n";
             }
             ShaderModule += "    " + this.Name + "Pipe = ShaderPipe(" + this.Name + "Shader, " + this.Name + "Input, " + this.Name 
-                + "LayoutBinding, " + this.Name + "ShaderCount, " + this.Name + "InputCount, " + this.Name + "LayoutBindingCount)";
+                + "LayoutBinding, " + this.Name + "ShaderCount, " + this.Name + "InputCount, " + this.Name + "LayoutBindingCount);";
             return ShaderModule;
         }
 
