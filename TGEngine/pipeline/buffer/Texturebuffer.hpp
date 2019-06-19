@@ -7,7 +7,7 @@
 #include "../../vlib/VulkanImage.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
 #include "../../util/VectorUtil.hpp"
-#include "../../game_content/Light.hpp"
+#include "../../gamecontent/Light.hpp"
 
 #define AUTO_MIPMAP 0xFFFFFF
 

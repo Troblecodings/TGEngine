@@ -6,7 +6,7 @@
 #include "../drawlib/DrawLib.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../io/Font.hpp"
-#include "../game_content/Camera.hpp"
+#include "../gamecontent/Camera.hpp"
 
 namespace tge {
 	namespace ui {

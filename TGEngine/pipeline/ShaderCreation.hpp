@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Stdbase.hpp"
-#include "pipeline/Device.hpp"
+#include "../Stdbase.hpp"
+#include "Device.hpp"
 
 class ShaderPipe {
 
 public:
 	unsigned int descriptorLayout;
 	unsigned int layoutIndex;
-	unsigned int descriptorIndex;
 
 private:
 	VkPipelineShaderStageCreateInfo* shader;

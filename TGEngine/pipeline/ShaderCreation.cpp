@@ -1,5 +1,5 @@
 #include "ShaderCreation.hpp"
-#include "pipeline/Pipe.hpp"
+#include "Pipe.hpp"
 
 VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size) {
 	VkShaderModule shader_module;
@@ -40,7 +40,6 @@ ShaderPipe::ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
 	vlib_descriptor_set_layout_create_info.pBindings = layouts;
 	this->descriptorLayout = createDesctiptorLayout();
 	this->layoutIndex = createPipelineLayout(1, &descriptorSetLayouts[this->descriptorLayout]);
-	this->descriptorIndex = createDescriptorSet(this->layoutIndex);
 }
 
 void ShaderPipe::precreation()

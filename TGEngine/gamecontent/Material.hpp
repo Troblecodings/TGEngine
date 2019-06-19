@@ -22,6 +22,7 @@ namespace tge {
 			ShaderPipe* pipe = nullptr;
 
 			uint32_t pipelineIndex = 0;
+			uint32_t descriptorIndex = 0;
 
 		public:
 			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}

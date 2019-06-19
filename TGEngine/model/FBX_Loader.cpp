@@ -62,7 +62,7 @@ namespace tg_model {
 			// TODO test material
 			// Maybe different shaders
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
-			Texture* texture = nullptr;
+			Texture* textureptr;
 			glm::vec4 color = glm::vec4(1.0f);
 			if (surface_lambert) {
 				FbxDouble3 color_data = surface_lambert->Diffuse.Get();
@@ -71,7 +71,7 @@ namespace tg_model {
 				if (object) {
 					fbxsdk::FbxFileTexture* tex = (fbxsdk::FbxFileTexture*)object;
 					if (tex && tex->GetFileName() != nullptr) {
-						texture = new Texture(const_cast<char*>(tex->GetFileName()));
+						textureptr = new Texture(const_cast<char*>(tex->GetFileName()));
 					}
 					else {
 						OUT_LV_DEBUG("Src object not a texture in fbxmodel[" << name << "]")
@@ -98,7 +98,7 @@ namespace tg_model {
 					}
 				}
 			}
-			TG_VECTOR_APPEND_NORMAL(materiallist, Material(texture, color))
+			TG_VECTOR_APPEND_NORMAL(materiallist, Material(textureptr, color))
 			mesh->materials.push_back(offsets.material = (uint32_t)last_size);
 			offsets.size = (uint32_t)mesh->indices.size() - offsets.offset;
 			mesh->offsets.push_back(offsets);

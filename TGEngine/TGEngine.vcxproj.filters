@@ -177,9 +177,6 @@
     <ClInclude Include="io\Properties.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="game_content\Camera.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="Stdbase.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -195,20 +192,8 @@
     <ClInclude Include="vlib\VulkanBuffer.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
-    <ClInclude Include="game_content\Actor.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
-    <ClInclude Include="game_content\Mesh.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="util\VectorUtil.hpp">
       <Filter>Headerdateien\util</Filter>
-    </ClInclude>
-    <ClInclude Include="game_content\StaticCamera.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
-    <ClInclude Include="game_content\FirstPersonCamera.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
     <ClInclude Include="util\TGVertex.hpp">
       <Filter>Headerdateien\util</Filter>
@@ -225,9 +210,6 @@
     <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="game_content\Light.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UITextComponent.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
@@ -239,9 +221,6 @@
     </ClInclude>
     <ClInclude Include="io\Font.hpp">
       <Filter>Headerdateien\io</Filter>
-    </ClInclude>
-    <ClInclude Include="game_content\Material.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
     <ClInclude Include="model\GLTFLoader.hpp">
       <Filter>Headerdateien\model</Filter>
@@ -255,11 +234,35 @@
     <ClInclude Include="ui\UIUpdatable.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderCreation.hpp">
-      <Filter>Headerdateien\pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="resources\ShaderPipes.hpp">
       <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\Actor.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\Camera.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\FirstPersonCamera.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\Light.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\Material.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\Mesh.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\StaticCamera.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\UIMaterial.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline\ShaderCreation.hpp">
+      <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -344,9 +347,6 @@
     <ClCompile Include="io\Properties.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
-    <ClCompile Include="game_content\Camera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -362,20 +362,8 @@
     <ClCompile Include="vlib\VulkanBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
-    <ClCompile Include="game_content\Actor.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="game_content\Mesh.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="util\VectorUtil.cpp">
       <Filter>Quelldateien\util</Filter>
-    </ClCompile>
-    <ClCompile Include="game_content\StaticCamera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="game_content\FirstPersonCamera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="util\TGVertex.cpp">
       <Filter>Quelldateien\util</Filter>
@@ -392,9 +380,6 @@
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
-    <ClCompile Include="game_content\Light.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UITextComponent.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
@@ -406,9 +391,6 @@
     </ClCompile>
     <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
-    </ClCompile>
-    <ClCompile Include="game_content\Material.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="model\GLTFLoader.cpp">
       <Filter>Quelldateien\model</Filter>
@@ -422,11 +404,35 @@
     <ClCompile Include="ui\UIUpdatable.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderCreation.cpp">
-      <Filter>Quelldateien\pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="resources\ShaderPipes.cpp">
       <Filter>resources</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\Actor.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\Camera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\FirstPersonCamera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\Light.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\Material.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\Mesh.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\StaticCamera.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\UIMaterial.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline\ShaderCreation.cpp">
+      <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

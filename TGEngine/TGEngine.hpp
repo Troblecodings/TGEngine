@@ -4,8 +4,8 @@
 #include "App.hpp"
 #include "pipeline/Pipeline.hpp"
 #include "pipeline/Draw.hpp"
-#include "game_content/Actor.hpp"
-#include "game_content/Light.hpp"
+#include "gamecontent/Actor.hpp"
+#include "gamecontent/Light.hpp"
 #include "ui/UIEntity.hpp"
 
 SINCE(0, 0, 1)

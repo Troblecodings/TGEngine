@@ -5,8 +5,8 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../pipeline/buffer/IndexBuffer.hpp"
 #include "../util/VectorUtil.hpp"
-#include "../game_content/Material.hpp"
-#include "../game_content/Light.hpp"
+#include "../gamecontent/Material.hpp"
+#include "../gamecontent/Light.hpp"
 #include "../pipeline/Shader.hpp"
 #include "../pipeline/Pipe.hpp"
 

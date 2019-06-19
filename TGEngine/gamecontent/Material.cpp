@@ -41,11 +41,11 @@ namespace tge {
 
 		void Material::createMaterial()
 		{
-			OUT_LV_DEBUG(this->pipe)
 			this->pipe->precreation();
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
-			camera_uniform.descriptor.descriptorset = light_buffer.descriptor.descriptorset = this->pipe->descriptorIndex;
+			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
+			camera_uniform.descriptor.descriptorset = light_buffer.descriptor.descriptorset = this->descriptorIndex;
 
 			camera_uniform.descriptor.binding = 0;
 			camera_uniform.updateDescriptor();
@@ -54,7 +54,7 @@ namespace tge {
 			light_buffer.updateDescriptor();
 
 			if (this->texture != nullptr) {
-				textureDescriptor.descriptorset = this->pipe->descriptorIndex;
+				textureDescriptor.descriptorset = this->descriptorIndex;
 				this->texture->vulkanTexture->updateDescriptor();
 			}
 		}
@@ -62,7 +62,7 @@ namespace tge {
 		void Material::addToBuffer(VkCommandBuffer buffer)
 		{
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[this->pipelineIndex]);
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[this->pipe->layoutIndex], 0, 1, &descriptor_set[this->pipe->descriptorIndex], 0, nullptr);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[this->pipe->layoutIndex], 0, 1, &descriptor_set[this->descriptorIndex], 0, nullptr);
 		}
 
 		/*void Material::createUIMaterial()
@@ -79,7 +79,7 @@ namespace tge {
 
 		void Material::destroy()
 		{
-			destroyDescriptorSet(this->pipe->descriptorIndex);
+			destroyDescriptorSet(this->descriptorIndex);
 			destroyPipeline(this->pipelineIndex);
 			destroyPipelineLayout(this->pipe->layoutIndex);
 		}
