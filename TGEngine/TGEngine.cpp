@@ -30,24 +30,17 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
-	initShader();
-	initShaderPipes();
-	createShaderInput(0, offsetof(TGVertex, position), VK_FORMAT_R32G32B32_SFLOAT);
-	createShaderInput(1, offsetof(TGVertex, uv), VK_FORMAT_R32G32_SFLOAT);
-	createShaderInput(2, offsetof(TGVertex, normal), VK_FORMAT_R32G32B32_SFLOAT);
-
-	addDescriptorBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
-	addDescriptorBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT);
-	addDescriptorBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	initCameras();
 	initLight();
+	initAllTextures();
+
+	initDescriptors();
+	initShader();
+	initShaderPipes();
 
 	allocateAllBuffers();
 	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
-
-	initAllTextures();
-	initDescriptors();
 
 	createSwapchain();
 	createFramebuffer();
@@ -72,9 +65,11 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	{
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
-	for (size_t i = 0; i < materials.size(); i++)
+	OUT_LV_DEBUG(materiallist.size())
+		materiallist[0].print();
+	for (size_t i = 0; i < materiallist.size(); i++)
 	{
-		materials[i]->createMaterial();
+		(&materiallist[i])->createMaterial();
 	}
 
 	//draw(&index_buffer, &main_buffer);

@@ -55,6 +55,7 @@ void destroyDescriptorSet(uint32_t layout) {
 
 uint32_t createDescriptorSet(uint32_t layout) {
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
+
 	vlib_allocate_info.pSetLayouts = &descriptorSetLayouts[layout];
 	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
 	HANDEL(lastResult)

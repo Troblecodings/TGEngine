@@ -3,7 +3,7 @@
 namespace tge {
 	namespace tex {
 
-		std::vector<Material*> materials;
+		std::vector<Material> materiallist;
 		std::vector<RenderOffsets> render_offset;
 
 		Material::Material(Texture* texture, glm::vec4 color)
@@ -27,21 +27,21 @@ namespace tge {
 			VertexTextured.pSpecializationInfo = &pSpecialization;
 
 			if (texture == nullptr) {
-				Material::Material(&TexturedBasicPipe);
+				this->pipe = &TexturedBasicPipe;
 			}
 			else {
-				Material::Material(&TexturedBasicPipe);
+				this->pipe = &TexturedBasicPipe;
 			}
 		}
 
 		Material::Material(ShaderPipe* pipe)
 		{
 			this->pipe = pipe;
-			materials.push_back(this);
 		}
 
 		void Material::createMaterial()
 		{
+			OUT_LV_DEBUG(this->pipe)
 			this->pipe->precreation();
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 

@@ -17,9 +17,9 @@ namespace tge {
 
 		private:
 			Texture* texture = nullptr;
-			glm::vec4 color;
+			glm::vec4 color = glm::vec4(1.0f);
 
-			ShaderPipe* pipe;
+			ShaderPipe* pipe = nullptr;
 
 			uint32_t pipelineIndex = 0;
 
@@ -30,6 +30,8 @@ namespace tge {
 			Material(ShaderPipe* pipe);
 
 			virtual void createMaterial();
+
+			void print() { OUT_LV_DEBUG(this->texture << ", " << this->color.r << ", " << pipe << ", " << pipelineIndex) }
 
 			void addToBuffer(VkCommandBuffer buffer);
 
@@ -50,7 +52,7 @@ namespace tge {
 			uint32_t offset; // the offset at wich this material starts (global)
 		};
 
-		extern std::vector<Material*> materials;
+		extern std::vector<Material> materiallist;
 		extern std::vector<RenderOffsets> render_offset;
 	}
 }

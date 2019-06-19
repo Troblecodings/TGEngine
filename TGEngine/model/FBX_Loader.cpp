@@ -62,8 +62,8 @@ namespace tg_model {
 			// TODO test material
 			// Maybe different shaders
 			FbxSurfaceLambert* surface_lambert = (FbxSurfaceLambert*)node->GetMaterial(0);
-			Texture* texture;
-			glm::vec4 color;
+			Texture* texture = nullptr;
+			glm::vec4 color = glm::vec4(1.0f);
 			if (surface_lambert) {
 				FbxDouble3 color_data = surface_lambert->Diffuse.Get();
 				color = { (float)color_data[0], (float)color_data[1], (float)color_data[2], (float)(1 - surface_lambert->TransparencyFactor.Get()) };
@@ -98,8 +98,7 @@ namespace tg_model {
 					}
 				}
 			}
-			Material mat = Material(texture, color);
-			TG_VECTOR_APPEND_NORMAL(materials, &mat)
+			TG_VECTOR_APPEND_NORMAL(materiallist, Material(texture, color))
 			mesh->materials.push_back(offsets.material = (uint32_t)last_size);
 			offsets.size = (uint32_t)mesh->indices.size() - offsets.offset;
 			mesh->offsets.push_back(offsets);

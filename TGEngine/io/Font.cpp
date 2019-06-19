@@ -24,9 +24,8 @@ namespace tg_font {
 
 		this->texture = new Texture(colorData, height * 64, height * 64);
 
-		Material mat = Material(this->texture);
-		TG_VECTOR_APPEND_NORMAL(materials, &mat)
-		this->material = (uint32_t)last_size;
+		TG_VECTOR_APPEND_NORMAL(materiallist, Material(this->texture))
+		this->materialIndex = (uint32_t)last_size;
 	}
 
 	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer) {
@@ -69,7 +68,7 @@ namespace tg_font {
 
 	uint32_t Font::getMaterialIndex()
 	{
-		return this->material;
+		return this->materialIndex;
 	}
 
 	glm::vec2 Font::getExtent(char* chr) {

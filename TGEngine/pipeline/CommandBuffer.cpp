@@ -147,7 +147,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		for each(RenderOffsets coffset in render_offset)
 		{
-			materials[coffset.material]->addToBuffer(buffer);
+			(&materiallist[coffset.material])->addToBuffer(buffer);
 			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
 		}
 
