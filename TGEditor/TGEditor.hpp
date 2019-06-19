@@ -4,16 +4,15 @@
 
 #include <model/FBX_Loader.hpp>
 #include <TGEngine.hpp>
-#include <drawlib/DrawLib.hpp>
 #include <io/Font.hpp>
 #include <pipeline/CommandBuffer.hpp>
 #include <util/TGVertex.hpp>
-#include "game_content/Mesh.hpp"
-#include "game_content/Material.hpp"
-#include "game_content/FirstPersonCamera.hpp"
-#include "game_content/StaticCamera.hpp"
-#include "ui/UITextureComponent.hpp"
-#include "ui/UITextComponent.hpp"
+#include <gamecontent/Mesh.hpp>
+#include <gamecontent/Material.hpp>
+#include <gamecontent/FirstPersonCamera.hpp>
+#include <gamecontent/StaticCamera.hpp>
+#include <ui/UITextureComponent.hpp>
+#include <ui/UITextComponent.hpp>
 
 using namespace tge::ui;
 
