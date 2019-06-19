@@ -7,6 +7,11 @@
 namespace tge {
 	namespace tex {
 
+		enum MaterialType {
+			BASIC,
+			UI
+		};
+
 		/*
 		 * Material can hold a texture and a color
 		 * -> Can not be changed in vulkan runtime
@@ -15,14 +20,16 @@ namespace tge {
 		SINCE(0, 0, 4)
 		class Material {
 
-		private:
+		protected:
+			ShaderPipe* pipe = nullptr;
+
 			Texture* texture = nullptr;
 			glm::vec4 color = glm::vec4(1.0f);
 
-			ShaderPipe* pipe = nullptr;
-
 			uint32_t pipelineIndex = 0;
 			uint32_t descriptorIndex = 0;
+
+			MaterialType type = BASIC;
 
 		public:
 			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}

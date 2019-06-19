@@ -10,5 +10,20 @@ extern const unsigned int TexturedBasicInputCount;
 extern const unsigned int TexturedBasicLayoutBindingCount;
 extern ShaderPipe TexturedBasicPipe;
 
+extern VkPipelineShaderStageCreateInfo UIColorShader[2];
+extern const VkVertexInputAttributeDescription UIColorInput[];
+extern const unsigned int UIColorShaderCount;
+extern const unsigned int UIColorInputCount;
+extern const unsigned int UIColorLayoutBindingCount;
+extern ShaderPipe UIColorPipe;
+
+extern VkPipelineShaderStageCreateInfo UITexturedShader[2];
+extern const VkVertexInputAttributeDescription UITexturedInput[];
+extern const VkDescriptorSetLayoutBinding UITexturedLayoutBinding[];
+extern const unsigned int UITexturedShaderCount;
+extern const unsigned int UITexturedInputCount;
+extern const unsigned int UITexturedLayoutBindingCount;
+extern ShaderPipe UITexturedPipe;
+
 
 void initShaderPipes();

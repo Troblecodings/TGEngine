@@ -21,7 +21,7 @@ namespace tge {
 		class UITextComponent : public UIDrawable {
 
 		private:
-			glm::vec4 font_color;
+			glm::vec4 fontColor;
 			char* string;
 			tg_font::Font* font;
 			uint32_t index = -1;

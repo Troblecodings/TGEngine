@@ -75,7 +75,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	//draw(&index_buffer, &main_buffer);
 
 	index_offset = index_buffer.index_count;
-	vertex_offset = main_buffer.count_of_points;
+	vertex_offset = main_buffer.pointCount;
 
 	tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
 
@@ -108,7 +108,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			last_time = current_time;
 
 			tge::ui::ui_scene_entity.update();
-			main_buffer.count_of_points = vertex_offset;
+			main_buffer.pointCount = vertex_offset;
 			main_buffer.start();
 			index_buffer.start();
 			tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
@@ -117,7 +117,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 			startSingleTimeCommand();
 			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlib_buffer_copy.size = main_buffer.count_of_points * VERTEX_SIZE;
+			vlib_buffer_copy.size = main_buffer.pointCount * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				main_buffer.stag_buf.staging_buffer,

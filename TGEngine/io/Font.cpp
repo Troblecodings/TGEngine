@@ -28,34 +28,23 @@ namespace tg_font {
 		this->materialIndex = (uint32_t)last_size;
 	}
 
-	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer) {
+	void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color) {
 		pos.y /= 0.002f;
 		pos.x /= multiplier * 0.002f;
 		while (*text)
 		{
 			stbtt_aligned_quad quad;
 			stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
-			uint32_t idcount = (uint32_t)buffer->count_of_points;
+			uint32_t idcount = (uint32_t)buffer->pointCount;
 			quad.x0 *= multiplier * 0.002f;
 			quad.x1 *= multiplier * 0.002f;
 			quad.y0 *= 0.002f;
 			quad.y1 *= 0.002f;
-			buffer->add({
-				{ quad.x0, quad.y0, 0.1 },
-				{ quad.s0, quad.t0 },
-				});
-			buffer->add({
-				{ quad.x1, quad.y0, 0.1 },
-				{ quad.s1, quad.t0 },
-				});
-			buffer->add({
-				{ quad.x1, quad.y1, 0.1 },
-				{ quad.s1, quad.t1 },
-				});
-			buffer->add({
-				{ quad.x0, quad.y1, 0.1 },
-				{ quad.s0, quad.t1 },
-				});
+			buffer->add({ quad.x0, quad.y0 })->add({ quad.s0, quad.t0 })->add(color)->endVertex();
+			buffer->add({ quad.x1, quad.y0 })->add({ quad.s1, quad.t0 })->add(color)->endVertex();
+			buffer->add({ quad.x1, quad.y1 })->add({ quad.s1, quad.t1 })->add(color)->endVertex();
+			buffer->add({ quad.x0, quad.y1 })->add({ quad.s0, quad.t1 })->add(color)->endVertex();
+
 			ibuffer->addIndex(idcount);
 			ibuffer->addIndex(idcount + 1);
 			ibuffer->addIndex(idcount + 2);

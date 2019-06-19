@@ -13,23 +13,27 @@ struct VertexBuffer {
 	VkDeviceMemory vertex_buffer_memory;
 	StagingBuffer stag_buf;
 	VkDeviceSize max_size;
-	size_t count_of_points;
+	size_t pointCount;
+	size_t offset;
 	void* memory;
 
 	SINCE(0, 0, 2)
 	void start();
 
-	SINCE(0, 0, 2)
-	void add(TGVertex vert);
+	SINCE(0, 0, 5)
+	VertexBuffer* add(glm::vec2 vec);
 
-	SINCE(0, 0, 3)
-	void addColorOnly(TGVertex vert);
+	SINCE(0, 0, 5)
+	VertexBuffer* add(glm::vec3 vec);
 
-	SINCE(0, 0, 3)
-	void addTexOnly(TGVertex vert);
+	SINCE(0, 0, 5)
+	VertexBuffer* add(glm::vec4 vec);
 
-	SINCE(0, 0, 2)
-	void addAll(TGVertex* verts, size_t count);
+	SINCE(0, 0, 5)
+	VertexBuffer* addAll(void* data, size_t size, size_t points);
+
+	SINCE(0, 0, 5)
+	VertexBuffer* endVertex();
 
 	SINCE(0, 0, 2)
 	void end();

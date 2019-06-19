@@ -7,7 +7,6 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
 #include "../stb/stb_truetype.h"
-#include "../drawlib/Rectangle.hpp"
 #include "../io/Files.hpp"
 #include "../gamecontent/Material.hpp"
 
@@ -36,7 +35,7 @@ namespace tg_font {
 		* Draws a string to the screen (UI only)
 		*/
 		SINCE(0, 0, 3)
-		void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer);
+		void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color);
 
 		SINCE(0, 0, 4)
 		uint32_t getMaterialIndex();

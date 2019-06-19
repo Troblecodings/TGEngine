@@ -33,22 +33,39 @@ void VertexBuffer::start() {
 	vkMapMemory(device, this->stag_buf.staging_buffer_device_memory, 0, VK_WHOLE_SIZE, 0, &this->memory);
 }
 
-void VertexBuffer::add(TGVertex vert) {
-	memcpy((TGVertex*)this->memory + this->count_of_points, &vert, VERTEX_SIZE);
-	this->count_of_points++;
+VertexBuffer* VertexBuffer::add(glm::vec2 vec)
+{
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	this->offset += sizeof(vec);
+	return this;
 }
 
-void VertexBuffer::addColorOnly(TGVertex vert) {
-	this->add(vert);
+VertexBuffer* VertexBuffer::add(glm::vec3 vec)
+{
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	this->offset += sizeof(vec);
+	return this;
 }
 
-void VertexBuffer::addTexOnly(TGVertex vert) {
-	this->add(vert);
+VertexBuffer* VertexBuffer::add(glm::vec4 vec)
+{
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)&vec, sizeof(vec));
+	this->offset += sizeof(vec);
+	return this;
 }
 
-void VertexBuffer::addAll(TGVertex* verts, size_t count) {
-	memcpy((TGVertex*)this->memory + this->count_of_points, verts, VERTEX_SIZE * count);
-	this->count_of_points += count;
+VertexBuffer* VertexBuffer::addAll(void* data, size_t size, size_t points)
+{
+	memcpy((uint8_t*)this->memory + this->offset, data, size);
+	this->offset += size;
+	this->pointCount += points;
+	return this;
+}
+
+VertexBuffer* VertexBuffer::endVertex()
+{
+	this->pointCount++;
+	return this;
 }
 
 void VertexBuffer::end() {

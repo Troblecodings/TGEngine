@@ -43,7 +43,7 @@ def compileshader():
     shader_infos = []
     shader_header = open("TGEngine\\resources\\ShaderData.hpp", "w")
     shader_header.write("#pragma once\n")
-    shader_header.write("#include \"..\\ShaderCreation.hpp\"\n\n")
+    shader_header.write("#include \"../pipeline/ShaderCreation.hpp\"\n\n")
     shader_header.write("void initShader();\n\n")
     for name in os.listdir(c_path + "\\TGEngine\\resources"):
         try:

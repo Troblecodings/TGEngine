@@ -20,11 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
-    <ClInclude Include="drawlib\BaseDrawLib.hpp" />
-    <ClInclude Include="drawlib\Circle.hpp" />
-    <ClInclude Include="drawlib\DrawLib.hpp" />
-    <ClInclude Include="drawlib\Ellipse.hpp" />
-    <ClInclude Include="drawlib\Rectangle.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
     <ClInclude Include="gamecontent\Camera.hpp" />
@@ -82,9 +77,6 @@
     <ClInclude Include="vlib\VulkanPipeline.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="drawlib\Circle.cpp" />
-    <ClCompile Include="drawlib\Ellipse.cpp" />
-    <ClCompile Include="drawlib\Rectangle.cpp" />
     <ClCompile Include="gamecontent\Actor.cpp" />
     <ClCompile Include="gamecontent\Camera.cpp" />
     <ClCompile Include="gamecontent\FirstPersonCamera.cpp" />
@@ -141,7 +133,9 @@
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
     <ClCompile Include="resources\ShaderData.cpp" />
+    <None Include="..\docs\contribution.html" />
     <None Include="..\docs\docs.html" />
+    <None Include="..\docs\docsShaderTool.html" />
     <None Include="..\docs\index.html" />
     <None Include="..\docs\main.css" />
     <None Include="..\docs\_config.yml" />
@@ -157,6 +151,9 @@
     <None Include="resources\VertexColorOnly.glsl" />
     <None Include="resources\VertexTextured.glsl" />
     <None Include="resources\VertexUI.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\logo.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

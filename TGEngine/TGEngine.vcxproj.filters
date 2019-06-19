@@ -15,9 +15,6 @@
     <Filter Include="Headerdateien\io">
       <UniqueIdentifier>{97cba680-fb33-40a5-866f-30e6342c0c34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\drawlib">
-      <UniqueIdentifier>{e8f1a3ba-f124-4f5b-954d-7bd5e0b649aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headerdateien\pipeline">
       <UniqueIdentifier>{fb31c39d-a3e6-4339-908a-6378a466b836}</UniqueIdentifier>
     </Filter>
@@ -29,9 +26,6 @@
     </Filter>
     <Filter Include="Headerdateien\util">
       <UniqueIdentifier>{2f3fc730-ee5c-4471-b4d7-6dbd251e47c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quelldateien\drawlib">
-      <UniqueIdentifier>{c803af7c-55f5-47a0-8f14-4afc3787ef84}</UniqueIdentifier>
     </Filter>
     <Filter Include="Quelldateien\gamecontent">
       <UniqueIdentifier>{6213547f-a0e8-4723-97a5-eb115cc65389}</UniqueIdentifier>
@@ -83,21 +77,6 @@
     </ClInclude>
     <ClInclude Include="TGEngine.hpp">
       <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\BaseDrawLib.hpp">
-      <Filter>Headerdateien\drawlib</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\Circle.hpp">
-      <Filter>Headerdateien\drawlib</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\DrawLib.hpp">
-      <Filter>Headerdateien\drawlib</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\Ellipse.hpp">
-      <Filter>Headerdateien\drawlib</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawlib\Rectangle.hpp">
-      <Filter>Headerdateien\drawlib</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\CommandBuffer.hpp">
       <Filter>Headerdateien\pipeline</Filter>
@@ -268,15 +247,6 @@
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawlib\Circle.cpp">
-      <Filter>Quelldateien\drawlib</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawlib\Ellipse.cpp">
-      <Filter>Quelldateien\drawlib</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawlib\Rectangle.cpp">
-      <Filter>Quelldateien\drawlib</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
       <Filter>Quelldateien\util</Filter>
@@ -475,5 +445,16 @@
     <None Include="resources\FragmentUIColor.glsl">
       <Filter>resources</Filter>
     </None>
+    <None Include="..\docs\contribution.html">
+      <Filter>docs</Filter>
+    </None>
+    <None Include="..\docs\docsShaderTool.html">
+      <Filter>docs</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\logo.png">
+      <Filter>docs</Filter>
+    </Image>
   </ItemGroup>
 </Project>

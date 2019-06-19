@@ -27,13 +27,16 @@
             }
             Input = Input.Substring(0, Input.Length - 1) + "};\r\n";
 
-            string Desc = "const VkDescriptorSetLayoutBinding " + this.Name + "LayoutBinding[] = {";
-            foreach (Descriptor str in Descriptors)
+            string Desc = "";
+            if (Descriptors.Length > 0)
             {
-                Desc += str + ",";
+                Desc = "const VkDescriptorSetLayoutBinding " + this.Name + "LayoutBinding[] = {";
+                foreach (Descriptor str in Descriptors)
+                {
+                    Desc += str + ",";
+                }
+                Desc = Desc.Substring(0, Desc.Length - 1) + "};\r\n";
             }
-            Desc = Desc.Substring(0, Desc.Length - 1) + "};\r\n";
-
             return ShaderModule + Input + Desc
                 + "const unsigned int " + this.Name + "ShaderCount = " + ShaderNames.Length + ";\r\n" 
                 + "const unsigned int " + this.Name + "InputCount = " + Inputs.Length + ";\r\n"
@@ -49,8 +52,8 @@
             {
                 ShaderModule += "    " + this.Name + "Shader[" + i++ + "] = " + str + ";\r\n";
             }
-            ShaderModule += "    " + this.Name + "Pipe = ShaderPipe(" + this.Name + "Shader, " + this.Name + "Input, " + this.Name 
-                + "LayoutBinding, " + this.Name + "ShaderCount, " + this.Name + "InputCount, " + this.Name + "LayoutBindingCount);";
+            ShaderModule += "    " + this.Name + "Pipe = ShaderPipe(" + this.Name + "Shader, " + this.Name + "Input, " + (Descriptors.Length > 0 ?  (this.Name 
+                + "LayoutBinding, "):"nullptr, ") + this.Name + "ShaderCount, " + this.Name + "InputCount, " + this.Name + "LayoutBindingCount);";
             return ShaderModule;
         }
 
@@ -58,7 +61,7 @@
         {
             return "extern VkPipelineShaderStageCreateInfo " + this.Name + "Shader[" + this.ShaderNames.Length + "];\r\n" 
                 + "extern const VkVertexInputAttributeDescription " + this.Name + "Input[];\r\n"
-                + "extern const VkDescriptorSetLayoutBinding " + this.Name + "LayoutBinding[];\r\n"
+                + (Descriptors.Length > 0 ? "extern const VkDescriptorSetLayoutBinding " + this.Name + "LayoutBinding[];\r\n":"")
                 + "extern const unsigned int " + this.Name + "ShaderCount;\r\n"
                 + "extern const unsigned int " + this.Name + "InputCount;\r\n"
                 + "extern const unsigned int " + this.Name + "LayoutBindingCount;\r\n"

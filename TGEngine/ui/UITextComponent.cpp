@@ -3,11 +3,11 @@
 namespace tge {
 	namespace ui {
 
-		UITextComponent::UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color)
+		UITextComponent::UITextComponent(tg_font::Font* font, char* string, glm::vec4 fontColor)
 		{
 			this->font = font;
 			this->string = string;
-			this->font_color = font_color;
+			this->fontColor = fontColor;
 		}
 
 		void UITextComponent::draw(IndexBuffer* index, VertexBuffer* vertex)
@@ -23,7 +23,7 @@ namespace tge {
 
 			glm::vec2 ext = this->font->getExtent(this->string);
 			glm::vec2 pos = this->parent->getPosition();
-			this->font->drawString(pos, this->string, vertex, index);
+			this->font->drawString(pos, this->string, vertex, index, this->fontColor);
 		}
 
 	}

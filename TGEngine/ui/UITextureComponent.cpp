@@ -18,17 +18,12 @@ namespace tge {
 			glm::vec2 pos = this->parent->getPosition();
 			glm::vec2 ext = this->parent->getExtent();
 
-			uint32_t idcount = (uint32_t)vertex->count_of_points;
+			uint32_t idcount = (uint32_t)vertex->pointCount;
 
-			TGVertex first = { { pos.x, pos.y, 0 }, { 0, 0 } };
-			TGVertex second = { { pos.x + ext.x, pos.y, 0 }, { 1, 0 } };
-			TGVertex third = { { pos.x + ext.x, pos.y + ext.y, 0 }, { 1, 1 } };
-			TGVertex fourth = { { pos.x, pos.y + ext.y, 0 }, { 0, 1 } };
-
-			vertex->add(first);
-			vertex->add(second);
-			vertex->add(third);
-			vertex->add(fourth);
+			vertex->add({ pos.x, pos.y })->add({0, 0})->add(this->color);
+			vertex->add({ pos.x + ext.x, pos.y })->add({ 1, 0 })->add(this->color);
+			vertex->add({ pos.x + ext.x, pos.y + ext.y })->add({ 1, 1 })->add(this->color);
+			vertex->add({ pos.x, pos.y + ext.y })->add({ 0, 1 })->add(this->color);
 
 			index->addIndex(idcount);
 			index->addIndex(idcount + 1);
