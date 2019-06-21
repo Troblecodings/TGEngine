@@ -24,7 +24,8 @@ namespace tg_font {
 
 		this->texture = new Texture(colorData, height * 64, height * 64);
 
-		TG_VECTOR_APPEND_NORMAL(materiallist, Material(this->texture))
+		this->mat = UIMaterial(this->texture);
+		TG_VECTOR_APPEND_NORMAL(materiallist, &this->mat)
 		this->materialIndex = (uint32_t)last_size;
 	}
 

@@ -112,7 +112,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createRenderpass();
 	for (size_t i = 0; i < materiallist.size(); i++)
 	{
-		(&materiallist[i])->createMaterial();
+		materiallist[i]->createMaterial();
 	}
 	createSwapchain();
 	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {

@@ -1,4 +1,5 @@
 #include "Device.hpp"
+#include "window/Window.hpp"
 
 VkPhysicalDevice used_physical_device;
 VkPhysicalDeviceProperties device_properties;

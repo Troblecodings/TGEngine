@@ -13,7 +13,11 @@ namespace tge {
 		void UIMaterial::createMaterial()
 		{
 			this->pipe->precreation();
+			vlib_depth_stencil_state.depthTestEnable = VK_FALSE;
+			vlib_rasterization_state.cullMode = VK_CULL_MODE_BACK_BIT;
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
+			vlib_rasterization_state.cullMode = VK_CULL_MODE_FRONT_BIT;
+			vlib_depth_stencil_state.depthTestEnable = VK_TRUE;
 			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
 
 			if (this->texture != nullptr) {

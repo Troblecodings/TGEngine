@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../io/Mouse.hpp"
 #include "../io/Keyboard.hpp"
+#include "../pipeline/window/Window.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/quaternion.hpp>

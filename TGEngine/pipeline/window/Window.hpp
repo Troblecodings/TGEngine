@@ -7,11 +7,12 @@
 #include "../../io/Keyboard.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
-
+#ifndef _WIN_H_
+#define _WIN_H_
 #include <Windows.h>
 #include <tchar.h>
 #include <windowsx.h>
-
+#endif // !_WIN_H_
 #define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"
 
 extern HMODULE sys_module;

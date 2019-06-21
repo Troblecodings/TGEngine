@@ -3,7 +3,7 @@
 namespace tge {
 	namespace tex {
 
-		std::vector<Material> materiallist;
+		std::vector<Material*> materiallist;
 		std::vector<RenderOffsets> render_offset;
 
 		Material::Material(Texture* texture, glm::vec4 color)

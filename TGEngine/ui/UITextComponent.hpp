@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIDrawable.hpp"
+#include "../io/Font.hpp"
 
 namespace tge {
 	namespace ui {

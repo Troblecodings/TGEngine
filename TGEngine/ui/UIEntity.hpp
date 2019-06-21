@@ -4,7 +4,6 @@
 #include "../pipeline/buffer/IndexBuffer.hpp"
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
-#include "../io/Font.hpp"
 #include "../gamecontent/Camera.hpp"
 
 namespace tge {

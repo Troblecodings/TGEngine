@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Material.hpp"
-#include "../resources/ShaderPipes.hpp"
 
 namespace tge {
 	namespace tex {
@@ -13,7 +12,7 @@ namespace tge {
 			UIMaterial(glm::vec4 color) : UIMaterial(nullptr, color) {}
 			UIMaterial(Texture* texture, glm::vec4 color);
 
-			void createMaterial() override;
+			virtual void createMaterial();
 		};
 	}
 }

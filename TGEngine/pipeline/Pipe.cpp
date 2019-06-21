@@ -1,4 +1,5 @@
 #include "Pipe.hpp"
+#include "window/Window.hpp"
 
 std::vector<VkPipeline> pipelines; 
 std::vector<VkPipelineLayout> layouts;

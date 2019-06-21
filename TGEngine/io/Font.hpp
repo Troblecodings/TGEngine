@@ -2,26 +2,26 @@
 
 #include <vector>
 #include <iostream>
-#include <fstream>
-#include "../util/Debug.hpp"
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
 #include "../stb/stb_truetype.h"
 #include "../io/Files.hpp"
-#include "../gamecontent/Material.hpp"
+#include "../util/VectorUtil.hpp"
+#include "../gamecontent/UIMaterial.hpp"
+
+using namespace tge::tex;
 
 namespace tg_font {
-
-	using namespace tge::tex;
 
 	SINCE(0, 0, 4)
 	class Font {
 
 	private:
-		uint32_t height;
-		Texture* texture;
+		uint32_t height = 20;
+		UIMaterial mat = UIMaterial((Texture*)nullptr);
+		Texture* texture = nullptr;
 		stbtt_bakedchar cdata[256];
-		uint32_t materialIndex;
+		uint32_t materialIndex = -1;
 
 	public:
 		/*

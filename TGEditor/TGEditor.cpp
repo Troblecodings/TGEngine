@@ -1,4 +1,5 @@
 #include "TGEditor.hpp"
+#include <io/Font.hpp>
 
 Mesh mesh;
 Mesh mesh2;

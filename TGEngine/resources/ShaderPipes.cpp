@@ -18,7 +18,7 @@ ShaderPipe UIColorPipe;
 
 VkPipelineShaderStageCreateInfo UITexturedShader[2];
 const VkVertexInputAttributeDescription UITexturedInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT,16}};
-const VkDescriptorSetLayoutBinding UITexturedLayoutBinding[] = {{ 2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
+const VkDescriptorSetLayoutBinding UITexturedLayoutBinding[] = {{ 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
 const unsigned int UITexturedShaderCount = 2;
 const unsigned int UITexturedInputCount = 3;
 const unsigned int UITexturedLayoutBindingCount = 1;

@@ -5,7 +5,6 @@
 #include "RenderPass.hpp"
 #include "Shader.hpp"
 #include <vector>
-#include "window/Window.hpp"
 #include "Descriptors.hpp"
 #include "../vlib/VulkanPipeline.hpp"
 

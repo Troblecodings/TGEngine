@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIDrawable.hpp"
+#include "../gamecontent/UIMaterial.hpp"
 
 using namespace tge::tex;
 
@@ -24,6 +25,7 @@ namespace tge {
 
 		private:
 			Texture* texture = nullptr;
+			UIMaterial mat = UIMaterial((Texture*)nullptr);
 			glm::vec4 color = glm::vec4(1.0f);
 			uint32_t materialIndex = -1;
 			uint32_t offsetIndex = -1;

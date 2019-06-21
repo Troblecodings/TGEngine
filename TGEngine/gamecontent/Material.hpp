@@ -39,8 +39,6 @@ namespace tge {
 
 			virtual void createMaterial();
 
-			void print() { OUT_LV_DEBUG(this->texture << ", " << this->color.r << ", " << pipe << ", " << pipelineIndex) }
-
 			void addToBuffer(VkCommandBuffer buffer);
 
 			void destroy();
@@ -60,7 +58,7 @@ namespace tge {
 			uint32_t offset; // the offset at wich this material starts (global)
 		};
 
-		extern std::vector<Material> materiallist;
+		extern std::vector<Material*> materiallist;
 		extern std::vector<RenderOffsets> render_offset;
 	}
 }

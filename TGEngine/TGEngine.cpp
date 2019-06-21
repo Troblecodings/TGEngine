@@ -66,10 +66,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
 	OUT_LV_DEBUG(materiallist.size())
-		materiallist[0].print();
 	for (size_t i = 0; i < materiallist.size(); i++)
 	{
-		(&materiallist[i])->createMaterial();
+		materiallist[i]->createMaterial();
 	}
 
 	//draw(&index_buffer, &main_buffer);
