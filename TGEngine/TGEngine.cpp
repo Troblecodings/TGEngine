@@ -68,6 +68,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	OUT_LV_DEBUG(materiallist.size())
 	for each (Material* mat in materiallist) {
 		OUT_LV_DEBUG(mat)
+		OUT_LV_DEBUG(mat->getType())
 		mat->createMaterial();
 	}
 

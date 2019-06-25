@@ -41,6 +41,8 @@ namespace tge {
 
 			void addToBuffer(VkCommandBuffer buffer);
 
+			MaterialType getType() { return this->type; };
+
 			void destroy();
 
 			bool operator==(const Material& material);

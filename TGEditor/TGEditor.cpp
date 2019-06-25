@@ -33,7 +33,7 @@ int main() {
 	ui_scene_entity.addChildren(&entity);
 
 	tg_model::load("resource\\map2.fbx", &map);
-	tg_model::load("resource\\Chair.fbx", &mesh);
+	//tg_model::load("resource\\Chair.fbx", &mesh);
 	//tg_model::load("resource\\hall.fbx", &mesh2);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);
