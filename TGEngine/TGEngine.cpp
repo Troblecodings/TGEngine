@@ -66,9 +66,9 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
 	OUT_LV_DEBUG(materiallist.size())
-	for (size_t i = 0; i < materiallist.size(); i++)
-	{
-		materiallist[i]->createMaterial();
+	for each (Material* mat in materiallist) {
+		OUT_LV_DEBUG(mat)
+		mat->createMaterial();
 	}
 
 	//draw(&index_buffer, &main_buffer);

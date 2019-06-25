@@ -22,13 +22,13 @@ namespace tge {
 			return file;
 		}
 
-		File readFileSize(char* name, char* mode, OUTPUT long* file_length) {
-			ASSERT_NONE_NULL_DB(file_length, "File length pointer is null [" << name << "] !", TG_ERR_DB_NULLPTR)
+		File readFileSize(char* name, char* mode, long* fileLength) {
+			ASSERT_NONE_NULL_DB(fileLength, "File length pointer is null [" << name << "] !", TG_ERR_DB_NULLPTR)
 			File file = open(name, mode);
 
 			fseek(file, 0, SEEK_END);
-			*file_length = ftell(file);
-			ASSERT_NONE_NULL_DB((*file_length != 0), "File empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
+			*fileLength = ftell(file);
+			ASSERT_NONE_NULL_DB((*fileLength != 0), "File empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
 			fseek(file, 0, SEEK_SET);
 			return file;
 		}

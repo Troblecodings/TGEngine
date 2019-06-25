@@ -10,7 +10,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 struct Camera {
-	OPT INPUT
 	double speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
 	float fov = (float)PI * 0.5f; // Field of view in radians
 	float near_clip_plain = 0.01f; // The nearest thing to the camera
@@ -18,7 +17,6 @@ struct Camera {
 	void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 	void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
-	OUTPUT 
 	glm::mat4 world_transform = glm::mat4(1.0f); // The world transform for all verticies in the world 
 	glm::mat4 camera = glm::mat4(1.0f); // The camera transforms done with glm::lookAt
 	glm::mat4 matrix; // The actual computed matrix -> Calculated: perspective * camera * world_transform

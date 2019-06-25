@@ -44,18 +44,6 @@ TARGET_METHODE
 // Remember that methods as well as parameters and/or it's function can change eventhough the version may stay the same
 
 USAGE_DOCS
-TARGET_PARAMETER
-#define INPUT // Defines the parameter to be an Input
-
-USAGE_DOCS
-TARGET_PARAMETER
-#define OUTPUT // Defines the parameter to be an Output
-
-USAGE_DOCS
-TARGET_PARAMETER
-#define OPT // Defines the parameter to be an optional input or output
-
-USAGE_DOCS
 TARGET_METHODE
 TARGET_PARAMETER
 #define INTERNAL // Defines a method or parameter to be internal -> This methods or parameters shouldn't be used

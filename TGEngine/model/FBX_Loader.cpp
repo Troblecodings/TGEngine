@@ -100,7 +100,9 @@ namespace tg_model {
 			}
 			TG_VECTOR_APPEND_NORMAL(mesh->localMaterials, Material(textureptr, color));
 			uint32_t idx = last_size;
-			TG_VECTOR_APPEND_NORMAL(materiallist, &mesh->localMaterials[idx])
+			Material* mat = &mesh->localMaterials.front() + idx;
+			OUT_LV_DEBUG(mat)
+			TG_VECTOR_APPEND_NORMAL(materiallist,  mat)
 			mesh->materials.push_back(offsets.material = (uint32_t)last_size);
 			offsets.size = (uint32_t)mesh->indices.size() - offsets.offset;
 			mesh->offsets.push_back(offsets);

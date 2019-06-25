@@ -47,7 +47,7 @@ namespace tge {
 		 * (the long* needs to be vailid pointer, will be checked in debug mode)
 		 */
 		SINCE(0, 0, 4)
-		File readFileSize(char* name, char* mode, OUTPUT long* file_length);
+		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
 
 		/*
 		 * Reads all bytes out of a file

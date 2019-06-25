@@ -1,4 +1,5 @@
 #include "Swapchain.hpp"
+#include "window/Window.hpp"
 
 std::vector<VkImage> swapchain_images;
 VkSwapchainKHR swapchain;

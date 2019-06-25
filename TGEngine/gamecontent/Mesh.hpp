@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include <glm/glm.hpp>
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../pipeline/buffer/IndexBuffer.hpp"
@@ -16,7 +17,7 @@ struct Mesh
 {
 	uint32_t first_index; // the first index for this mesh
 
-	std::vector<Material> localMaterials;
+	std::list<Material> localMaterials;
 	std::vector<uint32_t> materials;
 	std::vector<RenderOffsets> offsets;
 	std::vector<TGVertex> vertices;

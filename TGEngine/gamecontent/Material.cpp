@@ -55,6 +55,7 @@ namespace tge {
 
 			if (this->texture != nullptr) {
 				textureDescriptor.descriptorset = this->descriptorIndex;
+				textureDescriptor.binding = 2;
 				this->texture->vulkanTexture->updateDescriptor();
 			}
 		}

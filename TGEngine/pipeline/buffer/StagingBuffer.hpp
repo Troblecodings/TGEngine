@@ -6,11 +6,9 @@
 #include "Memory.hpp"
 
 struct StagingBuffer {
-	INPUT 
 	VkDeviceSize size;
 	VkBuffer* destination;
 
-	OUTPUT
 	VkBuffer staging_buffer;
 	VkDeviceMemory staging_buffer_device_memory;
 };

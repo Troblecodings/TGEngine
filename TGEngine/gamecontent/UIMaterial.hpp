@@ -12,7 +12,7 @@ namespace tge {
 			UIMaterial(glm::vec4 color) : UIMaterial(nullptr, color) {}
 			UIMaterial(Texture* texture, glm::vec4 color);
 
-			virtual void createMaterial();
+			virtual void createMaterial() override;
 		};
 	}
 }

@@ -67,7 +67,7 @@ VkPipelineTessellationStateCreateInfo vlib_tessellation_state = {
 };
 
 //Rasterization
-VkPipelineRasterizationStateCreateInfo vlib_rasterization_state = {
+VkPipelineRasterizationStateCreateInfo vlibRasterizationState = {
 	VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 	nullptr,
 	0,
@@ -119,7 +119,7 @@ VkPipelineColorBlendStateCreateInfo vlib_color_blend_state = {
 	{VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY}
 };
 
-VkPipelineDepthStencilStateCreateInfo vlib_depth_stencil_state = {
+VkPipelineDepthStencilStateCreateInfo vlibDepthStencilState = {
 	VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
 	nullptr,
 	0,
@@ -158,9 +158,9 @@ VkGraphicsPipelineCreateInfo vlib_graphics_pipeline_create_info = {
 	&vlib_input_assembly_state,
 	&vlib_tessellation_state,
 	&vlib_viewport_state,
-	&vlib_rasterization_state,
+	&vlibRasterizationState,
 	&vlib_multisample_state,
-	&vlib_depth_stencil_state,
+	&vlibDepthStencilState,
 	&vlib_color_blend_state,
 	nullptr,
 	VK_NULL_HANDLE,

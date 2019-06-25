@@ -4,10 +4,8 @@
 #include "StagingBuffer.hpp"
 
 struct IndexBuffer{
-	INPUT
 	uint32_t size;
 
-	OUTPUT
 	VkBuffer index_buffer;
 	VkDeviceMemory device_memory;
 	uint32_t max_size;

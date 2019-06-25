@@ -8,8 +8,8 @@ namespace tge {
 	namespace tex {
 
 		enum MaterialType {
-			BASIC,
-			UI
+			BASIC_MAT_TYPE,
+			UI_MAT_TYPE
 		};
 
 		/*
@@ -29,7 +29,7 @@ namespace tge {
 			uint32_t pipelineIndex = 0;
 			uint32_t descriptorIndex = 0;
 
-			MaterialType type = BASIC;
+			MaterialType type = BASIC_MAT_TYPE;
 
 		public:
 			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
