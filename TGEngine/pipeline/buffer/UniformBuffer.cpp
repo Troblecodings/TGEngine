@@ -17,11 +17,10 @@ UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t b
 	lastResult = vkCreateBuffer(device, &uniform_buffer_create_info, nullptr, &uniform_buffer);
 	HANDEL(lastResult)
 
-	this->index = addBuffer(uniform_buffer);
+		this->index = addBuffer(uniform_buffer);
 }
 
-void UniformBuffer::updateDescriptor()
-{
+void UniformBuffer::updateDescriptor() {
 	this->descriptor.updateBufferInfo(this->index, this->size);
 }
 

@@ -3,9 +3,9 @@
 
 Mesh mesh;
 Mesh mesh2;
-Camera camera;	
+Camera camera;
 Mesh map;
-UIEntity entity = UIEntity(TOP_LEFT, {0.3, 0.15});
+UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main() {
 	Editor editor = Editor();
@@ -51,7 +51,6 @@ void init() {
 
 }
 
-void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer)
-{
+void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 }

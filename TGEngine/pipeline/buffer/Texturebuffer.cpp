@@ -13,11 +13,11 @@ namespace tge {
 		Texture::Texture(const char* textureName) : textureName(textureName) {
 			this->vulkanTexture = new VulkanTexture(this);
 			ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
-			ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
-			textures.push_back(this);
+				ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
+				textures.push_back(this);
 		}
 
-		Texture::Texture(uint8_t * data, int width, int height) {
+		Texture::Texture(uint8_t* data, int width, int height) {
 			this->vulkanTexture = new VulkanTexture(this);
 			textures.push_back(this);
 			this->imageData = data;
@@ -25,10 +25,9 @@ namespace tge {
 			this->height = height;
 		}
 
-		void Texture::initTexture()
-		{
+		void Texture::initTexture() {
 			// Load texture if not build in (textureName == nulptr)
-			if (this->textureName) {
+			if(this->textureName) {
 				File file = open(const_cast<char*> (this->textureName), "rb");
 				this->imageData = stbi_load_from_file(file, &this->width, &this->height, &this->channel, STBI_rgb_alpha);
 			}
@@ -41,7 +40,7 @@ namespace tge {
 			vlib_buffer_create_info.size = (uint32_t)this->width * (uint32_t)this->height * (uint32_t)4;
 
 			// Mipmaplevels
-			if (this->miplevels == AUTO_MIPMAP)
+			if(this->miplevels == AUTO_MIPMAP)
 				this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
 			vlib_image_create_info.mipLevels = this->miplevels;
 
@@ -51,13 +50,12 @@ namespace tge {
 			this->vulkanTexture->unmap();
 
 			// Destroy unneeded resources
-			if (this->textureName) {
+			if(this->textureName) {
 				stbi_image_free(this->imageData);
 			}
 		}
 
-		void Texture::load(VkCommandBuffer buffer)
-		{
+		void Texture::load(VkCommandBuffer buffer) {
 			vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
 			vlib_image_memory_barrier.subresourceRange.levelCount = this->miplevels;
 
@@ -68,13 +66,11 @@ namespace tge {
 			this->vulkanTexture->generateMipmaps(buffer);
 		}
 
-		int Texture::getWidth()
-		{
+		int Texture::getWidth() {
 			return this->width;
 		}
 
-		int Texture::getHeight()
-		{
+		int Texture::getHeight() {
 			return this->height;
 		}
 
@@ -82,35 +78,32 @@ namespace tge {
 			textureDescriptor.updateImageInfo(*this->texture->sampler, this->imageView);
 		}
 
-		void VulkanTexture::queueLoading(VkCommandBuffer buffer)
-		{
+		void VulkanTexture::queueLoading(VkCommandBuffer buffer) {
 			// Copys the buffer to the image
 			ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, this->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
 				vkCmdCopyBufferToImage(
-					buffer,
-					this->buffer,
-					this->image,
-					VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-					1,
-					&vlib_buffer_image_copy
+				buffer,
+				this->buffer,
+				this->image,
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				1,
+				&vlib_buffer_image_copy
 				);
 		}
 
-		void VulkanTexture::generateMipmaps(VkCommandBuffer buffer)
-		{
+		void VulkanTexture::generateMipmaps(VkCommandBuffer buffer) {
 			uint32_t mipwidth = this->texture->getWidth(),
 				mipheight = this->texture->getHeight(),
 				mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
 
 			vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 
-			for (uint32_t i = 1; i < mipmapLevels; i++)
-			{
+			for(uint32_t i = 1; i < mipmapLevels; i++) {
 				vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
 				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
-				vlib_image_blit.srcSubresource.mipLevel = i - 1;
+					vlib_image_blit.srcSubresource.mipLevel = i - 1;
 				vlib_image_blit.dstSubresource.mipLevel = i;
 				vlib_image_blit.srcOffsets[1].x = mipwidth;
 				vlib_image_blit.srcOffsets[1].y = mipheight;
@@ -120,11 +113,11 @@ namespace tge {
 
 				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 
-					if (mipwidth > 1) mipwidth /= 2;
-				if (mipheight > 1) mipheight /= 2;
+					if(mipwidth > 1) mipwidth /= 2;
+				if(mipheight > 1) mipheight /= 2;
 			}
 
-			if (mipmapLevels > 1) {
+			if(mipmapLevels > 1) {
 				vlib_image_memory_barrier.subresourceRange.baseMipLevel = mipmapLevels - 1;
 			}
 
@@ -133,10 +126,10 @@ namespace tge {
 
 		void initAllTextures() {
 			// Querries formats
-			for (VkFormat format : { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_A2B10G10R10_UNORM_PACK32, VK_FORMAT_B10G11R11_UFLOAT_PACK32}) {
+			for(VkFormat format : { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_A2B10G10R10_UNORM_PACK32, VK_FORMAT_B10G11R11_UFLOAT_PACK32}) {
 				VkFormatProperties prop;
 				vkGetPhysicalDeviceFormatProperties(used_physical_device, format, &prop);
-				if ((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
+				if((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
 					defaultImageFormat = format;
 					break;
 				}
@@ -161,13 +154,12 @@ namespace tge {
 				vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
 			HANDEL(lastResult)
 
-				for each (Texture * ptr in textures) {
+				for each(Texture * ptr in textures) {
 					ptr->initTexture();
 				}
 		}
 
-		void createSampler(Sampler sampler)
-		{
+		void createSampler(Sampler sampler) {
 			lastResult = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
 			HANDEL(lastResult)
 		}
@@ -177,13 +169,12 @@ namespace tge {
 			HANDEL(lastResult)
 
 				vkDestroySampler(device, defaultImageSampler, nullptr);
-			for each (Texture * tex in textures) {
+			for each(Texture * tex in textures) {
 				tex->vulkanTexture->destroy();
 			}
 		}
 
-		void VulkanTexture::initVulkan()
-		{
+		void VulkanTexture::initVulkan() {
 			vlib_image_create_info.format = defaultImageFormat;
 
 			// Image
@@ -208,34 +199,30 @@ namespace tge {
 				lastResult = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
 			HANDEL(lastResult)
 
-			// Imageview
-			vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+				// Imageview
+				vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 			vlib_image_view_create_info.image = this->image;
 			lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
 			HANDEL(lastResult)
 		}
 
-		void* VulkanTexture::map(uint32_t size)
-		{
+		void* VulkanTexture::map(uint32_t size) {
 			void* memory;
 			lastResult = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
 			HANDEL(lastResult);
 			return memory;
 		}
 
-		void VulkanTexture::unmap()
-		{
+		void VulkanTexture::unmap() {
 			vkUnmapMemory(device, this->bufferMemory);
 		}
 
-		void VulkanTexture::dispose()
-		{
+		void VulkanTexture::dispose() {
 			vkFreeMemory(device, this->bufferMemory, nullptr);
 			vkDestroyBuffer(device, this->buffer, nullptr);
 		}
 
-		void VulkanTexture::destroy()
-		{
+		void VulkanTexture::destroy() {
 			vkDestroyImageView(device, this->imageView, nullptr);
 			vkFreeMemory(device, this->imageMemory, nullptr);
 			vkDestroyImage(device, this->image, nullptr);

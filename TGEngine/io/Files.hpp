@@ -32,14 +32,14 @@ namespace tge {
 		 * (Is automatically called in initTGEngine())
 		 */
 		SINCE(0, 0, 3)
-		void initFileSystem();
+			void initFileSystem();
 
 		/*
 		 * Opens the file
 		 * (In debug mode it checks if the open was successfull)
 		 */
 		SINCE(0, 0, 4)
-		File open(char* name, char* mode);
+			File open(char* name, char* mode);
 
 		/*
 		 * Opens the file and get's the size of the file
@@ -47,13 +47,13 @@ namespace tge {
 		 * (the long* needs to be vailid pointer, will be checked in debug mode)
 		 */
 		SINCE(0, 0, 4)
-		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
+			File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
 
 		/*
 		 * Reads all bytes out of a file
 		 * (In debug mode it checks if the open was successfull)
 		 */
 		SINCE(0, 0, 4)
-		uint8_t* readAll(char* name);
+			uint8_t* readAll(char* name);
 	}
 }

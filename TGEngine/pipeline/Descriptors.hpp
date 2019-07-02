@@ -22,8 +22,8 @@ public:
 	 * depending on type -> increases uniform_count or image_sampler_count
 	 */
 	INTERNAL
-	SINCE(0, 0, 4)
-	Descriptor() {} // Default constructor -> doing nothing
+		SINCE(0, 0, 4)
+		Descriptor() {} // Default constructor -> doing nothing
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset);
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding) : Descriptor(stage, type, binding, 0) {}
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type) : Descriptor(stage, type, 0) {}
@@ -36,7 +36,7 @@ public:
 
 	/*
 	 * Updates the given descriptor within its descriptor set with image infos
-	 * 
+	 *
 	 * param:
 	 *    sampler -> the image sampler
 	 *    view -> the image view
@@ -45,36 +45,36 @@ public:
 	 *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkUpdateDescriptorSets.html
 	 */
 	INTERNAL
-	SINCE(0, 0, 4)
-	void updateImageInfo(VkSampler sampler, VkImageView view);
+		SINCE(0, 0, 4)
+		void updateImageInfo(VkSampler sampler, VkImageView view);
 
 	/*
-     * Updates the given descriptor within its descriptor set with buffer infos
-     *
-     * param:
-     *    sampler -> the image sampler
-     *    view -> the image view
-     *
-     * - Note: for vkUpdateDescriptorSets see the Vulkan docs
-     *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkUpdateDescriptorSets.html
-     */
+	 * Updates the given descriptor within its descriptor set with buffer infos
+	 *
+	 * param:
+	 *    sampler -> the image sampler
+	 *    view -> the image view
+	 *
+	 * - Note: for vkUpdateDescriptorSets see the Vulkan docs
+	 *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkUpdateDescriptorSets.html
+	 */
 	INTERNAL
-	SINCE(0, 0, 4)
-	void updateBufferInfo(uint32_t buffer, size_t size);
+		SINCE(0, 0, 4)
+		void updateBufferInfo(uint32_t buffer, size_t size);
 
 private:
 	VkShaderStageFlags shaderstage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
 	VkDescriptorType type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 
 	/*
-     * Updates the given descriptor within its descriptor set with buffer infos
-     *
-     * - Note: for VkWriteDescriptorSet see the Vulkan docs
-     *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkWriteDescriptorSet.html
-     */
+	 * Updates the given descriptor within its descriptor set with buffer infos
+	 *
+	 * - Note: for VkWriteDescriptorSet see the Vulkan docs
+	 *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkWriteDescriptorSet.html
+	 */
 	INTERNAL
-	SINCE(0, 0, 4)
-	void update();
+		SINCE(0, 0, 4)
+		void update();
 };
 
 /*
@@ -99,7 +99,7 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
  * Creates a descriptor layout
  *    -> returns the index of the descriptor
  *
- * - Note: for VkDescriptorSetLayout see the Vulkan docs 
+ * - Note: for VkDescriptorSetLayout see the Vulkan docs
  *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorSetLayout.html
  */
 INTERNAL
@@ -110,7 +110,7 @@ uint32_t createDesctiptorLayout();
  * Creates Descriptor Set
  *    -> returns the index of the descriptor
  *
- * - Note: for VkDescriptorSetLayout see the Vulkan docs 
+ * - Note: for VkDescriptorSetLayout see the Vulkan docs
  *         https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorSet.html
  */
 INTERNAL

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShaderTool
-{
-    class Error
-    {
+﻿namespace ShaderTool {
+    class Error {
         public const int SUCESS = 0;
         public const int NOT_ENOUGH_PARAMS = -1;
         public const int WRONG_PARAMS = -2;

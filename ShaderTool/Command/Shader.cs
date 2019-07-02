@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static ShaderTool.Util;
-using static ShaderTool.Error;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Diagnostics;
 using System.Reflection;
+using static ShaderTool.Error;
+using static ShaderTool.Util;
 
-namespace ShaderTool.Command
-{
-    class Shader
-    {
+namespace ShaderTool.Command {
+    class Shader {
 
-        public static int ShaderCommand(string[] args)
-        {
+        public static int ShaderCommand(string[] args) {
             AsssertNoneNull(args);
-            switch (args[0])
-            {
+            switch (args[0]) {
                 case "make":
                     return ShaderMake();
 
@@ -24,8 +17,7 @@ namespace ShaderTool.Command
             return SUCESS;
         }
 
-        public static int ShaderMake()
-        {
+        public static int ShaderMake() {
             string[] files = Directory.GetFiles(Program.CWD, "*.glsl");
             // Extract shader compiler
             Stream reader = Assembly.GetExecutingAssembly().GetManifestResourceStream("ShaderTool.glslangValidator.exe");
@@ -35,19 +27,16 @@ namespace ShaderTool.Command
             reader.Read(buffer, 0, buffer.Length);
             File.WriteAllBytes("compiler.exe", buffer);
             //
-            foreach (string path in files)
-            {
+            foreach (string path in files) {
                 int i = Compile(path);
-                if(i != SUCESS)
-                {
+                if (i != SUCESS) {
                     return i;
                 }
             }
             return SUCESS;
         }
 
-        private static int Compile(string path)
-        {
+        private static int Compile(string path) {
             Process.Start("compiler.exe", "");
             return SUCESS;
         }

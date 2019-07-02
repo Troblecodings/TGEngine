@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ShaderTool {
+    class VulkanLookups {
 
-namespace ShaderTool
-{
-    class VulkanLookups
-    {
-
-        public static VkFormat LookUp(string str)
-        {
-            switch (str)
-            {
+        public static VkFormat LookUp(string str) {
+            switch (str) {
                 case "vec2":
                     return VkFormat.VK_FORMAT_R32G32_SFLOAT;
                 case "vec3":
@@ -22,10 +14,8 @@ namespace ShaderTool
             }
         }
 
-        public static uint LookupSize(VkFormat format)
-        {
-            switch (format)
-            {
+        public static uint LookupSize(VkFormat format) {
+            switch (format) {
                 case VkFormat.VK_FORMAT_R32_SFLOAT:
                     return 4;
                 case VkFormat.VK_FORMAT_R32G32_SFLOAT:
@@ -38,25 +28,19 @@ namespace ShaderTool
             return 0;
         }
 
-        public static VkShaderStageFlagBits GetFlagBitsAfterName(string name)
-        {
-            if (name.Contains("Vertex"))
-            {
+        public static VkShaderStageFlagBits GetFlagBitsAfterName(string name) {
+            if (name.Contains("Vertex")) {
                 return VkShaderStageFlagBits.VK_SHADER_STAGE_VERTEX_BIT;
-            } else if(name.Contains("Fragment"))
-            {
+            } else if (name.Contains("Fragment")) {
                 return VkShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT;
             }
             return VkShaderStageFlagBits.VK_SHADER_STAGE_ALL;
         }
 
-        public static VkDescriptorType GetTypeFromLine(string line)
-        {
-            if (line.Contains("sampler2D"))
-            {
+        public static VkDescriptorType GetTypeFromLine(string line) {
+            if (line.Contains("sampler2D")) {
                 return VkDescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            } else if(line.Contains("uniform"))
-            {
+            } else if (line.Contains("uniform")) {
                 return VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
             }
             return VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -67,8 +51,7 @@ namespace ShaderTool
     // Licensed under Apache 2.0
     // Removed some of the Formats and range definition
 
-    enum VkShaderStageFlagBits
-    {
+    enum VkShaderStageFlagBits {
         VK_SHADER_STAGE_VERTEX_BIT = 0x00000001,
         VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT = 0x00000002,
         VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT = 0x00000004,
@@ -87,8 +70,7 @@ namespace ShaderTool
         VK_SHADER_STAGE_MESH_BIT_NV = 0x00000080,
     }
 
-    enum VkDescriptorType
-    {
+    enum VkDescriptorType {
         VK_DESCRIPTOR_TYPE_SAMPLER = 0,
         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER = 1,
         VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE = 2,
@@ -104,8 +86,7 @@ namespace ShaderTool
         VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV = 1000165000,
     }
 
-    enum VkFormat
-    {
+    enum VkFormat {
         VK_FORMAT_UNDEFINED = 0,
         VK_FORMAT_R4G4_UNORM_PACK8 = 1,
         VK_FORMAT_R4G4B4A4_UNORM_PACK16 = 2,

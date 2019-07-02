@@ -61,16 +61,15 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	main_buffer.start();
 	index_buffer.start();
 
-	for (size_t i = 0; i < actors.size(); i++)
-	{
+	for(size_t i = 0; i < actors.size(); i++) {
 		actors[i].mesh->consume(&main_buffer, &index_buffer);
 	}
 	OUT_LV_DEBUG(materiallist.size())
-	for each (Material* mat in materiallist) {
-		OUT_LV_DEBUG(mat)
-		OUT_LV_DEBUG(mat->getType())
-		mat->createMaterial();
-	}
+		for each(Material * mat in materiallist) {
+			OUT_LV_DEBUG(mat)
+				OUT_LV_DEBUG(mat->getType())
+				mat->createMaterial();
+		}
 
 	//draw(&index_buffer, &main_buffer);
 
@@ -91,12 +90,12 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	clock_t last_time = clock();
 
-	while (true) {
+	while(true) {
 		window->pollevents();
-		if (window->close_request) {
+		if(window->close_request) {
 			break;
 		}
-		if (window->minimized) {
+		if(window->minimized) {
 			continue;
 		}
 		startdraw(&index_buffer, &main_buffer);
@@ -104,7 +103,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
 
-		if (delta >= (CLOCKS_PER_SEC / 60)) {
+		if(delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
 			tge::ui::ui_scene_entity.update();

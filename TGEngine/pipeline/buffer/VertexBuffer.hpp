@@ -17,25 +17,25 @@ struct VertexBuffer {
 	void* memory;
 
 	SINCE(0, 0, 2)
-	void start();
+		void start();
 
 	SINCE(0, 0, 5)
-	VertexBuffer* add(glm::vec2 vec);
+		VertexBuffer* add(glm::vec2 vec);
 
 	SINCE(0, 0, 5)
-	VertexBuffer* add(glm::vec3 vec);
+		VertexBuffer* add(glm::vec3 vec);
 
 	SINCE(0, 0, 5)
-	VertexBuffer* add(glm::vec4 vec);
+		VertexBuffer* add(glm::vec4 vec);
 
 	SINCE(0, 0, 5)
-	VertexBuffer* addAll(void* data, size_t size, size_t points);
+		VertexBuffer* addAll(void* data, size_t size, size_t points);
 
 	SINCE(0, 0, 5)
-	VertexBuffer* endVertex();
+		VertexBuffer* endVertex();
 
 	SINCE(0, 0, 2)
-	void end();
+		void end();
 };
 
 extern size_t vertex_offset;

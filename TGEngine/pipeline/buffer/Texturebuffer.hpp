@@ -19,7 +19,7 @@ namespace tge {
 		 *  -> API independency layer
 		 */
 		SINCE(0, 0, 4)
-		typedef VkSampler* Sampler;
+			typedef VkSampler* Sampler;
 
 		extern VkSampler defaultImageSampler;  // The default sampler if none is provided
 
@@ -29,7 +29,7 @@ namespace tge {
 		 * Holder for Vulkan specific image components
 		 */
 		SINCE(0, 0, 4)
-		class VulkanTexture {
+			class VulkanTexture {
 
 			private:
 				Texture* texture;
@@ -63,7 +63,7 @@ namespace tge {
 		 *   -> API independent
 		 */
 		SINCE(0, 0, 4)
-		class Texture {
+			class Texture {
 
 			public:
 				VulkanTexture* vulkanTexture; // stores the vulken implementation
@@ -99,18 +99,18 @@ namespace tge {
 		 * Inits all textures
 		 */
 		SINCE(0, 0, 2)
-		void initAllTextures();
+			void initAllTextures();
 
 		/*
 		 * Creates a custom sampler
 		 */
 		SINCE(0, 0, 4)
-		void createSampler(Sampler sampler);
+			void createSampler(Sampler sampler);
 
 		/*
 		 * Destroys all textures
 		 */
 		SINCE(0, 0, 2)
-		void destroyAllTextures();
+			void destroyAllTextures();
 	}
 }

@@ -8,7 +8,7 @@ namespace prop {
 	void readProperties(char* path, Properties* prop) {
 		File file = open(path, "rb");
 
-		if (!file) return;
+		if(!file) return;
 
 		TagType tagtype = NaN;
 
@@ -20,26 +20,24 @@ namespace prop {
 		string buffer = "";
 		size_t size = 0;
 
-		while (!feof(file))
-		{
+		while(!feof(file)) {
 			char c_char;
 			fread(&c_char, sizeof(char), 1, file);
 
-			if (c_char == '<') {
+			if(c_char == '<') {
 				stage = 1;
 				continue;
-			}
-			else if (c_char == '>' || c_char == '/') {
-				if (tagtype != NaN) {
-					switch (tagtype) {
-					case BOOLEAN: prop->addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
-					    break;
-					case INT: prop->addInt(namebuf, stoi(valuebuf));
-						break;
-					case FLOAT: prop->addFloat(namebuf, stof(valuebuf));
-						break;
-					case STRING: prop->addString(namebuf, valuebuf);
-						break;
+			} else if(c_char == '>' || c_char == '/') {
+				if(tagtype != NaN) {
+					switch(tagtype) {
+						case BOOLEAN: prop->addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
+							break;
+						case INT: prop->addInt(namebuf, stoi(valuebuf));
+							break;
+						case FLOAT: prop->addFloat(namebuf, stof(valuebuf));
+							break;
+						case STRING: prop->addString(namebuf, valuebuf);
+							break;
 					}
 					tagtype = NaN;
 					stage = 0;
@@ -48,57 +46,45 @@ namespace prop {
 				stage = 0;
 				buffer.clear();
 				continue;
-			}
-			else if (c_char == ' ') {
-				if (stage == 1) {
-					if (buffer.compare("boolean") == 0) {
+			} else if(c_char == ' ') {
+				if(stage == 1) {
+					if(buffer.compare("boolean") == 0) {
 						tagtype = BOOLEAN;
-					}
-					else if (buffer.compare("int") == 0) {
+					} else if(buffer.compare("int") == 0) {
 						tagtype = INT;
-					}
-					else if (buffer.compare("float") == 0) {
+					} else if(buffer.compare("float") == 0) {
 						tagtype = FLOAT;
-					}
-					else if (buffer.compare("string") == 0) {
+					} else if(buffer.compare("string") == 0) {
 						tagtype = STRING;
-					}
-					else {
+					} else {
 						tagtype = NaN;
 					}
 					stage = 2;
 					buffer.clear();
 				}
-				if (stage != 5 && stage != 6)continue;
-			}
-			else if (c_char == '=') {
-				if (stage == 2) {
-					if (buffer.compare("name") == 0) {
+				if(stage != 5 && stage != 6)continue;
+			} else if(c_char == '=') {
+				if(stage == 2) {
+					if(buffer.compare("name") == 0) {
 						stage = 3;
-					}
-					else if (buffer.compare("value") == 0) {
+					} else if(buffer.compare("value") == 0) {
 						stage = 4;
-					}
-					else {
+					} else {
 						tagtype = NaN;
 					}
 					buffer.clear();
 				}
 				continue;
-			}
-			else if (c_char == '"') {
-				if (stage == 3) {
+			} else if(c_char == '"') {
+				if(stage == 3) {
 					stage = 5;
-				}
-				else if (stage == 4) {
+				} else if(stage == 4) {
 					stage = 6;
-				}
-				else if (stage == 5) {
+				} else if(stage == 5) {
 					namebuf = new char[buffer.size() + 1];
 					strcpy_s(namebuf, buffer.size() + 1, buffer.c_str());
 					stage = 2;
-				}
-				else if (stage == 6) {
+				} else if(stage == 6) {
 					valuebuf = new char[buffer.size() + 1];
 					strcpy_s(valuebuf, buffer.size() + 1, buffer.c_str());
 					stage = 2;
@@ -106,16 +92,15 @@ namespace prop {
 				buffer.clear();
 				continue;
 			}
-			if (stage >= 1) {
+			if(stage >= 1) {
 				buffer += c_char;
 			}
 		}
 	}
 
 	char* Properties::getStringOrDefault(char* name, char* def) {
-		for (size_t i = 0; i < this->string_names.size(); i++)
-		{
-			if (strcmp(name, this->string_names[i]) == 0) {
+		for(size_t i = 0; i < this->string_names.size(); i++) {
+			if(strcmp(name, this->string_names[i]) == 0) {
 				return this->string_values[i];
 			}
 		}
@@ -123,9 +108,8 @@ namespace prop {
 	}
 
 	bool Properties::getBooleanOrDefault(char* name, bool def) {
-		for (size_t i = 0; i < this->bool_names.size(); i++)
-		{
-			if (strcmp(name, this->bool_names[i]) == 0) {
+		for(size_t i = 0; i < this->bool_names.size(); i++) {
+			if(strcmp(name, this->bool_names[i]) == 0) {
 				return this->bool_values[i];
 			}
 		}
@@ -133,9 +117,8 @@ namespace prop {
 	}
 
 	float Properties::getFloatOrDefault(char* name, float def) {
-		for (size_t i = 0; i < this->float_names.size(); i++)
-		{
-			if (strcmp(name, this->float_names[i]) == 0) {
+		for(size_t i = 0; i < this->float_names.size(); i++) {
+			if(strcmp(name, this->float_names[i]) == 0) {
 				return this->float_values[i];
 			}
 		}
@@ -143,9 +126,8 @@ namespace prop {
 	}
 
 	int Properties::getIntOrDefault(char* name, int def) {
-		for (size_t i = 0; i < this->int_names.size(); i++)
-		{
-			if (strcmp(name, this->int_names[i]) == 0) {
+		for(size_t i = 0; i < this->int_names.size(); i++) {
+			if(strcmp(name, this->int_names[i]) == 0) {
 				return this->int_values[i];
 			}
 		}
@@ -182,7 +164,7 @@ namespace prop {
 		this->float_names.push_back(name);
 		this->float_values.push_back(value);
 	}
-	
+
 	void Properties::addInt(char* name, int value) {
 		this->int_names.push_back(name);
 		this->int_values.push_back(value);

@@ -3,9 +3,8 @@
 namespace tge {
 	namespace ui {
 
-		void UITextureComponent::draw(IndexBuffer* index, VertexBuffer* vertex)
-		{
-			if (this->offsetIndex == -1) {
+		void UITextureComponent::draw(IndexBuffer* index, VertexBuffer* vertex) {
+			if(this->offsetIndex == -1) {
 				RenderOffsets offset;
 				offset.material = this->materialIndex;
 				offset.size = 6;
@@ -20,7 +19,7 @@ namespace tge {
 
 			uint32_t idcount = (uint32_t)vertex->pointCount;
 
-			vertex->add({ pos.x, pos.y })->add({0, 0})->add(this->color);
+			vertex->add({ pos.x, pos.y })->add({ 0, 0 })->add(this->color);
 			vertex->add({ pos.x + ext.x, pos.y })->add({ 1, 0 })->add(this->color);
 			vertex->add({ pos.x + ext.x, pos.y + ext.y })->add({ 1, 1 })->add(this->color);
 			vertex->add({ pos.x, pos.y + ext.y })->add({ 0, 1 })->add(this->color);
@@ -33,12 +32,11 @@ namespace tge {
 			index->addIndex(idcount + 3);
 		}
 
-		void UITextureComponent::init()
-		{
-			if (this->materialIndex == -1) {
+		void UITextureComponent::init() {
+			if(this->materialIndex == -1) {
 				this->mat = UIMaterial(this->texture, this->color);
 				TG_VECTOR_APPEND_NORMAL(materiallist, &this->mat)
-				this->materialIndex = (uint32_t)last_size;
+					this->materialIndex = (uint32_t)last_size;
 			}
 		}
 	}

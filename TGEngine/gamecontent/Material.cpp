@@ -6,14 +6,12 @@ namespace tge {
 		std::vector<Material*> materiallist;
 		std::vector<RenderOffsets> render_offset;
 
-		Material::Material(Texture* texture, glm::vec4 color)
-		{
+		Material::Material(Texture* texture, glm::vec4 color) {
 			this->texture = texture;
 			this->color = color;
 
 			VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
-			for (uint32_t i = 0; i < 4; i++)
-			{
+			for(uint32_t i = 0; i < 4; i++) {
 				map_entrys[i].constantID = i;
 				map_entrys[i].offset = i * sizeof(float);
 				map_entrys[i].size = sizeof(float);
@@ -26,21 +24,18 @@ namespace tge {
 			pSpecialization.pMapEntries = map_entrys;
 			VertexTextured.pSpecializationInfo = &pSpecialization;
 
-			if (texture == nullptr) {
+			if(texture == nullptr) {
 				this->pipe = &TexturedBasicPipe;
-			}
-			else {
+			} else {
 				this->pipe = &TexturedBasicPipe;
 			}
 		}
 
-		Material::Material(ShaderPipe* pipe)
-		{
+		Material::Material(ShaderPipe* pipe) {
 			this->pipe = pipe;
 		}
 
-		void Material::createMaterial()
-		{
+		void Material::createMaterial() {
 			this->pipe->precreation();
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
@@ -53,15 +48,14 @@ namespace tge {
 			light_buffer.descriptor.binding = 1;
 			light_buffer.updateDescriptor();
 
-			if (this->texture != nullptr) {
+			if(this->texture != nullptr) {
 				textureDescriptor.descriptorset = this->descriptorIndex;
 				textureDescriptor.binding = 2;
 				this->texture->vulkanTexture->updateDescriptor();
 			}
 		}
 
-		void Material::addToBuffer(VkCommandBuffer buffer)
-		{
+		void Material::addToBuffer(VkCommandBuffer buffer) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[this->pipelineIndex]);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[this->pipe->layoutIndex], 0, 1, &descriptor_set[this->descriptorIndex], 0, nullptr);
 		}
@@ -78,15 +72,13 @@ namespace tge {
 			ui_camera_uniform.updateDescriptor();
 		}*/
 
-		void Material::destroy()
-		{
+		void Material::destroy() {
 			destroyDescriptorSet(this->descriptorIndex);
 			destroyPipeline(this->pipelineIndex);
 			destroyPipelineLayout(this->pipe->layoutIndex);
 		}
 
-		bool Material::operator==(const Material& material)
-		{
+		bool Material::operator==(const Material& material) {
 			return material.color == this->color && material.texture == this->texture;
 		}
 	}

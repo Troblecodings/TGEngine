@@ -8,8 +8,8 @@ class UniformBuffer {
 public:
 
 	INTERNAL
-	SINCE(0, 0, 4)
-	UniformBuffer() {} // Default constructor
+		SINCE(0, 0, 4)
+		UniformBuffer() {} // Default constructor
 	UniformBuffer(uint32_t size, VkShaderStageFlags flags) : UniformBuffer(size, flags, 0) {}
 	UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t binding);
 

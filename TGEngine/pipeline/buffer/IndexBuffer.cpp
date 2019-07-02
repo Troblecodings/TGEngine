@@ -8,23 +8,22 @@ void createIndexBuffer(IndexBuffer* buffer) {
 	lastResult = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &buffer->index_buffer);
 	HANDEL(lastResult)
 
-	vkGetBufferMemoryRequirements(device, buffer->index_buffer, &lastRequirements);
+		vkGetBufferMemoryRequirements(device, buffer->index_buffer, &lastRequirements);
 
 	buffer->max_size = (uint32_t)(vlib_buffer_memory_allocate_info.allocationSize = lastRequirements.size);
 	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
 	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &buffer->device_memory);
 	HANDEL(lastResult)
 
-	lastResult = vkBindBufferMemory(device, buffer->index_buffer, buffer->device_memory, 0);
+		lastResult = vkBindBufferMemory(device, buffer->index_buffer, buffer->device_memory, 0);
 	HANDEL(lastResult)
 
-	buffer->stag_buf.destination = &buffer->index_buffer;
+		buffer->stag_buf.destination = &buffer->index_buffer;
 	buffer->stag_buf.size = vlib_buffer_create_info.size;
 	createStagingBuffer(&buffer->stag_buf);
 }
 
-void destroyIndexBuffer(IndexBuffer * buffer)
-{
+void destroyIndexBuffer(IndexBuffer* buffer) {
 	vkDestroyBuffer(device, buffer->index_buffer, nullptr);
 	vkFreeMemory(device, buffer->device_memory, nullptr);
 }

@@ -3,15 +3,13 @@
 std::vector<Actor> actors;
 
 Actor* createActor(Mesh* msh) {
-	TG_VECTOR_APPEND_NORMAL(actors, {msh})
-	actors[last_size]._impl_array_pos = last_size;
+	TG_VECTOR_APPEND_NORMAL(actors, { msh })
+		actors[last_size]._impl_array_pos = last_size;
 	return &actors[last_size];
 }
 
-void Actor::applyPretransform()
-{
-	for (size_t i = 0; i < mesh->vertices.size(); i++)
-	{
+void Actor::applyPretransform() {
+	for(size_t i = 0; i < mesh->vertices.size(); i++) {
 		mesh->vertices[i] = {
 			glm::vec3(this->model_matrix * glm::vec4(mesh->vertices[i].position, 1)),
 			mesh->vertices[i].uv,
@@ -20,8 +18,7 @@ void Actor::applyPretransform()
 	}
 }
 
-Actor* Actor::preRotate(float angle, float x, float y, float z)
-{
+Actor* Actor::preRotate(float angle, float x, float y, float z) {
 	this->model_matrix = glm::rotate(this->model_matrix, angle, glm::vec3(x, y, z));
 	return this;
 }

@@ -19,8 +19,8 @@ SINCE(0, 0, 4)
 VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
-	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
-	void *pUserData);
+	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+	void* pUserData);
 #endif
 
 SINCE(0, 0, 1)

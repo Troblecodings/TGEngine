@@ -18,41 +18,41 @@ namespace tge {
 		 * -> needs pipeline recreation
 		 */
 		SINCE(0, 0, 4)
-		class Material {
+			class Material {
 
-		protected:
-			ShaderPipe* pipe = nullptr;
+			protected:
+				ShaderPipe* pipe = nullptr;
 
-			Texture* texture = nullptr;
-			glm::vec4 color = glm::vec4(1.0f);
+				Texture* texture = nullptr;
+				glm::vec4 color = glm::vec4(1.0f);
 
-			uint32_t pipelineIndex = 0;
-			uint32_t descriptorIndex = 0;
+				uint32_t pipelineIndex = 0;
+				uint32_t descriptorIndex = 0;
 
-			MaterialType type = BASIC_MAT_TYPE;
+				MaterialType type = BASIC_MAT_TYPE;
 
-		public:
-			Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
-			Material(glm::vec4 color) : Material(nullptr, color) {}
-			Material(Texture* texture, glm::vec4 color);
-			Material(ShaderPipe* pipe);
+			public:
+				Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
+				Material(glm::vec4 color) : Material(nullptr, color) {}
+				Material(Texture* texture, glm::vec4 color);
+				Material(ShaderPipe* pipe);
 
-			virtual void createMaterial();
+				virtual void createMaterial();
 
-			void addToBuffer(VkCommandBuffer buffer);
+				void addToBuffer(VkCommandBuffer buffer);
 
-			MaterialType getType() { return this->type; };
+				MaterialType getType() { return this->type; };
 
-			void destroy();
+				void destroy();
 
-			bool operator==(const Material& material);
+				bool operator==(const Material& material);
 		};
 
 		/*
 		 * Defines which part of the buffer has which material
 		 */
 		SINCE(0, 0, 4)
-		struct RenderOffsets {
+			struct RenderOffsets {
 
 			uint32_t material; // index in the @materials array of the material to use
 

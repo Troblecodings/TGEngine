@@ -3,7 +3,7 @@
 #include "Memory.hpp"
 #include "StagingBuffer.hpp"
 
-struct IndexBuffer{
+struct IndexBuffer {
 	uint32_t size;
 
 	VkBuffer index_buffer;
@@ -14,13 +14,13 @@ struct IndexBuffer{
 	void* memory;
 
 	SINCE(0, 0, 2)
-	void addIndex(uint32_t index);
-	
-	SINCE(0, 0, 4)
-	void start();
+		void addIndex(uint32_t index);
 
 	SINCE(0, 0, 4)
-	void end();
+		void start();
+
+	SINCE(0, 0, 4)
+		void end();
 };
 
 extern uint32_t index_offset;

@@ -5,8 +5,7 @@ VkImage depth_image;
 VkImageView depth_image_view;
 VkDeviceMemory depth_image_memory;
 
-void createDepthTest()
-{
+void createDepthTest() {
 	vlib_image_create_info.extent.width = window_list[0]->width;
 	vlib_image_create_info.extent.height = window_list[0]->height;
 	vlib_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
@@ -34,8 +33,7 @@ void createDepthTest()
 	HANDEL(lastResult);
 }
 
-void destroyDepthTest()
-{
+void destroyDepthTest() {
 	vkDestroyImageView(device, depth_image_view, nullptr);
 	vkFreeMemory(device, depth_image_memory, nullptr);
 	vkDestroyImage(device, depth_image, nullptr);

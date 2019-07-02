@@ -8,8 +8,7 @@
 
 struct Mesh;
 
-struct Actor
-{
+struct Actor {
 	Mesh* mesh;
 	Actor* parent;
 	size_t _impl_array_pos;

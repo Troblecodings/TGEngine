@@ -89,14 +89,14 @@ void createRenderpass() {
 	//Renderpass
 	VkRenderPassCreateInfo render_pass_create_info = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-	    nullptr,
-	    0,
-	    3,
+		nullptr,
+		0,
+		3,
 		attachments,
-	    1,
-	    &subpass_description,
-	    1,
-	    &subpass_dependency
+		1,
+		&subpass_description,
+		1,
+		&subpass_dependency
 	};
 
 	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);

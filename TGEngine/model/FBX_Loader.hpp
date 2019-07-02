@@ -15,6 +15,6 @@
 
 namespace tg_model {
 
-    SINCE(0, 0, 3)
-    void load(char* name, Mesh* mesh);
+	SINCE(0, 0, 3)
+		void load(char* name, Mesh* mesh);
 };

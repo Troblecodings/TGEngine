@@ -5,7 +5,7 @@
 
 extern UniformBuffer light_buffer; // the light buffer for the postion of the light
 
-/* 
+/*
  * Internal method to initialize the light buffer
  */
 INTERNAL

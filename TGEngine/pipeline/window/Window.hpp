@@ -63,7 +63,7 @@ SINCE(0, 0, 1)
 void createWindow(Window* window);
 
 /*
- * Creates the actual window 
+ * Creates the actual window
  * Attention! Much platform code here!
  */
 SINCE(0, 0, 3)

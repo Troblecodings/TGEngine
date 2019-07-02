@@ -13,23 +13,23 @@ namespace tge {
 
 		File open(char* name, char* mode) {
 			ASSERT_NONE_NULL_DB(name, "Filename is null!", TG_ERR_DB_NULLPTR)
-			ASSERT_NONE_NULL_DB((*name != 0), "Filename is empty!", TG_ERR_DB_EMPTY_STRING)
-			ASSERT_NONE_NULL_DB(mode, "Mode is null [" << name << "] !", TG_ERR_DB_NULLPTR)
-			ASSERT_NONE_NULL_DB((*mode != 0), "Mode is empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
-			File file;
+				ASSERT_NONE_NULL_DB((*name != 0), "Filename is empty!", TG_ERR_DB_EMPTY_STRING)
+				ASSERT_NONE_NULL_DB(mode, "Mode is null [" << name << "] !", TG_ERR_DB_NULLPTR)
+				ASSERT_NONE_NULL_DB((*mode != 0), "Mode is empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
+				File file;
 			errno_t err = fopen_s(&file, name, mode);
 			ASSERT_NONE_NULL_DB(!err, "Can not open file [" << name << "]!", TG_ERR_DB_FILE_NOT_FOUND)
-			return file;
+				return file;
 		}
 
 		File readFileSize(char* name, char* mode, long* fileLength) {
 			ASSERT_NONE_NULL_DB(fileLength, "File length pointer is null [" << name << "] !", TG_ERR_DB_NULLPTR)
-			File file = open(name, mode);
+				File file = open(name, mode);
 
 			fseek(file, 0, SEEK_END);
 			*fileLength = ftell(file);
 			ASSERT_NONE_NULL_DB((*fileLength != 0), "File empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
-			fseek(file, 0, SEEK_SET);
+				fseek(file, 0, SEEK_SET);
 			return file;
 		}
 

@@ -19,20 +19,20 @@ namespace tge {
 		 *	-----------------------------------------------------------
 		 */
 		SINCE(0, 0, 4)
-		class UITextComponent : public UIDrawable {
+			class UITextComponent : public UIDrawable {
 
-		private:
-			glm::vec4 fontColor;
-			char* string;
-			tg_font::Font* font;
-			uint32_t index = -1;
+			private:
+				glm::vec4 fontColor;
+				char* string;
+				tg_font::Font* font;
+				uint32_t index = -1;
 
-		public:
-			UITextComponent(tg_font::Font* font, char* string) : UITextComponent(font, string, glm::vec4(1, 1, 1, 1)) {}
-			UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color);
+			public:
+				UITextComponent(tg_font::Font* font, char* string) : UITextComponent(font, string, glm::vec4(1, 1, 1, 1)) {}
+				UITextComponent(tg_font::Font* font, char* string, glm::vec4 font_color);
 
-		protected:
-			virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
+			protected:
+				virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
 
 		};
 	}

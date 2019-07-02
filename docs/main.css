@@ -6,14 +6,14 @@ html {
     background-color: black;
 }
 
-.menu{
+.menu {
     text-align: center;
     box-sizing: border-box;
     background-color: white;
     line-height: 30px;
     margin: 0 auto;
     margin-bottom: 50px;
-    line-height:175%;
+    line-height: 175%;
     padding: 10px;
     width: 80%;
 }
@@ -34,10 +34,11 @@ html {
     padding: 3px;
     border-radius: 5px;
 }
-.menu a:hover,.submenu a:hover {
-    color: black;
-    background-color: rgba(0, 0, 0, 0.1);
-}
+
+    .menu a:hover, .submenu a:hover {
+        color: black;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 
 .submenu {
     text-align: left;
@@ -46,7 +47,7 @@ html {
     line-height: 30px;
     margin: 0;
     margin-bottom: 50px;
-    line-height:175%;
+    line-height: 175%;
     padding: 10px;
     display: inline-block;
     width: 50%;
@@ -54,9 +55,29 @@ html {
     margin: 0 25%;
 }
 
-@media screen and (min-width: 1024px) {.menu {width: 70%; max-width: 1000px;}}
-@media screen and (max-width: 1023px) {.menu {width: 80%;}}
-@media screen and (max-width: 700px) {.menu {width: 90%; min-width: 500px;} .menu a{font-size: 18px;}}
+@media screen and (min-width: 1024px) {
+    .menu {
+        width: 70%;
+        max-width: 1000px;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .menu {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .menu {
+        width: 90%;
+        min-width: 500px;
+    }
+
+        .menu a {
+            font-size: 18px;
+        }
+}
 
 .container {
     box-sizing: border-box;
@@ -66,16 +87,33 @@ html {
     width: 60%;
 }
 
-@media screen and (min-width: 1024px) {.container {width: 70%; max-width: 1000px;}}
-@media screen and (max-width: 1023px) {.container {width: 80%;}}
-@media screen and (max-width: 700px) {.container {width: 90%; min-width: 500px; font-size: 15px;}}
+@media screen and (min-width: 1024px) {
+    .container {
+        width: 70%;
+        max-width: 1000px;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .container {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        width: 90%;
+        min-width: 500px;
+        font-size: 15px;
+    }
+}
 
 a {
     text-decoration: none;
     color: rgb(115, 194, 197);
 }
 
-h1,h2,h3 {
+h1, h2, h3 {
     text-align: center;
     margin: 75px 0px 20px 0px;
 }
@@ -91,7 +129,6 @@ a:hover {
 
 table {
     width: 100%;
-    
 }
 
 td {

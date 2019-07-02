@@ -24,40 +24,40 @@ struct Camera {
 	glm::vec2 rotations = glm::vec2(0.0f, 0.0f); // The rotations which are used to build a quaternion
 	size_t camera_index;
 
-	/*  
+	/*
 	 * Applies rotation to the world_transform matrix
 	 *  -> used for static cameras - e.g. Editor
 	 */
 	SINCE(0, 0, 3)
-	void applyWorldRotation(double x, double y, double z, double angle);
+		void applyWorldRotation(double x, double y, double z, double angle);
 
 	/*
-     * Applies translation to the world_transform matrix
-     *  -> used for static cameras - e.g. Editor
-     */
+	 * Applies translation to the world_transform matrix
+	 *  -> used for static cameras - e.g. Editor
+	 */
 	SINCE(0, 0, 4)
-	void applyWorldTranslation(double x, double y, double z);
+		void applyWorldTranslation(double x, double y, double z);
 
 	/*
-     * Applies scale to the world_transform matrix
-     *  -> used for static cameras - e.g. Editor
-     */
+	 * Applies scale to the world_transform matrix
+	 *  -> used for static cameras - e.g. Editor
+	 */
 	SINCE(0, 0, 4)
-	void applyWorldScale(double x, double y, double z);
+		void applyWorldScale(double x, double y, double z);
 
 	/*
-     * Applies rotation to the camera matrix
-     *  -> used for first person cameras - e.g. FPS
-     */
+	 * Applies rotation to the camera matrix
+	 *  -> used for first person cameras - e.g. FPS
+	 */
 	SINCE(0, 0, 4)
-	void applyCameraRotation(glm::vec2 in);
+		void applyCameraRotation(glm::vec2 in);
 
 	/*
-     * Applies translation to the camera matrix
-     *  -> used for first person cameras - e.g. FPS
-     */
+	 * Applies translation to the camera matrix
+	 *  -> used for first person cameras - e.g. FPS
+	 */
 	SINCE(0, 0, 4)
-	void applyCameraTranslation(double x, double y, double z);
+		void applyCameraTranslation(double x, double y, double z);
 
 };
 
@@ -95,8 +95,8 @@ void __impl_keyinput_handle(uint16_t chr, bool down);
 SINCE(0, 0, 4)
 void initCameras();
 
-/* 
- * Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera 
+/*
+ * Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera
  * from StaticCamera.hpp for example.
  *
  *   -> mouse_input_handler will not be set
