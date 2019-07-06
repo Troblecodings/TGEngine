@@ -21,6 +21,23 @@ namespace ShaderTool {
         }
 
         public static int Main(string[] args) {
+
+            args = GetParamas(args);
+            if (args.Length < 1) {
+                while (true) {
+                    Console.Write(">>> ");
+                    args = Console.ReadLine().Split(" ");
+                    args = GetParamas(args);
+                    AsssertValues(args, 1);
+                    int rcode = Execute(args[0], GetParams(args));
+                    Console.WriteLine("Exite code " + rcode);
+                }
+            }
+            AsssertValues(args, 1);
+            return Execute(args[0], GetParams(args));
+        }
+
+        public static string[] GetParamas(string[] args) {
             CWD = Environment.CurrentDirectory;
             for (int i = 0; i < args.Length - 1; i++) {
                 if (args[i] == "--dir") {
@@ -35,18 +52,7 @@ namespace ShaderTool {
                     break;
                 }
             }
-
-            if (args.Length < 1) {
-                while (true) {
-                    Console.Write(">>> ");
-                    args = Console.ReadLine().Split(" ");
-                    AsssertValues(args, 1);
-                    int rcode = Execute(args[0], GetParams(args));
-                    Console.WriteLine("Exite code " + rcode);
-                }
-            }
-            AsssertValues(args, 1);
-            return Execute(args[0], GetParams(args));
+            return args;
         }
 
     }

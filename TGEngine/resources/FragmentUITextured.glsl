@@ -1,6 +1,5 @@
 #version 460
 #extension GL_ARB_separate_shader_objects : enable
-#extension GL_KHR_vulkan_glsl : enable
 
 layout(binding = 0) uniform sampler2D image_sampler;
 
