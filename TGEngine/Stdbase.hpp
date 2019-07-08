@@ -7,7 +7,7 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #undef VK_NO_PROTOTYPES
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
 #include <vector>
 #include <string>
 #include "util/Annotations.hpp"

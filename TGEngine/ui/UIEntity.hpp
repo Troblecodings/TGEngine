@@ -5,6 +5,7 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../gamecontent/Camera.hpp"
+#include <algorithm>
 
 namespace tge {
 	namespace ui {

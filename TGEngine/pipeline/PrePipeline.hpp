@@ -2,6 +2,7 @@
 
 #include "../Stdbase.hpp"
 #include "Device.hpp"
+#include <algorithm>
 
 extern std::vector<VkSurfaceFormatKHR> surface_format;
 extern std::vector<VkPresentModeKHR> present_mode;
