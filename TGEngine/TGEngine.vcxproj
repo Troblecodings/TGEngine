@@ -150,6 +150,7 @@
     <None Include="resources\FragmentUITextured.glsl" />
     <None Include="resources\VertexColorOnly.glsl" />
     <None Include="resources\VertexTextured.glsl" />
+    <None Include="resources\VertexTexturedMovable.glsl" />
     <None Include="resources\VertexUI.glsl" />
   </ItemGroup>
   <ItemGroup>

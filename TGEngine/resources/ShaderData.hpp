@@ -1,6 +1,5 @@
 #pragma once
 #include "../pipeline/ShaderCreation.hpp"
-
 void initShader();
 
 extern unsigned char FragmentColorOnlyModule[];
@@ -15,5 +14,7 @@ extern unsigned char VertexColorOnlyModule[];
 extern VkPipelineShaderStageCreateInfo VertexColorOnly;
 extern unsigned char VertexTexturedModule[];
 extern VkPipelineShaderStageCreateInfo VertexTextured;
+extern unsigned char VertexTexturedMovableModule[];
+extern VkPipelineShaderStageCreateInfo VertexTexturedMovable;
 extern unsigned char VertexUIModule[];
 extern VkPipelineShaderStageCreateInfo VertexUI;

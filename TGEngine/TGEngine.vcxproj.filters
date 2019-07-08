@@ -451,6 +451,9 @@
     <None Include="..\docs\docsShaderTool.html">
       <Filter>docs</Filter>
     </None>
+    <None Include="resources\VertexTexturedMovable.glsl">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png">

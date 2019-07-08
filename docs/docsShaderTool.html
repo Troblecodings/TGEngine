@@ -25,7 +25,7 @@
 
         <h2>Commands</h2>
         <p>
-            Every command can have the command option --dir which sets the CWD of the according command. 
+            Every command can have the command option --dir which sets the CWD of the according command.
             The value of the dir option can either be a path to a valid folder or "tool" which sets the CWD to the according folder if you start it from the IDE.
             If the option is not present it will take the normal CWD
         </p>
@@ -55,6 +55,14 @@
             <tr>
                 <td class="cmd"><p><strong>pipe delete &lt;name&gt;</strong></p></td>
                 <td class="cmd"><p>Deltetes the given pipeline.</p></td>
+            </tr>
+        </table>
+        <p>shader commands</p>
+        <p>Used to manage shader compiling</p>
+        <table>
+            <tr>
+                <td class="cmd"><p><strong>shader make</strong></p></td>
+                <td class="cmd"><p>Compiles shader and adds them to the shader data source/header files.</p></td>
             </tr>
         </table>
     </div>

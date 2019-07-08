@@ -5,12 +5,18 @@ layout(constant_id = 0) const float r = 1;
 layout(constant_id = 1) const float g = 1;
 layout(constant_id = 2) const float b = 1;
 layout(constant_id = 3) const float a = 1;
+layout(constant_id = 4) const uint maxlights = 1000;
 
-layout(binding = 1) uniform LIGHT_BLOCK{
-    vec3 light;
-} light_block;
+struct Light {
+    vec3 pos;
+    vec3 intensity;
+};
 
-layout(binding = 2) uniform sampler2D image_sampler;
+layout(binding = 1) uniform LIGHTBLOCK {
+   Light lights[maxlights];
+} lights;
+
+layout(binding = 2) uniform sampler2D imageSampler;
 
 layout(location = 0) in vec3 normalIn;
 layout(location = 1) in vec2 uv;
@@ -19,10 +25,11 @@ layout(location = 2) in vec3 pos;
 layout(location = 0) out vec4 colorOut;
 
 const float MAX_FALLOFF = 50;
+const float MIN_FALLOFF = 1;
 
 // Static color
 vec4 getColor() {
-    return texture(image_sampler, uv) * vec4(r, g, b, a);
+    return texture(imageSampler, uv);
 }
 
 // Clamps the value within a certain value
@@ -32,18 +39,23 @@ float window(float dist) {
 
 // Fall off function
 float fall(float dist) {
-    return pow(5 / max(dist, 1.5), 2);
+    return pow(5 / max(dist, MIN_FALLOFF), 2);
 }
 
 // Light calculation with at least 1 distance
-vec4 applyLight(float dist) {
-    float fallof = fall(dist) * window(dist);
-    vec4 Ccolor = getColor();
-    return vec4(vec3(Ccolor * fallof), Ccolor.a);
+vec4 applyLight(vec3 lightPower) {
+    vec4 curentColor = getColor();
+    return vec4(vec3(curentColor.rgb * lightPower), curentColor.a);
 }
 
 void main(){
-    vec3 delta = light_block.light - pos;
-    float dist = sqrt(dot(delta, delta));
-    colorOut = applyLight(dist);
+    vec3 lightMultiplier = vec3(0);
+    for (uint i = 0; i < maxlights; ++i) {
+        Light light = lights.lights[i];
+        vec3 delta = light.pos - pos;
+        float dist = sqrt(dot(delta, delta));
+        vec3 lightM = light.intensity * fall(dist) * window(dist);
+        lightMultiplier += lightM;
+    }
+    applyLight(lightMultiplier);
 }

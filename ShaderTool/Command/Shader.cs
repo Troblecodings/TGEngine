@@ -34,13 +34,48 @@ namespace ShaderTool.Command {
 
         public static int ShaderMake() {
             string[] files = Directory.GetFiles(Program.CWD, "*.glsl");
-            Console.WriteLine(files.Length);
             foreach (string path in files) {
                 int i = Compile(path);
                 if (i != SUCESS) {
                     return i;
                 }
             }
+            files = Directory.GetFiles(Program.CWD, "*.spv");
+
+            string dataHpp = Program.CWD + "\\ShaderData.hpp";
+            string dataCpp = Program.CWD + "\\ShaderData.cpp";
+
+            File.Delete(dataHpp);
+            File.Delete(dataCpp);
+
+            Stream hppStream = File.OpenWrite(dataHpp);
+            Stream cppStream = File.OpenWrite(dataCpp);
+            StreamWriter shaderDataHPP = new StreamWriter(hppStream);
+            StreamWriter shaderDataCPP = new StreamWriter(cppStream);
+
+            shaderDataCPP.WriteLine("#include \"ShaderData.hpp\"\r\n");
+            shaderDataHPP.WriteLine("#pragma once\r\n#include \"../pipeline/ShaderCreation.hpp\"\r\nvoid initShader();\r\n");
+            foreach (string path in files) {
+                string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
+                shaderDataHPP.WriteLine("extern unsigned char " + name + "Module[];\r\nextern VkPipelineShaderStageCreateInfo " + name + ";");
+                shaderDataCPP.Write("VkPipelineShaderStageCreateInfo " + name + ";\r\nunsigned char " + name + "Module[] = { ");
+                Array.ForEach(File.ReadAllBytes(path), byt => shaderDataCPP.Write(byt + ","));
+                shaderDataCPP.Flush();
+                cppStream.Seek(-1, SeekOrigin.Current);
+                shaderDataCPP.WriteLine("};");
+                shaderDataCPP.Flush();
+            }
+            shaderDataCPP.WriteLine("\r\nvoid initShader() {");
+            foreach (string path in files) {
+                FileInfo fileInfo = new FileInfo(path);
+                long length = fileInfo.Length;
+                string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
+                string shaderstage = path.Contains("Vertex") ? "VK_SHADER_STAGE_VERTEX_BIT" : "VK_SHADER_STAGE_FRAGMENT_BIT";
+                shaderDataCPP.WriteLine(name + " = createShader(" + name + "Module, " + shaderstage + ", " + length + ");");
+            }
+            shaderDataCPP.WriteLine("}");
+            shaderDataHPP.Close();
+            shaderDataCPP.Close();
             return SUCESS;
         }
 
