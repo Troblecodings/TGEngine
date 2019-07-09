@@ -2,6 +2,9 @@
 
 namespace tg_model {
 
+	using namespace tge::gmc;
+	using namespace tge::tex;
+
 	INTERNAL
 		static void readVertex(FbxAMatrix matrix, FbxMesh* fbxmesh, TGVertex* vert, FbxStringList lUVNames, uint32_t j, uint32_t i) {
 		FbxVector2 uv;

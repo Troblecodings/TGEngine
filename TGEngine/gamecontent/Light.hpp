@@ -2,18 +2,22 @@
 
 #include "../Stdbase.hpp"
 #include "../pipeline/buffer/UniformBuffer.hpp"
+#include "Actor.hpp"
 
-extern UniformBuffer light_buffer; // the light buffer for the postion of the light
+namespace tge {
+	namespace gmc {
 
-/*
- * Internal method to initialize the light buffer
- */
-INTERNAL
-SINCE(0, 0, 4)
-void initLight();
+		extern UniformBuffer lightbuffer; // the light buffer for the postion of the light
 
-/*
- * Change the possition of the diffuse light
- */
-SINCE(0, 0, 4)
-void setLightPosition(glm::vec3 pos);
+		/*
+		 * Internal method to initialize the light buffer
+		 */
+		INTERNAL
+			SINCE(0, 0, 4)
+			void initLight();
+
+		class LightActor : public Actor {
+
+		};
+	}
+}

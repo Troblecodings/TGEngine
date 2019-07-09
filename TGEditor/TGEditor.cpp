@@ -1,16 +1,16 @@
 #include "TGEditor.hpp"
 #include <io/Font.hpp>
 
-Mesh mesh;
-Mesh mesh2;
-Camera camera;
-Mesh map;
+tge::gmc::Mesh mesh;
+tge::gmc::Mesh mesh2;
+tge::gmc::Camera camera;
+tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
-	tg_font::Font arial = tg_font::Font("resource\\arial.ttf", 40);
+	tge::fnt::Font arial = tge::fnt::Font("resource\\arial.ttf", 40);
 
 	Texture texture1 = Texture("resource\\test_logo.png");
 	//Texture texture2 = Texture("resource\\ODST_Helmet.png");
@@ -36,6 +36,10 @@ int main() {
 	//tg_model::load("resource\\Chair.fbx", &mesh);
 	//tg_model::load("resource\\hall.fbx", &mesh2);
 
+	tge::gmc::Actor actor;
+	actor.mesh = &map;
+	tge::gmc::actors.push_back(&actor);
+
 	initTGEngine(&editor.main_window, &drawloop, &init);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
@@ -45,9 +49,7 @@ void init() {
 	//createActor(&mesh2)->preScale(0.015, 0.08, 0.005)->prePos(0, -240, 840)->applyPretransform();
 	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5, 0.5, 0.5)->applyPretransform();
 	//createActor(&mesh);
-	createActor(&map)->preRotate(PI / 2, 1, 0, 0)->preScale(0.25, 0.25, 0.25)->prePos(0, -10, 0)->applyPretransform();
-
-	createFirstPersonCamera(&camera);
+	tge::gmc::createFirstPersonCamera(&camera);
 
 }
 

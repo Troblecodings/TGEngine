@@ -24,8 +24,8 @@ namespace tge {
 			class UITextureComponent : public UIDrawable {
 
 			private:
-				Texture* texture = nullptr;
-				UIMaterial mat = UIMaterial((Texture*)nullptr);
+				tex::Texture* texture = nullptr;
+				gmc::UIMaterial mat = gmc::UIMaterial((Texture*)nullptr);
 				glm::vec4 color = glm::vec4(1.0f);
 				uint32_t materialIndex = -1;
 				uint32_t offsetIndex = -1;

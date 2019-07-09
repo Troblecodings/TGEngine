@@ -209,12 +209,12 @@ namespace tge {
 		}
 
 		glm::vec2 UIEntity::__getOffset() {
-			return glm::vec2(this->offsetPoint.x * multiplier, this->offsetPoint.y);
+			return glm::vec2(this->offsetPoint.x * tge::gmc::multiplier, this->offsetPoint.y);
 		}
 
 		void UIEntity::__update() {
 			this->cachedPosition = this->__getPosition() * glm::vec2(2, 2) - glm::vec2(1.0f);
-			this->cachedExtent = this->extent * glm::vec2(2 * multiplier, 2);
+			this->cachedExtent = this->extent * glm::vec2(2 * tge::gmc::multiplier, 2);
 
 			for each(UIEntity * entity in this->children) {
 				entity->__update();

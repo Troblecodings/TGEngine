@@ -1,12 +1,13 @@
 #include "Light.hpp"
 
-UniformBuffer light_buffer;
+namespace tge {
+	namespace gmc {
 
-void initLight() {
-	light_buffer = UniformBuffer(sizeof(glm::vec3), VK_SHADER_STAGE_FRAGMENT_BIT);
-	light_buffer.descriptor.binding = 1;
-}
+		UniformBuffer lightbuffer;
 
-void setLightPosition(glm::vec3 pos) {
-	fillUniformBuffer(&light_buffer, &pos, sizeof(glm::vec3));
+		void initLight() {
+			lightbuffer = UniformBuffer(sizeof(glm::vec3), VK_SHADER_STAGE_FRAGMENT_BIT);
+			lightbuffer.descriptor.binding = 1;
+		}
+	}
 }

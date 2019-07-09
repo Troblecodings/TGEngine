@@ -31,8 +31,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createColorResouce();
 	createRenderpass();
 
-	initCameras();
-	initLight();
+	tge::gmc::initCameras();
 	initAllTextures();
 
 	initDescriptors();
@@ -40,7 +39,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	initShaderPipes();
 
 	allocateAllBuffers();
-	fillUniformBuffer(&camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
 	createSwapchain();
 	createFramebuffer();
@@ -53,19 +52,18 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
-	multiplier = (window->height / (float)window->width);
-	fillUniformBuffer(&ui_camera_uniform, &glm::mat4(1), sizeof(glm::mat4));
+	tge::gmc::multiplier = (window->height / (float)window->width);
 
 	tge::ui::ui_scene_entity.init();
 
 	main_buffer.start();
 	index_buffer.start();
 
-	for(size_t i = 0; i < actors.size(); i++) {
-		actors[i].mesh->consume(&main_buffer, &index_buffer);
+	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
+		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
 	}
-	OUT_LV_DEBUG(materiallist.size())
-		for each(Material * mat in materiallist) {
+	OUT_LV_DEBUG(tge::gmc::materiallist.size())
+		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {
 			OUT_LV_DEBUG(mat)
 				OUT_LV_DEBUG(mat->getType())
 				mat->createMaterial();
@@ -80,8 +78,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	main_buffer.end();
 	index_buffer.end();
-
-	setLightPosition({ 0, 10, 0 });
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 

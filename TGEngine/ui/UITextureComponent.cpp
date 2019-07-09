@@ -5,12 +5,12 @@ namespace tge {
 
 		void UITextureComponent::draw(IndexBuffer* index, VertexBuffer* vertex) {
 			if(this->offsetIndex == -1) {
-				RenderOffsets offset;
+				gmc::RenderOffsets offset;
 				offset.material = this->materialIndex;
 				offset.size = 6;
 				offset.offset = index->index_count;
 
-				TG_VECTOR_APPEND_NORMAL(render_offset, offset)
+				TG_VECTOR_APPEND_NORMAL(gmc::render_offset, offset)
 					this->offsetIndex = (uint32_t)last_size;
 			}
 
@@ -34,8 +34,8 @@ namespace tge {
 
 		void UITextureComponent::init() {
 			if(this->materialIndex == -1) {
-				this->mat = UIMaterial(this->texture, this->color);
-				TG_VECTOR_APPEND_NORMAL(materiallist, &this->mat)
+				this->mat = gmc::UIMaterial(this->texture, this->color);
+				TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
 					this->materialIndex = (uint32_t)last_size;
 			}
 		}

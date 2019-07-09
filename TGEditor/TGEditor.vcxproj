@@ -149,6 +149,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,6 +177,7 @@
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -205,6 +207,7 @@
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

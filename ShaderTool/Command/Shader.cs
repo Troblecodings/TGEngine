@@ -17,9 +17,16 @@ namespace ShaderTool.Command {
             switch (args[0]) {
                 case "make":
                     return ShaderMake();
+                case "list":
+                    return ShaderList();
 
             }
             return WRONG_PARAMS;
+        }
+
+        public static int ShaderList() {
+            Array.ForEach(Directory.GetFiles(Program.CWD, "*.glsl"), path => Console.WriteLine(path.Replace(Program.CWD + "\\", "")));
+            return SUCESS;
         }
 
         public static void CheckShader() {

@@ -6,21 +6,25 @@
 #include "../Error.hpp"
 #include "../util/VectorUtil.hpp"
 
-struct Mesh;
+namespace tge {
+	namespace gmc {
 
-struct Actor {
-	Mesh* mesh;
-	Actor* parent;
-	size_t _impl_array_pos;
-	glm::mat4 model_matrix = glm::mat4(1.0f);
+		struct Mesh;
 
-	void applyPretransform();
+		class Actor {
+		public:
+			Mesh* mesh;
+			Actor* parent;
+			size_t _impl_array_pos;
+			glm::mat4 model_matrix = glm::mat4(1.0f);
 
-	Actor* preRotate(float angle, float x, float y, float z);
-	Actor* preScale(float x, float y, float z);
-	Actor* prePos(float x, float y, float z);
-};
+			void applyPretransform();
 
-extern std::vector<Actor> actors;
+			Actor* preRotate(float angle, float x, float y, float z);
+			Actor* preScale(float x, float y, float z);
+			Actor* prePos(float x, float y, float z);
+		};
 
-Actor* createActor(Mesh* actor);
+		extern std::vector<Actor*> actors;
+	}
+}

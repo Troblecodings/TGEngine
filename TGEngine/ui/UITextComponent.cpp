@@ -3,7 +3,7 @@
 namespace tge {
 	namespace ui {
 
-		UITextComponent::UITextComponent(tg_font::Font* font, char* string, glm::vec4 fontColor) {
+		UITextComponent::UITextComponent(fnt::Font* font, char* string, glm::vec4 fontColor) {
 			this->font = font;
 			this->string = string;
 			this->fontColor = fontColor;
@@ -11,11 +11,11 @@ namespace tge {
 
 		void UITextComponent::draw(IndexBuffer* index, VertexBuffer* vertex) {
 			if(this->index == -1) {
-				RenderOffsets off;
+				gmc::RenderOffsets off;
 				off.material = this->font->getMaterialIndex();
 				off.offset = index->index_count;
 				off.size = (uint32_t)strlen(this->string) * 6;
-				TG_VECTOR_APPEND_NORMAL(render_offset, off)
+				TG_VECTOR_APPEND_NORMAL(gmc::render_offset, off)
 					this->index = (uint32_t)last_size;
 			}
 

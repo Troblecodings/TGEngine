@@ -5,7 +5,7 @@
 #include "../resources/ShaderPipes.hpp"
 
 namespace tge {
-	namespace tex {
+	namespace gmc {
 
 		enum MaterialType {
 			BASIC_MAT_TYPE,
@@ -23,7 +23,7 @@ namespace tge {
 			protected:
 				ShaderPipe* pipe = nullptr;
 
-				Texture* texture = nullptr;
+				tex::Texture* texture = nullptr;
 				glm::vec4 color = glm::vec4(1.0f);
 
 				uint32_t pipelineIndex = 0;
@@ -32,9 +32,9 @@ namespace tge {
 				MaterialType type = BASIC_MAT_TYPE;
 
 			public:
-				Material(Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
+				Material(tex::Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
 				Material(glm::vec4 color) : Material(nullptr, color) {}
-				Material(Texture* texture, glm::vec4 color);
+				Material(tex::Texture* texture, glm::vec4 color);
 				Material(ShaderPipe* pipe);
 
 				virtual void createMaterial();

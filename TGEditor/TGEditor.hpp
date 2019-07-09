@@ -15,11 +15,11 @@
 
 using namespace tge::ui;
 
-extern Mesh mesh;
-extern Mesh mesh2;
-extern Camera camera;
+extern tge::gmc::Mesh mesh;
+extern tge::gmc::Mesh mesh2;
+extern tge::gmc::Camera camera;
 extern UIEntity entity;
-extern Mesh map;
+extern tge::gmc::Mesh map;
 
 struct Editor : App {
 	Editor() : App() {};

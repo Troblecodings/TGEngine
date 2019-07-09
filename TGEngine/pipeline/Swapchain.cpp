@@ -111,8 +111,8 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
-	for(size_t i = 0; i < materiallist.size(); i++) {
-		materiallist[i]->createMaterial();
+	for(size_t i = 0; i < tge::gmc::materiallist.size(); i++) {
+		tge::gmc::materiallist[i]->createMaterial();
 	}
 	createSwapchain();
 	if(lastResult == VK_ERROR_INITIALIZATION_FAILED) {
@@ -127,7 +127,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createFramebuffer();
 	createCommandBuffer();
 
-	multiplier = (window_list[0]->height / (float)window_list[0]->width);
+	tge::gmc::multiplier = (window_list[0]->height / (float)window_list[0]->width);
 
 	tge::ui::ui_scene_entity.init();
 

@@ -73,7 +73,7 @@ void endSingleTimeCommand() {
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each(Texture * tex in textures) {
+	for each(tge::tex::Texture * tex in tge::tex::textures) {
 		tex->load(SINGELTIME_COMMAND_BUFFER);
 	}
 
@@ -98,7 +98,7 @@ void startupCommands() {
 
 	endSingleTimeCommand();
 
-	for each(Texture * tex in textures) {
+	for each(tge::tex::Texture * tex in tge::tex::textures) {
 		tex->vulkanTexture->dispose();
 	}
 }
@@ -143,8 +143,8 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		for each(RenderOffsets coffset in render_offset) {
-			materiallist[coffset.material]->addToBuffer(buffer);
+		for each(tge::gmc::RenderOffsets coffset in tge::gmc::render_offset) {
+			tge::gmc::materiallist[coffset.material]->addToBuffer(buffer);
 			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
 		}
 

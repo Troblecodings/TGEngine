@@ -3,6 +3,11 @@
 #include "../Stdbase.hpp"
 #include "Camera.hpp"
 
-void createStaticCamera(Camera* camera);
+namespace tge {
+	namespace gmc {
 
-void __impl_mouseinputHandleSC(Camera* camera, glm::vec2 pos, glm::vec2 delta);
+		void createStaticCamera(Camera* camera);
+
+		void __impl_mouseinputHandleSC(Camera* camera, glm::vec2 pos, glm::vec2 delta);
+	}
+}
