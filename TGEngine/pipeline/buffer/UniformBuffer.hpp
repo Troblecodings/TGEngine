@@ -22,4 +22,4 @@ public:
 };
 
 SINCE(0, 0, 2)
-void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size);
+void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size, uint32_t offset = 0);

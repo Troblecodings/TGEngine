@@ -4,6 +4,11 @@
 namespace tge {
 	namespace gmc {
 
+		struct _Data {
+			glm::vec4 color;
+			uint32_t lightCount;
+		};
+
 		std::vector<Material*> materiallist;
 		std::vector<RenderOffsets> render_offset;
 
@@ -11,17 +16,26 @@ namespace tge {
 			this->texture = texture;
 			this->color = color;
 
-			VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[4];
+			VkSpecializationMapEntry* map_entrys = new VkSpecializationMapEntry[5];
 			for(uint32_t i = 0; i < 4; i++) {
 				map_entrys[i].constantID = i;
 				map_entrys[i].offset = i * sizeof(float);
 				map_entrys[i].size = sizeof(float);
 			}
 
+			map_entrys[4].constantID = 5;
+			map_entrys[4].offset = 4 * sizeof(float);
+			map_entrys[4].size = sizeof(uint32_t);
+
+			_Data data = {
+				this->color,
+				lightCount
+			};
+
 			VkSpecializationInfo pSpecialization;
 			pSpecialization.mapEntryCount = 4;
-			pSpecialization.pData = &this->color;
-			pSpecialization.dataSize = sizeof(float) * 4;
+			pSpecialization.pData = &data;
+			pSpecialization.dataSize = sizeof(float) * 4 + sizeof(uint32_t);
 			pSpecialization.pMapEntries = map_entrys;
 			VertexTextured.pSpecializationInfo = &pSpecialization;
 

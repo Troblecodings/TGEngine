@@ -1,4 +1,5 @@
 #include "TGEngine.hpp"
+#include "gamecontent/Light.hpp"
 
 using namespace std;
 using namespace tge::tex;
@@ -14,8 +15,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
 		#endif
-		"VK_LAYER_VALVE_steam_overlay",
-		"VK_LAYER_NV_optimus"
+	//	"VK_LAYER_VALVE_steam_overlay",
+	//  "VK_LAYER_NV_optimus"
 		}, {
 		});
 	createWindowSurfaces();
@@ -31,6 +32,7 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	createColorResouce();
 	createRenderpass();
 
+	tge::gmc::initLight();
 	tge::gmc::initCameras();
 	initAllTextures();
 
@@ -40,6 +42,10 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	allocateAllBuffers();
 	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+
+	for each(tge::gmc::LightActor * var in tge::gmc::lights) {
+		var->updateLight();
+	}
 
 	createSwapchain();
 	createFramebuffer();

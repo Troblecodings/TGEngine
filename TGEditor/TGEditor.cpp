@@ -1,5 +1,6 @@
 #include "TGEditor.hpp"
 #include <io/Font.hpp>
+#include <gamecontent/Light.hpp>
 
 tge::gmc::Mesh mesh;
 tge::gmc::Mesh mesh2;
@@ -11,6 +12,12 @@ int main() {
 	Editor editor = Editor();
 	std::cout << "Starting Editor" << std::endl;
 	tge::fnt::Font arial = tge::fnt::Font("resource\\arial.ttf", 40);
+
+	tge::gmc::LightActor light = tge::gmc::LightActor(glm::vec3(0.2, 0.06, 1.0), glm::vec3(10, 0, 0));
+	tge::gmc::lights.push_back(&light);
+
+	tge::gmc::LightActor light2 = tge::gmc::LightActor(glm::vec3(0.2, 0.6, 1.0), glm::vec3(0, 0, 0));
+	tge::gmc::lights.push_back(&light2);
 
 	Texture texture1 = Texture("resource\\test_logo.png");
 	//Texture texture2 = Texture("resource\\ODST_Helmet.png");
@@ -38,6 +45,7 @@ int main() {
 
 	tge::gmc::Actor actor;
 	actor.mesh = &map;
+	actor.preRotate(PI / 2, 1, 0, 0)->preScale(0.25, 0.25, 0.25)->prePos(0, -10, 0)->applyPretransform();
 	tge::gmc::actors.push_back(&actor);
 
 	initTGEngine(&editor.main_window, &drawloop, &init);

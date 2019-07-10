@@ -37,8 +37,8 @@ void allocateAllBuffers() {
 		}
 }
 
-void mapMemory(uint32_t buffer_index, void** mapped_memory) {
-	lastResult = vkMapMemory(device, device_memory, buffer_offsets[buffer_index], buffer_sizes[buffer_index], 0, mapped_memory);
+void mapMemory(uint32_t buffer_index, void** mapped_memory, uint32_t size, uint32_t offset) {
+	lastResult = vkMapMemory(device, device_memory, buffer_offsets[buffer_index] + offset, size == 0 ? buffer_sizes[buffer_index]: size, 0, mapped_memory);
 	HANDEL(lastResult)
 }
 

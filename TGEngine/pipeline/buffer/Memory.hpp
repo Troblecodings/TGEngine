@@ -20,7 +20,7 @@ SINCE(0, 0, 2)
 void allocateAllBuffers();
 
 SINCE(0, 0, 2)
-void mapMemory(uint32_t buffer_index, void** mapped_memory);
+void mapMemory(uint32_t buffer_index, void** mapped_memory, uint32_t size = 0, uint32_t offset = 0);
 
 SINCE(0, 0, 2)
 void unmapMemory();

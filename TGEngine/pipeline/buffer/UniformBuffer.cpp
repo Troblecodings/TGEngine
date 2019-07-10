@@ -24,9 +24,9 @@ void UniformBuffer::updateDescriptor() {
 	this->descriptor.updateBufferInfo(this->index, this->size);
 }
 
-void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size) {
+void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size, uint32_t offset) {
 	vkDeviceWaitIdle(device);
-	mapMemory(buffer->index, &buffer->memory);
+	mapMemory(buffer->index, &buffer->memory, size, offset);
 	memcpy(buffer->memory, input, size);
 	unmapMemory();
 }
