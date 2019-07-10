@@ -13,11 +13,15 @@ int main() {
 	std::cout << "Starting Editor" << std::endl;
 	tge::fnt::Font arial = tge::fnt::Font("resource\\arial.ttf", 40);
 
-	tge::gmc::LightActor light = tge::gmc::LightActor(glm::vec3(0.2, 0.06, 1.0), glm::vec3(10, 0, 0));
+	tge::gmc::LightActor light = tge::gmc::LightActor(glm::vec3(0.2, 0.6, 1.0), glm::vec3(10, 0, 0));
 	tge::gmc::lights.push_back(&light);
 
 	tge::gmc::LightActor light2 = tge::gmc::LightActor(glm::vec3(0.2, 0.6, 1.0), glm::vec3(0, 0, 0));
 	tge::gmc::lights.push_back(&light2);
+
+	tge::gmc::LightActor light3 = tge::gmc::LightActor(glm::vec3(0.2, 0.6, 1.0), glm::vec3(-10, 0, 0));
+	tge::gmc::lights.push_back(&light3);
+
 
 	Texture texture1 = Texture("resource\\test_logo.png");
 	//Texture texture2 = Texture("resource\\ODST_Helmet.png");

@@ -17,7 +17,7 @@ namespace tge {
 		}
 
 		void LightActor::updateLight() {
-			fillUniformBuffer(&lightbuffer, this, 2 * sizeof(glm::vec3), this->id * 2 * sizeof(glm::vec3) + sizeof(uint32_t) /* I have no clue why I need to add this 
+			fillUniformBuffer(&lightbuffer, this, 2 * sizeof(glm::vec3), (this->id * 2 * sizeof(glm::vec3)) + ((this->id + this->id + 1) * sizeof(uint32_t)) /* I have no clue why I need to add this
 																															  * This is just a work around for the light color values
 																															  */);
 		}
