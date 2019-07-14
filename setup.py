@@ -65,6 +65,15 @@ def getstb():
         print("Cloning stb")
         p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"])
         p.wait()
+        
+    if os.path.exists("tinygltf") and len(os.listdir("tinygltf")) > 0:
+        print("Updating tinygltf")
+        p = subprocess.Popen(["git", "pull"], cwd="tinygltf")
+        p.wait()
+    else:
+        print("Cloning tinygltf")
+        p = subprocess.Popen(["git", "clone", "https://github.com/syoyo/tinygltf"])
+        p.wait()
 
 
 def trigger(id):
@@ -190,7 +199,7 @@ while True:
     print("2. Pack dependencies")
     print("4. Deploy engine")
     print("5. Get states")
-    print("6. Get stb only")
+    print("6. Get stb and tiny gltf only")
     print("7. Create project")
     print("0. Close")
     try:

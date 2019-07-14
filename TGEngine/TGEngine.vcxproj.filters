@@ -201,9 +201,6 @@
     <ClInclude Include="io\Font.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="model\GLTFLoader.hpp">
-      <Filter>Headerdateien\model</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UIEntity.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
@@ -242,6 +239,9 @@
     </ClInclude>
     <ClInclude Include="pipeline\ShaderCreation.hpp">
       <Filter>Headerdateien\pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="model\ModelLoader.hpp">
+      <Filter>Headerdateien\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -362,9 +362,6 @@
     <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
-    <ClCompile Include="model\GLTFLoader.cpp">
-      <Filter>Quelldateien\model</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIEntity.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
@@ -403,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="pipeline\ShaderCreation.cpp">
       <Filter>Quelldateien\pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="model\ModelLoader.cpp">
+      <Filter>Quelldateien\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

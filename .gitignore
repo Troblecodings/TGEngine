@@ -284,3 +284,4 @@ dependencies/deps.zip
 
 /ShaderTool/bin
 /ShaderTool/obj
+/tinygltf/
