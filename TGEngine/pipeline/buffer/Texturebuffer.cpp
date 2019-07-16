@@ -19,7 +19,6 @@ namespace tge {
 
 		Texture::Texture(uint8_t* data, int width, int height) {
 			this->vulkanTexture = new VulkanTexture(this);
-			textures.push_back(this);
 			this->imageData = data;
 			this->width = width;
 			this->height = height;
@@ -72,6 +71,11 @@ namespace tge {
 
 		int Texture::getHeight() {
 			return this->height;
+		}
+
+		uint8_t* Texture::getImageData()
+		{
+			return this->imageData;
 		}
 
 		void VulkanTexture::updateDescriptor() {
@@ -154,9 +158,7 @@ namespace tge {
 				vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
 			HANDEL(lastResult)
 
-				for each(Texture * ptr in textures) {
-					ptr->initTexture();
-				}
+			// TODO implement checks
 		}
 
 		void createSampler(Sampler sampler) {
@@ -169,7 +171,7 @@ namespace tge {
 			HANDEL(lastResult)
 
 				vkDestroySampler(device, defaultImageSampler, nullptr);
-			for each(Texture * tex in textures) {
+			for each(Texture* tex in textures) {
 				tex->vulkanTexture->destroy();
 			}
 		}

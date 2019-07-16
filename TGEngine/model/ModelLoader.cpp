@@ -43,22 +43,52 @@ namespace tge {
 		}
     // [END]
 
-		// Loads textures and sampler
+		// Load sampler
+		static void loadSampler(tinygltf::Model* model, gmc::Mesh* mesh) {
+			mesh->samplers.resize(model->samplers.size());
+			for (size_t i = 0; i < mesh->samplers.size(); i++)
+			{
+				Sampler sampler = model->samplers[i];
+				OUT_LV_DEBUG("Load sampler " << sampler.name << " id = " << i)
+				vlibSamplerCreateInfo.minFilter = getVkFilterMode(sampler.minFilter);
+				vlibSamplerCreateInfo.magFilter = getVkFilterMode(sampler.magFilter);
+				vlibSamplerCreateInfo.addressModeU = getVkWrapMode(sampler.wrapS);
+				vlibSamplerCreateInfo.addressModeV = getVkWrapMode(sampler.wrapT);
+				vlibSamplerCreateInfo.addressModeW = vlibSamplerCreateInfo.addressModeV;
+				tex::createSampler(&mesh->samplers[i]);
+			}
+		}
+
+		// Loads textures
 		static void loadTextures(tinygltf::Model* model, gmc::Mesh* mesh) {
 			for each(tinygltf::Texture tex in model->textures) {
+				OUT_LV_DEBUG("Load texture " << tex.name)
 				tinygltf::Image image = model->images[tex.source];
+				// Load image data
 				tex::Texture texture = tex::Texture(image.image.data(), image.width, image.height);
+				OUT_LV_DEBUG(texture.getWidth() << " " << texture.getHeight())
 				if (tex.sampler > -1) {
-					tinygltf::Sampler sampler = model->samplers[tex.sampler];
-					vlibSamplerCreateInfo.minFilter = getVkFilterMode(sampler.minFilter);
-					vlibSamplerCreateInfo.magFilter = getVkFilterMode(sampler.magFilter);
-					vlibSamplerCreateInfo.addressModeU = getVkWrapMode(sampler.wrapS);
-					vlibSamplerCreateInfo.addressModeV = getVkWrapMode(sampler.wrapT);
-					vlibSamplerCreateInfo.addressModeW = vlibSamplerCreateInfo.addressModeV;
-					texture.sampler = new VkSampler();
-					tex::createSampler(texture.sampler);
+					// Set custom sampler
+					OUT_LV_DEBUG("Set custom sampler " << tex.sampler)
+					texture.sampler = &mesh->samplers[tex.sampler];
 				}
 				mesh->textures.push_back(texture);
+			}
+		}
+
+		// Loading materials
+		static void loadMaterials(tinygltf::Model* model, gmc::Mesh* mesh) {
+			for each (tinygltf::Material mat in model->materials) {
+				OUT_LV_DEBUG("Load material " << mat.name)
+				gmc::Material material = gmc::Material(&mesh->textures[mat.values.find("baseColorTexture")->second.TextureIndex()]);
+				mesh->materials.push_back(material);
+				for (auto ptr = mat.values.begin(); ptr != mat.values.end(); ptr++) {
+					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
+				}
+				OUT_LV_DEBUG("Additional")
+				for (auto ptr = mat.additionalValues.begin(); ptr != mat.additionalValues.end(); ptr++) {
+					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
+				}
 			}
 		}
 
@@ -78,7 +108,7 @@ namespace tge {
 			}
 
 			if(!warn.empty()) {
-				OUT_LV_DEBUG("Warn " << warn)
+				OUT_LV_DEBUG("Warn: " << warn)
 			}
 
 			if(!check) {
@@ -86,7 +116,9 @@ namespace tge {
 				TGERROR(TG_ERR_DB_FILE_NOT_FOUND)
 			}
 
+			loadSampler(&model, mesh);
 			loadTextures(&model, mesh);
+			loadMaterials(&model, mesh);
 		}
 	}
 }

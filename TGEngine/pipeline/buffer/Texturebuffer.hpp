@@ -89,6 +89,7 @@ namespace tge {
 				int getWidth(); // gets the width
 				int getHeight(); // gets the height
 
+				uint8_t* getImageData();
 		};
 
 		extern std::vector<Texture*> textures; // All textures

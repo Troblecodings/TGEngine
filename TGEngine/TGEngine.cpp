@@ -4,7 +4,7 @@
 using namespace std;
 using namespace tge::tex;
 
-void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void)) {
+void initEngine(Window* window) {
 	tge::nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
@@ -15,8 +15,8 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
 		#endif
-	//	"VK_LAYER_VALVE_steam_overlay",
-	//  "VK_LAYER_NV_optimus"
+		//	"VK_LAYER_VALVE_steam_overlay",
+		//  "VK_LAYER_NV_optimus"
 		}, {
 		});
 	createWindowSurfaces();
@@ -26,8 +26,10 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	uint8_t imageData[4] = { 1, 1, 1, 1 };
 	Texture defaultTexture = Texture(imageData, 1, 1);
 
-	init();
+	tge::gmc::multiplier = (window->height / (float)window->width);
+}
 
+void startTGEngine(Window* window) {
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
@@ -58,7 +60,6 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	index_buffer.size = 9000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
-	tge::gmc::multiplier = (window->height / (float)window->width);
 
 	tge::ui::ui_scene_entity.init();
 
@@ -67,6 +68,12 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 
 	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
 		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
+		for each (tge::tex::Texture tex in tge::gmc::actors[i]->mesh->textures) {
+			tex.initTexture();
+		}
+		for each (tge::gmc::Material mat in tge::gmc::actors[i]->mesh->materials) {
+			mat.createMaterial();
+		}
 	}
 	OUT_LV_DEBUG(tge::gmc::materiallist.size())
 		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {

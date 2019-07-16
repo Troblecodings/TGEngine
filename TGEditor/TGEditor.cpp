@@ -1,6 +1,7 @@
 #include "TGEditor.hpp"
 #include <io/Font.hpp>
 #include <gamecontent/Light.hpp>
+#include <model/ModelLoader.hpp>
 
 tge::gmc::Mesh mesh;
 tge::gmc::Mesh mesh2;
@@ -10,6 +11,10 @@ UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main() {
 	Editor editor = Editor();
+
+	initEngine(&editor.main_window);
+	tge::mdl::loadGltf("resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &mesh);
+
 	std::cout << "Starting Editor" << std::endl;
 	tge::fnt::Font arial = tge::fnt::Font("resource\\arial.ttf", 40);
 
@@ -41,9 +46,10 @@ int main() {
 	UITextComponent text = UITextComponent(&arial, "Test", glm::vec4(1.0f));
 	entity.addDrawable(&text);
 
+
 	ui_scene_entity.addChildren(&entity);
 
-	tg_model::load("resource\\map2.fbx", &map);
+	//tg_model::load("resource\\map2.fbx", &map);
 	//tg_model::load("resource\\Chair.fbx", &mesh);
 	//tg_model::load("resource\\hall.fbx", &mesh2);
 
@@ -51,8 +57,9 @@ int main() {
 	actor.mesh = &map;
 	actor.preRotate(PI / 2, 1, 0, 0)->preScale(0.25, 0.25, 0.25)->prePos(0, -10, 0)->applyPretransform();
 	tge::gmc::actors.push_back(&actor);
+	tge::gmc::createFirstPersonCamera(&camera);
 
-	initTGEngine(&editor.main_window, &drawloop, &init);
+	startTGEngine(&editor.main_window);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
 }
@@ -61,7 +68,6 @@ void init() {
 	//createActor(&mesh2)->preScale(0.015, 0.08, 0.005)->prePos(0, -240, 840)->applyPretransform();
 	//createActor(&mesh)->preRotate(PI / 2, 1.0f, 0, 0)->preScale(0.5, 0.5, 0.5)->applyPretransform();
 	//createActor(&mesh);
-	tge::gmc::createFirstPersonCamera(&camera);
 
 }
 
