@@ -13,7 +13,9 @@ int main() {
 	Editor editor = Editor();
 
 	initEngine(&editor.main_window);
-	tge::mdl::loadGltf("resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &mesh);
+	tge::gmc::Actor actor2;
+	tge::mdl::loadGltf("resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
+	tge::gmc::actors.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
 	tge::fnt::Font arial = tge::fnt::Font("resource\\arial.ttf", 40);

@@ -1,5 +1,5 @@
 #include "CommandBuffer.hpp"
-
+#include "../gamecontent/Actor.hpp"
 
 VkCommandPool command_pool;
 VkFence single_time_command_ready;
@@ -142,6 +142,18 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+
+		uint32_t off = 0;
+
+		for each (tge::gmc::Actor* actor in tge::gmc::actors)
+		{
+			for each (tge::gmc::RenderOffsets offset in actor->offsets)
+			{
+				off += offset.offset;
+				tge::gmc::materiallist[offset.material]->addToBuffer(buffer);
+				vkCmdDrawIndexed(buffer, offset.size, 1, off, 0, 0);
+			}
+		}
 
 		for each(tge::gmc::RenderOffsets coffset in tge::gmc::render_offset) {
 			tge::gmc::materiallist[coffset.material]->addToBuffer(buffer);

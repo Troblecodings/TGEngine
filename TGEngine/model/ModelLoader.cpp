@@ -44,7 +44,7 @@ namespace tge {
     // [END]
 
 		// Load sampler
-		static void loadSampler(tinygltf::Model* model, gmc::Mesh* mesh) {
+		static void loadSampler(tinygltf::Model* model, gmc::Actor* mesh) {
 			mesh->samplers.resize(model->samplers.size());
 			for (size_t i = 0; i < mesh->samplers.size(); i++)
 			{
@@ -60,7 +60,7 @@ namespace tge {
 		}
 
 		// Loads textures
-		static void loadTextures(tinygltf::Model* model, gmc::Mesh* mesh) {
+		static void loadTextures(tinygltf::Model* model, gmc::Actor* mesh) {
 			for each(tinygltf::Texture tex in model->textures) {
 				OUT_LV_DEBUG("Load texture " << tex.name)
 				tinygltf::Image image = model->images[tex.source];
@@ -77,7 +77,7 @@ namespace tge {
 		}
 
 		// Loading materials
-		static void loadMaterials(tinygltf::Model* model, gmc::Mesh* mesh) {
+		static void loadMaterials(tinygltf::Model* model, gmc::Actor* mesh) {
 			for each (tinygltf::Material mat in model->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
 				gmc::Material material = gmc::Material(&mesh->textures[mat.values.find("baseColorTexture")->second.TextureIndex()]);
@@ -92,15 +92,32 @@ namespace tge {
 			}
 		}
 
-		void loadGltf(char* name, gmc::Mesh* mesh) {
+		static void loadNodes(tinygltf::Model* model, gmc::Actor* mesh) {
+			for each (tinygltf::Node node in model->nodes) {
+				tinygltf::Mesh msh = model->meshes[node.mesh];
+				for each (tinygltf::Primitive prim in msh.primitives)
+				{
+					//model->accessors[prim.indices].;
+				}
+				if (node.matrix.size() == 16) {
+					mesh->model_matrix = glm::mat4(node.matrix[0], node.matrix[1], node.matrix[2], node.matrix[3],
+						node.matrix[4], node.matrix[5], node.matrix[6], node.matrix[7], 
+						node.matrix[8], node.matrix[9], node.matrix[10], node.matrix[11], 
+						node.matrix[12], node.matrix[13], node.matrix[14], node.matrix[15]);
+				}
+			}
+		}
+
+		void loadGltf(char* name, gmc::Actor* mesh) {
 			TinyGLTF loader;
 			tinygltf::Model model;
 
-			bool binary = strstr(name, "glb");
+			bool binary = strstr(name, ".glb");
 
 			std::string err;
 			std::string warn;
 
+			// TODO use pak loading when avalaible
 			bool check = binary ? loader.LoadBinaryFromFile(&model, &err, &warn, name) : loader.LoadASCIIFromFile(&model, &err, &warn, name);
 
 			if(!err.empty()) {
@@ -119,6 +136,8 @@ namespace tge {
 			loadSampler(&model, mesh);
 			loadTextures(&model, mesh);
 			loadMaterials(&model, mesh);
+
+			
 		}
 	}
 }

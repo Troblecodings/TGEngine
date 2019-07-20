@@ -18,6 +18,11 @@ namespace tge {
 			size_t _impl_array_pos;
 			glm::mat4 model_matrix = glm::mat4(1.0f);
 
+			std::vector<VkSampler> samplers;
+			std::vector<tex::Texture> textures;
+			std::vector<Material> materials;
+			std::vector<RenderOffsets> offsets;
+
 			void applyPretransform();
 
 			Actor* preRotate(float angle, float x, float y, float z);

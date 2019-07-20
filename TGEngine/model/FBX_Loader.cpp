@@ -83,7 +83,7 @@ namespace tg_model {
 				OUT_LV_DEBUG("No surface_lambert material defined in fbxmodel[" << name << "]")
 			}
 
-			TGVertex last_vert;
+	/*		TGVertex last_vert;
 			RenderOffsets offsets;
 			offsets.offset = (uint32_t)mesh->indices.size();
 			for(int j = 0; j < fbxmesh->GetPolygonCount(); j++) {
@@ -97,7 +97,7 @@ namespace tg_model {
 			}
 			mesh->materials.push_back(Material(textureptr, color));
 			offsets.size = (uint32_t)mesh->indices.size() - offsets.offset;
-			mesh->offsets.push_back(offsets);
+			mesh->offsets.push_back(offsets);*/
 		}
 		for(int i = 0; i < node->GetChildCount(); i++)
 			addMesh(name, node->GetChild(i), mesh);

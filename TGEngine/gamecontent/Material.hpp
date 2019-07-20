@@ -52,7 +52,7 @@ namespace tge {
 		 * Defines which part of the buffer has which material
 		 */
 		SINCE(0, 0, 4)
-			struct RenderOffsets {
+		struct RenderOffsets {
 
 			uint32_t material; // index in the @materials array of the material to use
 

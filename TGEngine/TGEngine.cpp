@@ -68,10 +68,10 @@ void startTGEngine(Window* window) {
 
 	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
 		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
-		for each (tge::tex::Texture tex in tge::gmc::actors[i]->mesh->textures) {
+		for each (tge::tex::Texture tex in tge::gmc::actors[i]->textures) {
 			tex.initTexture();
 		}
-		for each (tge::gmc::Material mat in tge::gmc::actors[i]->mesh->materials) {
+		for each (tge::gmc::Material mat in tge::gmc::actors[i]->materials) {
 			mat.createMaterial();
 		}
 	}

@@ -16,11 +16,6 @@ namespace tge {
 		struct Mesh {
 			uint32_t first_index; // the first index for this mesh
 
-			std::vector<VkSampler> samplers;
-			std::vector<tex::Texture> textures;
-			std::vector<Material> materials;
-
-			std::vector<RenderOffsets> offsets;
 			std::vector<TGVertex> vertices;
 			std::vector<uint32_t> indices;
 
