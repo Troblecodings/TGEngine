@@ -22,7 +22,8 @@ namespace tge {
 			}
 			delete[] tempbitmap;
 
-			this->texture = new tex::Texture(colorData, height * 64, height * 64);
+			this->texture = new tex::Texture(height * 64, height * 64);
+			this->texture->imageData = colorData;
 
 			this->mat = gmc::UIMaterial(this->texture);
 			TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)

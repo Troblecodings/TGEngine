@@ -11,17 +11,15 @@ namespace tge {
 		using namespace tge::nio;
 
 		Texture::Texture(const char* textureName) : textureName(textureName) {
-			this->vulkanTexture = new VulkanTexture(this);
+			this->sampler = defaultImageSampler;
 			ASSERT_NONE_NULL_DB(textureName, "File name null", TG_ERR_DB_NULLPTR)
 				ASSERT_NONE_NULL_DB((*textureName != 0), "File name is empty", TG_ERR_DB_NULLPTR)
-				textures.push_back(this);
 		}
 
-		Texture::Texture(uint8_t* data, int width, int height) {
-			this->vulkanTexture = new VulkanTexture(this);
-			this->imageData = data;
+		Texture::Texture(int width, int height) {
 			this->width = width;
 			this->height = height;
+			this->sampler = defaultImageSampler;
 		}
 
 		void Texture::initTexture() {
@@ -43,14 +41,14 @@ namespace tge {
 				this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
 			vlib_image_create_info.mipLevels = this->miplevels;
 
-			this->vulkanTexture->initVulkan();
-			void* memory = this->vulkanTexture->map(this->width + this->height * 4);
+			this->initVulkan();
+			void* memory = this->map(this->width + this->height * 4);
 			memcpy(memory, this->imageData, vlib_buffer_create_info.size);
-			this->vulkanTexture->unmap();
+			this->unmap();
 
 			// Destroy unneeded resources
 			if(this->textureName) {
-				stbi_image_free(this->imageData);
+				stbi_image_free(const_cast<unsigned char*>(this->imageData));
 			}
 		}
 
@@ -61,8 +59,8 @@ namespace tge {
 			vlib_buffer_image_copy.imageExtent.width = this->width;
 			vlib_buffer_image_copy.imageExtent.height = this->height;
 
-			this->vulkanTexture->queueLoading(buffer);
-			this->vulkanTexture->generateMipmaps(buffer);
+			this->queueLoading(buffer);
+			this->generateMipmaps(buffer);
 		}
 
 		int Texture::getWidth() {
@@ -73,16 +71,11 @@ namespace tge {
 			return this->height;
 		}
 
-		uint8_t* Texture::getImageData()
-		{
-			return this->imageData;
+		void Texture::updateDescriptor() {
+			textureDescriptor.updateImageInfo(this->sampler, this->imageView);
 		}
 
-		void VulkanTexture::updateDescriptor() {
-			textureDescriptor.updateImageInfo(*this->texture->sampler, this->imageView);
-		}
-
-		void VulkanTexture::queueLoading(VkCommandBuffer buffer) {
+		void Texture::queueLoading(VkCommandBuffer buffer) {
 			// Copys the buffer to the image
 			ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, this->image, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
@@ -96,9 +89,9 @@ namespace tge {
 				);
 		}
 
-		void VulkanTexture::generateMipmaps(VkCommandBuffer buffer) {
-			uint32_t mipwidth = this->texture->getWidth(),
-				mipheight = this->texture->getHeight(),
+		void Texture::generateMipmaps(VkCommandBuffer buffer) {
+			uint32_t mipwidth = this->width,
+				mipheight = this->height,
 				mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
 
 			vlib_image_memory_barrier.subresourceRange.levelCount = 1;
@@ -161,7 +154,7 @@ namespace tge {
 			// TODO implement checks
 		}
 
-		void createSampler(Sampler sampler) {
+		void createSampler(Sampler* sampler) {
 			lastResult = vkCreateSampler(device, &vlibSamplerCreateInfo, nullptr, sampler);
 			HANDEL(lastResult)
 		}
@@ -172,11 +165,11 @@ namespace tge {
 
 				vkDestroySampler(device, defaultImageSampler, nullptr);
 			for each(Texture* tex in textures) {
-				tex->vulkanTexture->destroy();
+				tex->destroy();
 			}
 		}
 
-		void VulkanTexture::initVulkan() {
+		void Texture::initVulkan() {
 			vlib_image_create_info.format = defaultImageFormat;
 
 			// Image
@@ -208,23 +201,23 @@ namespace tge {
 			HANDEL(lastResult)
 		}
 
-		void* VulkanTexture::map(uint32_t size) {
+		void* Texture::map(uint32_t size) {
 			void* memory;
 			lastResult = vkMapMemory(device, this->bufferMemory, 0, size, 0, &memory);
 			HANDEL(lastResult);
 			return memory;
 		}
 
-		void VulkanTexture::unmap() {
+		void Texture::unmap() {
 			vkUnmapMemory(device, this->bufferMemory);
 		}
 
-		void VulkanTexture::dispose() {
+		void Texture::dispose() {
 			vkFreeMemory(device, this->bufferMemory, nullptr);
 			vkDestroyBuffer(device, this->buffer, nullptr);
 		}
 
-		void VulkanTexture::destroy() {
+		void Texture::destroy() {
 			vkDestroyImageView(device, this->imageView, nullptr);
 			vkFreeMemory(device, this->imageMemory, nullptr);
 			vkDestroyImage(device, this->image, nullptr);

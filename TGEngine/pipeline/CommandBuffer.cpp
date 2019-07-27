@@ -77,6 +77,13 @@ void startupCommands() {
 		tex->load(SINGELTIME_COMMAND_BUFFER);
 	}
 
+	for each (tge::gmc::Actor* act in tge::gmc::actors) {
+		for each (tge::tex::Texture tex in act->textures)
+		{
+			tex.load(SINGELTIME_COMMAND_BUFFER);
+		}
+	}
+
 	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
 	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
@@ -98,8 +105,14 @@ void startupCommands() {
 
 	endSingleTimeCommand();
 
-	for each(tge::tex::Texture * tex in tge::tex::textures) {
-		tex->vulkanTexture->dispose();
+	for each(tge::tex::Texture* tex in tge::tex::textures) {
+		tex->dispose();
+	}
+	for each (tge::gmc::Actor * act in tge::gmc::actors) {
+		for each (tge::tex::Texture tex in act->textures)
+		{
+			tex.dispose();
+		}
 	}
 }
 
@@ -150,7 +163,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			for each (tge::gmc::RenderOffsets offset in actor->offsets)
 			{
 				off += offset.offset;
-				tge::gmc::materiallist[offset.material]->addToBuffer(buffer);
+				actor->materials[offset.material].addToBuffer(buffer);
 				vkCmdDrawIndexed(buffer, offset.size, 1, off, 0, 0);
 			}
 		}

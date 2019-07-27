@@ -23,13 +23,8 @@ void initEngine(Window* window) {
 	createDevice({}, {});
 	prePipeline();
 
-	uint8_t imageData[4] = { 1, 1, 1, 1 };
-	Texture defaultTexture = Texture(imageData, 1, 1);
-
 	tge::gmc::multiplier = (window->height / (float)window->width);
-}
 
-void startTGEngine(Window* window) {
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
@@ -37,7 +32,9 @@ void startTGEngine(Window* window) {
 	tge::gmc::initLight();
 	tge::gmc::initCameras();
 	initAllTextures();
+}
 
+void startTGEngine(Window* window) {
 	initDescriptors();
 	initShader();
 	initShaderPipes();
@@ -68,9 +65,6 @@ void startTGEngine(Window* window) {
 
 	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
 		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
-		for each (tge::tex::Texture tex in tge::gmc::actors[i]->textures) {
-			tex.initTexture();
-		}
 		for each (tge::gmc::Material mat in tge::gmc::actors[i]->materials) {
 			mat.createMaterial();
 		}
