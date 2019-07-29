@@ -31,7 +31,7 @@ namespace tge {
 			class Texture {
 
 			public:
-				Sampler sampler = nullptr;// holds a custom sampler
+				Sampler sampler = VK_NULL_HANDLE;// holds a custom sampler
 				uint8_t* imageData = nullptr; // stores the image data -> see stb
 
 			private:

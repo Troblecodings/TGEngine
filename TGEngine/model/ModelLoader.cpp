@@ -153,10 +153,10 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 					{
 						TGVertex vert = {
 							glm::make_vec3(&posBuffer[i * 3]),
-							glm::make_vec2(&uvBuffer[i * 2]),
-							glm::make_vec3(&normalBuffer[i * 3])
+							uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]):glm::vec2(0),
+							normalBuffer ? glm::normalize(glm::make_vec3( &normalBuffer[i * 3])):glm::vec3(0)
 						};
-						mesh->mesh->add(vert);
+						mesh->mesh->vertices.push_back(vert);
 					}
 
 					offset.material = prim.material;
@@ -192,6 +192,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 						node.matrix[4], node.matrix[5], node.matrix[6], node.matrix[7], 
 						node.matrix[8], node.matrix[9], node.matrix[10], node.matrix[11], 
 						node.matrix[12], node.matrix[13], node.matrix[14], node.matrix[15]);
+					mesh->applyPretransform();
 				}
 
 			}
