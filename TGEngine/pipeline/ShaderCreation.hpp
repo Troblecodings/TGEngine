@@ -9,9 +9,9 @@ class ShaderPipe {
 public:
 	unsigned int descriptorLayout;
 	unsigned int layoutIndex;
+	VkPipelineShaderStageCreateInfo* shader;
 
 private:
-	VkPipelineShaderStageCreateInfo* shader;
 	VkVertexInputAttributeDescription* inputs;
 	VkDescriptorSetLayoutBinding* layouts;
 	unsigned int shaderCount;

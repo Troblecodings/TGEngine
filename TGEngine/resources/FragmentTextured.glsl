@@ -29,7 +29,7 @@ const float MIN_FALLOFF = 1;
 
 // Static color
 vec4 getColor() {
-    return texture(imageSampler, uv);
+    return texture(imageSampler, uv) * vec4(r, g, b, a);
 }
 
 // Clamps the value within a certain value

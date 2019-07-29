@@ -9,26 +9,19 @@ tge::gmc::Camera camera;
 tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
-int main() {
+int main(int argc, char** args) {
 	Editor editor = Editor();
 	tge::gmc::createFirstPersonCamera(&camera);
-
 	initEngine(&editor.main_window);
 	tge::gmc::Actor actor2;
-	tge::mdl::loadGltf("resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
+
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\SimpleMeshes\\glTF\\SimpleMeshes.gltf", &actor2);
 	tge::gmc::actors.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
 
-	tge::gmc::LightActor light = tge::gmc::LightActor(glm::vec3(0.2, 0.2, 0.2), glm::vec3(10, 0, 0));
+	tge::gmc::LightActor light = tge::gmc::LightActor(glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
 	tge::gmc::lights.push_back(&light);
-
-	tge::gmc::LightActor light2 = tge::gmc::LightActor(glm::vec3(0.2, 0.2, 0.2), glm::vec3(3, 0, 0));
-	tge::gmc::lights.push_back(&light2);
-
-	tge::gmc::LightActor light3 = tge::gmc::LightActor(glm::vec3(0.2, 0.2, 0.2), glm::vec3(-10, 0, 0));
-	tge::gmc::lights.push_back(&light3);
-
 
 	startTGEngine(&editor.main_window);
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;

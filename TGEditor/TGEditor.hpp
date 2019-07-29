@@ -28,5 +28,3 @@ struct Editor : App {
 void init();
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* verticies);
-
-int main();

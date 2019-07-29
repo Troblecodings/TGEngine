@@ -22,9 +22,8 @@ namespace tge {
 
 			protected:
 				ShaderPipe* pipe = nullptr;
-
-				tex::Texture* texture = nullptr;
 				glm::vec4 color = glm::vec4(1.0f);
+				tex::Texture* texture = nullptr;
 
 				uint32_t pipelineIndex = 0;
 				uint32_t descriptorIndex = 0;
@@ -32,6 +31,7 @@ namespace tge {
 				MaterialType type = BASIC_MAT_TYPE;
 
 			public:
+
 				Material(tex::Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
 				Material(glm::vec4 color) : Material(nullptr, color) {}
 				Material(tex::Texture* texture, glm::vec4 color);
@@ -40,6 +40,8 @@ namespace tge {
 				virtual void createMaterial();
 
 				void addToBuffer(VkCommandBuffer buffer);
+
+				void setColor(glm::vec4 color);
 
 				MaterialType getType() { return this->type; };
 

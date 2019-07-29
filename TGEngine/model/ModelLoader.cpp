@@ -5,6 +5,7 @@
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE
 #include "../tinygltf/tiny_gltf.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "../resources/ShaderPipes.hpp"
 
 namespace tge {
 	namespace mdl {
@@ -92,6 +93,13 @@ namespace tge {
 
 		// Loading materials
 		static void loadMaterials(tinygltf::Model* model, gmc::Actor* mesh) {
+			if (model->materials.size() < 1) {
+				// TODO Make this default Material ...
+				gmc::Material material = gmc::Material(&ColorOnlyNormalPipe);
+				material.setColor(glm::vec4(1.0, 0, 0, 1.0));
+				mesh->materials.push_back(material);
+				return;
+			}
 			for each (tinygltf::Material mat in model->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
 				gmc::Material material = gmc::Material(&mesh->textures[mat.values.find("baseColorTexture")->second.TextureIndex()]);
@@ -159,7 +167,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 						mesh->mesh->vertices.push_back(vert);
 					}
 
-					offset.material = prim.material;
+					offset.material = prim.material < 0 ? 0:prim.material;
 					offset.offset = mesh->mesh->indices.size();
 
 					if (prim.indices > -1) {

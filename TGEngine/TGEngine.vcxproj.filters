@@ -433,9 +433,6 @@
     <None Include="resources\FragmentUITextured.glsl">
       <Filter>resources</Filter>
     </None>
-    <None Include="resources\VertexColorOnly.glsl">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\VertexTextured.glsl">
       <Filter>resources</Filter>
     </None>

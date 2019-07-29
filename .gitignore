@@ -285,3 +285,7 @@ dependencies/deps.zip
 /ShaderTool/bin
 /ShaderTool/obj
 /tinygltf/
+/TGEditor/TGEditor.exe
+/TGEditor/start.py
+/TGEditor/report.txt
+/TGEditor/report_fixed.txt
