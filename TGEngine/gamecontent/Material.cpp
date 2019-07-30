@@ -17,7 +17,7 @@ namespace tge {
 			this->setColor(color);
 
 			if(texture == nullptr) {
-				this->pipe = &TexturedBasicPipe;
+				this->pipe = &ColorOnlyNormalPipe;
 			} else {
 				this->pipe = &TexturedBasicPipe;
 			}

@@ -95,15 +95,24 @@ namespace tge {
 		static void loadMaterials(tinygltf::Model* model, gmc::Actor* mesh) {
 			if (model->materials.size() < 1) {
 				// TODO Make this default Material ...
-				gmc::Material material = gmc::Material(&ColorOnlyNormalPipe);
-				material.setColor(glm::vec4(1.0, 0, 0, 1.0));
+				gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
 				mesh->materials.push_back(material);
 				return;
 			}
 			for each (tinygltf::Material mat in model->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
-				gmc::Material material = gmc::Material(&mesh->textures[mat.values.find("baseColorTexture")->second.TextureIndex()]);
-				mesh->materials.push_back(material);
+				auto colorTex = mat.values.find("baseColorTexture");
+				auto colorFactor = mat.values.find("baseColorFactor");
+
+				if (colorTex != mat.values.end()) {
+					gmc::Material material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()], 
+						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()):glm::vec4(1));
+					mesh->materials.push_back(material);
+				}
+				else if (colorFactor != mat.values.end()) {
+					gmc::Material material = gmc::Material(glm::make_vec4(colorFactor->second.ColorFactor().data()));
+					mesh->materials.push_back(material);
+				}
 #ifdef DEBUG
 				for (auto ptr = mat.values.begin(); ptr != mat.values.end(); ptr++) {
 					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)

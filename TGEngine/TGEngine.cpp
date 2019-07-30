@@ -93,6 +93,9 @@ void startTGEngine(Window* window) {
 
 	clock_t last_time = clock();
 
+	// Testing
+	uint32_t count = 0;
+
 	while(true) {
 		window->pollevents();
 		if(window->close_request) {
@@ -138,6 +141,14 @@ void startTGEngine(Window* window) {
 				&vlib_buffer_copy
 			);
 			endSingleTimeCommand();
+#ifndef DEBUG
+			// Testing
+			count++;
+			if (count > 5) {
+				exit(0);
+			}
+			//
+#endif // !DEBUG
 		}
 
 		submit(&index_buffer, &main_buffer);
