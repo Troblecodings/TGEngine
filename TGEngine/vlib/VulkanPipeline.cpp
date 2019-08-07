@@ -136,17 +136,6 @@ VkPipelineDepthStencilStateCreateInfo vlibDepthStencilState = {
 1.0f
 };
 
-//Pipeline Layout
-VkPipelineLayoutCreateInfo vlib_layout_info = {
-	VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-	nullptr,
-	0,
-	1,
-	nullptr,
-	0,
-	nullptr
-};
-
 //Pipeline
 VkGraphicsPipelineCreateInfo vlib_graphics_pipeline_create_info = {
 	VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,

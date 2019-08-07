@@ -1,9 +1,11 @@
 #include "Descriptors.hpp"
+#include "../vlib/VulkanDescriptor.hpp"
 
 VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptor_set;
+std::vector<VkDescriptorSet> descriptorSets;
 std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
+std::vector<VkPipelineLayout> pipeLayouts;
 
 uint32_t uniform_count;
 uint32_t image_sampler_count;
@@ -32,14 +34,21 @@ void initDescriptors() {
 	lastResult = vkCreateDescriptorPool(device, &vlib_descriptor_pool_create_info, nullptr, &descriptor_pool);
 	HANDEL(lastResult)
 
-		vlib_allocate_info.descriptorPool = descriptor_pool;
+	vlib_allocate_info.descriptorPool = descriptor_pool;
 }
 
-uint32_t createDesctiptorLayout() {
+uint32_t createLayouts() {
+	TG_VECTOR_GET_SIZE_AND_RESIZE(pipeLayouts)
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSetLayouts)
-		lastResult = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptorSetLayouts[last_size]);
+
+	lastResult = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptorSetLayouts[lastSize]);
 	HANDEL(lastResult)
-		return (uint32_t)last_size;
+
+	vlib_layout_info.pSetLayouts = &descriptorSetLayouts[lastSize];
+	lastResult = vkCreatePipelineLayout(device, &vlib_layout_info, nullptr, &pipeLayouts[lastSize]);
+	HANDEL(lastResult);
+
+		return (uint32_t)lastSize;
 }
 
 void destroyDesctiptorLayout(uint32_t layout) {
@@ -47,26 +56,26 @@ void destroyDesctiptorLayout(uint32_t layout) {
 }
 
 void destroyDescriptorSet(uint32_t layout) {
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptorSets[layout]);
 	HANDEL(lastResult);
 }
 
 uint32_t createDescriptorSet(uint32_t layout) {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSets)
 
 		vlib_allocate_info.pSetLayouts = &descriptorSetLayouts[layout];
-	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
+	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptorSets[lastSize]);
 	HANDEL(lastResult)
-		return (uint32_t)last_size;
+		return (uint32_t)lastSize;
 }
 
 void destroyDescriptors() {
 	for each(VkDescriptorSetLayout var in descriptorSetLayouts) {
 		vkDestroyDescriptorSetLayout(device, var, nullptr);
 	}
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptorSets.size(), descriptorSets.data());
 	HANDEL(lastResult);
-	descriptor_set.clear();
+	descriptorSets.clear();
 	descriptorSetLayouts.clear();
 };
 
@@ -126,5 +135,5 @@ void Descriptor::update() {
 	vlib_descriptor_writes.dstArrayElement = 0;
 	vlib_descriptor_writes.dstBinding = this->binding;
 	vlib_descriptor_writes.descriptorCount = 1;
-	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptorset];
+	vlib_descriptor_writes.dstSet = descriptorSets[this->descriptorset];
 }

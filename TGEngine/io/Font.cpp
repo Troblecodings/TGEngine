@@ -27,7 +27,7 @@ namespace tge {
 
 			this->mat = gmc::UIMaterial(this->texture);
 			TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
-				this->materialIndex = (uint32_t)last_size;
+				this->materialIndex = (uint32_t)lastSize;
 		}
 
 		void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color) {

@@ -7,7 +7,6 @@
 class ShaderPipe {
 
 public:
-	unsigned int descriptorLayout;
 	unsigned int layoutIndex;
 	VkPipelineShaderStageCreateInfo* shader;
 

@@ -18,7 +18,7 @@ namespace tge {
 
 		void createCamera(Camera* camera) {
 			TG_VECTOR_APPEND_NORMAL(cameras_on_scene, camera)
-				active_camera = camera->camera_index = last_size;
+				active_camera = camera->camera_index = lastSize;
 		}
 
 		void Camera::applyWorldRotation(double x, double y, double z, double angle) {

@@ -23,9 +23,9 @@ namespace tge {
 					return;
 				}
 			}
-			last_size = (uint32_t)this->vertices.size();
+			lastSize = (uint32_t)this->vertices.size();
 			this->vertices.push_back(vert);
-			this->indices.push_back((uint32_t)last_size);
+			this->indices.push_back((uint32_t)lastSize);
 		}
 	}
 }

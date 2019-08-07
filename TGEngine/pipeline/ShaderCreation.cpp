@@ -35,10 +35,10 @@ ShaderPipe::ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
 	shader(shader),
 	inputs(const_cast<VkVertexInputAttributeDescription*>(inputs)),
 	layouts(const_cast<VkDescriptorSetLayoutBinding*>(layouts)) {
+
 	vlib_descriptor_set_layout_create_info.bindingCount = layoutCount;
 	vlib_descriptor_set_layout_create_info.pBindings = layouts;
-	this->descriptorLayout = createDesctiptorLayout();
-	this->layoutIndex = createPipelineLayout(1, &descriptorSetLayouts[this->descriptorLayout]);
+	this->layoutIndex = createLayouts();
 }
 
 void ShaderPipe::precreation() {

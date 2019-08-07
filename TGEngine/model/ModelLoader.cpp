@@ -69,25 +69,25 @@ namespace tge {
 				// Load image data
 				OUT_LV_DEBUG(image.image.size());
 				TG_VECTOR_APPEND_NORMAL(mesh->textures, tex::Texture(image.width, image.height));
-				mesh->textures[last_size].imageData = new uint8_t[image.width * image.height * 4];
+				mesh->textures[lastSize].imageData = new uint8_t[image.width * image.height * 4];
 				if (image.component == 4) {
-					memcpy(mesh->textures[last_size].imageData, image.image.data(), image.width * image.height * 4);
+					memcpy(mesh->textures[lastSize].imageData, image.image.data(), image.width * image.height * 4);
 				}
 				else {
 					for (size_t i = 0; i < image.width * image.height; i++)
 					{
-						mesh->textures[last_size].imageData[i * 4] = image.image[i * 4];
-						mesh->textures[last_size].imageData[i * 4 + 1] = image.image[i * 4 + 1];
-						mesh->textures[last_size].imageData[i * 4 + 2] = image.image[i * 4 + 2];
-						mesh->textures[last_size].imageData[i * 4 + 3] = 255;
+						mesh->textures[lastSize].imageData[i * 4] = image.image[i * 4];
+						mesh->textures[lastSize].imageData[i * 4 + 1] = image.image[i * 4 + 1];
+						mesh->textures[lastSize].imageData[i * 4 + 2] = image.image[i * 4 + 2];
+						mesh->textures[lastSize].imageData[i * 4 + 3] = 255;
 					}
 				}
 				if (tex.sampler > -1) {
 					// Set custom sampler
 					OUT_LV_DEBUG("Set custom sampler " << tex.sampler)
-					mesh->textures[last_size].sampler = mesh->samplers[tex.sampler];
+					mesh->textures[lastSize].sampler = mesh->samplers[tex.sampler];
 				}
-				mesh->textures[last_size].initTexture();
+				mesh->textures[lastSize].initTexture();
 			}
 		}
 
@@ -199,6 +199,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 								break;
 						default:
 							OUT_LV_DEBUG("Index type not supported!")
+							TGERROR(TG_ERR_INDEX_TYPE_NOT_SUPPORTED)
 							break;
 						}
 					}

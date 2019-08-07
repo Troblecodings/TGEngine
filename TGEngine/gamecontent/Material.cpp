@@ -30,6 +30,7 @@ namespace tge {
 		void Material::createMaterial() {
 
 			// TODO FIX THIS MESS
+			// Auto generated
 			VkSpecializationMapEntry* mapEntrys = new VkSpecializationMapEntry[5];
 			for (uint32_t i = 0; i < 4; i++) {
 				mapEntrys[i].constantID = i;
@@ -80,13 +81,12 @@ namespace tge {
 
 		void Material::addToBuffer(VkCommandBuffer buffer) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[this->pipelineIndex]);
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layouts[this->pipe->layoutIndex], 0, 1, &descriptor_set[this->descriptorIndex], 0, nullptr);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeLayouts[this->pipe->layoutIndex], 0, 1, &descriptorSets[this->descriptorIndex], 0, nullptr);
 		}
 
 		void Material::destroy() {
 			destroyDescriptorSet(this->descriptorIndex);
 			destroyPipeline(this->pipelineIndex);
-			destroyPipelineLayout(this->pipe->layoutIndex);
 		}
 
 		bool Material::operator==(const Material& material) {

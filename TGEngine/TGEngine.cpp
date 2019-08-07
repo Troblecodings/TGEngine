@@ -22,6 +22,9 @@ void initEngine(Window* window) {
 	createWindowSurfaces();
 	createDevice({}, {});
 	prePipeline();
+	initShader();
+	initShaderPipes();
+	initDescriptors();
 
 	tge::gmc::multiplier = (window->height / (float)window->width);
 
@@ -35,9 +38,6 @@ void initEngine(Window* window) {
 }
 
 void startTGEngine(Window* window) {
-	initDescriptors();
-	initShader();
-	initShaderPipes();
 
 	allocateAllBuffers();
 	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));

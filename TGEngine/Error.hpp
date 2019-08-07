@@ -8,7 +8,8 @@ SINCE(0, 0, 4)
 
 //Normal error codes
 #define TG_ERR_DEPTH_FORMAT_NOT_SUPPORTED -1
-#define TG_ERR_SWAPCHAIN_NOT_SUPPORTED -3
+#define TG_ERR_SWAPCHAIN_NOT_SUPPORTED -2
+#define TG_ERR_INDEX_TYPE_NOT_SUPPORTED -3
 //end
 
 #define ASSERT_NONE_NULL(ptr, msg, error) if(!ptr) { std::cout << msg << std::endl; TGERROR(error) }

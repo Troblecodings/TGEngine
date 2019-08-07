@@ -6,9 +6,10 @@
 #include "../vlib/VulkanDescriptor.hpp"
 
 extern VkDescriptorPool descriptor_pool; // holds the descriptor pool -> see initDescriptors()
-extern std::vector<VkDescriptorSet> descriptor_set; // contains the desciptorset handles from vulkan
+extern std::vector<VkDescriptorSet> descriptorSets; // contains the desciptorset handles from vulkan
 extern std::vector<VkDescriptorSetLayout> descriptorSetLayouts; // contains the desciptorsetlayout handles from vulkan
 extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings; // contains the desciptorsetlayoutbindings from vulkan
+extern std::vector<VkPipelineLayout> pipeLayouts; // contians the PipelineLayouts
 
 extern uint32_t uniform_count; // holds the count of uniform buffer Descriptor objects
 extern uint32_t image_sampler_count; // holds the count of image sampler buffer Descriptor objects
@@ -96,7 +97,7 @@ SINCE(0, 0, 4)
 void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags);
 
 /*
- * Creates a descriptor layout
+ * Creates a descriptor layout and it's according pipeline layout
  *    -> returns the index of the descriptor
  *
  * - Note: for VkDescriptorSetLayout see the Vulkan docs
@@ -104,7 +105,7 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
  */
 INTERNAL
 SINCE(0, 0, 4)
-uint32_t createDesctiptorLayout();
+uint32_t createLayouts();
 
 /*
  * Creates Descriptor Set
