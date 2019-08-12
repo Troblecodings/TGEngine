@@ -5,7 +5,7 @@ layout(constant_id = 0) const float r = 0.2;
 layout(constant_id = 1) const float g = 0.2;
 layout(constant_id = 2) const float b = 0.2;
 layout(constant_id = 3) const float a = 1.0;
-layout(constant_id = 4) const uint maxlights = 3;
+layout(constant_id = 4) const uint maxlights = 100;
 
 struct Light {
     vec3 pos;

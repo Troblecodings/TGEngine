@@ -15,20 +15,17 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
 }
 
 void initDescriptors() {
-	vlib_descriptor_pool_create_info.poolSizeCount = (uniform_count > 0 ? 1 : 0) + (image_sampler_count > 0 ? 1 : 0);
+	vlib_descriptor_pool_create_info.poolSizeCount = 2;
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlib_descriptor_pool_create_info.poolSizeCount];
 
-	if(uniform_count > 0) {
-		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		vlib_descriptor_pool_size.descriptorCount = uniform_count;
-		sizes[0] = vlib_descriptor_pool_size;
-	}
 
-	if(image_sampler_count > 0) {
-		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		vlib_descriptor_pool_size.descriptorCount = image_sampler_count;
-		sizes[vlib_descriptor_pool_create_info.poolSizeCount - 1] = vlib_descriptor_pool_size;
-	}
+	vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetUniformBuffers, 20);
+	sizes[0] = vlib_descriptor_pool_size;
+
+	vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetSamplers, 20);
+	sizes[1] = vlib_descriptor_pool_size;
 
 	vlib_descriptor_pool_create_info.pPoolSizes = sizes;
 	lastResult = vkCreateDescriptorPool(device, &vlib_descriptor_pool_create_info, nullptr, &descriptor_pool);
