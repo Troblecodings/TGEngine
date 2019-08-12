@@ -24,7 +24,6 @@ void initEngine(Window* window) {
 	prePipeline();
 	initShader();
 	initShaderPipes();
-	initDescriptors();
 
 	tge::gmc::multiplier = (window->height / (float)window->width);
 
@@ -35,6 +34,7 @@ void initEngine(Window* window) {
 	tge::gmc::initLight();
 	tge::gmc::initCameras();
 	initAllTextures();
+	initDescriptors();
 }
 
 void startTGEngine(Window* window) {

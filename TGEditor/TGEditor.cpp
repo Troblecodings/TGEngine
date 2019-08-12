@@ -15,8 +15,11 @@ int main(int argc, char** args) {
 	initEngine(&editor.main_window);
 	tge::gmc::Actor actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\CesiumMilkTruck\\glTF\\CesiumMilkTruck.gltf", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\BoomBox\\glTF\\BoomBox.gltf", &actor2);
 	tge::gmc::actors.push_back(&actor2);
+	actor2.preScale(15, 15, 15)->preRotate(PI / 2, 0, 1.0, 0)->prePos(0, 0.1, 0)->applyPretransform();
+
+	tge::gmc::Material material = tge::gmc::Material(&ColorOnlyNormalPipe);
 
 	std::cout << "Starting Editor" << std::endl;
 
