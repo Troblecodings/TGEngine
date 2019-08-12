@@ -25,12 +25,10 @@ public:
 	INTERNAL
 		SINCE(0, 0, 4)
 		Descriptor() {} // Default constructor -> doing nothing
-	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset);
+	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), type(type), binding(binding), descriptorset(descriptorset) {}
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding) : Descriptor(stage, type, binding, 0) {}
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type) : Descriptor(stage, type, 0) {}
 	Descriptor(VkDescriptorType type) : Descriptor(VK_SHADER_STAGE_VERTEX_BIT, type) {}
-
-	~Descriptor();
 
 	uint32_t descriptorset = 0; // the descriptor set this is updating in
 	uint32_t binding = 0;  // the binding within the shader

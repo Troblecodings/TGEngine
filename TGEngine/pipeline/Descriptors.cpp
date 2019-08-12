@@ -76,27 +76,6 @@ void destroyDescriptors() {
 	descriptorSetLayouts.clear();
 };
 
-Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), binding(binding), type(type), descriptorset(descriptorset) {
-	if(this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-		uniform_count++;
-	} else if(this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-		image_sampler_count++;
-	}
-}
-
-Descriptor::~Descriptor() {
-	// TODO Destructor
-
-	//if (this->shaderstage == VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM) return;
-
-	//if (this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-	//	uniform_count--;
-	//}
-	//else if (this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-	//	image_sampler_count--;
-	//}
-}
-
 void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {
 	if(this->type != VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) return;
 	update();
