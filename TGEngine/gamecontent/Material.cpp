@@ -72,6 +72,11 @@ namespace tge {
 				tex::textureDescriptor.binding = 2;
 				this->texture->updateDescriptor();
 			}
+
+			OUT_LV_DEBUG("=======================")
+				OUT_LV_DEBUG(this->pipelineIndex)
+				OUT_LV_DEBUG(this->descriptorIndex)
+				OUT_LV_DEBUG(this->pipe->layoutIndex)
 		}
 
 		void Material::setColor(glm::vec4 color) {
@@ -81,6 +86,10 @@ namespace tge {
 
 		void Material::addToBuffer(VkCommandBuffer buffer) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[this->pipelineIndex]);
+			OUT_LV_DEBUG("=======================")
+			OUT_LV_DEBUG(this->pipelineIndex)
+			OUT_LV_DEBUG(this->descriptorIndex)
+			OUT_LV_DEBUG(this->pipe->layoutIndex)
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeLayouts[this->pipe->layoutIndex], 0, 1, &descriptorSets[this->descriptorIndex], 0, nullptr);
 		}
 

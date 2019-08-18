@@ -65,9 +65,6 @@ void startTGEngine(Window* window) {
 
 	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
 		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
-		for each (tge::gmc::Material mat in tge::gmc::actors[i]->materials) {
-			mat.createMaterial();
-		}
 	}
 	OUT_LV_DEBUG(tge::gmc::materiallist.size())
 		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {
@@ -85,6 +82,13 @@ void startTGEngine(Window* window) {
 
 	main_buffer.end();
 	index_buffer.end();
+
+	for (size_t i = 0; i < tge::gmc::actors.size(); i++) {
+		for (size_t j = 0; j < tge::gmc::actors[i]->materials.size(); j++)
+		{
+			(&tge::gmc::actors[i]->materials[j])->createMaterial();
+		}
+	}
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 

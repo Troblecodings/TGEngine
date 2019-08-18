@@ -141,7 +141,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 		static void loadNodes(tinygltf::Model* model, gmc::Actor* mesh) {
 			for each (tinygltf::Node node in model->nodes) {
 				if (node.mesh < 0) continue;
-				tinygltf::Mesh msh = model->meshes[node.mesh];
+				const tinygltf::Mesh msh = model->meshes[node.mesh];
 				mesh->mesh = new tge::gmc::Mesh();
 				for each (tinygltf::Primitive prim in msh.primitives)
 				{

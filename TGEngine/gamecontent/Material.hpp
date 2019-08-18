@@ -25,8 +25,8 @@ namespace tge {
 				glm::vec4 color = glm::vec4(1.0f);
 				tex::Texture* texture = nullptr;
 
-				uint32_t pipelineIndex = 0;
-				uint32_t descriptorIndex = 0;
+				uint32_t pipelineIndex;
+				uint32_t descriptorIndex;
 
 				MaterialType type = BASIC_MAT_TYPE;
 
