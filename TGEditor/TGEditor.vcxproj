@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -155,7 +155,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin;$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -185,7 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32;%(AdditionalLibraryDirectories);$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -215,7 +215,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin;$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>

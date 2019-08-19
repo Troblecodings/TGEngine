@@ -34,7 +34,6 @@
     <ClInclude Include="io\Font.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
-    <ClInclude Include="model\FBX_Loader.hpp" />
     <ClInclude Include="model\ModelLoader.hpp" />
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp" />
     <ClInclude Include="pipeline\CommandBuffer.hpp" />
@@ -90,7 +89,6 @@
     <ClCompile Include="io\Font.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
-    <ClCompile Include="model\FBX_Loader.cpp" />
     <ClCompile Include="model\ModelLoader.cpp" />
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
@@ -238,13 +236,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -263,14 +261,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;DEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -291,13 +289,13 @@ python setup.py 3 0</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -318,13 +316,13 @@ python setup.py 3 0</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib</AdditionalDependencies>
+      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>

@@ -20,11 +20,11 @@ void initDescriptors() {
 
 
 	vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetUniformBuffers, 20);
+	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetUniformBuffers, 100);
 	sizes[0] = vlib_descriptor_pool_size;
 
 	vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetSamplers, 20);
+	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetSamplers, 100);
 	sizes[1] = vlib_descriptor_pool_size;
 
 	vlib_descriptor_pool_create_info.pPoolSizes = sizes;

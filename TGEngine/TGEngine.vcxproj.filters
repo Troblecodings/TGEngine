@@ -144,9 +144,6 @@
     <ClInclude Include="Resources\ShaderData.hpp">
       <Filter>resources</Filter>
     </ClInclude>
-    <ClInclude Include="model\FBX_Loader.hpp">
-      <Filter>Headerdateien\model</Filter>
-    </ClInclude>
     <ClInclude Include="io\Files.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
@@ -319,9 +316,6 @@
     </ClCompile>
     <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="model\FBX_Loader.cpp">
-      <Filter>Quelldateien\model</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\DepthStencil.cpp">
       <Filter>Quelldateien\pipeline</Filter>

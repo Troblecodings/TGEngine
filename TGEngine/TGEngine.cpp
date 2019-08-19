@@ -54,7 +54,7 @@ void startTGEngine(Window* window) {
 	createVertexBuffer(&main_buffer);
 
 	IndexBuffer index_buffer = {};
-	index_buffer.size = 9000000;
+	index_buffer.size = 90000000;
 	createIndexBuffer(&index_buffer);
 	createCommandBuffer();
 
@@ -96,9 +96,6 @@ void startTGEngine(Window* window) {
 	createSemaphores();
 
 	clock_t last_time = clock();
-
-	// Testing
-	uint32_t count = 0;
 
 	while(true) {
 		window->pollevents();
@@ -145,14 +142,6 @@ void startTGEngine(Window* window) {
 				&vlib_buffer_copy
 			);
 			endSingleTimeCommand();
-#ifndef DEBUG
-			// Testing
-			count++;
-			if (count > 5) {
-				exit(0);
-			}
-			//
-#endif // !DEBUG
 		}
 
 		submit(&index_buffer, &main_buffer);

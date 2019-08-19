@@ -3,6 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE
+//#define TINYGLTF_ENABLE_DRACO
 #include "../tinygltf/tiny_gltf.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "../resources/ShaderPipes.hpp"
@@ -111,6 +112,11 @@ namespace tge {
 				}
 				else if (colorFactor != mat.values.end()) {
 					gmc::Material material = gmc::Material(glm::make_vec4(colorFactor->second.ColorFactor().data()));
+					mesh->materials.push_back(material);
+				}
+				else {
+					// TODO Make this default Material ...
+					gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
 					mesh->materials.push_back(material);
 				}
 #ifdef DEBUG

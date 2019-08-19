@@ -2,7 +2,6 @@
 
 #include "../Stdbase.hpp"
 #include "../pipeline/buffer/VertexBuffer.hpp"
-#include <fbxsdk.h>
 #include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../Error.hpp"
 #include "../gamecontent/Mesh.hpp"

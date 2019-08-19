@@ -18,6 +18,9 @@ with open(cwd + "\\2.0\\model-index.json", "r") as index:
         result.write(obj["name"] + "\n")
         nofail = True
         for vari in obj["variants"]:
+            if vari == "glTF-Draco":
+                print("Skipping draco")
+                continue
             filename = obj["variants"][vari]
             pth = cwd + "\\2.0\\" + obj["name"] + "\\" + vari + "\\" + filename
             exe = cwd + "/../../run/x64/Release/TGEditor.exe"
@@ -55,7 +58,7 @@ for x in cats:
         result.write(x + " Failed all " + str(catsf[x]) + "\n")
         continue
     if x in catsf:
-        result.write(x + ": Success " + str(cats[x]) + " (" + str(round(cats[x] / (cats[x] + catsf[x]) * 100)) + ")\n")
+        result.write(x + ": Success " + str(cats[x]) + " (" + str(round(cats[x] / (cats[x] + catsf[x]) * 100)) + "%)\n")
     else:
         result.write(x + ": Succeded all " + str(cats[x]) + "\n")
 
