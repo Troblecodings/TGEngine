@@ -25,6 +25,7 @@ namespace tge {
 			case 33648:
 				return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
 			}
+			return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 		}
 
 		static VkFilter getVkFilterMode(int32_t filterMode)
@@ -43,6 +44,7 @@ namespace tge {
 			case 9987:
 				return VK_FILTER_LINEAR;
 			}
+			return VK_FILTER_LINEAR;
 		}
     // [END]
 

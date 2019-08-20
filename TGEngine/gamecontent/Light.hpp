@@ -20,12 +20,12 @@ namespace tge {
 		class LightActor {
 
 		private:
-			glm::vec3 pos;
-			glm::vec3 intensity;
+			glm::vec4 pos;
+			glm::vec4 intensity;
 			uint32_t id;
 
 		public:
-			LightActor(glm::vec3 intensity, glm::vec3 pos);
+			LightActor(uint32_t intensity, glm::vec3 color, glm::vec3 pos);
 
 			void updateLight();
 		};

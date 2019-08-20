@@ -121,6 +121,10 @@ void startTGEngine(Window* window) {
 			main_buffer.end();
 			index_buffer.end();
 
+			for each (tge::gmc::LightActor * var in tge::gmc::lights) {
+				var->updateLight();
+			}
+
 			startSingleTimeCommand();
 			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
 			vlib_buffer_copy.size = main_buffer.pointCount * VERTEX_SIZE;

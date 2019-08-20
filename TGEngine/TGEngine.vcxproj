@@ -211,24 +211,28 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -254,6 +258,11 @@
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
+      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -275,11 +284,11 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
-    <PreBuildEvent>
-      <Command>cd $(ProjectDir)..\
-python setup.py 3 0</Command>
-      <Message>Build shader</Message>
-    </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
+      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -307,6 +316,11 @@ python setup.py 3 0</Command>
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
+      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -334,6 +348,11 @@ python setup.py 3 0</Command>
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
+      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
