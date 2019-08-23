@@ -26,7 +26,7 @@ namespace tge {
 		}
 
 		Actor* Actor::prePos(float x, float y, float z) {
-			this->model_matrix = glm::translate(this->model_matrix, glm::vec3(x, y, z));
+			this->model_matrix = glm::translate(glm::mat4(1), glm::vec3(x, y, z));
 			return this;
 		}
 		void AABB::print()

@@ -2,16 +2,12 @@
 
 #include <Stdbase.hpp>
 
-#include <model/FBX_Loader.hpp>
 #include <TGEngine.hpp>
-#include <pipeline/CommandBuffer.hpp>
 #include <util/TGVertex.hpp>
 #include <gamecontent/Mesh.hpp>
 #include <gamecontent/Material.hpp>
 #include <gamecontent/FirstPersonCamera.hpp>
 #include <gamecontent/StaticCamera.hpp>
-#include <ui/UITextureComponent.hpp>
-#include <ui/UITextComponent.hpp>
 
 using namespace tge::ui;
 

@@ -254,8 +254,8 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			loadTextures(&model, mesh);
 			loadMaterials(&model, mesh);
 			loadNodes(&model, mesh);
-			
-#ifdef DEBUG // AABB Calculation
+
+			// AABB Calculation
 			tge::gmc::AABB aabb = { mesh->mesh->vertices[0].position, mesh->mesh->vertices[0].position };
 
 			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
@@ -272,12 +272,11 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			mesh->aabb = aabb;
 			aabb.print();
 
-			float ox = glm::distance(aabb.max.y, aabb.min.z) / 2;
-			float oy = glm::distance(aabb.max.z, aabb.min.y) / 2;
-			float oz = glm::distance(aabb.max.x, aabb.min.x) / 2;
+			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
 			
-			mesh->prePos(-(ox + aabb.min.x), -(oy + aabb.min.y), -(oz + aabb.min.z))->applyPretransform();
+			mesh->prePos(offset.x, offset.y, offset.z)->applyPretransform();
 
+#ifdef DEBUG
 			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
 			{
 				glm::vec3 vert = mesh->mesh->vertices[i].position;
@@ -290,7 +289,8 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 				aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
 			}
 			aabb.print();
-#endif
+#endif // DEBUG
+
 		}
 	}
 }
