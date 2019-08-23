@@ -151,7 +151,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin;$(ProjectDir)..\TGEngine\run\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;TGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <ProjectReference>

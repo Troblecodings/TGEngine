@@ -9,12 +9,20 @@
 namespace tge {
 	namespace gmc {
 
+		struct AABB {
+			glm::vec3 min;
+			glm::vec3 max;
+
+			void print();
+		};
+
 		struct Mesh;
 
 		class Actor {
 		public:
 			Mesh* mesh;
 			Actor* parent;
+			AABB aabb;
 			size_t _impl_array_pos;
 			glm::mat4 model_matrix = glm::mat4(1.0f);
 

@@ -1,5 +1,4 @@
 #include "TGEditor.hpp"
-#include <io/Font.hpp>
 #include <gamecontent/Light.hpp>
 #include <model/ModelLoader.hpp>
 
@@ -11,16 +10,17 @@ UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main(int argc, char** args) {
 	Editor editor = Editor();
-	tge::gmc::createFirstPersonCamera(&camera);
+	tge::gmc::createStaticCamera(&camera);
 	initEngine(&editor.main_window);
 	tge::gmc::Actor actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Buggy\\glTF\\Buggy.gltf", &actor2);
+	//actor2.prePos(0, 77, 0);
 	tge::gmc::actors.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
 
-	tge::gmc::LightActor light = tge::gmc::LightActor(2, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
+	tge::gmc::LightActor light = tge::gmc::LightActor(1, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
 	tge::gmc::lights.push_back(&light);
 
 	startTGEngine(&editor.main_window);

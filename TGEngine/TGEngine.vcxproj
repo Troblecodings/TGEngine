@@ -277,7 +277,7 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>draco.lib;SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>

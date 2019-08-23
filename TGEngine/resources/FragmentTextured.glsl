@@ -51,7 +51,7 @@ void main(){
         Light light = lights.lights[i];
         vec3 delta = light.pos.xyz - pos;
         float dist = sqrt(dot(delta, delta));
-        vec3 lightM = light.intensity.xyz * fall(dist) * window(dist, light) * light.intensity.w;
+        vec3 lightM = light.intensity.xyz * (fall(dist) * window(dist, light) * clamp(light.intensity.w, 0, 2));
         lightMultiplier += lightM;
     }
     colorOut = applyLight(lightMultiplier);

@@ -7,6 +7,7 @@
 #include "../tinygltf/tiny_gltf.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "../resources/ShaderPipes.hpp"
+#include "../util/Math.hpp"
 
 namespace tge {
 	namespace mdl {
@@ -254,6 +255,42 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			loadMaterials(&model, mesh);
 			loadNodes(&model, mesh);
 			
+#ifdef DEBUG // AABB Calculation
+			tge::gmc::AABB aabb = { mesh->mesh->vertices[0].position, mesh->mesh->vertices[0].position };
+
+			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
+			{
+				glm::vec3 vert = mesh->mesh->vertices[i].position;
+				aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
+				aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
+				aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
+
+				aabb.min.x = TGE_MIN(aabb.min.x, vert.x);
+				aabb.min.y = TGE_MIN(aabb.min.y, vert.y);
+				aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
+			}
+			mesh->aabb = aabb;
+			aabb.print();
+
+			float ox = glm::distance(aabb.max.y, aabb.min.z) / 2;
+			float oy = glm::distance(aabb.max.z, aabb.min.y) / 2;
+			float oz = glm::distance(aabb.max.x, aabb.min.x) / 2;
+			
+			mesh->prePos(-(ox + aabb.min.x), -(oy + aabb.min.y), -(oz + aabb.min.z))->applyPretransform();
+
+			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
+			{
+				glm::vec3 vert = mesh->mesh->vertices[i].position;
+				aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
+				aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
+				aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
+
+				aabb.min.x = TGE_MIN(aabb.min.x, vert.x);
+				aabb.min.y = TGE_MIN(aabb.min.y, vert.y);
+				aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
+			}
+			aabb.print();
+#endif
 		}
 	}
 }
