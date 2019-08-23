@@ -30,7 +30,7 @@ namespace tge {
 		void Material::createMaterial() {
 
 			// TODO FIX THIS MESS
-			// Auto generated
+			// Auto generate
 			VkSpecializationMapEntry* mapEntrys = new VkSpecializationMapEntry[5];
 			for (uint32_t i = 0; i < 4; i++) {
 				mapEntrys[i].constantID = i;

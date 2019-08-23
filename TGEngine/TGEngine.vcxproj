@@ -219,6 +219,7 @@
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
     <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>ResourceCompile</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

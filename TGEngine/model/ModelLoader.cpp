@@ -275,22 +275,6 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
 			
 			mesh->prePos(offset.x, offset.y, offset.z)->applyPretransform();
-
-#ifdef DEBUG
-			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
-			{
-				glm::vec3 vert = mesh->mesh->vertices[i].position;
-				aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
-				aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
-				aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
-
-				aabb.min.x = TGE_MIN(aabb.min.x, vert.x);
-				aabb.min.y = TGE_MIN(aabb.min.y, vert.y);
-				aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
-			}
-			aabb.print();
-#endif // DEBUG
-
 		}
 	}
 }
