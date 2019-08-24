@@ -97,6 +97,8 @@ void startTGEngine(Window* window) {
 
 	clock_t last_time = clock();
 
+	uint32_t counter = 0;
+
 	while(true) {
 		window->pollevents();
 		if(window->close_request) {
@@ -150,6 +152,12 @@ void startTGEngine(Window* window) {
 
 		submit(&index_buffer, &main_buffer);
 		present(&index_buffer, &main_buffer);
+
+		// TESTING
+		if (counter > 5) {
+	//		exit(0);
+		}
+		counter++;
 	}
 
 	destroyAllTextures();

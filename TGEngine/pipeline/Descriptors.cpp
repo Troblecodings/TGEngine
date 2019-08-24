@@ -14,10 +14,11 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
 	descriptor_bindings.push_back({ binding, type, 1, flags });
 }
 
+// TODO switch back to global texture binding for 3D 2D and so on ... map on same binding
+
 void initDescriptors() {
 	vlib_descriptor_pool_create_info.poolSizeCount = 2;
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlib_descriptor_pool_create_info.poolSizeCount];
-
 
 	vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	vlib_descriptor_pool_size.descriptorCount = TGE_MIN(device_properties.limits.maxDescriptorSetUniformBuffers, 100);
