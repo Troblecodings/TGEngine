@@ -20,10 +20,12 @@ namespace tge {
 		SINCE(0, 0, 4)
 			class Material {
 
-			protected:
-				ShaderPipe* pipe = nullptr;
+			public:
+				ShaderPipe* pipe = &TexturedBasicPipe;
 				glm::vec4 color = glm::vec4(1.0f);
 				tex::Texture* texture = nullptr;
+
+				bool doubleSided = false;
 
 				uint32_t pipelineIndex;
 				uint32_t descriptorIndex;
@@ -32,6 +34,7 @@ namespace tge {
 
 			public:
 
+				Material() {}
 				Material(tex::Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
 				Material(glm::vec4 color) : Material(nullptr, color) {}
 				Material(tex::Texture* texture, glm::vec4 color);

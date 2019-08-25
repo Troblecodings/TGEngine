@@ -260,7 +260,7 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
       <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
       <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
     </CustomBuildStep>
@@ -286,7 +286,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
       <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
       <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
     </CustomBuildStep>
@@ -318,7 +318,7 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
       <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
       <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
     </CustomBuildStep>
@@ -350,7 +350,7 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\Debug\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
       <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
       <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
     </CustomBuildStep>

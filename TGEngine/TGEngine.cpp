@@ -35,16 +35,16 @@ void initEngine(Window* window) {
 	tge::gmc::initCameras();
 	initAllTextures();
 	initDescriptors();
-}
-
-void startTGEngine(Window* window) {
 
 	allocateAllBuffers();
 	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
 
-	for each(tge::gmc::LightActor * var in tge::gmc::lights) {
+	for each (tge::gmc::LightActor * var in tge::gmc::lights) {
 		var->updateLight();
 	}
+}
+
+void startTGEngine(Window* window) {
 
 	createSwapchain();
 	createFramebuffer();
@@ -82,13 +82,6 @@ void startTGEngine(Window* window) {
 
 	main_buffer.end();
 	index_buffer.end();
-
-	for (size_t i = 0; i < tge::gmc::actors.size(); i++) {
-		for (size_t j = 0; j < tge::gmc::actors[i]->materials.size(); j++)
-		{
-			(&tge::gmc::actors[i]->materials[j])->createMaterial();
-		}
-	}
 
 	fillCommandBuffer(&index_buffer, &main_buffer);
 

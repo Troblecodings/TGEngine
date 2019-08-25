@@ -56,6 +56,11 @@ namespace tge {
 			//
 
 			this->pipe->precreation();
+			if (this->doubleSided) 
+				vlibRasterizationState.cullMode = VK_CULL_MODE_NONE;
+			else
+				vlibRasterizationState.cullMode = VK_CULL_MODE_BACK_BIT;
+
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
 			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);

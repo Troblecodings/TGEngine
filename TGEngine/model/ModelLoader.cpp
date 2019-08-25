@@ -108,20 +108,27 @@ namespace tge {
 				auto colorTex = mat.values.find("baseColorTexture");
 				auto colorFactor = mat.values.find("baseColorFactor");
 
+				auto doubleSided = mat.additionalValues.find("doubleSided");
+
+				gmc::Material material;
+
 				if (colorTex != mat.values.end()) {
-					gmc::Material material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()], 
+					material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()], 
 						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()):glm::vec4(1));
-					mesh->materials.push_back(material);
 				}
 				else if (colorFactor != mat.values.end()) {
 					gmc::Material material = gmc::Material(glm::make_vec4(colorFactor->second.ColorFactor().data()));
-					mesh->materials.push_back(material);
 				}
 				else {
 					// TODO Make this default Material ...
 					gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
-					mesh->materials.push_back(material);
 				}
+
+				if (doubleSided != mat.additionalValues.end())
+					material.doubleSided = doubleSided->second.bool_value;
+
+				material.createMaterial();
+				mesh->materials.push_back(material);
 #ifdef DEBUG
 				for (auto ptr = mat.values.begin(); ptr != mat.values.end(); ptr++) {
 					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
