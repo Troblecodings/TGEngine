@@ -64,7 +64,10 @@ void startTGEngine(Window* window) {
 	index_buffer.start();
 
 	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
-		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
+		for (size_t j = 0; j < tge::gmc::actors[i]->meshes.size(); j++)
+		{
+			tge::gmc::actors[i]->meshes[j]->consume(&main_buffer, &index_buffer);
+		}
 	}
 	OUT_LV_DEBUG(tge::gmc::materiallist.size())
 		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {
@@ -148,7 +151,7 @@ void startTGEngine(Window* window) {
 
 		// TESTING
 		if (counter > 5) {
-	//		exit(0);
+		//	exit(0);
 		}
 		counter++;
 	}

@@ -6,27 +6,26 @@ namespace tge {
 		std::vector<Actor*> actors;
 
 		void Actor::applyPretransform() {
-			for(size_t i = 0; i < mesh->vertices.size(); i++) {
-				mesh->vertices[i] = {
-					glm::vec3(this->model_matrix * glm::vec4(mesh->vertices[i].position, 1)),
-					mesh->vertices[i].uv,
-					mesh->vertices[i].normal
-				};
+			for(size_t i = 0; i < this->meshes.size(); i++) {
+				for (size_t j = 0; j < this->meshes[i]->vertices.size(); j++)
+				{
+					this->meshes[i]->vertices[j].position = glm::vec3(this->mats[i] * (this->matrix * glm::vec4(this->meshes[i]->vertices[j].position, 1)));
+				}
 			}
 		}
 
 		Actor* Actor::preRotate(float angle, float x, float y, float z) {
-			this->model_matrix = glm::rotate(this->model_matrix, angle, glm::vec3(x, y, z));
+			this->matrix = glm::rotate(this->matrix, angle, glm::vec3(x, y, z));
 			return this;
 		}
 
 		Actor* Actor::preScale(float x, float y, float z) {
-			this->model_matrix = glm::scale(this->model_matrix, glm::vec3(x, y, z));
+			this->matrix = glm::scale(this->matrix, glm::vec3(x, y, z));
 			return this;
 		}
 
 		Actor* Actor::prePos(float x, float y, float z) {
-			this->model_matrix = glm::translate(glm::mat4(1), glm::vec3(x, y, z));
+			this->matrix = glm::translate(glm::mat4(1), glm::vec3(x, y, z));
 			return this;
 		}
 		void AABB::print()

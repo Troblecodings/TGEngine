@@ -14,8 +14,8 @@ namespace tge {
 
 		using namespace tinygltf;
 
-	// MIT License by Sascha Willems
-	// Changes: made the methodes static
+		// MIT License by Sascha Willems
+		// Changes: made the methodes static
 		static VkSamplerAddressMode getVkWrapMode(int32_t wrapMode)
 		{
 			switch (wrapMode) {
@@ -47,16 +47,16 @@ namespace tge {
 			}
 			return VK_FILTER_LINEAR;
 		}
-    // [END]
+		// [END]
 
-		// Load sampler
+			// Load sampler
 		static void loadSampler(tinygltf::Model* model, gmc::Actor* mesh) {
 			mesh->samplers.resize(model->samplers.size());
 			for (size_t i = 0; i < mesh->samplers.size(); i++)
 			{
 				Sampler sampler = model->samplers[i];
 				OUT_LV_DEBUG("Load sampler " << sampler.name << " id = " << i)
-				vlibSamplerCreateInfo.minFilter = getVkFilterMode(sampler.minFilter);
+					vlibSamplerCreateInfo.minFilter = getVkFilterMode(sampler.minFilter);
 				vlibSamplerCreateInfo.magFilter = getVkFilterMode(sampler.magFilter);
 				vlibSamplerCreateInfo.addressModeU = getVkWrapMode(sampler.wrapS);
 				vlibSamplerCreateInfo.addressModeV = getVkWrapMode(sampler.wrapT);
@@ -67,9 +67,9 @@ namespace tge {
 
 		// Loads textures
 		static void loadTextures(tinygltf::Model* model, gmc::Actor* mesh) {
-			for each(tinygltf::Texture tex in model->textures) {
+			for each (tinygltf::Texture tex in model->textures) {
 				OUT_LV_DEBUG("Load texture " << tex.name)
-				tinygltf::Image image = model->images[tex.source];
+					tinygltf::Image image = model->images[tex.source];
 				// Load image data
 				OUT_LV_DEBUG(image.image.size());
 				TG_VECTOR_APPEND_NORMAL(mesh->textures, tex::Texture(image.width, image.height));
@@ -89,7 +89,7 @@ namespace tge {
 				if (tex.sampler > -1) {
 					// Set custom sampler
 					OUT_LV_DEBUG("Set custom sampler " << tex.sampler)
-					mesh->textures[lastSize].sampler = mesh->samplers[tex.sampler];
+						mesh->textures[lastSize].sampler = mesh->samplers[tex.sampler];
 				}
 				mesh->textures[lastSize].initTexture();
 			}
@@ -100,12 +100,13 @@ namespace tge {
 			if (model->materials.size() < 1) {
 				// TODO Make this default Material ...
 				gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
+				material.createMaterial();
 				mesh->materials.push_back(material);
 				return;
 			}
 			for each (tinygltf::Material mat in model->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
-				auto colorTex = mat.values.find("baseColorTexture");
+					auto colorTex = mat.values.find("baseColorTexture");
 				auto colorFactor = mat.values.find("baseColorFactor");
 
 				auto doubleSided = mat.additionalValues.find("doubleSided");
@@ -113,8 +114,8 @@ namespace tge {
 				gmc::Material material;
 
 				if (colorTex != mat.values.end()) {
-					material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()], 
-						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()):glm::vec4(1));
+					material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()],
+						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()) : glm::vec4(1));
 				}
 				else if (colorFactor != mat.values.end()) {
 					gmc::Material material = gmc::Material(glm::make_vec4(colorFactor->second.ColorFactor().data()));
@@ -134,9 +135,9 @@ namespace tge {
 					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
 				}
 				OUT_LV_DEBUG("Additional")
-				for (auto ptr = mat.additionalValues.begin(); ptr != mat.additionalValues.end(); ptr++) {
-					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
-				}
+					for (auto ptr = mat.additionalValues.begin(); ptr != mat.additionalValues.end(); ptr++) {
+						OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
+					}
 #endif // DEBUG
 			}
 		}
@@ -151,84 +152,99 @@ if (prim.attributes.find(cname) != prim.attributes.end()) {\
 #define ADD_INDEX(type) {const type* buf = static_cast<const type*>(indexBuffer);\
 for (size_t i = 0; i < indexAccessor.count; i++)\
 {\
-	mesh->mesh->indices.push_back((uint32_t) buf[i]);\
+	mesh->indices.push_back((uint32_t) buf[i]);\
 }}
 
-		static void loadNodes(tinygltf::Model* model, gmc::Actor* mesh) {
-			for each (tinygltf::Node node in model->nodes) {
-				if (node.mesh < 0) continue;
-				const tinygltf::Mesh msh = model->meshes[node.mesh];
-				mesh->mesh = new tge::gmc::Mesh();
-				for each (tinygltf::Primitive prim in msh.primitives)
-				{
-#ifdef DEBUG
-					for (auto ptr = prim.attributes.begin(); ptr != prim.attributes.end(); ptr++) {
-						OUT_LV_DEBUG(ptr->first << " = " << ptr->second)
-					}
-#endif // DEBUG
-					if (prim.attributes.find("POSITION") == prim.attributes.end()) {
-						OUT_LV_DEBUG("Pos attributes not found!");
-						continue;
-					}
-
-					const tinygltf::Accessor& posAccessor = model->accessors[prim.attributes.find("POSITION")->second];
-					const tinygltf::BufferView& posView = model->bufferViews[posAccessor.bufferView];
-					const float* posBuffer = reinterpret_cast<const float*>(&(model->buffers[posView.buffer].data[posAccessor.byteOffset + posView.byteOffset]));
-
-					FIND(normal, float, "NORMAL")
-					FIND(uv, float, "TEXCOORD_0")
-
-					// TODO TANGENT? UV_1? JOINTS? WEIGHT? ...
-
-					gmc::RenderOffsets offset;
-
-					for (size_t i = 0; i < posAccessor.count; i++)
+		static void loadNodes(tinygltf::Model* model, gmc::Actor* actor) {
+			actor->meshes.resize(model->nodes.size());
+			actor->mats.resize(model->nodes.size());
+			for (size_t i = 0; i < actor->meshes.size(); i++)
+			{
+				tge::gmc::Mesh* mesh = new tge::gmc::Mesh();
+				tinygltf::Node node = model->nodes[i];
+				if (node.mesh > -1) {
+					const tinygltf::Mesh msh = model->meshes[model->nodes[i].mesh];
+					for each (tinygltf::Primitive prim in msh.primitives)
 					{
-						TGVertex vert = {
-							glm::make_vec3(&posBuffer[i * 3]),
-							uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]):glm::vec2(0),
-							normalBuffer ? glm::normalize(glm::make_vec3( &normalBuffer[i * 3])):glm::vec3(0)
-						};
-						mesh->mesh->vertices.push_back(vert);
-					}
-
-					offset.material = prim.material < 0 ? 0:prim.material;
-					offset.offset = mesh->mesh->indices.size();
-
-					if (prim.indices > -1) {
-						const tinygltf::Accessor& indexAccessor = model->accessors[prim.indices];
-						const tinygltf::BufferView& indexView = model->bufferViews[indexAccessor.bufferView];
-						const void* indexBuffer = &(model->buffers[indexView.buffer].data[indexAccessor.byteOffset + indexView.byteOffset]);
-
-						offset.size = indexAccessor.count;
-
-						switch (indexAccessor.componentType)
-						{
-						case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
-							ADD_INDEX(uint32_t)
-							break;
-						case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
-							ADD_INDEX(uint16_t)
-								break;
-						case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
-							ADD_INDEX(uint8_t)
-								break;
-						default:
-							OUT_LV_DEBUG("Index type not supported!")
-							TGERROR(TG_ERR_INDEX_TYPE_NOT_SUPPORTED)
-							break;
+#ifdef DEBUG
+						for (auto ptr = prim.attributes.begin(); ptr != prim.attributes.end(); ptr++) {
+							OUT_LV_DEBUG(ptr->first << " = " << ptr->second)
 						}
+#endif // DEBUG
+						if (prim.attributes.find("POSITION") == prim.attributes.end()) {
+							OUT_LV_DEBUG("Pos attributes not found!");
+							continue;
+						}
+
+						const tinygltf::Accessor& posAccessor = model->accessors[prim.attributes.find("POSITION")->second];
+						const tinygltf::BufferView& posView = model->bufferViews[posAccessor.bufferView];
+						const float* posBuffer = reinterpret_cast<const float*>(&(model->buffers[posView.buffer].data[posAccessor.byteOffset + posView.byteOffset]));
+
+						FIND(normal, float, "NORMAL")
+							FIND(uv, float, "TEXCOORD_0")
+
+							// TODO TANGENT? UV_1? JOINTS? WEIGHT? ...
+							gmc::RenderOffsets offset;
+						offset.material = prim.material < 0 ? 0 : prim.material;
+						offset.offset = mesh->indices.size();
+
+						if (prim.indices > -1) {
+							for (size_t i = 0; i < posAccessor.count; i++)
+							{
+								TGVertex vert = {
+									glm::make_vec3(&posBuffer[i * 3]),
+									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
+									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
+								};
+								mesh->vertices.push_back(vert);
+							}
+
+							const tinygltf::Accessor& indexAccessor = model->accessors[prim.indices];
+							const tinygltf::BufferView& indexView = model->bufferViews[indexAccessor.bufferView];
+							const void* indexBuffer = &(model->buffers[indexView.buffer].data[indexAccessor.byteOffset + indexView.byteOffset]);
+
+							offset.size = indexAccessor.count;
+
+							switch (indexAccessor.componentType)
+							{
+							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+								ADD_INDEX(uint32_t)
+									break;
+							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+								ADD_INDEX(uint16_t)
+									break;
+							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+								ADD_INDEX(uint8_t)
+									break;
+							default:
+								OUT_LV_DEBUG("Index type not supported!")
+									TGERROR(TG_ERR_INDEX_TYPE_NOT_SUPPORTED)
+									break;
+							}
+						}
+						else {
+							for (size_t i = 0; i < posAccessor.count; i++)
+							{
+								TGVertex vert = {
+									glm::make_vec3(&posBuffer[i * 3]),
+									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
+									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
+								};
+								mesh->add(vert);
+							}
+							offset.size = mesh->indices.size();
+						}
+
+						actor->offsets.push_back(offset);
 					}
-					mesh->offsets.push_back(offset);
 				}
 				if (node.matrix.size() == 16) {
-					mesh->model_matrix = glm::mat4(node.matrix[0], node.matrix[1], node.matrix[2], node.matrix[3],
-						node.matrix[4], node.matrix[5], node.matrix[6], node.matrix[7], 
-						node.matrix[8], node.matrix[9], node.matrix[10], node.matrix[11], 
-						node.matrix[12], node.matrix[13], node.matrix[14], node.matrix[15]);
-					mesh->applyPretransform();
+					actor->mats[i] = glm::make_mat4(node.matrix.data());
 				}
-
+				else {
+					actor->mats[i] = glm::mat4(1);
+				}
+				actor->meshes[i] = mesh;
 			}
 		}
 
@@ -244,15 +260,15 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			// TODO use pak loading when avalaible
 			bool check = binary ? loader.LoadBinaryFromFile(&model, &err, &warn, name) : loader.LoadASCIIFromFile(&model, &err, &warn, name);
 
-			if(!err.empty()) {
+			if (!err.empty()) {
 				std::cout << err << std::endl;
 			}
 
-			if(!warn.empty()) {
+			if (!warn.empty()) {
 				OUT_LV_DEBUG("Warn: " << warn)
 			}
 
-			if(!check) {
+			if (!check) {
 				OUT_LV_DEBUG("Error loading " << name << " gltf file")
 				TGERROR(TG_ERR_DB_FILE_NOT_FOUND)
 			}
@@ -262,25 +278,30 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			loadMaterials(&model, mesh);
 			loadNodes(&model, mesh);
 
+			if (mesh->meshes.size() < 1 || mesh->meshes[0]->vertices.size() < 1)
+				return;
 			// AABB Calculation
-			tge::gmc::AABB aabb = { mesh->mesh->vertices[0].position, mesh->mesh->vertices[0].position };
+			tge::gmc::AABB aabb = { mesh->meshes[0]->vertices[0].position, mesh->meshes[0]->vertices[0].position };
 
-			for (size_t i = 0; i < mesh->mesh->vertices.size(); i++)
+			for (size_t j = 0; j < mesh->meshes.size(); j++)
 			{
-				glm::vec3 vert = mesh->mesh->vertices[i].position;
-				aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
-				aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
-				aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
+				for (size_t i = 0; i < mesh->meshes[j]->vertices.size(); i++)
+				{
+					glm::vec3 vert = mesh->meshes[j]->vertices[i].position;
+					aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
+					aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
+					aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
 
-				aabb.min.x = TGE_MIN(aabb.min.x, vert.x);
-				aabb.min.y = TGE_MIN(aabb.min.y, vert.y);
-				aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
+					aabb.min.x = TGE_MIN(aabb.min.x, vert.x);
+					aabb.min.y = TGE_MIN(aabb.min.y, vert.y);
+					aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
+				}
 			}
 			mesh->aabb = aabb;
 			aabb.print();
 
 			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
-			
+
 			mesh->prePos(offset.x, offset.y, offset.z)->applyPretransform();
 		}
 	}

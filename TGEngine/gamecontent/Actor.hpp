@@ -20,12 +20,13 @@ namespace tge {
 
 		class Actor {
 		public:
-			Mesh* mesh;
+			
 			Actor* parent;
 			AABB aabb;
-			size_t _impl_array_pos;
-			glm::mat4 model_matrix = glm::mat4(1.0f);
+			glm::mat4 matrix;
 
+			std::vector<glm::mat4> mats;
+			std::vector<Mesh*> meshes;
 			std::vector<VkSampler> samplers;
 			std::vector<tex::Texture> textures;
 			std::vector<Material> materials;
