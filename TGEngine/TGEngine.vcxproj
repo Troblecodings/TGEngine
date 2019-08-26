@@ -317,14 +317,13 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
     </CustomBuild>
     <CustomBuild>
-      <Outputs>%(Identity)</Outputs>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild>
-      <AdditionalInputs>
-      </AdditionalInputs>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
       <LinkObjects>true</LinkObjects>
@@ -334,6 +333,7 @@
     </CustomBuild>
     <CustomBuild>
       <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -370,14 +370,13 @@
       </Command>
     </PreBuildEvent>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
     </CustomBuild>
     <CustomBuild>
-      <Outputs>%(Identity)</Outputs>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild>
-      <AdditionalInputs>
-      </AdditionalInputs>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
       <LinkObjects>true</LinkObjects>
@@ -387,6 +386,7 @@
     </CustomBuild>
     <CustomBuild>
       <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -425,14 +425,13 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
     </CustomBuild>
     <CustomBuild>
-      <Outputs>%(Identity)</Outputs>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild>
-      <AdditionalInputs>
-      </AdditionalInputs>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
       <LinkObjects>true</LinkObjects>
@@ -442,6 +441,7 @@
     </CustomBuild>
     <CustomBuild>
       <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -480,14 +480,13 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
     </CustomBuild>
     <CustomBuild>
-      <Outputs>%(Identity)</Outputs>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild>
-      <AdditionalInputs>
-      </AdditionalInputs>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
       <LinkObjects>true</LinkObjects>
@@ -497,6 +496,7 @@
     </CustomBuild>
     <CustomBuild>
       <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

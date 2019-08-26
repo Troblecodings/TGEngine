@@ -9,7 +9,7 @@ namespace tge {
 			for(size_t i = 0; i < this->meshes.size(); i++) {
 				for (size_t j = 0; j < this->meshes[i]->vertices.size(); j++)
 				{
-					this->meshes[i]->vertices[j].position = glm::vec3(this->mats[i] * (this->matrix * glm::vec4(this->meshes[i]->vertices[j].position, 1)));
+					this->meshes[i]->vertices[j].position = glm::vec3(this->mats[i] * this->matrix * glm::vec4(this->meshes[i]->vertices[j].position, 1));
 				}
 			}
 		}

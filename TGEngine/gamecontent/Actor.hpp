@@ -23,7 +23,7 @@ namespace tge {
 			
 			Actor* parent;
 			AABB aabb;
-			glm::mat4 matrix;
+			glm::mat4 matrix = glm::mat4(1);
 
 			std::vector<glm::mat4> mats;
 			std::vector<Mesh*> meshes;

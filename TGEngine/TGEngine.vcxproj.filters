@@ -418,37 +418,25 @@
     <None Include="..\docs\main.css">
       <Filter>docs</Filter>
     </None>
-    <None Include="resources\FragmentColorOnly.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentTextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentUITextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\VertexTextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\VertexUI.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentUIColor.glsl">
-      <Filter>resources</Filter>
-    </None>
     <None Include="..\docs\contribution.html">
       <Filter>docs</Filter>
     </None>
     <None Include="..\docs\docsShaderTool.html">
       <Filter>docs</Filter>
     </None>
-    <None Include="resources\VertexTexturedMovable.glsl">
-      <Filter>resources</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png">
       <Filter>docs</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="resources\FragmentColorOnly.glsl" />
+    <CustomBuild Include="resources\FragmentTextured.glsl" />
+    <CustomBuild Include="resources\FragmentUIColor.glsl" />
+    <CustomBuild Include="resources\FragmentUITextured.glsl" />
+    <CustomBuild Include="resources\VertexTextured.glsl" />
+    <CustomBuild Include="resources\VertexTexturedMovable.glsl" />
+    <CustomBuild Include="resources\VertexUI.glsl" />
   </ItemGroup>
 </Project>

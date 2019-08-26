@@ -19,9 +19,20 @@ namespace ShaderTool.Command {
                     return ShaderMake();
                 case "list":
                     return ShaderList();
+                case "compile":
+                    return ShaderCompile(GetParams(args));
 
             }
             return WRONG_PARAMS;
+        }
+
+        public static int ShaderCompile(string[] args)
+        {
+            if (args.Length != 1)
+                return WRONG_PARAMS;
+            Compile(args[0]);
+            Make();
+            return SUCESS;
         }
 
         public static int ShaderList() {
@@ -47,7 +58,13 @@ namespace ShaderTool.Command {
                     return i;
                 }
             }
-            files = Directory.GetFiles(Program.CWD, "*.spv");
+            Make();
+            return SUCESS;
+        }
+
+        public static void Make()
+        {
+            string[] files = Directory.GetFiles(Program.CWD, "*.spv");
 
             string dataHpp = Program.CWD + "\\ShaderData.hpp";
             string dataCpp = Program.CWD + "\\ShaderData.cpp";
@@ -62,7 +79,8 @@ namespace ShaderTool.Command {
 
             shaderDataCPP.WriteLine("#include \"ShaderData.hpp\"\r\n");
             shaderDataHPP.WriteLine("#pragma once\r\n#include \"../pipeline/ShaderCreation.hpp\"\r\nvoid initShader();\r\n");
-            foreach (string path in files) {
+            foreach (string path in files)
+            {
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
                 shaderDataHPP.WriteLine("extern unsigned char " + name + "Module[];\r\nextern VkPipelineShaderStageCreateInfo " + name + ";");
                 shaderDataCPP.Write("VkPipelineShaderStageCreateInfo " + name + ";\r\nunsigned char " + name + "Module[] = { ");
@@ -73,7 +91,8 @@ namespace ShaderTool.Command {
                 shaderDataCPP.Flush();
             }
             shaderDataCPP.WriteLine("\r\nvoid initShader() {");
-            foreach (string path in files) {
+            foreach (string path in files)
+            {
                 FileInfo fileInfo = new FileInfo(path);
                 long length = fileInfo.Length;
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
@@ -83,7 +102,7 @@ namespace ShaderTool.Command {
             shaderDataCPP.WriteLine("}");
             shaderDataHPP.Close();
             shaderDataCPP.Close();
-            return SUCESS;
+
         }
 
         private static int Compile(string path) {

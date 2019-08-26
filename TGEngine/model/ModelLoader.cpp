@@ -238,11 +238,19 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 						actor->offsets.push_back(offset);
 					}
 				}
+				actor->mats[i] = glm::mat4(1);
+
 				if (node.matrix.size() == 16) {
 					actor->mats[i] = glm::make_mat4(node.matrix.data());
 				}
-				else {
-					actor->mats[i] = glm::mat4(1);
+				if (node.translation.size() == 3) {
+					actor->mats[i] = glm::translate(actor->mats[i], glm::make_vec3((float*)node.translation.data()));
+				}
+				if (node.rotation.size() == 4) {
+					actor->mats[i] = actor->mats[i] * glm::mat4_cast(glm::make_quat((float*)node.rotation.data()));
+				}
+				if (node.scale.size() == 3) {
+					actor->mats[i] = glm::scale(actor->mats[i], glm::make_vec3((float*)node.scale.data()));
 				}
 				actor->meshes[i] = mesh;
 			}
@@ -251,7 +259,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			{
 				for (size_t j = 0; j < model->nodes[i].children.size(); j++)
 				{
-					actor->mats[model->nodes[i].children[j]] *= actor->mats[i];
+					actor->mats[model->nodes[i].children[j]] = actor->mats[i] * actor->mats[model->nodes[i].children[j]];
 				}
 			}
 		}
