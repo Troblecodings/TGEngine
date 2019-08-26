@@ -7,6 +7,6 @@
 namespace tge {
 	namespace mdl {
 
-		void loadGltf(char* name, gmc::Actor* mesh);
+		void loadGltf(char* name, gmc::Model* model);
 	}
 }

@@ -164,6 +164,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 
 				tge::gmc::Actor* actor = new tge::gmc::Actor();
 				tge::gmc::Mesh* mesh = actor->mesh = new tge::gmc::Mesh();
+				model->actors[i] = actor;
 
 				if (node.matrix.size() == 16) {
 					actor->matrix = glm::make_mat4(node.matrix.data());
@@ -293,11 +294,11 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			// AABB Calculation
 			tge::gmc::AABB aabb = { model->actors[0]->mesh->vertices[0].position,  model->actors[0]->mesh->vertices[0].position };
 
-			for (size_t j = 0; j < model->meshes.size(); j++)
+			for (size_t j = 0; j < model->actors.size(); j++)
 			{
-				for (size_t i = 0; i < model->meshes[j]->vertices.size(); i++)
+				for (size_t i = 0; i < model->actors[j]->mesh->vertices.size(); i++)
 				{
-					glm::vec3 vert = model->meshes[j]->vertices[i].position;
+					glm::vec3 vert = model->actors[j]->mesh->vertices[i].position;
 					aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
 					aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
 					aabb.max.x = TGE_MAX(aabb.max.x, vert.x);

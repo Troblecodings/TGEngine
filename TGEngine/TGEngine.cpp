@@ -64,9 +64,9 @@ void startTGEngine(Window* window) {
 	index_buffer.start();
 
 	for(size_t i = 0; i < tge::gmc::models.size(); i++) {
-		for (size_t j = 0; j < tge::gmc::models[i]->meshes.size(); j++)
+		for (size_t j = 0; j < tge::gmc::models[i]->actors.size(); j++)
 		{
-			tge::gmc::models[i]->meshes[j]->consume(&main_buffer, &index_buffer);
+			tge::gmc::models[i]->actors[j]->mesh->consume(&main_buffer, &index_buffer);
 		}
 	}
 	OUT_LV_DEBUG(tge::gmc::materiallist.size())

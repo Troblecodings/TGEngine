@@ -44,6 +44,8 @@ namespace tge {
 		};
 
 		struct Model {
+			AABB aabb;
+
 			std::vector<Actor*> actors;
 			std::vector<VkSampler> samplers;
 			std::vector<tex::Texture> textures;
@@ -51,6 +53,6 @@ namespace tge {
 			std::vector<RenderOffsets> offsets;
 		};
 
-		std::vector<Model*> models;
+		extern std::vector<Model*> models;
 	}
 }

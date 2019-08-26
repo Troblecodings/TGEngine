@@ -3,7 +3,7 @@
 namespace tge {
 	namespace gmc {
 
-		std::vector<Model*> models;
+        std::vector<Model*> models;
 
 		void AABB::print()
 		{
