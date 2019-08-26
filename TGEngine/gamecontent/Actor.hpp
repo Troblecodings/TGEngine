@@ -18,27 +18,39 @@ namespace tge {
 
 		struct Mesh;
 
-		class Actor {
-		public:
-			
-			Actor* parent;
-			AABB aabb;
-			glm::mat4 matrix = glm::mat4(1);
+		struct Actor {
 
-			std::vector<glm::mat4> mats;
-			std::vector<Mesh*> meshes;
+			Actor* parent;
+			Mesh* mesh;
+			AABB aabb;
+
+			glm::mat4 matrix = glm::mat4(1);
+			glm::quat rotation = glm::quat();
+			glm::vec3 translation = glm::vec3(0);
+			glm::vec3 scale = glm::vec3(1);
+
+			/*
+             * Returns the overall transform matrix from this Actor
+             */
+			SINCE(0, 0, 4)
+			glm::mat4 transforms();
+
+
+			/*
+			 * Returns the overall transform matrix from this Actor
+			 */
+			SINCE(0, 0, 4)
+			glm::mat4 localTransform();
+		};
+
+		struct Model {
+			std::vector<Actor*> actors;
 			std::vector<VkSampler> samplers;
 			std::vector<tex::Texture> textures;
 			std::vector<Material> materials;
 			std::vector<RenderOffsets> offsets;
-
-			void applyPretransform();
-
-			Actor* preRotate(float angle, float x, float y, float z);
-			Actor* preScale(float x, float y, float z);
-			Actor* prePos(float x, float y, float z);
 		};
 
-		extern std::vector<Actor*> actors;
+		std::vector<Model*> models;
 	}
 }

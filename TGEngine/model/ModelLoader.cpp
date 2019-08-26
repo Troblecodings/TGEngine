@@ -50,61 +50,61 @@ namespace tge {
 		// [END]
 
 			// Load sampler
-		static void loadSampler(tinygltf::Model* model, gmc::Actor* mesh) {
-			mesh->samplers.resize(model->samplers.size());
-			for (size_t i = 0; i < mesh->samplers.size(); i++)
+		static void loadSampler(tinygltf::Model* gltfModel, gmc::Model* model) {
+			model->samplers.resize(gltfModel->samplers.size());
+			for (size_t i = 0; i < model->samplers.size(); i++)
 			{
-				Sampler sampler = model->samplers[i];
+				Sampler sampler = gltfModel->samplers[i];
 				OUT_LV_DEBUG("Load sampler " << sampler.name << " id = " << i)
 					vlibSamplerCreateInfo.minFilter = getVkFilterMode(sampler.minFilter);
 				vlibSamplerCreateInfo.magFilter = getVkFilterMode(sampler.magFilter);
 				vlibSamplerCreateInfo.addressModeU = getVkWrapMode(sampler.wrapS);
 				vlibSamplerCreateInfo.addressModeV = getVkWrapMode(sampler.wrapT);
 				vlibSamplerCreateInfo.addressModeW = vlibSamplerCreateInfo.addressModeV;
-				tex::createSampler(&mesh->samplers[i]);
+				tex::createSampler(&model->samplers[i]);
 			}
 		}
 
 		// Loads textures
-		static void loadTextures(tinygltf::Model* model, gmc::Actor* mesh) {
-			for each (tinygltf::Texture tex in model->textures) {
+		static void loadTextures(tinygltf::Model* gltfModel, gmc::Model* model) {
+			for each (tinygltf::Texture tex in gltfModel->textures) {
 				OUT_LV_DEBUG("Load texture " << tex.name)
-					tinygltf::Image image = model->images[tex.source];
+					tinygltf::Image image = gltfModel->images[tex.source];
 				// Load image data
 				OUT_LV_DEBUG(image.image.size());
-				TG_VECTOR_APPEND_NORMAL(mesh->textures, tex::Texture(image.width, image.height));
-				mesh->textures[lastSize].imageData = new uint8_t[image.width * image.height * 4];
+				TG_VECTOR_APPEND_NORMAL(model->textures, tex::Texture(image.width, image.height));
+				model->textures[lastSize].imageData = new uint8_t[image.width * image.height * 4];
 				if (image.component == 4) {
-					memcpy(mesh->textures[lastSize].imageData, image.image.data(), image.width * image.height * 4);
+					memcpy(model->textures[lastSize].imageData, image.image.data(), image.width * image.height * 4);
 				}
 				else {
 					for (size_t i = 0; i < image.width * image.height; i++)
 					{
-						mesh->textures[lastSize].imageData[i * 4] = image.image[i * 4];
-						mesh->textures[lastSize].imageData[i * 4 + 1] = image.image[i * 4 + 1];
-						mesh->textures[lastSize].imageData[i * 4 + 2] = image.image[i * 4 + 2];
-						mesh->textures[lastSize].imageData[i * 4 + 3] = 255;
+						model->textures[lastSize].imageData[i * 4] = image.image[i * 4];
+						model->textures[lastSize].imageData[i * 4 + 1] = image.image[i * 4 + 1];
+						model->textures[lastSize].imageData[i * 4 + 2] = image.image[i * 4 + 2];
+						model->textures[lastSize].imageData[i * 4 + 3] = 255;
 					}
 				}
 				if (tex.sampler > -1) {
 					// Set custom sampler
 					OUT_LV_DEBUG("Set custom sampler " << tex.sampler)
-						mesh->textures[lastSize].sampler = mesh->samplers[tex.sampler];
+						model->textures[lastSize].sampler = model->samplers[tex.sampler];
 				}
-				mesh->textures[lastSize].initTexture();
+				model->textures[lastSize].initTexture();
 			}
 		}
 
 		// Loading materials
-		static void loadMaterials(tinygltf::Model* model, gmc::Actor* mesh) {
-			if (model->materials.size() < 1) {
+		static void loadMaterials(tinygltf::Model* gltfModel, gmc::Model* model) {
+			if (gltfModel->materials.size() < 1) {
 				// TODO Make this default Material ...
 				gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
 				material.createMaterial();
-				mesh->materials.push_back(material);
+				model->materials.push_back(material);
 				return;
 			}
-			for each (tinygltf::Material mat in model->materials) {
+			for each (tinygltf::Material mat in gltfModel->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
 				auto colorTex = mat.values.find("baseColorTexture");
 				auto colorFactor = mat.values.find("baseColorFactor");
@@ -114,7 +114,7 @@ namespace tge {
 				gmc::Material material;
 
 				if (colorTex != mat.values.end()) {
-					material = gmc::Material(&mesh->textures[colorTex->second.TextureIndex()],
+					material = gmc::Material(&model->textures[colorTex->second.TextureIndex()],
 						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()) : glm::vec4(1));
 				}
 				else if (colorFactor != mat.values.end()) {
@@ -129,7 +129,7 @@ namespace tge {
 					material.doubleSided = doubleSided->second.bool_value;
 
 				material.createMaterial();
-				mesh->materials.push_back(material);
+				model->materials.push_back(material);
 #ifdef DEBUG
 				for (auto ptr = mat.values.begin(); ptr != mat.values.end(); ptr++) {
 					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
@@ -144,9 +144,9 @@ namespace tge {
 
 #define FIND(name, type, cname) const type* name##Buffer = nullptr;\
 if (prim.attributes.find(cname) != prim.attributes.end()) {\
-	const tinygltf::Accessor& name##Accessor = model->accessors[prim.attributes.find(cname)->second];\
-	const tinygltf::BufferView& name##View = model->bufferViews[name##Accessor.bufferView];\
-	name##Buffer = reinterpret_cast<const type*>(&(model->buffers[name##View.buffer].data[name##Accessor.byteOffset + name##View.byteOffset]));\
+	const tinygltf::Accessor& name##Accessor = gltfModel->accessors[prim.attributes.find(cname)->second];\
+	const tinygltf::BufferView& name##View = gltfModel->bufferViews[name##Accessor.bufferView];\
+	name##Buffer = reinterpret_cast<const type*>(&(gltfModel->buffers[name##View.buffer].data[name##Accessor.byteOffset + name##View.byteOffset]));\
 }
 
 #define ADD_INDEX(type) {const type* buf = static_cast<const type*>(indexBuffer);\
@@ -155,15 +155,31 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 	mesh->indices.push_back((uint32_t) buf[i]);\
 }}
 
-		static void loadNodes(tinygltf::Model* model, gmc::Actor* actor) {
-			actor->meshes.resize(model->nodes.size());
-			actor->mats.resize(model->nodes.size());
-			for (size_t i = 0; i < actor->meshes.size(); i++)
+		static void loadNodes(tinygltf::Model* gltfModel, gmc::Model* model) {
+			model->actors.resize(gltfModel->nodes.size());
+
+			for (size_t i = 0; i < model->actors.size(); i++)
 			{
-				tge::gmc::Mesh* mesh = new tge::gmc::Mesh();
-				tinygltf::Node node = model->nodes[i];
+				tinygltf::Node node = gltfModel->nodes[i];
+
+				tge::gmc::Actor* actor = new tge::gmc::Actor();
+				tge::gmc::Mesh* mesh = actor->mesh = new tge::gmc::Mesh();
+
+				if (node.matrix.size() == 16) {
+					actor->matrix = glm::make_mat4(node.matrix.data());
+				}
+				if (node.translation.size() == 3) {
+					actor->translation = glm::make_vec3((float*)node.translation.data());
+				}
+				if (node.rotation.size() == 4) {
+					actor->rotation = glm::mat4_cast(glm::make_quat((float*)node.rotation.data()));
+				}
+				if (node.scale.size() == 3) {
+					actor->scale = glm::make_vec3((float*)node.scale.data());
+				}
+
 				if (node.mesh > -1) {
-					const tinygltf::Mesh msh = model->meshes[model->nodes[i].mesh];
+					const tinygltf::Mesh msh = gltfModel->meshes[gltfModel->nodes[i].mesh];
 					for each (tinygltf::Primitive prim in msh.primitives)
 					{
 #ifdef DEBUG
@@ -176,9 +192,9 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							continue;
 						}
 
-						const tinygltf::Accessor& posAccessor = model->accessors[prim.attributes.find("POSITION")->second];
-						const tinygltf::BufferView& posView = model->bufferViews[posAccessor.bufferView];
-						const float* posBuffer = reinterpret_cast<const float*>(&(model->buffers[posView.buffer].data[posAccessor.byteOffset + posView.byteOffset]));
+						const tinygltf::Accessor& posAccessor = gltfModel->accessors[prim.attributes.find("POSITION")->second];
+						const tinygltf::BufferView& posView = gltfModel->bufferViews[posAccessor.bufferView];
+						const float* posBuffer = reinterpret_cast<const float*>(&(gltfModel->buffers[posView.buffer].data[posAccessor.byteOffset + posView.byteOffset]));
 
 						FIND(normal, float, "NORMAL")
 							FIND(uv, float, "TEXCOORD_0")
@@ -192,16 +208,16 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							for (size_t i = 0; i < posAccessor.count; i++)
 							{
 								TGVertex vert = {
-									glm::make_vec3(&posBuffer[i * 3]),
+									glm::vec4(glm::make_vec3(&posBuffer[i * 3]), 1),
 									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
 									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
 								};
 								mesh->vertices.push_back(vert);
 							}
 
-							const tinygltf::Accessor& indexAccessor = model->accessors[prim.indices];
-							const tinygltf::BufferView& indexView = model->bufferViews[indexAccessor.bufferView];
-							const void* indexBuffer = &(model->buffers[indexView.buffer].data[indexAccessor.byteOffset + indexView.byteOffset]);
+							const tinygltf::Accessor& indexAccessor = gltfModel->accessors[prim.indices];
+							const tinygltf::BufferView& indexView = gltfModel->bufferViews[indexAccessor.bufferView];
+							const void* indexBuffer = &(gltfModel->buffers[indexView.buffer].data[indexAccessor.byteOffset + indexView.byteOffset]);
 
 							offset.size = indexAccessor.count;
 
@@ -226,7 +242,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							for (size_t i = 0; i < posAccessor.count; i++)
 							{
 								TGVertex vert = {
-									glm::make_vec3(&posBuffer[i * 3]),
+									glm::vec4(glm::make_vec3(&posBuffer[i * 3]), 1),
 									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
 									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
 								};
@@ -235,38 +251,16 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							offset.size = mesh->indices.size();
 						}
 
-						actor->offsets.push_back(offset);
+						model->offsets.push_back(offset);
 					}
 				}
-				actor->mats[i] = glm::mat4(1);
-
-				if (node.matrix.size() == 16) {
-					actor->mats[i] = glm::make_mat4(node.matrix.data());
-				}
-				if (node.translation.size() == 3) {
-					actor->mats[i] = glm::translate(actor->mats[i], glm::make_vec3((float*)node.translation.data()));
-				}
-				if (node.rotation.size() == 4) {
-					actor->mats[i] = actor->mats[i] * glm::mat4_cast(glm::make_quat((float*)node.rotation.data()));
-				}
-				if (node.scale.size() == 3) {
-					actor->mats[i] = glm::scale(actor->mats[i], glm::make_vec3((float*)node.scale.data()));
-				}
-				actor->meshes[i] = mesh;
 			}
 
-			for (size_t i = 0; i < model->nodes.size(); i++)
-			{
-				for (size_t j = 0; j < model->nodes[i].children.size(); j++)
-				{
-					actor->mats[model->nodes[i].children[j]] = actor->mats[i] * actor->mats[model->nodes[i].children[j]];
-				}
-			}
 		}
 
-		void loadGltf(char* name, gmc::Actor* mesh) {
+		void loadGltf(char* name, gmc::Model* model) {
 			TinyGLTF loader;
-			tinygltf::Model model;
+			tinygltf::Model gltfModel;
 
 			bool binary = strstr(name, ".glb");
 
@@ -274,7 +268,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			std::string warn;
 
 			// TODO use pak loading when avalaible
-			bool check = binary ? loader.LoadBinaryFromFile(&model, &err, &warn, name) : loader.LoadASCIIFromFile(&model, &err, &warn, name);
+			bool check = binary ? loader.LoadBinaryFromFile(&gltfModel, &err, &warn, name) : loader.LoadASCIIFromFile(&gltfModel, &err, &warn, name);
 
 			if (!err.empty()) {
 				std::cout << err << std::endl;
@@ -289,21 +283,21 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 				TGERROR(TG_ERR_DB_FILE_NOT_FOUND)
 			}
 
-			loadSampler(&model, mesh);
-			loadTextures(&model, mesh);
-			loadMaterials(&model, mesh);
-			loadNodes(&model, mesh);
+			loadSampler(&gltfModel, model);
+			loadTextures(&gltfModel, model);
+			loadMaterials(&gltfModel, model);
+			loadNodes(&gltfModel, model);
 
-			if (mesh->meshes.size() < 1 || mesh->meshes[0]->vertices.size() < 1)
+			if (model->actors.size() < 1 || !model->actors[0]->mesh || model->actors[0]->mesh->vertices.size() < 1)
 				return;
 			// AABB Calculation
-			tge::gmc::AABB aabb = { mesh->meshes[0]->vertices[0].position, mesh->meshes[0]->vertices[0].position };
+			tge::gmc::AABB aabb = { model->actors[0]->mesh->vertices[0].position,  model->actors[0]->mesh->vertices[0].position };
 
-			for (size_t j = 0; j < mesh->meshes.size(); j++)
+			for (size_t j = 0; j < model->meshes.size(); j++)
 			{
-				for (size_t i = 0; i < mesh->meshes[j]->vertices.size(); i++)
+				for (size_t i = 0; i < model->meshes[j]->vertices.size(); i++)
 				{
-					glm::vec3 vert = mesh->meshes[j]->vertices[i].position;
+					glm::vec3 vert = model->meshes[j]->vertices[i].position;
 					aabb.max.y = TGE_MAX(aabb.max.y, vert.y);
 					aabb.max.z = TGE_MAX(aabb.max.z, vert.z);
 					aabb.max.x = TGE_MAX(aabb.max.x, vert.x);
@@ -313,14 +307,12 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 					aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
 				}
 			}
-			mesh->aabb = aabb;
+			model->aabb = aabb;
 #ifdef DEBUG
 			aabb.print();
 #endif // DEBUG
 
 			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
-
-			mesh->prePos(offset.x, offset.y, offset.z)->applyPretransform();
 		}
 	}
 }

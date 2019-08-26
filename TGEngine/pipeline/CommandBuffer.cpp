@@ -77,7 +77,7 @@ void startupCommands() {
 		tex->load(SINGELTIME_COMMAND_BUFFER);
 	}
 
-	for each (tge::gmc::Actor* act in tge::gmc::actors) {
+	for each (tge::gmc::Actor* act in tge::gmc::models) {
 		for each (tge::tex::Texture tex in act->textures)
 		{
 			tex.load(SINGELTIME_COMMAND_BUFFER);
@@ -108,7 +108,7 @@ void startupCommands() {
 	for each(tge::tex::Texture* tex in tge::tex::textures) {
 		tex->dispose();
 	}
-	for each (tge::gmc::Actor * act in tge::gmc::actors) {
+	for each (tge::gmc::Actor * act in tge::gmc::models) {
 		for each (tge::tex::Texture tex in act->textures)
 		{
 			tex.dispose();
@@ -158,7 +158,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		uint32_t off = 0;
 
-		for each (tge::gmc::Actor* actor in tge::gmc::actors)
+		for each (tge::gmc::Actor* actor in tge::gmc::models)
 		{
 			for each (tge::gmc::RenderOffsets offset in actor->offsets)
 			{
