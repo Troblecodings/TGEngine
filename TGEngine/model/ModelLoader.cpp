@@ -106,7 +106,7 @@ namespace tge {
 			}
 			for each (tinygltf::Material mat in model->materials) {
 				OUT_LV_DEBUG("Load material " << mat.name)
-					auto colorTex = mat.values.find("baseColorTexture");
+				auto colorTex = mat.values.find("baseColorTexture");
 				auto colorFactor = mat.values.find("baseColorFactor");
 
 				auto doubleSided = mat.additionalValues.find("doubleSided");
@@ -246,6 +246,14 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 				}
 				actor->meshes[i] = mesh;
 			}
+
+			for (size_t i = 0; i < model->nodes.size(); i++)
+			{
+				for (size_t j = 0; j < model->nodes[i].children.size(); j++)
+				{
+					actor->mats[model->nodes[i].children[j]] *= actor->mats[i];
+				}
+			}
 		}
 
 		void loadGltf(char* name, gmc::Actor* mesh) {
@@ -298,7 +306,9 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 				}
 			}
 			mesh->aabb = aabb;
+#ifdef DEBUG
 			aabb.print();
+#endif // DEBUG
 
 			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
 

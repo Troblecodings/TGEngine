@@ -29,12 +29,8 @@ void destroyPipeline(uint32_t layout) {
 }
 
 void destroyPipeline() {
-	for each(VkPipelineLayout var in pipeLayouts) {
-		vkDestroyPipelineLayout(device, var, nullptr);
-	}
 	for each(VkPipeline var in pipelines) {
 		vkDestroyPipeline(device, var, nullptr);
 	}
-	pipeLayouts.clear();
 	pipelines.clear();
 }

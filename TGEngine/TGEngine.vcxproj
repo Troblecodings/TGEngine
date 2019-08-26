@@ -139,16 +139,63 @@
     <None Include="..\docs\_config.yml" />
     <None Include="..\setup.py" />
     <None Include="..\README.md" />
-    <None Include="resources\FragmentColorOnly.glsl" />
-    <None Include="resources\FragmentTextured.glsl" />
-    <None Include="resources\FragmentUIColor.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+    <CustomBuild Include="resources\FragmentColorOnly.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
-    </None>
-    <None Include="resources\FragmentUITextured.glsl" />
-    <None Include="resources\VertexTextured.glsl" />
-    <None Include="resources\VertexTexturedMovable.glsl" />
-    <None Include="resources\VertexUI.glsl" />
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentTextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentUIColor.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentUITextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexTextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexTexturedMovable.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexUI.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png" />
@@ -219,7 +266,8 @@
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
     <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
-    <CustomBuildAfterTargets>ResourceCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -260,10 +308,33 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
-      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
-      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(Identity)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -286,10 +357,37 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
-      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
-      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(Identity)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -318,10 +416,33 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
-      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
-      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(Identity)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -350,10 +471,33 @@
       <Message>Build shader</Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
-      <Outputs>/resources/$(TargetFileName).spv;%(Outputs)</Outputs>
-      <Inputs>/resources/$(TargetFileName).glsl;</Inputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader make --dir \resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(Identity)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,7 @@
 #include "Swapchain.hpp"
 #include "window/Window.hpp"
+#include "../gamecontent/Actor.hpp"
+#include "../resources/ShaderPipes.hpp"
 
 std::vector<VkImage> swapchain_images;
 VkSwapchainKHR swapchain;
@@ -93,7 +95,6 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
-	destroyDescriptors();
 	destroyPipeline();
 	destroyRenderPass();
 	destroyColorResouce();
@@ -113,6 +114,12 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createRenderpass();
 	for(size_t i = 0; i < tge::gmc::materiallist.size(); i++) {
 		tge::gmc::materiallist[i]->createMaterial();
+	}
+	for (size_t i = 0; i < tge::gmc::actors.size(); i++) {
+		for (size_t x = 0; x < tge::gmc::actors[i]->materials.size(); x++)
+		{
+			(&tge::gmc::actors[i]->materials[x])->createMaterial();
+		}
 	}
 	createSwapchain();
 	if(lastResult == VK_ERROR_INITIALIZATION_FAILED) {

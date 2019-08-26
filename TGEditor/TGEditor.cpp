@@ -14,7 +14,7 @@ int main(int argc, char** args) {
 	initEngine(&editor.main_window);
 	tge::gmc::Actor actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\VC\\glTF\\VC.gltf", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\VertexColorTest\\glTF\\VertexColorTest.gltf", &actor2);
 	tge::gmc::actors.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;

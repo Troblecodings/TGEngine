@@ -74,7 +74,6 @@ void destroyDescriptors() {
 	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptorSets.size(), descriptorSets.data());
 	HANDEL(lastResult);
 	descriptorSets.clear();
-	descriptorSetLayouts.clear();
 };
 
 void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {

@@ -25,9 +25,10 @@ namespace tge {
 		}
 
 		Actor* Actor::prePos(float x, float y, float z) {
-			this->matrix = glm::translate(glm::mat4(1), glm::vec3(x, y, z));
+			this->matrix = glm::translate(this->matrix, glm::vec3(x, y, z));
 			return this;
 		}
+
 		void AABB::print()
 		{
 			OUT_LV_DEBUG("AABB [ min={ x=" << this->min.x << ", y=" << this->min.y << ", z=" << this->min.z << " }, max { x=" << this->max.x << ", y=" << this->max.y << ", z=" << this->max.z << "}]")
