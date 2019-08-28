@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>940</width>
+    <width>1000</width>
     <height>610</height>
    </rect>
   </property>
@@ -21,13 +21,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>940</width>
+    <width>1000</width>
     <height>610</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>940</width>
+    <width>1000</width>
     <height>610</height>
    </size>
   </property>
@@ -41,7 +41,7 @@
       <x>20</x>
       <y>10</y>
       <width>91</width>
-      <height>531</height>
+      <height>581</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -54,17 +54,20 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>450</y>
-       <width>75</width>
+       <y>490</y>
+       <width>71</width>
        <height>71</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Make shader pipes</string>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>../../../../Downloads/buildP.png</normaloff>../../../../Downloads/buildP.png</iconset>
+      <iconset resource="mainresources.qrc">
+       <normaloff>:/BuildSymbols/images/buildP.png</normaloff>:/BuildSymbols/images/buildP.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -77,17 +80,20 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>360</y>
-       <width>75</width>
+       <y>400</y>
+       <width>71</width>
        <height>71</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Compile shader</string>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>../../../../Downloads/buildS.png</normaloff>../../../../Downloads/buildS.png</iconset>
+      <iconset resource="mainresources.qrc">
+       <normaloff>:/BuildSymbols/images/buildS.png</normaloff>:/BuildSymbols/images/buildS.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -100,67 +106,125 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
-       <width>75</width>
+       <y>110</y>
+       <width>71</width>
        <height>71</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Add a shader pipe</string>
+     </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="mainresources.qrc">
+       <normaloff>:/BuildSymbols/images/addP.png</normaloff>:/BuildSymbols/images/addP.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>60</width>
+       <height>60</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="addshader">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
-       <width>75</width>
+       <y>20</y>
+       <width>71</width>
        <height>71</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Add a shader</string>
      </property>
      <property name="text">
       <string/>
      </property>
+     <property name="icon">
+      <iconset resource="mainresources.qrc">
+       <normaloff>:/BuildSymbols/images/addS.png</normaloff>:/BuildSymbols/images/addS.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>60</width>
+       <height>60</height>
+      </size>
+     </property>
     </widget>
    </widget>
-   <widget class="QTreeView" name="treeView">
+   <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>10</y>
       <width>191</width>
-      <height>531</height>
+      <height>581</height>
      </rect>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>10</y>
+      <width>641</width>
+      <height>581</height>
+     </rect>
     </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Console</string>
+     </attribute>
+     <widget class="QTextEdit" name="console">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>631</width>
+        <height>551</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="lineWrapMode">
+       <enum>QTextEdit::NoWrap</enum>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Editor</string>
+     </attribute>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>631</width>
+        <height>551</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>940</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="mainresources.qrc"/>
+ </resources>
  <connections/>
 </ui>
