@@ -256,6 +256,13 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 					}
 				}
 			}
+			for (size_t i = 0; i < gltfModel->nodes.size(); i++)
+			{
+				for (size_t j = 0; j < gltfModel->nodes[i].children.size(); j++)
+				{
+					model->actors[gltfModel->nodes[i].children[j]]->parent = model->actors[i];
+				}
+			}
 
 		}
 

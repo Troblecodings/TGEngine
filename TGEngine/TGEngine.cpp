@@ -37,7 +37,7 @@ void initEngine(Window* window) {
 	initDescriptors();
 
 	allocateAllBuffers();
-	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	fillUniformBuffer(&tge::gmc::camera_uniform, new glm::mat4(1.0f), sizeof(glm::mat4));
 
 	for each (tge::gmc::LightActor * var in tge::gmc::lights) {
 		var->updateLight();
