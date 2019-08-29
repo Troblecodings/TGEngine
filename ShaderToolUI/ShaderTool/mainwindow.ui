@@ -160,9 +160,12 @@
      <rect>
       <x>130</x>
       <y>10</y>
-      <width>191</width>
-      <height>581</height>
+      <width>190</width>
+      <height>580</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::DoubleClicked</set>
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">

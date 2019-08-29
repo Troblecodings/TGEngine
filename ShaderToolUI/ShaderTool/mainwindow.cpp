@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <iostream>
 
+static QString basefolder = QDir::currentPath() + "/../../";
+static QString shadertool = basefolder + "ShaderTool/bin/Debug/netcoreapp2.1/ShaderTool.dll";
+static QString resource = basefolder + "TGEngine/resources";
+
+static int shader = 0;
+
 void MainWindow::print(QString str) {
     ui->console->append(str);
     std::cout << str.toStdString() << std::endl;
@@ -20,36 +26,53 @@ void MainWindow::addShader() {
 
 }
 
+static int callShaderTool(QStringList list, QString* response, QString* err) {
+    list.prepend(shadertool);
+    list.append("--dir");
+    list.append(resource);
+    QProcess p;
+    p.start("dotnet", list);
+    p.waitForFinished(100000);
+    (*response) = p.readAllStandardOutput();
+    (*err) = p.readAllStandardError();
+    return p.exitCode();
+}
+
 void MainWindow::make(){
     this->ui->pipe->setDisabled(true);
-    this->print("Making shader pipes");
-    QString str = QDir::currentPath() + "/../../ShaderTool/bin/Debug/netcoreapp2.1/ShaderTool.dll";
-    QString dir = QDir::currentPath() + "/../../TGEngine/resources/";
-    QProcess p;
-    p.start("dotnet", { str, "pipe", "make", "--dir", dir});
-    if(!p.waitForFinished(100000)){
-        this->print("Wait error");
-    }
-    this->print(p.readAllStandardOutput());
-    this->print(p.readAllStandardError());
-    this->print(QString::asprintf("Making with exit code %d", p.exitCode()));
+    print("Making shader pipes");
+    QString response, err;
+    int rtc = callShaderTool({"pipe", "make"}, &response, &err);
+    print(response);
+    if(rtc != 0)
+        print(QString("Error: %1 with message %2").arg(QString::number(rtc), err));
+    print("Finished");
     this->ui->pipe->setDisabled(false);
 }
 
 void MainWindow::compile() {
     this->ui->shader->setDisabled(true);
-    this->print("Compiling shader");
-    QString str = QDir::currentPath() + "/../../ShaderTool/bin/Debug/netcoreapp2.1/ShaderTool.dll";
-    QString dir = QDir::currentPath() + "/../../TGEngine/resources/";
-    QProcess p;
-    p.start("dotnet", { str, "shader", "make", "--dir", dir});
-    if(!p.waitForFinished(100000)){
-        this->print("Wait error");
-    }
-    this->print(p.readAllStandardOutput());
-    this->print(p.readAllStandardError());
-    this->print(QString::asprintf("Compiled with exit code %d", p.exitCode()));
+    print("Compiling shader");
+    QString response, err;
+    int rtc = callShaderTool({"shader", "make"}, &response, &err);
+    print(response);
+    if(rtc != 0)
+        print(QString("Error: %1 with message %2").arg(QString::number(rtc), err));
+    print("Finished");
     this->ui->shader->setDisabled(false);
+}
+
+void MainWindow::select(const QModelIndex &idx) {
+    if(idx.row() == 0 || idx.row() == shader)
+        return;
+    if(idx.row() < shader) {
+        QString str = ui->listWidget->item(idx.row())->text();
+        QString response, err;
+        int rtc = callShaderTool({"pipe", "show", str.replace("/", "\\")}, &response, &err);
+        print(response);
+        if(rtc != 0)
+            print(QString("Error: %1 with message %2").arg(QString::number(rtc), err));
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -61,7 +84,26 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addshader, &QAbstractButton::clicked,  this, &MainWindow::addShader);
     connect(ui->pipe, &QAbstractButton::clicked,  this, &MainWindow::make);
     connect(ui->shader, &QAbstractButton::clicked,  this, &MainWindow::compile);
-    QFile shader(QDir::currentPath() + "/../../TGEngine/resources");
+    QDir dir(resource);
+
+    QListWidgetItem* lab = new QListWidgetItem("Pipelines");
+    lab->setTextAlignment(Qt::AlignmentFlag::AlignCenter);
+    lab->setBackground(QBrush(QColor::fromRgb(200, 200, 200)));
+    ui->listWidget->addItem(lab);
+    for(QString str : dir.entryList({"*Pipe.json"}, QDir::Filter::Files)) {
+        ui->listWidget->addItem(str.replace("Pipe.json", ""));
+    }
+
+    QListWidgetItem* lab2 = new QListWidgetItem("Shader");
+    lab2->setTextAlignment(Qt::AlignmentFlag::AlignCenter);
+    lab2->setBackground(QBrush(QColor::fromRgb(200, 200, 200)));
+    shader = ui->listWidget->count();
+    ui->listWidget->addItem(lab2);
+    for(QString str : dir.entryList({"*.glsl"}, QDir::Filter::Files)) {
+        ui->listWidget->addItem(str.replace(".glsl", ""));
+    }
+
+    connect(ui->listWidget, &QAbstractItemView::doubleClicked, this, &MainWindow::select);
 }
 
 MainWindow::~MainWindow()

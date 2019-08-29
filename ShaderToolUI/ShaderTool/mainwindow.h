@@ -21,6 +21,7 @@ private slots:
     void addShader();
     void make();
     void compile();
+    void select(const QModelIndex &idx);
 
 private:
     Ui::MainWindow *ui;
