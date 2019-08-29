@@ -5,6 +5,9 @@
 #include <QDir>
 #include <stdio.h>
 #include <iostream>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 static QString basefolder = QDir::currentPath() + "/../../";
 static QString shadertool = basefolder + "ShaderTool/bin/Debug/netcoreapp2.1/ShaderTool.dll";
@@ -66,12 +69,20 @@ void MainWindow::select(const QModelIndex &idx) {
     if(idx.row() == 0 || idx.row() == shader)
         return;
     if(idx.row() < shader) {
-        QString str = ui->listWidget->item(idx.row())->text();
-        QString response, err;
-        int rtc = callShaderTool({"pipe", "show", str.replace("/", "\\")}, &response, &err);
-        print(response);
-        if(rtc != 0)
-            print(QString("Error: %1 with message %2").arg(QString::number(rtc), err));
+        QString str = ui->listWidget->item(idx.row())->text() + "Pipe.json";
+        QFile pipe(resource + "/" + str);
+        if(!pipe.open(QFile::OpenModeFlag::ReadOnly)) {
+            print("Error opening " + str);
+            return;
+        }
+        QByteArray json = pipe.readAll();
+        QJsonObject obj = QJsonDocument::fromJson(json).object();
+        ui->namefield->setText(obj.value("Name").toString());
+        ui->shaderlist->clear();
+        for(QJsonValueRef obj : obj.value("ShaderNames").toArray()){
+            ui->shaderlist->addItem(obj.toString());
+        }
+        print(json);
     }
 }
 

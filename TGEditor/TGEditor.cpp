@@ -14,7 +14,7 @@ int main(int argc, char** args) {
 	initEngine(&editor.main_window);
 	tge::gmc::Model actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\TextureCoordinateTest\\glTF\\TextureCoordinateTest.gltf", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\amboss_blender_guru_tutorial.glb", &actor2);
 	tge::gmc::models.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
