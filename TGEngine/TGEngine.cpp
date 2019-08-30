@@ -13,14 +13,20 @@ void initEngine(Window* window) {
 	createWindow(window);
 	createInstance({
 		#ifdef DEBUG 
+		"VK_LAYER_LUNARG_core_validation",
 		"VK_LAYER_LUNARG_standard_validation",
+		"VK_LAYER_LUNARG_parameter_validation",
+		"VK_LAYER_KHRONOS_validation",
+        "VK_LAYER_LUNARG_assistant_layer",
+		"VK_LAYER_LUNARG_monitor",
 		#endif
-		//	"VK_LAYER_VALVE_steam_overlay",
-		//  "VK_LAYER_NV_optimus"
+		    "VK_LAYER_VALVE_steam_overlay",
+		    "VK_LAYER_NV_optimus",
+			"VK_LAYER_AMD_switchable_graphics"
 		}, {
 		});
 	createWindowSurfaces();
-	createDevice({}, {});
+	createDevice({}, { "VK_LAYER_AMD_switchable_graphics" });
 	prePipeline();
 	initShader();
 	initShaderPipes();
