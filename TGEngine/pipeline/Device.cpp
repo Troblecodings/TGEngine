@@ -54,7 +54,7 @@ void createDevice() {
 		priorities[i] = 1;
 	}
 
-	VkDeviceQueueCreateInfo device_queue_create_info = {
+	VkDeviceQueueCreateInfo deviceQueueCreateInfo = {
 		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
 		nullptr,
 		0,
@@ -65,7 +65,8 @@ void createDevice() {
 
 	//Make Device
 	VkDeviceCreateInfo deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
-
+	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
+	deviceCreateInfo.queueCreateInfoCount = 1;
 #if 0
 	//Validation for the device layers
 	std::vector<const char*> enabledLayer;
@@ -121,7 +122,7 @@ void createDevice() {
 	deviceFeaturesEnable.samplerAnisotropy = deviceFeatures.samplerAnisotropy;
 	deviceFeaturesEnable.depthClamp = deviceFeatures.depthClamp;
 
-
+	deviceCreateInfo.pEnabledFeatures = &deviceFeaturesEnable;
 	lastResult = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
 	HANDEL(lastResult)
 
