@@ -64,7 +64,7 @@ namespace tge {
 
 		};
 
-		extern UniformBuffer camera_uniform; // The uniform buffer for the camera matrix
+		extern UniformBuffer cameraUBO; // The uniform buffer for the camera matrix
 		extern std::vector<Camera*> cameras_on_scene; // Contains all cameras on the scene
 		extern size_t active_camera; // The index of the active camera
 		extern float multiplier; // defines the y mutliplier for the ui

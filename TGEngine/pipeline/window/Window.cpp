@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
 uint32_t d_width = 0, d_height = 0;
-std::vector<Window*> window_list;
+std::vector<Window*> windowList;
 HMODULE sys_module;
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -14,7 +14,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	}
-	Window* a_window = window_list[i];
+	Window* a_window = windowList[i];
 
 	switch(msg) {
 		case WM_QUIT:
@@ -155,7 +155,7 @@ void createWindow(Window* window) {
 	}
 	#endif
 
-	window_list.push_back(window);
+	windowList.push_back(window);
 
 	if(window->decorated) {
 		//Char unicode conversation
@@ -271,7 +271,7 @@ void getMonitor() {
 }
 
 void destroyWindows() {
-	for each(Window * var in window_list) {
+	for each(Window * var in windowList) {
 		#if defined(_WIN32) || defined(_WIN64)
 		DestroyWindow(var->__impl_window);
 		#endif 
@@ -280,7 +280,7 @@ void destroyWindows() {
 }
 
 void createWindowSurfaces() {
-	for each(Window * var in window_list) {
+	for each(Window * var in windowList) {
 		#ifdef _WIN32 
 		VkWin32SurfaceCreateInfoKHR surface_create_info = {
 			VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,

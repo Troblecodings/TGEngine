@@ -64,10 +64,10 @@ namespace tge {
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
 			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
-			camera_uniform.descriptor.descriptorset = lightbuffer.descriptor.descriptorset = this->descriptorIndex;
+			cameraUBO.descriptor.descriptorset = lightbuffer.descriptor.descriptorset = this->descriptorIndex;
 
-			camera_uniform.descriptor.binding = 0;
-			camera_uniform.updateDescriptor();
+			cameraUBO.descriptor.binding = 0;
+			cameraUBO.updateDescriptor();
 
 			lightbuffer.descriptor.binding = 1;
 			lightbuffer.updateDescriptor();

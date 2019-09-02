@@ -30,20 +30,20 @@ namespace tge {
 			}
 
 			// Imageview create parameters
-			vlib_image_create_info.extent.width = this->width;
-			vlib_image_create_info.extent.height = this->height;
+			vlibImageCreateInfo.extent.width = this->width;
+			vlibImageCreateInfo.extent.height = this->height;
 
 			// Buffer size
-			vlib_buffer_create_info.size = (uint32_t)this->width * (uint32_t)this->height * (uint32_t)4;
+			vlibBufferCreateInfo.size = (uint32_t)this->width * (uint32_t)this->height * (uint32_t)4;
 
 			// Mipmaplevels
 			if(this->miplevels == AUTO_MIPMAP)
-				this->miplevels = (uint32_t)floor(log2(math::u_max(vlib_image_create_info.extent.width, math::u_max(vlib_image_create_info.extent.height, vlib_image_create_info.extent.depth)))) + 1;
-			vlib_image_create_info.mipLevels = this->miplevels;
+				this->miplevels = (uint32_t)floor(log2(math::u_max(vlibImageCreateInfo.extent.width, math::u_max(vlibImageCreateInfo.extent.height, vlibImageCreateInfo.extent.depth)))) + 1;
+			vlibImageCreateInfo.mipLevels = this->miplevels;
 
 			this->initVulkan();
 			void* memory = this->map(this->width + this->height * 4);
-			memcpy(memory, this->imageData, vlib_buffer_create_info.size);
+			memcpy(memory, this->imageData, vlibBufferCreateInfo.size);
 			this->unmap();
 
 			// Destroy unneeded resources
@@ -53,11 +53,11 @@ namespace tge {
 		}
 
 		void Texture::load(VkCommandBuffer buffer) {
-			vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
-			vlib_image_memory_barrier.subresourceRange.levelCount = this->miplevels;
+			vlibImageMemoryBarrier.subresourceRange.baseMipLevel = 0;
+			vlibImageMemoryBarrier.subresourceRange.levelCount = this->miplevels;
 
-			vlib_buffer_image_copy.imageExtent.width = this->width;
-			vlib_buffer_image_copy.imageExtent.height = this->height;
+			vlibBufferImageCopy.imageExtent.width = this->width;
+			vlibBufferImageCopy.imageExtent.height = this->height;
 
 			this->queueLoading(buffer);
 			this->generateMipmaps(buffer);
@@ -85,28 +85,28 @@ namespace tge {
 				this->image,
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
-				&vlib_buffer_image_copy
+				&vlibBufferImageCopy
 				);
 		}
 
 		void Texture::generateMipmaps(VkCommandBuffer buffer) {
 			uint32_t mipwidth = this->width,
 				mipheight = this->height,
-				mipmapLevels = vlib_image_memory_barrier.subresourceRange.levelCount;
+				mipmapLevels = vlibImageMemoryBarrier.subresourceRange.levelCount;
 
-			vlib_image_memory_barrier.subresourceRange.levelCount = 1;
+			vlibImageMemoryBarrier.subresourceRange.levelCount = 1;
 
 			for(uint32_t i = 1; i < mipmapLevels; i++) {
-				vlib_image_memory_barrier.subresourceRange.baseMipLevel = i - 1;
+				vlibImageMemoryBarrier.subresourceRange.baseMipLevel = i - 1;
 				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT)
 
-					vlib_image_blit.srcSubresource.mipLevel = i - 1;
-				vlib_image_blit.dstSubresource.mipLevel = i;
-				vlib_image_blit.srcOffsets[1].x = mipwidth;
-				vlib_image_blit.srcOffsets[1].y = mipheight;
-				vlib_image_blit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
-				vlib_image_blit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
-				vkCmdBlitImage(buffer, this->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlib_image_blit, VK_FILTER_LINEAR);
+					vlibImageBlit.srcSubresource.mipLevel = i - 1;
+				vlibImageBlit.dstSubresource.mipLevel = i;
+				vlibImageBlit.srcOffsets[1].x = mipwidth;
+				vlibImageBlit.srcOffsets[1].y = mipheight;
+				vlibImageBlit.dstOffsets[1].x = mipwidth > 1 ? mipwidth / (uint32_t)2 : 1;
+				vlibImageBlit.dstOffsets[1].y = mipheight > 1 ? mipheight / (uint32_t)2 : 1;
+				vkCmdBlitImage(buffer, this->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vlibImageBlit, VK_FILTER_LINEAR);
 
 				ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
 
@@ -115,7 +115,7 @@ namespace tge {
 			}
 
 			if(mipmapLevels > 1) {
-				vlib_image_memory_barrier.subresourceRange.baseMipLevel = mipmapLevels - 1;
+				vlibImageMemoryBarrier.subresourceRange.baseMipLevel = mipmapLevels - 1;
 			}
 
 			ADD_IMAGE_MEMORY_BARRIER(buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, this->image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
@@ -125,7 +125,7 @@ namespace tge {
 			// Querries formats
 			for(VkFormat format : { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_A2B10G10R10_UNORM_PACK32, VK_FORMAT_B10G11R11_UFLOAT_PACK32}) {
 				VkFormatProperties prop;
-				vkGetPhysicalDeviceFormatProperties(used_physical_device, format, &prop);
+				vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &prop);
 				if((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
 					defaultImageFormat = format;
 					break;
@@ -137,18 +137,18 @@ namespace tge {
 
 			textureDescriptor = Descriptor(VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
 
-			vlib_image_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-			vlib_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
-			vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			vlibImageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+			vlibImageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+			vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			// TODO Look into this
-			vlib_image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_B;
-			vlib_image_view_create_info.components.b = VK_COMPONENT_SWIZZLE_R;
+			vlibImageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_B;
+			vlibImageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_R;
 			//
 
 			// Get default 
 			VkImageFormatProperties imageFormatProperties;
-			lastResult = vkGetPhysicalDeviceImageFormatProperties(used_physical_device, vlib_image_create_info.format,
-				vlib_image_create_info.imageType, vlib_image_create_info.tiling, vlib_image_create_info.usage, vlib_image_create_info.flags, &imageFormatProperties);
+			lastResult = vkGetPhysicalDeviceImageFormatProperties(physicalDevice, vlibImageCreateInfo.format,
+				vlibImageCreateInfo.imageType, vlibImageCreateInfo.tiling, vlibImageCreateInfo.usage, vlibImageCreateInfo.flags, &imageFormatProperties);
 			HANDEL(lastResult)
 
 			// TODO implement checks
@@ -170,34 +170,34 @@ namespace tge {
 		}
 
 		void Texture::initVulkan() {
-			vlib_image_create_info.format = defaultImageFormat;
+			vlibImageCreateInfo.format = defaultImageFormat;
 
 			// Image
-			lastResult = vkCreateImage(device, &vlib_image_create_info, nullptr, &this->image);
+			lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &this->image);
 			HANDEL(lastResult)
 
-				QUERRY_IMAGE_REQUIREMENTS(this->image, vlib_device_local_memory_index)
-				lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &this->imageMemory);
+				QUERRY_IMAGE_REQUIREMENTS(this->image, vlibDeviceLocalMemoryIndex)
+				lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &this->imageMemory);
 			HANDEL(lastResult)
 
 				lastResult = vkBindImageMemory(device, this->image, this->imageMemory, 0);
 			HANDEL(lastResult)
 
 				// Buffer
-				lastResult = vkCreateBuffer(device, &vlib_buffer_create_info, nullptr, &this->buffer);
+				lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &this->buffer);
 			HANDEL(lastResult)
 
-				QUERRY_BUFFER_REQUIREMENTS(this->buffer, vlib_device_host_visible_coherent_index)
-				lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &bufferMemory);
+				QUERRY_BUFFER_REQUIREMENTS(this->buffer, vlibDeviceHostVisibleCoherentIndex)
+				lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &bufferMemory);
 			HANDEL(lastResult)
 
 				lastResult = vkBindBufferMemory(device, this->buffer, this->bufferMemory, 0);
 			HANDEL(lastResult)
 
 				// Imageview
-				vlib_image_view_create_info.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			vlib_image_view_create_info.image = this->image;
-			lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &this->imageView);
+				vlibImageViewCreateInfo.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			vlibImageViewCreateInfo.image = this->image;
+			lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &this->imageView);
 			HANDEL(lastResult)
 		}
 

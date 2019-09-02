@@ -19,7 +19,7 @@
 #include "Error.hpp"
 
 extern prop::Properties* properties;
-extern uint32_t image_count;
+extern uint32_t imagecount;
 
 SINCE(0, 0, 4)
 #define TGE_VERSION VK_MAKE_VERSION(0, 0, 4)
@@ -33,7 +33,7 @@ TGERROR(result)\
 SINCE(0, 0, 1)
 #define HANDEL_RECREATE(result)\
 if(result == VK_ERROR_OUT_OF_DATE_KHR){\
-if(window_list[0]->minimized){\
+if(windowList[0]->minimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\

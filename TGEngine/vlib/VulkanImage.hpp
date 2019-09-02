@@ -14,16 +14,16 @@
  *   dstst -> the VkPipelineStageFlags of the destination
  */
 #define ADD_IMAGE_MEMORY_BARRIER(buf, oldlay, newlay, img, srcm, dstm, srcst, dstst) \
-vlib_image_memory_barrier.oldLayout = oldlay;\
-vlib_image_memory_barrier.newLayout = newlay;\
-vlib_image_memory_barrier.image = img;\
-vlib_image_memory_barrier.srcAccessMask = srcm;\
-vlib_image_memory_barrier.dstAccessMask = dstm;\
-vkCmdPipelineBarrier(buf, srcst, dstst, 0, 0, nullptr, 0, nullptr, 1, &vlib_image_memory_barrier);
+vlibImageMemoryBarrier.oldLayout = oldlay;\
+vlibImageMemoryBarrier.newLayout = newlay;\
+vlibImageMemoryBarrier.image = img;\
+vlibImageMemoryBarrier.srcAccessMask = srcm;\
+vlibImageMemoryBarrier.dstAccessMask = dstm;\
+vkCmdPipelineBarrier(buf, srcst, dstst, 0, 0, nullptr, 0, nullptr, 1, &vlibImageMemoryBarrier);
 
-extern VkBufferImageCopy vlib_buffer_image_copy;
-extern VkImageCreateInfo vlib_image_create_info;
-extern VkImageViewCreateInfo vlib_image_view_create_info;
-extern VkImageMemoryBarrier vlib_image_memory_barrier;
-extern VkImageBlit vlib_image_blit;
+extern VkBufferImageCopy vlibBufferImageCopy;
+extern VkImageCreateInfo vlibImageCreateInfo;
+extern VkImageViewCreateInfo vlibImageViewCreateInfo;
+extern VkImageMemoryBarrier vlibImageMemoryBarrier;
+extern VkImageBlit vlibImageBlit;
 extern VkSamplerCreateInfo vlibSamplerCreateInfo;

@@ -1,6 +1,6 @@
 #include "VulkanImage.hpp"
 
-VkBufferImageCopy vlib_buffer_image_copy = {
+VkBufferImageCopy vlibBufferImageCopy = {
 	0,
 	0,
 	0,
@@ -22,7 +22,7 @@ VkBufferImageCopy vlib_buffer_image_copy = {
 	}
 };
 
-VkImageCreateInfo vlib_image_create_info = {
+VkImageCreateInfo vlibImageCreateInfo = {
 	VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 	nullptr,
 	0,
@@ -44,7 +44,7 @@ VkImageCreateInfo vlib_image_create_info = {
 	VK_IMAGE_LAYOUT_UNDEFINED
 };
 
-VkImageViewCreateInfo vlib_image_view_create_info = {
+VkImageViewCreateInfo vlibImageViewCreateInfo = {
 	VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 	nullptr,
 	0,
@@ -66,7 +66,7 @@ VkImageViewCreateInfo vlib_image_view_create_info = {
 	}
 };
 
-VkImageMemoryBarrier vlib_image_memory_barrier = {
+VkImageMemoryBarrier vlibImageMemoryBarrier = {
 	VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 	nullptr,
 	0,
@@ -85,7 +85,7 @@ VkImageMemoryBarrier vlib_image_memory_barrier = {
 	}
 };
 
-VkImageBlit vlib_image_blit = {
+VkImageBlit vlibImageBlit = {
 	{
 		VK_IMAGE_ASPECT_COLOR_BIT,
 		0,

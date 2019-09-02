@@ -8,7 +8,7 @@ namespace tge {
 				gmc::RenderOffsets offset;
 				offset.material = this->materialIndex;
 				offset.size = 6;
-				offset.offset = index->index_count;
+				offset.offset = index->indexCount;
 
 				TG_VECTOR_APPEND_NORMAL(gmc::render_offset, offset)
 					this->offsetIndex = (uint32_t)lastSize;

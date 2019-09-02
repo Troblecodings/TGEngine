@@ -11,7 +11,7 @@ namespace tge {
 
 		void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta) {
 			camera->applyCameraRotation(glm::vec3(delta.y, delta.x, 0));
-			updateCamera(window_list[0]->width, window_list[0]->height);
+			updateCamera(windowList[0]->width, windowList[0]->height);
 		}
 
 		void __impl_keyboard_handleFPC(Camera* camera, uint16_t chr, bool down) {
@@ -36,7 +36,7 @@ namespace tge {
 						default:
 							break;
 					}
-				updateCamera(window_list[0]->width, window_list[0]->height);
+				updateCamera(windowList[0]->width, windowList[0]->height);
 			}
 		}
 	}

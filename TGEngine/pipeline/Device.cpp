@@ -1,54 +1,55 @@
 #include "Device.hpp"
 #include "window/Window.hpp"
 
-VkPhysicalDevice used_physical_device;
-VkPhysicalDeviceProperties device_properties;
+VkPhysicalDevice physicalDevice;
+VkPhysicalDeviceProperties deviceProperties;
 VkDevice device;
-VkQueueFamilyProperties queue_family;
-uint32_t queue_index;
+VkQueueFamilyProperties queueFamily;
+uint32_t queueIndex;
 VkQueue queue;
-VkPhysicalDeviceMemoryProperties memory_properties;
+VkPhysicalDeviceMemoryProperties memoryProperties;
 
-void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> layers_to_enable) {
+void createDevice() {
 
 	//Query Physical Devices
 	uint32_t count;
 	lastResult = vkEnumeratePhysicalDevices(instance, &count, nullptr);
 	HANDEL(lastResult);
-	VkPhysicalDevice* physical_devices = new VkPhysicalDevice[count];
-	lastResult = vkEnumeratePhysicalDevices(instance, &count, physical_devices);
+	VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
+	lastResult = vkEnumeratePhysicalDevices(instance, &count, physicalDevices);
 	HANDEL(lastResult);
 
 	//Get best Physical Device
 	uint32_t points = 0;
 	for(size_t i = 0; i < count; i++) {
-		VkPhysicalDeviceProperties c_properties;
-		vkGetPhysicalDeviceProperties(physical_devices[i], &c_properties);
-		uint32_t c_points = c_properties.limits.maxImageDimension2D + (c_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
-		if(c_points > points) {
-			points = c_points;
-			used_physical_device = physical_devices[i];
-			device_properties = c_properties;
+		VkPhysicalDeviceProperties currentDeviceProperties;
+		vkGetPhysicalDeviceProperties(physicalDevices[i], &currentDeviceProperties);
+		// TODO reevalute this calculation ... or you life choices
+		uint32_t currentPoints = currentDeviceProperties.limits.maxImageDimension2D + (currentDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
+		if(currentPoints > points) {
+			points = currentPoints;
+			physicalDevice = physicalDevices[i];
+			deviceProperties = currentDeviceProperties;
 		}
 	}
-	delete[] physical_devices;
+	delete[] physicalDevices;
 
 	//Query Queues
-	vkGetPhysicalDeviceQueueFamilyProperties(used_physical_device, &count, nullptr);
-	std::vector<VkQueueFamilyProperties> queue_famaily_properties(count);
-	vkGetPhysicalDeviceQueueFamilyProperties(used_physical_device, &count, queue_famaily_properties.data());
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, nullptr);
+	std::vector<VkQueueFamilyProperties> queueFamailyProperties(count);
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, queueFamailyProperties.data());
 	count = 0;
-	for each(VkQueueFamilyProperties c_queue_family in queue_famaily_properties) {
-		if((c_queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
-			queue_index = count;
-			queue_family = c_queue_family;
+	for each(VkQueueFamilyProperties currentQueueFamily in queueFamailyProperties) {
+		if((currentQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
+			queueIndex = count;
+			queueFamily = currentQueueFamily;
 			break;
 		}
 		count++;
 	}
 
 	//Set Prioritis
-	std::vector<float> priorities(queue_family.queueCount);
+	std::vector<float> priorities(queueFamily.queueCount);
 	for(size_t i = 0; i < priorities.size(); i++) {
 		priorities[i] = 1;
 	}
@@ -57,101 +58,86 @@ void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> la
 		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
 		nullptr,
 		0,
-		queue_index,
-		queue_family.queueCount,
+		queueIndex,
+		queueFamily.queueCount,
 		priorities.data(),
 	};
 
-	size_t size = 0;
+	//Make Device
+	VkDeviceCreateInfo deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
 
+#if 0
 	//Validation for the device layers
-	std::vector<const char*> enable_layer;
-	if(layers_to_enable.size() > 0) {
-		lastResult = vkEnumerateDeviceLayerProperties(used_physical_device, &count, nullptr);
-		HANDEL(lastResult)
-			std::vector<VkLayerProperties> usable_layers(count);
-		lastResult = vkEnumerateDeviceLayerProperties(used_physical_device, &count, usable_layers.data());
-		HANDEL(lastResult)
-			for each(VkLayerProperties layer in usable_layers) {
-				for each(const char* name in layers_to_enable) {
-					if(std::string(layer.layerName).compare(name) == 0) {
-						size = enable_layer.size();
-						enable_layer.resize(size + 1);
-						enable_layer[size] = name;
-						OUT_LV_DEBUG(name)
-							break;
-					}
+	std::vector<const char*> enabledLayer;
+	const char* layersEnable[0];
+	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, nullptr);
+	HANDEL(lastResult)
+		std::vector<VkLayerProperties> usableLayers(count);
+	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, usableLayers.data());
+	HANDEL(lastResult)
+		for each(VkLayerProperties layer in usableLayers) {
+			for each(const char* name in layersEnable) {
+				if(strcmp(layer.layerName, name) == 0) {
+					enabledLayer.push_back(name);
+					OUT_LV_DEBUG(name)
+					break;
 				}
 			}
-		layers_to_enable.clear();
-		usable_layers.clear();
-	}
+		}
+	usableLayers.clear();
+	deviceCreateInfo.enabledLayerCount = enabledLayer.maximumIndexCount();
+	deviceCreateInfo.ppEnabledLayerNames = enabledLayer.data();
+#endif // Disable device layer
 
-	size = extensions_to_enable.size();
-	extensions_to_enable.resize(size + 1);
-	extensions_to_enable[size] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+#if 1
+	const char* extensionsEnable[1];
+	extensionsEnable[0] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
 	//Validation for the device extensions
-	std::vector<const char*> enable_extensions;
-	if(extensions_to_enable.size() > 0) {
-		lastResult = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, nullptr);
-		HANDEL(lastResult)
-			std::vector<VkExtensionProperties> usable_extensions(count);
-		lastResult = vkEnumerateDeviceExtensionProperties(used_physical_device, nullptr, &count, usable_extensions.data());
-		HANDEL(lastResult)
-			for each(VkExtensionProperties extension in usable_extensions) {
-				for each(const char* name in extensions_to_enable) {
-					if(std::string(extension.extensionName).compare(name) == 0) {
-						size = enable_extensions.size();
-						enable_extensions.resize(size + 1);
-						enable_extensions[size] = name;
-						OUT_LV_DEBUG(name)
-							break;
-					}
+	std::vector<const char*> enabledExtensions;
+	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, nullptr);
+	HANDEL(lastResult)
+	std::vector<VkExtensionProperties> usableExtensions(count);
+	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, usableExtensions.data());
+	HANDEL(lastResult)
+		for each(VkExtensionProperties extension in usableExtensions) {
+			for each(const char* name in extensionsEnable) {
+				if(strcmp(extension.extensionName, name) == 0) {
+					enabledExtensions.push_back(name);
+					OUT_LV_DEBUG(name)
+						break;
 				}
 			}
-		extensions_to_enable.clear();
-		usable_extensions.clear();
-	}
+		}
+	usableExtensions.clear();
+	deviceCreateInfo.enabledExtensionCount = enabledExtensions.size();
+	deviceCreateInfo.ppEnabledExtensionNames = enabledExtensions.data();
+#endif // Enabled extensions
 
-	VkPhysicalDeviceFeatures device_features;
-	vkGetPhysicalDeviceFeatures(used_physical_device, &device_features);
+	VkPhysicalDeviceFeatures deviceFeatures;
+	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
-	VkPhysicalDeviceFeatures device_features_to_enable = {};
-	device_features_to_enable.samplerAnisotropy = device_features.samplerAnisotropy;
-	device_features_to_enable.depthClamp = device_features.depthClamp;
+	VkPhysicalDeviceFeatures deviceFeaturesEnable = {};
+	deviceFeaturesEnable.samplerAnisotropy = deviceFeatures.samplerAnisotropy;
+	deviceFeaturesEnable.depthClamp = deviceFeatures.depthClamp;
 
 
-	//Make Device
-	VkDeviceCreateInfo device_create_info = {
-		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		nullptr,
-		0,
-		1,
-		&device_queue_create_info,
-		(uint32_t)enable_layer.size(),
-		enable_layer.data(),
-		(uint32_t)enable_extensions.size(),
-		enable_extensions.data(),
-		&device_features_to_enable
-	};
-
-	lastResult = vkCreateDevice(used_physical_device, &device_create_info, nullptr, &device);
+	lastResult = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
 	HANDEL(lastResult)
 
-		//Get queue
-		vkGetDeviceQueue(device, queue_index, 0, &queue);
+	//Get queue
+	vkGetDeviceQueue(device, queueIndex, 0, &queue);
 
-	VkBool32 isSupported;
-	lastResult = vkGetPhysicalDeviceSurfaceSupportKHR(used_physical_device, queue_index, window_list[0]->surface, &isSupported);
+	VkBool32 isSupported = 1;
+	lastResult = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, windowList[0]->surface, &isSupported);
 	HANDEL(lastResult)
 
 		ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
 
-		vkGetPhysicalDeviceMemoryProperties(used_physical_device, &memory_properties);
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
 
-	FIND_INDEX(vlib_device_local_memory_index, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
-		FIND_INDEX(vlib_device_host_visible_coherent_index, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+	FIND_INDEX(vlibDeviceLocalMemoryIndex, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
+		FIND_INDEX(vlibDeviceHostVisibleCoherentIndex, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
 }
 
 void destroyDevice() {

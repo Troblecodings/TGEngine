@@ -11,19 +11,19 @@ VkImageView color_image_view;
 VkDeviceMemory color_image_memory;
 
 void createSwapchain() {
-	Window* win = window_list[0];
+	Window* win = windowList[0];
 
-	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, win->surface, &surface_capabilities);
+	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities);
 	HANDEL(lastResult)
 
-		image_count = math::u_min(math::u_max(image_count, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
+		imagecount = math::u_min(math::u_max(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
 	VkSwapchainCreateInfoKHR swapchain_create_info = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 		nullptr,
 		0,
 		win->surface,
-		image_count,
+		imagecount,
 		used_format.format,
 		used_format.colorSpace,
 		{
@@ -47,39 +47,39 @@ void createSwapchain() {
 		HANDEL(lastResult)
 	}
 
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr);
+	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr);
 	HANDEL(lastResult)
 
-		swapchain_images.resize(image_count);
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &image_count, swapchain_images.data());
+		swapchain_images.resize(imagecount);
+	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data());
 	HANDEL(lastResult)
 }
 
 void createColorResouce() {
-	vlib_image_create_info.extent.width = window_list[0]->width;
-	vlib_image_create_info.extent.height = window_list[0]->height;
-	vlib_image_create_info.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	vlib_image_create_info.format = used_format.format;
-	vlib_image_create_info.samples = used_msaa_flag;
-	vlib_image_create_info.mipLevels = 1;
-	lastResult = vkCreateImage(device, &vlib_image_create_info, nullptr, &color_image);
+	vlibImageCreateInfo.extent.width = windowList[0]->width;
+	vlibImageCreateInfo.extent.height = windowList[0]->height;
+	vlibImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	vlibImageCreateInfo.format = used_format.format;
+	vlibImageCreateInfo.samples = used_msaa_flag;
+	vlibImageCreateInfo.mipLevels = 1;
+	lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &color_image);
 	HANDEL(lastResult);
 
 	VkMemoryRequirements requierments;
 	vkGetImageMemoryRequirements(device, color_image, &requierments);
 
-	vlib_buffer_memory_allocate_info.allocationSize = requierments.size;
-	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_local_memory_index;
-	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &color_image_memory);
+	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
+	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
+	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory);
 	HANDEL(lastResult);
 
 	lastResult = vkBindImageMemory(device, color_image, color_image_memory, 0);
 	HANDEL(lastResult);
 
-	vlib_image_view_create_info.format = used_format.format;
-	vlib_image_view_create_info.image = color_image;
-	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &color_image_view);
+	vlibImageViewCreateInfo.format = used_format.format;
+	vlibImageViewCreateInfo.image = color_image;
+	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &color_image_view);
 	HANDEL(lastResult);
 }
 
@@ -104,10 +104,10 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	lastResult = vkDeviceWaitIdle(device);
 	HANDEL(lastResult)
 
-		lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(used_physical_device, window_list[0]->surface, &surface_capabilities);
+		lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities);
 	HANDEL(lastResult)
-		window_list[0]->width = surface_capabilities.currentExtent.width;
-	window_list[0]->height = surface_capabilities.currentExtent.height;
+		windowList[0]->width = surface_capabilities.currentExtent.width;
+	windowList[0]->height = surface_capabilities.currentExtent.height;
 
 	createColorResouce();
 	createDepthTest();
@@ -134,7 +134,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createFramebuffer();
 	createCommandBuffer();
 
-	tge::gmc::multiplier = (window_list[0]->height / (float)window_list[0]->width);
+	tge::gmc::multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	tge::ui::ui_scene_entity.init();
 

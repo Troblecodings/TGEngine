@@ -4,7 +4,7 @@ VkResult lastResult;
 VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessager;
 
-void createInstance(std::vector<const char*> layersToEnable, std::vector<const char*> extensionsToEnable) {
+void createInstance() {
 
 	VkApplicationInfo app_info = {
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -16,58 +16,69 @@ void createInstance(std::vector<const char*> layersToEnable, std::vector<const c
 		VK_API_VERSION_1_1
 	};
 
+	// Layer list
+	const char* layersToEnable[] = {
+		#ifdef DEBUG 
+	"VK_LAYER_LUNARG_core_validation",
+		"VK_LAYER_LUNARG_standard_validation",
+		"VK_LAYER_LUNARG_parameter_validation",
+		"VK_LAYER_KHRONOS_validation",
+		"VK_LAYER_LUNARG_assistant_layer",
+		"VK_LAYER_LUNARG_monitor",
+    #endif
+		"VK_LAYER_VALVE_steam_overlay",
+		"VK_LAYER_NV_optimus",
+		"VK_LAYER_AMD_switchable_graphics"
+	};
+
 	uint32_t count;
 	//Validation for the instance layers
 	std::vector<const char*> enabledLayerNames;
-	if(layersToEnable.size() > 0) {
-		lastResult = vkEnumerateInstanceLayerProperties(&count, nullptr);
-		HANDEL(lastResult)
-			std::vector<VkLayerProperties> usableLayerNames(count);
-		lastResult = vkEnumerateInstanceLayerProperties(&count, usableLayerNames.data());
-		HANDEL(lastResult)
-			for each(VkLayerProperties layer in usableLayerNames) {
-				OUT_LV_DEBUG("Available " << layer.layerName)
-					for each(const char* name in layersToEnable) {
-						if(strcmp(layer.layerName, name) == 0) {
-							enabledLayerNames.push_back(name);
-							OUT_LV_DEBUG("Activate Layer: " << name)
-								break;
-						}
+	lastResult = vkEnumerateInstanceLayerProperties(&count, nullptr);
+	HANDEL(lastResult)
+		std::vector<VkLayerProperties> usableLayerNames(count);
+	lastResult = vkEnumerateInstanceLayerProperties(&count, usableLayerNames.data());
+	HANDEL(lastResult)
+		for each(VkLayerProperties layer in usableLayerNames) {
+			OUT_LV_DEBUG("Available " << layer.layerName)
+				for each(const char* name in layersToEnable) {
+					if(strcmp(layer.layerName, name) == 0) {
+						enabledLayerNames.push_back(name);
+						OUT_LV_DEBUG("Activate Layer: " << name)
+							break;
 					}
-			}
-	}
+				}
+		}
 
-	#ifdef DEBUG
-	extensionsToEnable.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-	#endif
-
-	#ifdef _WIN32
-	extensionsToEnable.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-	extensionsToEnable.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-	#endif
+	// Extension list
+	const char* extensionsToEnable[] = {
+#ifdef DEBUG
+	VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+#endif // DEBUG
+	VK_KHR_SURFACE_EXTENSION_NAME,
+	VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+	};
 
 	//Validation for the intance extensions
 	std::vector<const char*> enabledExtensionNames;
-	if(extensionsToEnable.size() > 0) {
-		lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
-		HANDEL(lastResult)
-			std::vector<VkExtensionProperties> usableExtensionNames(count);
-		lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, usableExtensionNames.data());
-		HANDEL(lastResult)
-			for each(VkExtensionProperties extension in usableExtensionNames) {
-				OUT_LV_DEBUG("Available " << extension.extensionName)
-					for each(const char* name in extensionsToEnable) {
-						if(strcmp(extension.extensionName, name) == 0) {
-							enabledExtensionNames.push_back(name);
-							OUT_LV_DEBUG("Active " << name)
-								break;
-						}
+	lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
+	HANDEL(lastResult)
+		std::vector<VkExtensionProperties> usableExtensionNames(count);
+	lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, usableExtensionNames.data());
+	HANDEL(lastResult)
+		for each(VkExtensionProperties extension in usableExtensionNames) {
+			OUT_LV_DEBUG("Available " << extension.extensionName)
+				for each(const char* name in extensionsToEnable) {
+					if(strcmp(extension.extensionName, name) == 0) {
+						enabledExtensionNames.push_back(name);
+						OUT_LV_DEBUG("Active " << name)
+							break;
 					}
-			}
-	}
+				}
+		}
 
 	//Create Instance
-	VkInstanceCreateInfo instance_create_info = {
+	VkInstanceCreateInfo instanceCreateInfo = {
 		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 		nullptr,
 		0,
@@ -77,7 +88,7 @@ void createInstance(std::vector<const char*> layersToEnable, std::vector<const c
 		(uint32_t)enabledExtensionNames.size(),
 		enabledExtensionNames.data()
 	};
-	lastResult = vkCreateInstance(&instance_create_info, nullptr, &instance);
+	lastResult = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 	HANDEL(lastResult)
 
 		#ifdef DEBUG

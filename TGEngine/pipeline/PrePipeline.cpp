@@ -11,23 +11,23 @@ VkSampleCountFlagBits  used_msaa_flag;
 void prePipeline() {
 	uint32_t count = 0;
 
-	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
+	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
 	HANDEL(lastResult)
 
 		surface_format.resize(count);
-	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(used_physical_device, window_list[0]->surface, &count, surface_format.data());
+	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, surface_format.data());
 	HANDEL(lastResult)
 
-		lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, nullptr);
+		lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
 	HANDEL(lastResult)
 
 		present_mode.resize(count);
-	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(used_physical_device, window_list[0]->surface, &count, present_mode.data());
+	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, present_mode.data());
 	HANDEL(lastResult)
 
 		used_msaa_flag = (VkSampleCountFlagBits)properties->getInt("msaa");
 
-	VkSampleCountFlags counts = std::min(device_properties.limits.framebufferColorSampleCounts, device_properties.limits.framebufferDepthSampleCounts);
+	VkSampleCountFlags counts = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
 	if(!(counts & used_msaa_flag)) {
 		if(counts & VK_SAMPLE_COUNT_2_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_2_BIT; }
 		if(counts & VK_SAMPLE_COUNT_4_BIT) { used_msaa_flag = VK_SAMPLE_COUNT_4_BIT; }
@@ -47,7 +47,7 @@ void prePipeline() {
 
 	for(VkFormat format : { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}) {
 		VkFormatProperties prop;
-		vkGetPhysicalDeviceFormatProperties(used_physical_device, format, &prop);
+		vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &prop);
 		if((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
 			used_depth_format = format;
 			break;

@@ -36,14 +36,14 @@ ShaderPipe::ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
 	inputs(const_cast<VkVertexInputAttributeDescription*>(inputs)),
 	layouts(const_cast<VkDescriptorSetLayoutBinding*>(layouts)) {
 
-	vlib_descriptor_set_layout_create_info.bindingCount = layoutCount;
-	vlib_descriptor_set_layout_create_info.pBindings = layouts;
+	vlibDescriptorSetLayoutCreateInfo.bindingCount = layoutCount;
+	vlibDescriptorSetLayoutCreateInfo.pBindings = layouts;
 	this->layoutIndex = createLayouts();
 }
 
 void ShaderPipe::precreation() {
-	vlib_vertex_input_state.pVertexAttributeDescriptions = this->inputs;
-	vlib_vertex_input_state.vertexAttributeDescriptionCount = this->inputCount;
-	vlib_graphics_pipeline_create_info.pStages = this->shader;
-	vlib_graphics_pipeline_create_info.stageCount = this->shaderCount;
+	vlibVertexInputState.pVertexAttributeDescriptions = this->inputs;
+	vlibVertexInputState.vertexAttributeDescriptionCount = this->inputCount;
+	vlibGraphicsPipelineCreateInfo.pStages = this->shader;
+	vlibGraphicsPipelineCreateInfo.stageCount = this->shaderCount;
 }

@@ -1,6 +1,6 @@
 #include "VulkanDescriptor.hpp"
 
-VkDescriptorSetLayoutCreateInfo vlib_descriptor_set_layout_create_info = {
+VkDescriptorSetLayoutCreateInfo vlibDescriptorSetLayoutCreateInfo = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 	nullptr,
 	0,
@@ -8,7 +8,7 @@ VkDescriptorSetLayoutCreateInfo vlib_descriptor_set_layout_create_info = {
 	nullptr
 };
 
-VkDescriptorSetAllocateInfo vlib_allocate_info = {
+VkDescriptorSetAllocateInfo vlibAllocateInfo = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 	nullptr,
 	VK_NULL_HANDLE,
@@ -16,7 +16,7 @@ VkDescriptorSetAllocateInfo vlib_allocate_info = {
 	VK_NULL_HANDLE
 };
 
-VkDescriptorPoolCreateInfo vlib_descriptor_pool_create_info = {
+VkDescriptorPoolCreateInfo vlibDescriptorPoolCreateInfo = {
 	VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 	nullptr,
 	VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
@@ -25,12 +25,12 @@ VkDescriptorPoolCreateInfo vlib_descriptor_pool_create_info = {
 	nullptr
 };
 
-VkDescriptorPoolSize vlib_descriptor_pool_size = {
+VkDescriptorPoolSize vlibDescriptorPoolSize = {
 	VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 	0
 };
 
-VkWriteDescriptorSet vlib_descriptor_writes = {
+VkWriteDescriptorSet vlibDescriptorWrites = {
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 		nullptr,
 		VK_NULL_HANDLE,
@@ -44,7 +44,7 @@ VkWriteDescriptorSet vlib_descriptor_writes = {
 };
 
 //Pipeline Layout
-VkPipelineLayoutCreateInfo vlib_layout_info = {
+VkPipelineLayoutCreateInfo vlibLayoutInfo = {
 	VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 	nullptr,
 	0,
