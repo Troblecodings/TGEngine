@@ -16,11 +16,3 @@ extern tge::gmc::Mesh mesh2;
 extern tge::gmc::Camera camera;
 extern UIEntity entity;
 extern tge::gmc::Mesh map;
-
-struct Editor : App {
-	Editor() : App() {};
-};
-
-void init();
-
-void drawloop(IndexBuffer* ibuffer, VertexBuffer* verticies);

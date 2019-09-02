@@ -9,26 +9,24 @@ tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main(int argc, char** args) {
-	Editor editor = Editor();
 	tge::gmc::createStaticCamera(&camera);
-	initEngine(&editor.main_window);
+	initEngine();
 	tge::gmc::Model actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\amboss_blender_guru_tutorial.glb", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\sadsad.glb", &actor2);
 	tge::gmc::models.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
 
-	tge::gmc::LightActor light = tge::gmc::LightActor(0.5, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
+	tge::gmc::LightActor light = tge::gmc::LightActor(2, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, -4));
 	tge::gmc::lights.push_back(&light);
 
-	startTGEngine(&editor.main_window);
+	startTGEngine();
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
 }
 
 void init() {
-
 }
 
 void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {

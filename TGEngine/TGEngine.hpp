@@ -10,7 +10,7 @@
 #include "gamecontent/Camera.hpp"
 
 SINCE(0, 0, 5)
-void initEngine(Window* window);
+void initEngine();
 
 SINCE(0, 0, 1)
-void startTGEngine(Window* window);
+void startTGEngine();

@@ -4,13 +4,14 @@
 using namespace std;
 using namespace tge::tex;
 
-void initEngine(Window* window) {
+void initEngine() {
 	tge::nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
 
 	createWindowClass();
-	createWindow(window);
+	TG_VECTOR_GET_SIZE_AND_RESIZE(window_list)
+	createWindow(window_list[lastSize] = new Window);
 	createInstance({
 		#ifdef DEBUG 
 		"VK_LAYER_LUNARG_core_validation",
@@ -31,7 +32,7 @@ void initEngine(Window* window) {
 	initShader();
 	initShaderPipes();
 
-	tge::gmc::multiplier = (window->height / (float)window->width);
+	tge::gmc::multiplier = (window_list[0]->height / (float)window_list[0]->width);
 
 	createDepthTest();
 	createColorResouce();
@@ -50,7 +51,7 @@ void initEngine(Window* window) {
 	}
 }
 
-void startTGEngine(Window* window) {
+void startTGEngine() {
 
 	createSwapchain();
 	createFramebuffer();
@@ -102,11 +103,11 @@ void startTGEngine(Window* window) {
 	uint32_t counter = 0;
 
 	while(true) {
-		window->pollevents();
-		if(window->close_request) {
+		window_list[0]->pollevents();
+		if(window_list[0]->close_request) {
 			break;
 		}
-		if(window->minimized) {
+		if(window_list[0]->minimized) {
 			continue;
 		}
 		startdraw(&index_buffer, &main_buffer);
@@ -130,24 +131,24 @@ void startTGEngine(Window* window) {
 			}
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlib_buffer_copy.size = main_buffer.pointCount * VERTEX_SIZE;
+			vlibBufferCopy.srcOffset = vlibBufferCopy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlibBufferCopy.size = main_buffer.pointCount * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				main_buffer.stag_buf.staging_buffer,
 				main_buffer.vertex_buffer,
 				1,
-				&vlib_buffer_copy
+				&vlibBufferCopy
 			);
-			vlib_buffer_copy.srcOffset = 0;
-			vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
-			vlib_buffer_copy.size = index_buffer.index_count * sizeof(uint32_t);
+			vlibBufferCopy.srcOffset = 0;
+			vlibBufferCopy.dstOffset = index_offset * sizeof(uint32_t);
+			vlibBufferCopy.size = index_buffer.index_count * sizeof(uint32_t);
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				index_buffer.stag_buf.staging_buffer,
 				index_buffer.index_buffer,
 				1,
-				&vlib_buffer_copy
+				&vlibBufferCopy
 			);
 			endSingleTimeCommand();
 		}

@@ -1,6 +1,6 @@
 #include "VulkanBuffer.hpp"
 
-VkBufferCreateInfo vlib_buffer_create_info = {
+VkBufferCreateInfo vlibBufferCreateInfo = {
 	VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 	nullptr,
 	0,
@@ -11,18 +11,18 @@ VkBufferCreateInfo vlib_buffer_create_info = {
 	nullptr
 };
 
-VkMemoryAllocateInfo vlib_buffer_memory_allocate_info = {
+VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo = {
 	VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 	nullptr,
 	0,
 	0
 };
 
-VkBufferCopy vlib_buffer_copy = {
+VkBufferCopy vlibBufferCopy = {
 	0,
 	0,
 	0
 };
 
-uint32_t vlib_device_local_memory_index;
-uint32_t vlib_device_host_visible_coherent_index;
+uint32_t vlibDeviceLocalMemoryIndex;
+uint32_t vlibDeviceHostVisibleCoherentIndex;
