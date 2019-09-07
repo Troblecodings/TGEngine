@@ -8,10 +8,10 @@ namespace tge {
 				gmc::RenderOffsets offset;
 				offset.material = this->materialIndex;
 				offset.size = 6;
-				offset.offset = index->index_count;
+				offset.offset = index->indexCount;
 
 				TG_VECTOR_APPEND_NORMAL(gmc::render_offset, offset)
-					this->offsetIndex = (uint32_t)last_size;
+					this->offsetIndex = (uint32_t)lastSize;
 			}
 
 			glm::vec2 pos = this->parent->getPosition();
@@ -36,7 +36,7 @@ namespace tge {
 			if(this->materialIndex == -1) {
 				this->mat = gmc::UIMaterial(this->texture, this->color);
 				TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
-					this->materialIndex = (uint32_t)last_size;
+					this->materialIndex = (uint32_t)lastSize;
 			}
 		}
 	}

@@ -19,21 +19,31 @@ namespace tge {
 		 *  -> API independency layer
 		 */
 		SINCE(0, 0, 4)
-			typedef VkSampler* Sampler;
+		typedef VkSampler Sampler;
 
 		extern VkSampler defaultImageSampler;  // The default sampler if none is provided
 
-		class Texture; // pre defintion
-
 		/*
-		 * Holder for Vulkan specific image components
+		 * Wrapper for all textures
+		 *   -> API independent
 		 */
 		SINCE(0, 0, 4)
-			class VulkanTexture {
+			class Texture {
+
+			public:
+				Sampler sampler = VK_NULL_HANDLE;// holds a custom sampler
+				uint8_t* imageData = nullptr; // stores the image data -> see stb
 
 			private:
-				Texture* texture;
+				const char* textureName = nullptr; // name
+				uint32_t miplevels = AUTO_MIPMAP; // the maximum mipmap levels -> currently not changable
+				// TODO changable
 
+				int width = 0; // stores the width -> see stb
+				int height = 0; // stores the height -> see stb
+				int channel = 0; // stores the channel -> see stb
+
+#ifdef VULKAN_H_ // VULKAN ONLY
 				VkImage image; // The image vulkan representation
 				VkImageView imageView; // The view of the image ... to view the image LOL
 				VkBuffer buffer; // Buffer to store the image in befor it is transfered to the actual image -> deleted after transfer
@@ -42,10 +52,19 @@ namespace tge {
 				VkDeviceMemory bufferMemory; // The bound buffer memory -> deleted after transfer
 
 				VkFormat imageFormat; // Auto generated!
+#endif // VULKAN_H_
 
 			public:
-				VulkanTexture(Texture* texture) : texture(texture) {}
+				Texture(const char* textureName); // Loads texture from file
+				Texture(int width = 0, int height = 0); // Costum texture
 
+				void initTexture(); // inits all image resources
+				void load(VkCommandBuffer buffer); // loads the image and it's according mip levels
+
+				int getWidth(); // gets the width
+				int getHeight(); // gets the height
+
+#ifdef VULKAN_H_ // VULKAN ONLY
 				void initVulkan();
 
 				void* map(uint32_t size); // Maps the buffer memory
@@ -56,38 +75,7 @@ namespace tge {
 
 				void dispose(); // Disposes unneeded resources
 				void destroy(); // Destroys the whole texture
-		};
-
-		/*
-		 * Wrapper for all textures
-		 *   -> API independent
-		 */
-		SINCE(0, 0, 4)
-			class Texture {
-
-			public:
-				VulkanTexture* vulkanTexture; // stores the vulken implementation
-				Sampler sampler = &defaultImageSampler;// holds a custom sampler
-
-			private:
-				const char* textureName = nullptr; // name
-				uint32_t miplevels = AUTO_MIPMAP; // the maximum mipmap levels -> currently not changable
-				// TODO changable
-
-				int width; // stores the width -> see stb
-				int height; // stores the height -> see stb
-				int channel; // stores the channel -> see stb
-				uint8_t* imageData; // stores the image data -> see stb
-
-			public:
-				Texture(const char* textureName); // Loads texture from file
-				Texture(uint8_t* data, int width, int height); // Uses generated texture
-
-				void initTexture(); // inits all image resources
-				void load(VkCommandBuffer buffer); // loads the image and it's according mip levels
-
-				int getWidth(); // gets the width
-				int getHeight(); // gets the height
+#endif // VULKAN_H_
 
 		};
 
@@ -105,7 +93,7 @@ namespace tge {
 		 * Creates a custom sampler
 		 */
 		SINCE(0, 0, 4)
-			void createSampler(Sampler sampler);
+			void createSampler(Sampler* sampler);
 
 		/*
 		 * Destroys all textures

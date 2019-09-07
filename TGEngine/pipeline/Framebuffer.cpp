@@ -4,15 +4,15 @@ std::vector<VkFramebuffer> frame_buffer;
 std::vector<VkImageView> image_view;
 
 void createFramebuffer() {
-	Window* win = window_list[0];
+	Window* win = windowList[0];
 
-	frame_buffer.resize(image_count);
-	image_view.resize(image_count);
+	frame_buffer.resize(imagecount);
+	image_view.resize(imagecount);
 
-	vlib_image_view_create_info.format = used_format.format;
-	vlib_image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	vlib_image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-	vlib_image_view_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+	vlibImageViewCreateInfo.format = used_format.format;
+	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	vlibImageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+	vlibImageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 
 	VkFramebufferCreateInfo framebuffer_create_info = {
 		 VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
@@ -28,9 +28,9 @@ void createFramebuffer() {
 
 	VkImageView views[3] = { color_image_view, depth_image_view };
 
-	for(size_t i = 0; i < image_count; i++) {
-		vlib_image_view_create_info.image = swapchain_images[i];
-		lastResult = vkCreateImageView(device, &vlib_image_view_create_info, nullptr, &image_view[i]);
+	for(size_t i = 0; i < imagecount; i++) {
+		vlibImageViewCreateInfo.image = swapchain_images[i];
+		lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &image_view[i]);
 		HANDEL(lastResult)
 
 			views[2] = image_view[i];
@@ -42,7 +42,7 @@ void createFramebuffer() {
 }
 
 void destroyFrameBuffer() {
-	for(size_t i = 0; i < image_count; i++) {
+	for(size_t i = 0; i < imagecount; i++) {
 		vkDestroyFramebuffer(device, frame_buffer[i], nullptr);
 		vkDestroyImageView(device, image_view[i], nullptr);
 	}

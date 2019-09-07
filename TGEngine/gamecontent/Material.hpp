@@ -20,18 +20,21 @@ namespace tge {
 		SINCE(0, 0, 4)
 			class Material {
 
-			protected:
-				ShaderPipe* pipe = nullptr;
-
-				tex::Texture* texture = nullptr;
+			public:
+				ShaderPipe* pipe = &TexturedBasicPipe;
 				glm::vec4 color = glm::vec4(1.0f);
+				tex::Texture* texture = nullptr;
 
-				uint32_t pipelineIndex = 0;
-				uint32_t descriptorIndex = 0;
+				bool doubleSided = false;
+
+				uint32_t pipelineIndex;
+				uint32_t descriptorIndex;
 
 				MaterialType type = BASIC_MAT_TYPE;
 
 			public:
+
+				Material() {}
 				Material(tex::Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
 				Material(glm::vec4 color) : Material(nullptr, color) {}
 				Material(tex::Texture* texture, glm::vec4 color);
@@ -40,6 +43,8 @@ namespace tge {
 				virtual void createMaterial();
 
 				void addToBuffer(VkCommandBuffer buffer);
+
+				void setColor(glm::vec4 color);
 
 				MaterialType getType() { return this->type; };
 
@@ -52,7 +57,7 @@ namespace tge {
 		 * Defines which part of the buffer has which material
 		 */
 		SINCE(0, 0, 4)
-			struct RenderOffsets {
+		struct RenderOffsets {
 
 			uint32_t material; // index in the @materials array of the material to use
 

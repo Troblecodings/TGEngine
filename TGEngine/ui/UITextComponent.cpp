@@ -13,10 +13,10 @@ namespace tge {
 			if(this->index == -1) {
 				gmc::RenderOffsets off;
 				off.material = this->font->getMaterialIndex();
-				off.offset = index->index_count;
+				off.offset = index->indexCount;
 				off.size = (uint32_t)strlen(this->string) * 6;
 				TG_VECTOR_APPEND_NORMAL(gmc::render_offset, off)
-					this->index = (uint32_t)last_size;
+					this->index = (uint32_t)lastSize;
 			}
 
 			glm::vec2 ext = this->font->getExtent(this->string);

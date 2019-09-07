@@ -1,5 +1,5 @@
 #include "CommandBuffer.hpp"
-
+#include "../gamecontent/Actor.hpp"
 
 VkCommandPool command_pool;
 VkFence single_time_command_ready;
@@ -8,28 +8,28 @@ VkDeviceSize offsets = 0;
 bool started = true;
 
 void createCommandBuffer() {
-	command_buffers.resize(image_count + 1);
+	command_buffers.resize(imagecount + 1);
 
 	if(!command_pool) {
 		VkCommandPoolCreateInfo commmand_pool_create_info = {
 			VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 			nullptr,
 			VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			queue_index
+			queueIndex
 		};
 
 		lastResult = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
 		HANDEL(lastResult)
 
-			vlib_command_buffer_allocate_info.commandPool = command_pool;
+			vlibCommandBufferAllocateInfo.commandPool = command_pool;
 	}
 
-	vlib_command_buffer_allocate_info.commandBufferCount = image_count;
-	lastResult = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, command_buffers.data());
+	vlibCommandBufferAllocateInfo.commandBufferCount = imagecount;
+	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, command_buffers.data());
 	HANDEL(lastResult)
 
-		vlib_command_buffer_allocate_info.commandBufferCount = 1;
-	lastResult = vkAllocateCommandBuffers(device, &vlib_command_buffer_allocate_info, &SINGELTIME_COMMAND_BUFFER);
+		vlibCommandBufferAllocateInfo.commandBufferCount = 1;
+	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER);
 	HANDEL(lastResult)
 
 		VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
@@ -41,9 +41,9 @@ void startSingleTimeCommand() {
 	lastResult = vkResetFences(device, 1, &single_time_command_ready);
 	HANDEL(lastResult)
 
-		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-	vlib_command_buffer_begin_info.pInheritanceInfo = nullptr;
-	lastResult = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlib_command_buffer_begin_info);
+		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	vlibCommandBufferBeginInfo.pInheritanceInfo = nullptr;
+	lastResult = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlibCommandBufferBeginInfo);
 	HANDEL(lastResult);
 }
 
@@ -77,34 +77,47 @@ void startupCommands() {
 		tex->load(SINGELTIME_COMMAND_BUFFER);
 	}
 
-	vlib_image_memory_barrier.subresourceRange.levelCount = 1;
-	vlib_image_memory_barrier.subresourceRange.baseMipLevel = 0;
+	for each (tge::gmc::Model* act in tge::gmc::models) {
+		for each (tge::tex::Texture tex in act->textures)
+		{
+			tex.load(SINGELTIME_COMMAND_BUFFER);
+		}
+	}
+
+	vlibImageMemoryBarrier.subresourceRange.levelCount = 1;
+	vlibImageMemoryBarrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
 
-		vlib_image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		vlibImageMemoryBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
 
 		for each(StagingBuffer * buf in staging_buffer) {
-			vlib_buffer_copy.dstOffset = vlib_buffer_copy.srcOffset = 0;
-			vlib_buffer_copy.size = buf->size;
+			vlibBufferCopy.dstOffset = vlibBufferCopy.srcOffset = 0;
+			vlibBufferCopy.size = buf->size;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
 				buf->staging_buffer,
 				*buf->destination,
 				1,
-				&vlib_buffer_copy
+				&vlibBufferCopy
 			);
 		}
 
 	endSingleTimeCommand();
 
-	for each(tge::tex::Texture * tex in tge::tex::textures) {
-		tex->vulkanTexture->dispose();
+	for each(tge::tex::Texture* tex in tge::tex::textures) {
+		tex->dispose();
+	}
+	for each (tge::gmc::Model * act in tge::gmc::models) {
+		for each (tge::tex::Texture tex in act->textures)
+		{
+			tex.dispose();
+		}
 	}
 }
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	for(size_t i = 0; i < image_count; i++) {
+	for(size_t i = 0; i < imagecount; i++) {
 		VkCommandBuffer buffer = command_buffers[i];
 
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
@@ -118,9 +131,9 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 				0
 		};
 
-		vlib_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		vlib_command_buffer_begin_info.pInheritanceInfo = &command_buffer_inheritance_info;
-		lastResult = vkBeginCommandBuffer(buffer, &vlib_command_buffer_begin_info);
+		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		vlibCommandBufferBeginInfo.pInheritanceInfo = &command_buffer_inheritance_info;
+		lastResult = vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo);
 		HANDEL(lastResult);
 
 		VkRenderPassBeginInfo render_pass_begin_info = {
@@ -131,17 +144,29 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			{
 				0,
 				0,
-				(uint32_t)window_list[0]->width,
-				(uint32_t)window_list[0]->height
+				(uint32_t)windowList[0]->width,
+				(uint32_t)windowList[0]->height
 			},
 			2,
-			vlib_clear_values
+			vlibClearValues
 		};
 		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
 		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+
+		uint32_t off = 0;
+
+		for each (tge::gmc::Model* actor in tge::gmc::models)
+		{
+			for each (tge::gmc::RenderOffsets offset in actor->offsets)
+			{
+				off += offset.offset;
+				actor->materials[offset.material].addToBuffer(buffer);
+				vkCmdDrawIndexed(buffer, offset.size, 1, off, 0, 0);
+			}
+		}
 
 		for each(tge::gmc::RenderOffsets coffset in tge::gmc::render_offset) {
 			tge::gmc::materiallist[coffset.material]->addToBuffer(buffer);

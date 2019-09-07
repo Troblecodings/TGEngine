@@ -1,0 +1,36 @@
+{
+  "Name": "ColorOnlyNormal",
+  "ShaderNames": [
+    "VertexTextured",
+    "FragmentColorOnly"
+  ],
+  "Inputs": [
+    {
+      "Id": 0,
+      "Offset": 0,
+      "Layout": 106
+    },
+    {
+      "Id": 1,
+      "Offset": 12,
+      "Layout": 103
+    },
+    {
+      "Id": 2,
+      "Offset": 20,
+      "Layout": 106
+    }
+  ],
+  "Descriptors": [
+    {
+      "Binding": 0,
+      "Type": 6,
+      "flag": 1
+    },
+    {
+      "Binding": 1,
+      "Type": 6,
+      "flag": 16
+    }
+  ]
+}

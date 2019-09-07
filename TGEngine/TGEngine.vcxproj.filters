@@ -108,9 +108,6 @@
     <ClInclude Include="Pipeline\RenderPass.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\Shader.hpp">
-      <Filter>Headerdateien\pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\Swapchain.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
@@ -143,9 +140,6 @@
     </ClInclude>
     <ClInclude Include="Resources\ShaderData.hpp">
       <Filter>resources</Filter>
-    </ClInclude>
-    <ClInclude Include="model\FBX_Loader.hpp">
-      <Filter>Headerdateien\model</Filter>
     </ClInclude>
     <ClInclude Include="io\Files.hpp">
       <Filter>Headerdateien\io</Filter>
@@ -201,9 +195,6 @@
     <ClInclude Include="io\Font.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
-    <ClInclude Include="model\GLTFLoader.hpp">
-      <Filter>Headerdateien\model</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UIEntity.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
@@ -243,6 +234,9 @@
     <ClInclude Include="pipeline\ShaderCreation.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="model\ModelLoader.hpp">
+      <Filter>Headerdateien\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -281,9 +275,6 @@
     <ClCompile Include="Pipeline\RenderPass.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline\Shader.cpp">
-      <Filter>Quelldateien\pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline\Swapchain.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
@@ -319,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="Stdbase.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="model\FBX_Loader.cpp">
-      <Filter>Quelldateien\model</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\DepthStencil.cpp">
       <Filter>Quelldateien\pipeline</Filter>
@@ -362,9 +350,6 @@
     <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
-    <ClCompile Include="model\GLTFLoader.cpp">
-      <Filter>Quelldateien\model</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIEntity.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
@@ -404,6 +389,9 @@
     <ClCompile Include="pipeline\ShaderCreation.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="model\ModelLoader.cpp">
+      <Filter>Quelldateien\model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -424,40 +412,25 @@
     <None Include="..\docs\main.css">
       <Filter>docs</Filter>
     </None>
-    <None Include="resources\FragmentColorOnly.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentTextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentUITextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\VertexColorOnly.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\VertexTextured.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\VertexUI.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentUIColor.glsl">
-      <Filter>resources</Filter>
-    </None>
     <None Include="..\docs\contribution.html">
       <Filter>docs</Filter>
     </None>
     <None Include="..\docs\docsShaderTool.html">
       <Filter>docs</Filter>
     </None>
-    <None Include="resources\VertexTexturedMovable.glsl">
-      <Filter>resources</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png">
       <Filter>docs</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="resources\FragmentColorOnly.glsl" />
+    <CustomBuild Include="resources\FragmentTextured.glsl" />
+    <CustomBuild Include="resources\FragmentUIColor.glsl" />
+    <CustomBuild Include="resources\FragmentUITextured.glsl" />
+    <CustomBuild Include="resources\VertexTextured.glsl" />
+    <CustomBuild Include="resources\VertexTexturedMovable.glsl" />
+    <CustomBuild Include="resources\VertexUI.glsl" />
   </ItemGroup>
 </Project>

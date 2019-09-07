@@ -1,4 +1,4 @@
 #include "Stdbase.hpp"
 
 prop::Properties* properties;
-uint32_t image_count = 3;
+uint32_t imagecount = 3;

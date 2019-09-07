@@ -34,8 +34,7 @@
     <ClInclude Include="io\Font.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
-    <ClInclude Include="model\FBX_Loader.hpp" />
-    <ClInclude Include="model\GLTFLoader.hpp" />
+    <ClInclude Include="model\ModelLoader.hpp" />
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp" />
     <ClInclude Include="pipeline\CommandBuffer.hpp" />
     <ClInclude Include="pipeline\DepthStencil.hpp" />
@@ -48,7 +47,6 @@
     <ClInclude Include="pipeline\Pipeline.hpp" />
     <ClInclude Include="pipeline\PrePipeline.hpp" />
     <ClInclude Include="pipeline\RenderPass.hpp" />
-    <ClInclude Include="pipeline\Shader.hpp" />
     <ClInclude Include="pipeline\ShaderCreation.hpp" />
     <ClInclude Include="pipeline\Swapchain.hpp" />
     <ClInclude Include="pipeline\buffer\IndexBuffer.hpp" />
@@ -90,8 +88,7 @@
     <ClCompile Include="io\Font.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
-    <ClCompile Include="model\FBX_Loader.cpp" />
-    <ClCompile Include="model\GLTFLoader.cpp" />
+    <ClCompile Include="model\ModelLoader.cpp" />
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
     <ClCompile Include="pipeline\DepthStencil.cpp" />
@@ -103,7 +100,6 @@
     <ClCompile Include="pipeline\Pipe.cpp" />
     <ClCompile Include="pipeline\PrePipeline.cpp" />
     <ClCompile Include="pipeline\RenderPass.cpp" />
-    <ClCompile Include="pipeline\Shader.cpp" />
     <ClCompile Include="pipeline\ShaderCreation.cpp" />
     <ClCompile Include="pipeline\Swapchain.cpp" />
     <ClCompile Include="pipeline\window\Window.cpp" />
@@ -141,17 +137,63 @@
     <None Include="..\docs\_config.yml" />
     <None Include="..\setup.py" />
     <None Include="..\README.md" />
-    <None Include="resources\FragmentColorOnly.glsl" />
-    <None Include="resources\FragmentTextured.glsl" />
-    <None Include="resources\FragmentUIColor.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+    <CustomBuild Include="resources\FragmentColorOnly.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
-    </None>
-    <None Include="resources\FragmentUITextured.glsl" />
-    <None Include="resources\VertexColorOnly.glsl" />
-    <None Include="resources\VertexTextured.glsl" />
-    <None Include="resources\VertexTexturedMovable.glsl" />
-    <None Include="resources\VertexUI.glsl" />
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Identity)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">resources\ShaderData.cpp;resources\ShaderData.hpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentTextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentUIColor.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\FragmentUITextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexTextured.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexTexturedMovable.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="resources\VertexUI.glsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png" />
@@ -214,24 +256,30 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -239,13 +287,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -257,6 +305,34 @@
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -264,25 +340,52 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;DEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
     <PreBuildEvent>
-      <Command>cd $(ProjectDir)..\
-python setup.py 3 0</Command>
-      <Message>Build shader</Message>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -292,13 +395,13 @@ python setup.py 3 0</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib32;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin32</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -310,6 +413,34 @@ python setup.py 3 0</Command>
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -319,13 +450,13 @@ python setup.py 3 0</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;WIN64;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;libfbxsdk-mt.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\dependencies\Lib;$(ProjectDir)..\dependencies\fbx\lib\vs2017\$(PlatformShortName)\$(ConfigurationName);$(ProjectDir)..\dependencies\Third-Party\Bin</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
@@ -337,6 +468,34 @@ python setup.py 3 0</Command>
       </Command>
       <Message>Build shader</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild>
+      <AdditionalInputs>%(Identity)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild>
+      <LinkObjects>true</LinkObjects>
+    </CustomBuild>
+    <CustomBuild>
+      <OutputItemType>ClInclude</OutputItemType>
+    </CustomBuild>
+    <CustomBuild>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Compiling %(Identity)</Message>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

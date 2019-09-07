@@ -26,9 +26,9 @@ uint32_t addBuffer(VkBuffer buffer) {
 }
 
 void allocateAllBuffers() {
-	vlib_buffer_memory_allocate_info.allocationSize = _impl_size;
-	vlib_buffer_memory_allocate_info.memoryTypeIndex = vlib_device_host_visible_coherent_index;
-	lastResult = vkAllocateMemory(device, &vlib_buffer_memory_allocate_info, nullptr, &device_memory);
+	vlibBufferMemoryAllocateInfo.allocationSize = _impl_size;
+	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex;
+	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &device_memory);
 	HANDEL(lastResult)
 
 		for(size_t i = 0; i < buffers.size(); i++) {

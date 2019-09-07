@@ -6,9 +6,10 @@
 #include "../vlib/VulkanDescriptor.hpp"
 
 extern VkDescriptorPool descriptor_pool; // holds the descriptor pool -> see initDescriptors()
-extern std::vector<VkDescriptorSet> descriptor_set; // contains the desciptorset handles from vulkan
+extern std::vector<VkDescriptorSet> descriptorSets; // contains the desciptorset handles from vulkan
 extern std::vector<VkDescriptorSetLayout> descriptorSetLayouts; // contains the desciptorsetlayout handles from vulkan
 extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings; // contains the desciptorsetlayoutbindings from vulkan
+extern std::vector<VkPipelineLayout> pipeLayouts; // contians the PipelineLayouts
 
 extern uint32_t uniform_count; // holds the count of uniform buffer Descriptor objects
 extern uint32_t image_sampler_count; // holds the count of image sampler buffer Descriptor objects
@@ -24,12 +25,10 @@ public:
 	INTERNAL
 		SINCE(0, 0, 4)
 		Descriptor() {} // Default constructor -> doing nothing
-	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset);
+	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), type(type), binding(binding), descriptorset(descriptorset) {}
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding) : Descriptor(stage, type, binding, 0) {}
 	Descriptor(VkShaderStageFlags stage, VkDescriptorType type) : Descriptor(stage, type, 0) {}
 	Descriptor(VkDescriptorType type) : Descriptor(VK_SHADER_STAGE_VERTEX_BIT, type) {}
-
-	~Descriptor();
 
 	uint32_t descriptorset = 0; // the descriptor set this is updating in
 	uint32_t binding = 0;  // the binding within the shader
@@ -96,7 +95,7 @@ SINCE(0, 0, 4)
 void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags);
 
 /*
- * Creates a descriptor layout
+ * Creates a descriptor layout and it's according pipeline layout
  *    -> returns the index of the descriptor
  *
  * - Note: for VkDescriptorSetLayout see the Vulkan docs
@@ -104,7 +103,7 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
  */
 INTERNAL
 SINCE(0, 0, 4)
-uint32_t createDesctiptorLayout();
+uint32_t createLayouts();
 
 /*
  * Creates Descriptor Set

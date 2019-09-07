@@ -1,9 +1,11 @@
 #include "Descriptors.hpp"
+#include "../vlib/VulkanDescriptor.hpp"
 
 VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptor_set;
+std::vector<VkDescriptorSet> descriptorSets;
 std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
+std::vector<VkPipelineLayout> pipeLayouts;
 
 uint32_t uniform_count;
 uint32_t image_sampler_count;
@@ -12,34 +14,39 @@ void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStage
 	descriptor_bindings.push_back({ binding, type, 1, flags });
 }
 
+// TODO switch back to global texture binding for 3D 2D and so on ... map on same binding
+
 void initDescriptors() {
-	vlib_descriptor_pool_create_info.poolSizeCount = (uniform_count > 0 ? 1 : 0) + (image_sampler_count > 0 ? 1 : 0);
-	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlib_descriptor_pool_create_info.poolSizeCount];
+	vlibDescriptorPoolCreateInfo.poolSizeCount = 2;
+	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlibDescriptorPoolCreateInfo.poolSizeCount];
 
-	if(uniform_count > 0) {
-		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		vlib_descriptor_pool_size.descriptorCount = uniform_count;
-		sizes[0] = vlib_descriptor_pool_size;
-	}
+	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetUniformBuffers, 100);
+	sizes[0] = vlibDescriptorPoolSize;
 
-	if(image_sampler_count > 0) {
-		vlib_descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		vlib_descriptor_pool_size.descriptorCount = image_sampler_count;
-		sizes[vlib_descriptor_pool_create_info.poolSizeCount - 1] = vlib_descriptor_pool_size;
-	}
+	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetSamplers, 100);
+	sizes[1] = vlibDescriptorPoolSize;
 
-	vlib_descriptor_pool_create_info.pPoolSizes = sizes;
-	lastResult = vkCreateDescriptorPool(device, &vlib_descriptor_pool_create_info, nullptr, &descriptor_pool);
+	vlibDescriptorPoolCreateInfo.pPoolSizes = sizes;
+	lastResult = vkCreateDescriptorPool(device, &vlibDescriptorPoolCreateInfo, nullptr, &descriptor_pool);
 	HANDEL(lastResult)
 
-		vlib_allocate_info.descriptorPool = descriptor_pool;
+	vlibAllocateInfo.descriptorPool = descriptor_pool;
 }
 
-uint32_t createDesctiptorLayout() {
+uint32_t createLayouts() {
+	TG_VECTOR_GET_SIZE_AND_RESIZE(pipeLayouts)
 	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSetLayouts)
-		lastResult = vkCreateDescriptorSetLayout(device, &vlib_descriptor_set_layout_create_info, nullptr, &descriptorSetLayouts[last_size]);
+
+	lastResult = vkCreateDescriptorSetLayout(device, &vlibDescriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayouts[lastSize]);
 	HANDEL(lastResult)
-		return (uint32_t)last_size;
+
+	vlibLayoutInfo.pSetLayouts = &descriptorSetLayouts[lastSize];
+	lastResult = vkCreatePipelineLayout(device, &vlibLayoutInfo, nullptr, &pipeLayouts[lastSize]);
+	HANDEL(lastResult);
+
+		return (uint32_t)lastSize;
 }
 
 void destroyDesctiptorLayout(uint32_t layout) {
@@ -47,49 +54,27 @@ void destroyDesctiptorLayout(uint32_t layout) {
 }
 
 void destroyDescriptorSet(uint32_t layout) {
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptor_set[layout]);
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptorSets[layout]);
 	HANDEL(lastResult);
 }
 
 uint32_t createDescriptorSet(uint32_t layout) {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptor_set)
+	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSets)
 
-		vlib_allocate_info.pSetLayouts = &descriptorSetLayouts[layout];
-	lastResult = vkAllocateDescriptorSets(device, &vlib_allocate_info, &descriptor_set[last_size]);
+		vlibAllocateInfo.pSetLayouts = &descriptorSetLayouts[layout];
+	lastResult = vkAllocateDescriptorSets(device, &vlibAllocateInfo, &descriptorSets[lastSize]);
 	HANDEL(lastResult)
-		return (uint32_t)last_size;
+		return (uint32_t)lastSize;
 }
 
 void destroyDescriptors() {
 	for each(VkDescriptorSetLayout var in descriptorSetLayouts) {
 		vkDestroyDescriptorSetLayout(device, var, nullptr);
 	}
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptor_set.size(), descriptor_set.data());
+	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptorSets.size(), descriptorSets.data());
 	HANDEL(lastResult);
-	descriptor_set.clear();
-	descriptorSetLayouts.clear();
+	descriptorSets.clear();
 };
-
-Descriptor::Descriptor(VkShaderStageFlags stage, VkDescriptorType type, uint32_t binding, uint32_t descriptorset) : shaderstage(stage), binding(binding), type(type), descriptorset(descriptorset) {
-	if(this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-		uniform_count++;
-	} else if(this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-		image_sampler_count++;
-	}
-}
-
-Descriptor::~Descriptor() {
-	// TODO Destructor
-
-	//if (this->shaderstage == VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM) return;
-
-	//if (this->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) {
-	//	uniform_count--;
-	//}
-	//else if (this->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-	//	image_sampler_count--;
-	//}
-}
 
 void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {
 	if(this->type != VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) return;
@@ -100,10 +85,10 @@ void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {
 	imageinfo.imageView = view;
 	imageinfo.sampler = sampler;
 
-	vlib_descriptor_writes.pBufferInfo = nullptr;
-	vlib_descriptor_writes.pImageInfo = &imageinfo;
+	vlibDescriptorWrites.pBufferInfo = nullptr;
+	vlibDescriptorWrites.pImageInfo = &imageinfo;
 
-	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
 }
 
 void Descriptor::updateBufferInfo(uint32_t buffer, size_t size) {
@@ -115,16 +100,16 @@ void Descriptor::updateBufferInfo(uint32_t buffer, size_t size) {
 	bufferinfo.range = size;
 	bufferinfo.offset = 0;
 
-	vlib_descriptor_writes.pBufferInfo = &bufferinfo;
-	vlib_descriptor_writes.pImageInfo = nullptr;
+	vlibDescriptorWrites.pBufferInfo = &bufferinfo;
+	vlibDescriptorWrites.pImageInfo = nullptr;
 
-	vkUpdateDescriptorSets(device, 1, &vlib_descriptor_writes, 0, nullptr);
+	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
 }
 
 void Descriptor::update() {
-	vlib_descriptor_writes.descriptorType = this->type;
-	vlib_descriptor_writes.dstArrayElement = 0;
-	vlib_descriptor_writes.dstBinding = this->binding;
-	vlib_descriptor_writes.descriptorCount = 1;
-	vlib_descriptor_writes.dstSet = descriptor_set[this->descriptorset];
+	vlibDescriptorWrites.descriptorType = this->type;
+	vlibDescriptorWrites.dstArrayElement = 0;
+	vlibDescriptorWrites.dstBinding = this->binding;
+	vlibDescriptorWrites.descriptorCount = 1;
+	vlibDescriptorWrites.dstSet = descriptorSets[this->descriptorset];
 }

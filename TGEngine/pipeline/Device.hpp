@@ -3,16 +3,16 @@
 #include "Instance.hpp"
 #include "../vlib/VulkanBuffer.hpp"
 
-extern VkPhysicalDevice used_physical_device;
-extern VkPhysicalDeviceProperties device_properties;
-extern VkQueueFamilyProperties queue_family;
-extern uint32_t queue_index;
+extern VkPhysicalDevice physicalDevice;
+extern VkPhysicalDeviceProperties deviceProperties;
+extern VkQueueFamilyProperties queueFamily;
+extern uint32_t queueIndex;
 extern VkDevice device;
 extern VkQueue queue;
-extern VkPhysicalDeviceMemoryProperties memory_properties;
+extern VkPhysicalDeviceMemoryProperties memoryProperties;
 
 SINCE(0, 0, 1)
-void createDevice(std::vector<char*> extensions_to_enable, std::vector<char*> layers_to_enable);
+void createDevice();
 
 SINCE(0, 0, 1)
 void destroyDevice();

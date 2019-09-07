@@ -1,3 +1,3 @@
 #include "VectorUtil.hpp"
 
-size_t last_size = 0;
+size_t lastSize = 0;

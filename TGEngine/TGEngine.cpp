@@ -4,29 +4,22 @@
 using namespace std;
 using namespace tge::tex;
 
-void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void)) {
+void initEngine() {
 	tge::nio::initFileSystem();
 	properties = new prop::Properties();
 	prop::readProperties("Properties.xml", properties);
 
 	createWindowClass();
-	createWindow(window);
-	createInstance({
-		#ifdef DEBUG 
-		"VK_LAYER_LUNARG_standard_validation",
-		#endif
-	//	"VK_LAYER_VALVE_steam_overlay",
-	//  "VK_LAYER_NV_optimus"
-		}, {
-		});
+	TG_VECTOR_GET_SIZE_AND_RESIZE(windowList)
+	createWindow(windowList[lastSize] = new Window);
+	createInstance();
 	createWindowSurfaces();
-	createDevice({}, {});
+	createDevice();
 	prePipeline();
+	initShader();
+	initShaderPipes();
 
-	uint8_t imageData[4] = { 1, 1, 1, 1 };
-	Texture defaultTexture = Texture(imageData, 1, 1);
-
-	init();
+	tge::gmc::multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	createDepthTest();
 	createColorResouce();
@@ -35,38 +28,40 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 	tge::gmc::initLight();
 	tge::gmc::initCameras();
 	initAllTextures();
-
 	initDescriptors();
-	initShader();
-	initShaderPipes();
 
 	allocateAllBuffers();
-	fillUniformBuffer(&tge::gmc::camera_uniform, &glm::mat4(1.0f), sizeof(glm::mat4));
+	fillUniformBuffer(&tge::gmc::cameraUBO, new glm::mat4(1.0f), sizeof(glm::mat4));
 
-	for each(tge::gmc::LightActor * var in tge::gmc::lights) {
+	for each (tge::gmc::LightActor * var in tge::gmc::lights) {
 		var->updateLight();
 	}
+}
+
+void startTGEngine() {
 
 	createSwapchain();
 	createFramebuffer();
 
-	VertexBuffer main_buffer = {};
-	main_buffer.max_vertex_count = 9000000;
-	createVertexBuffer(&main_buffer);
+	VertexBuffer vertexBuffer = {};
+	vertexBuffer.maximumVertexCount = 9000000;
+	createVertexBuffer(&vertexBuffer);
 
-	IndexBuffer index_buffer = {};
-	index_buffer.size = 9000000;
-	createIndexBuffer(&index_buffer);
+	IndexBuffer indexBuffer = {};
+	indexBuffer.maximumIndexCount = 90000000;
+	createIndexBuffer(&indexBuffer);
 	createCommandBuffer();
-	tge::gmc::multiplier = (window->height / (float)window->width);
 
 	tge::ui::ui_scene_entity.init();
 
-	main_buffer.start();
-	index_buffer.start();
+	vertexBuffer.start();
+	indexBuffer.start();
 
-	for(size_t i = 0; i < tge::gmc::actors.size(); i++) {
-		tge::gmc::actors[i]->mesh->consume(&main_buffer, &index_buffer);
+	for(size_t i = 0; i < tge::gmc::models.size(); i++) {
+		for (size_t j = 0; j < tge::gmc::models[i]->actors.size(); j++)
+		{
+			tge::gmc::models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
+		}
 	}
 	OUT_LV_DEBUG(tge::gmc::materiallist.size())
 		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {
@@ -75,32 +70,32 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 				mat->createMaterial();
 		}
 
-	//draw(&index_buffer, &main_buffer);
+	index_offset = indexBuffer.indexCount;
+	vertex_offset = vertexBuffer.pointCount;
 
-	index_offset = index_buffer.index_count;
-	vertex_offset = main_buffer.pointCount;
+	tge::ui::ui_scene_entity.draw(&indexBuffer, &vertexBuffer);
 
-	tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
+	vertexBuffer.end();
+	indexBuffer.end();
 
-	main_buffer.end();
-	index_buffer.end();
-
-	fillCommandBuffer(&index_buffer, &main_buffer);
+	fillCommandBuffer(&indexBuffer, &vertexBuffer);
 
 	startupCommands();
 	createSemaphores();
 
 	clock_t last_time = clock();
 
+	uint32_t counter = 0;
+
 	while(true) {
-		window->pollevents();
-		if(window->close_request) {
+		windowList[0]->pollevents();
+		if(windowList[0]->close_request) {
 			break;
 		}
-		if(window->minimized) {
+		if(windowList[0]->minimized) {
 			continue;
 		}
-		startdraw(&index_buffer, &main_buffer);
+		startdraw(&indexBuffer, &vertexBuffer);
 
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
@@ -109,53 +104,62 @@ void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void
 			last_time = current_time;
 
 			tge::ui::ui_scene_entity.update();
-			main_buffer.pointCount = vertex_offset;
-			main_buffer.start();
-			index_buffer.start();
-			tge::ui::ui_scene_entity.draw(&index_buffer, &main_buffer);
-			main_buffer.end();
-			index_buffer.end();
+			vertexBuffer.pointCount = vertex_offset;
+			vertexBuffer.start();
+			indexBuffer.start();
+			tge::ui::ui_scene_entity.draw(&indexBuffer, &vertexBuffer);
+			vertexBuffer.end();
+			indexBuffer.end();
+
+			for each (tge::gmc::LightActor * var in tge::gmc::lights) {
+				var->updateLight();
+			}
 
 			startSingleTimeCommand();
-			vlib_buffer_copy.srcOffset = vlib_buffer_copy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlib_buffer_copy.size = main_buffer.pointCount * VERTEX_SIZE;
+			vlibBufferCopy.srcOffset = vlibBufferCopy.dstOffset = vertex_offset * VERTEX_SIZE;
+			vlibBufferCopy.size = vertexBuffer.pointCount * VERTEX_SIZE;
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
-				main_buffer.stag_buf.staging_buffer,
-				main_buffer.vertex_buffer,
+				vertexBuffer.stag_buf.staging_buffer,
+				vertexBuffer.vertex_buffer,
 				1,
-				&vlib_buffer_copy
+				&vlibBufferCopy
 			);
-			vlib_buffer_copy.srcOffset = 0;
-			vlib_buffer_copy.dstOffset = index_offset * sizeof(uint32_t);
-			vlib_buffer_copy.size = index_buffer.index_count * sizeof(uint32_t);
+			vlibBufferCopy.srcOffset = 0;
+			vlibBufferCopy.dstOffset = index_offset * sizeof(uint32_t);
+			vlibBufferCopy.size = indexBuffer.indexCount * sizeof(uint32_t);
 			vkCmdCopyBuffer(
 				SINGELTIME_COMMAND_BUFFER,
-				index_buffer.stag_buf.staging_buffer,
-				index_buffer.index_buffer,
+				indexBuffer.stag_buf.staging_buffer,
+				indexBuffer.index_buffer,
 				1,
-				&vlib_buffer_copy
+				&vlibBufferCopy
 			);
 			endSingleTimeCommand();
 		}
 
-		submit(&index_buffer, &main_buffer);
-		present(&index_buffer, &main_buffer);
+		submit(&indexBuffer, &vertexBuffer);
+		present(&indexBuffer, &vertexBuffer);
+
+		// TESTING
+		if (counter > 5) {
+		//	exit(0);
+		}
+		counter++;
 	}
 
 	destroyAllTextures();
 	destroySemaphores();
 	destroyCommandBuffer();
 	destroyMemory();
-	destroyIndexBuffer(&index_buffer);
-	destroyVertexBuffer(&main_buffer);
+	destroyIndexBuffer(&indexBuffer);
+	destroyVertexBuffer(&vertexBuffer);
 	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
 	destroyDescriptors();
 	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 	destroyPipeline();
-	destroyShaders();
 	destroyRenderPass();
 	destroyDepthTest();
 	destroyColorResouce();

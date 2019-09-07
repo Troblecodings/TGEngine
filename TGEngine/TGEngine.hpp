@@ -9,5 +9,8 @@
 #include "gamecontent/UIMaterial.hpp"
 #include "gamecontent/Camera.hpp"
 
+SINCE(0, 0, 5)
+void initEngine();
+
 SINCE(0, 0, 1)
-void initTGEngine(Window* window, void(*draw)(IndexBuffer*, VertexBuffer*), void(*init)(void));
+void startTGEngine();

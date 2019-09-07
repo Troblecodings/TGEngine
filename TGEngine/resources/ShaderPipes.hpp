@@ -2,6 +2,14 @@
 #include "ShaderData.hpp"
 // Auto generated / Don't change
 
+extern VkPipelineShaderStageCreateInfo ColorOnlyNormalShader[2];
+extern const VkVertexInputAttributeDescription ColorOnlyNormalInput[];
+extern const VkDescriptorSetLayoutBinding ColorOnlyNormalLayoutBinding[];
+extern const unsigned int ColorOnlyNormalShaderCount;
+extern const unsigned int ColorOnlyNormalInputCount;
+extern const unsigned int ColorOnlyNormalLayoutBindingCount;
+extern ShaderPipe ColorOnlyNormalPipe;
+
 extern VkPipelineShaderStageCreateInfo TexturedBasicShader[2];
 extern const VkVertexInputAttributeDescription TexturedBasicInput[];
 extern const VkDescriptorSetLayoutBinding TexturedBasicLayoutBinding[];

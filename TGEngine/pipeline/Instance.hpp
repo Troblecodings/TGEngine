@@ -8,7 +8,7 @@ extern VkInstance instance;
 extern VkDebugUtilsMessengerEXT debugMessager;
 
 SINCE(0, 0, 1)
-void createInstance(std::vector<const char*> layers_to_enable, std::vector<const char*> extensions_to_enable);
+void createInstance();
 
 /*
  * This defines the debug callback for the messages of the vulkan debug extension

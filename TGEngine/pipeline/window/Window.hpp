@@ -54,7 +54,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
 extern uint32_t d_width, d_height;
-extern std::vector<Window*> window_list;
+extern std::vector<Window*> windowList;
 
 /*
  * Creates a window based on the properties

@@ -5,7 +5,6 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Pipe.hpp"
-#include "Shader.hpp"
 #include "Swapchain.hpp"
 #include "buffer/IndexBuffer.hpp"
 #include "buffer/UniformBuffer.hpp"

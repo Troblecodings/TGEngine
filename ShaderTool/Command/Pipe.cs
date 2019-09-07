@@ -80,7 +80,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine();
                 return SUCESS;
             }
-            Console.WriteLine("Pipe doesn't exist!");
+            Console.WriteLine("Pipe doesn't exist! " + Path);
             return SHADER_DOESNT_EXIST;
         }
 

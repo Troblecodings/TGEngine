@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/BuildSymbols">
+        <file>images/buildS.png</file>
+        <file>images/buildP.png</file>
+        <file>images/addP.png</file>
+        <file>images/addS.png</file>
+    </qresource>
+</RCC>

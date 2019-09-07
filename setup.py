@@ -23,17 +23,17 @@ msg = None
 def isValidFile(name):
     return name.endswith(".h") or name.endswith(".xml") or name.endswith(".hpp") or name.endswith(".md") or name.endswith(".cpp") or name.endswith(".c") or name.endswith(".bat") or name.endswith(".py") or name.endswith(".html") or name.endswith(".cs")
 
-def wrt(vk, src):
+def wrt(vk, src, tp=""):
     print(".", end="", flush=True)
-    dependencies_file.write(vk + src, arcname=src, compress_type=zipfile.ZIP_DEFLATED)
+    dependencies_file.write(vk + src, arcname=tp+src, compress_type=zipfile.ZIP_DEFLATED)
 
 
-def wrtdir(vk, src):
-    for str in os.listdir(vk + src):
-        if os.path.isdir(vk + src + str):
-            wrtdir(vk, src + str + "\\")
+def wrtdir(vk, src, tp=""):
+    for str2 in os.listdir(vk + src):
+        if os.path.isdir(vk + src + str2):
+            wrtdir(vk, src + str2 + "\\", tp)
         else:
-            wrt(vk, src + str)
+            wrt(vk, src + str2, tp)
 
 files = 0
 loc = 0
@@ -56,16 +56,21 @@ def callback(cob, size, total):
     print(str(round(((cob * size) / total) * 100, 1)) + "%", end="\r")
 
 
-def getstb():
-    if os.path.exists("stb") and len(os.listdir("stb")) > 0:
-        print("Updating stb")
-        p = subprocess.Popen(["git", "pull"], cwd="stb")
-        p.wait()
-    else:
-        print("Cloning stb")
-        p = subprocess.Popen(["git", "clone", "https://github.com/nothings/stb"])
-        p.wait()
+gitdeps = { "nothings/stb", "syoyo/tinygltf", "google/draco"}
 
+
+def getstb():
+    global gitdeps
+    for pth in gitdeps:
+        folder = pth.split("/")[1]
+        if os.path.exists(folder) and len(os.listdir(folder)) > 0:
+            print("Updating " + folder)
+            p = subprocess.Popen(["git", "pull"], cwd=folder)
+            p.wait()
+        else:
+            print("Cloning " + folder)
+            p = subprocess.Popen(["git", "clone", "https://github.com/" + pth])
+            p.wait()
 
 def trigger(id):
     global msg
@@ -112,6 +117,23 @@ def trigger(id):
         elif id == 2:
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
+            print("Generating draco build files")
+            getstb()
+            if os.path.exists("draco_build"):
+                shutil.rmtree("draco_build")
+            os.mkdir("draco_build")
+            p = subprocess.Popen(["cmake", "../draco"], cwd=os.getcwd() + "\\draco_build")
+            p.wait()
+            p = subprocess.Popen(["MSbuild.exe", "ALL_BUILD.vcxproj"], cwd=os.getcwd() + "\\draco_build")
+            p.wait()
+            wrtdir(os.getcwd() + "\\draco_build\\Debug\\", "", tp="\\Lib\\")
+            p = subprocess.Popen(["cmake", "../draco", "-A", "Win32"], cwd=os.getcwd() + "\\draco_build")
+            p.wait()
+            p = subprocess.Popen(["MSbuild.exe", "ALL_BUILD.vcxproj"], cwd=os.getcwd() + "\\draco_build")
+            p.wait()
+            wrtdir(os.getcwd() + "\\draco_build\\Debug\\", "", tp="\\Lib32\\")
+            wrtdir(os.getcwd() + "\\draco\\src\\", "", tp="\\Include\\")
+            wrt(os.getcwd() + "\\draco_build\\draco\\", "draco_features.h", tp="\\Include\\draco\\")
             wrtdir(vulkan, "\\Bin\\")
             wrtdir(vulkan, "\\Bin32\\")
             wrtdir(vulkan, "\\Include\\")
@@ -119,8 +141,8 @@ def trigger(id):
             wrtdir(vulkan, "\\Lib32\\")
             wrtdir(vulkan, "\\Third-Party\\")
             wrt(vulkan, "\\LICENSE.txt")
-            wrtdir("", "fbx\\")
             dependencies_file.close()
+            shutil.rmtree("draco_build")
             msg = "Finished!"
             clear()
             return
@@ -180,7 +202,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.4      ")
+    print("       DEPENDENCIES 2.5      ")
     print("=============================")
     print("")
     if msg is not None:
@@ -188,9 +210,10 @@ while True:
         print("")
     print("1. Get all dependencies")
     print("2. Pack dependencies")
+    print("3. Build draco")
     print("4. Deploy engine")
     print("5. Get states")
-    print("6. Get stb only")
+    print("6. Get git dependencies only")
     print("7. Create project")
     print("0. Close")
     try:

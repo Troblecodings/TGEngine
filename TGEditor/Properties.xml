@@ -3,10 +3,10 @@
     <string name="app_name" value="TGEngine editor"/>
     <int name="version" value="1"/>
     <!--MSAA from 1 (off) to 64 | must be a value of 2^x or 1 or 0 for auto detect-->
-    <int name="msaa" value="4"/>
+    <int name="msaa" value="2"/>
   </app>
   <window>
-    <boolean name="fullscreen" value="true"/>
+    <boolean name="fullscreen" value="false"/>
     <!--Will be ignored if fullscreen is true-->
     <boolean name="decorated" value="true" />
     <boolean name="cursor" value="true" />

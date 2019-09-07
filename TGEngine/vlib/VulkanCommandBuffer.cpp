@@ -1,20 +1,20 @@
 #include "VulkanCommandBuffer.hpp"
 
-VkCommandBufferAllocateInfo vlib_command_buffer_allocate_info = {
+VkCommandBufferAllocateInfo vlibCommandBufferAllocateInfo = {
 	VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 	nullptr,
 	VK_NULL_HANDLE,
 	VK_COMMAND_BUFFER_LEVEL_PRIMARY
 };
 
-VkCommandBufferBeginInfo vlib_command_buffer_begin_info = {
+VkCommandBufferBeginInfo vlibCommandBufferBeginInfo = {
 	VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 	nullptr,
 	VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
 	nullptr
 };
 
-VkClearValue vlib_clear_values[2] = {
+VkClearValue vlibClearValues[2] = {
 	{
 		{
 			1,

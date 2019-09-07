@@ -45,7 +45,7 @@ namespace ShaderTool {
                     if (path == "tool") {
                         CWD += "../../../../../TGEngine/resources";
                     } else {
-                        CWD += path;
+                        CWD = path;
                     }
                     string[] cpy = (string[])args.Clone();
                     args = Array.FindAll(cpy, str => str != "--dir" && str != path);

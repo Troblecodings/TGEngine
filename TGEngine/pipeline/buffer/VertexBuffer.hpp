@@ -7,7 +7,7 @@
 #include "StagingBuffer.hpp"
 
 struct VertexBuffer {
-	uint32_t max_vertex_count;
+	uint32_t maximumVertexCount;
 	VkBuffer vertex_buffer;
 	VkDeviceMemory vertex_buffer_memory;
 	StagingBuffer stag_buf;

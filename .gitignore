@@ -284,3 +284,13 @@ dependencies/deps.zip
 
 /ShaderTool/bin
 /ShaderTool/obj
+/tinygltf/
+/TGEditor/TGEditor.exe
+/TGEditor/start.py
+/TGEditor/report.txt
+/TGEditor/report_fixed.txt
+/draco
+/ShaderToolUI/build-ShaderTool-Desktop_Qt_5_13_0_MSVC2015_64bit-Debug
+/ShaderToolUI/build-ShaderTool-Desktop_Qt_5_13_0_MSVC2017_64bit-Debug
+/ShaderToolUI/build-ShaderTool-Qt_5_13_0_for_UWP_64bit_MSVC_2017-Debug
+/ShaderToolUI/build-ShaderTool-Desktop_Qt_5_13_0_MinGW_32_bit-Debug
