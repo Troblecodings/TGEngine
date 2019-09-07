@@ -47,7 +47,6 @@
     <ClInclude Include="pipeline\Pipeline.hpp" />
     <ClInclude Include="pipeline\PrePipeline.hpp" />
     <ClInclude Include="pipeline\RenderPass.hpp" />
-    <ClInclude Include="pipeline\Shader.hpp" />
     <ClInclude Include="pipeline\ShaderCreation.hpp" />
     <ClInclude Include="pipeline\Swapchain.hpp" />
     <ClInclude Include="pipeline\buffer\IndexBuffer.hpp" />
@@ -101,7 +100,6 @@
     <ClCompile Include="pipeline\Pipe.cpp" />
     <ClCompile Include="pipeline\PrePipeline.cpp" />
     <ClCompile Include="pipeline\RenderPass.cpp" />
-    <ClCompile Include="pipeline\Shader.cpp" />
     <ClCompile Include="pipeline\ShaderCreation.cpp" />
     <ClCompile Include="pipeline\Swapchain.cpp" />
     <ClCompile Include="pipeline\window\Window.cpp" />

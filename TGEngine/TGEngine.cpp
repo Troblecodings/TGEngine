@@ -160,7 +160,6 @@ void startTGEngine() {
 	destroyDescriptors();
 	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
 	destroyPipeline();
-	destroyShaders();
 	destroyRenderPass();
 	destroyDepthTest();
 	destroyColorResouce();

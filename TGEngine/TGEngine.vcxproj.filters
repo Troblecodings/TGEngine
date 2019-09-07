@@ -108,9 +108,6 @@
     <ClInclude Include="Pipeline\RenderPass.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\Shader.hpp">
-      <Filter>Headerdateien\pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\Swapchain.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
@@ -276,9 +273,6 @@
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\RenderPass.cpp">
-      <Filter>Quelldateien\pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\Shader.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\Swapchain.cpp">
