@@ -7,7 +7,6 @@
 #include "../pipeline/buffer/IndexBuffer.hpp"
 #include "../util/VectorUtil.hpp"
 #include "../gamecontent/Material.hpp"
-#include "../pipeline/Shader.hpp"
 #include "../pipeline/Pipe.hpp"
 
 namespace tge {

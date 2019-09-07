@@ -317,7 +317,7 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
@@ -370,7 +370,7 @@
       </Command>
     </PreBuildEvent>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
@@ -425,7 +425,7 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>
@@ -480,7 +480,7 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
     <CustomBuild>
-      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir \resources</Command>
+      <Command>dotnet $(ProjectDir)..\ShaderTool\bin\$(ConfigurationName)\netcoreapp2.1\ShaderTool.dll shader compile %(Identity) --dir $(ProjectDir)resources</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>resources\ShaderData.hpp;resources\ShaderData.cpp;%(Outputs)</Outputs>

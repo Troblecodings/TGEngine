@@ -3,7 +3,6 @@
 #include "../Stdbase.hpp"
 #include "Device.hpp"
 #include "RenderPass.hpp"
-#include "Shader.hpp"
 #include <vector>
 #include "Descriptors.hpp"
 #include "../vlib/VulkanPipeline.hpp"
