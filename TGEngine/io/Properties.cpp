@@ -99,38 +99,30 @@ namespace prop {
 	}
 
 	char* Properties::getStringOrDefault(char* name, char* def) {
-		for(size_t i = 0; i < this->string_names.size(); i++) {
-			if(strcmp(name, this->string_names[i]) == 0) {
-				return this->string_values[i];
-			}
-		}
+		auto it = this->strings.find(name);
+		if (it != this->strings.end())
+			return it->second;
 		return def;
 	}
 
 	bool Properties::getBooleanOrDefault(char* name, bool def) {
-		for(size_t i = 0; i < this->bool_names.size(); i++) {
-			if(strcmp(name, this->bool_names[i]) == 0) {
-				return this->bool_values[i];
-			}
-		}
+		auto it = this->bools.find(name);
+		if (it != this->bools.end())
+			return it->second;
 		return def;
 	}
 
 	float Properties::getFloatOrDefault(char* name, float def) {
-		for(size_t i = 0; i < this->float_names.size(); i++) {
-			if(strcmp(name, this->float_names[i]) == 0) {
-				return this->float_values[i];
-			}
-		}
+		auto it = this->floats.find(name);
+		if (it != this->floats.end())
+			return it->second;
 		return def;
 	}
 
 	int Properties::getIntOrDefault(char* name, int def) {
-		for(size_t i = 0; i < this->int_names.size(); i++) {
-			if(strcmp(name, this->int_names[i]) == 0) {
-				return this->int_values[i];
-			}
-		}
+		auto it = this->ints.find(name);
+		if (it != this->ints.end())
+			return it->second;
 		return def;
 	}
 
@@ -151,22 +143,18 @@ namespace prop {
 	}
 
 	void Properties::addString(char* name, char* value) {
-		this->string_names.push_back(name);
-		this->string_values.push_back(value);
+		this->strings.insert(this->strings.end(), pair<char*, char*>(name, value));
 	}
 
 	void Properties::addBoolean(char* name, bool value) {
-		this->bool_names.push_back(name);
-		this->bool_values.push_back(value);
+		this->bools.insert(this->bools.end(), pair<char*, bool>(name, value));
 	}
 
 	void Properties::addFloat(char* name, float value) {
-		this->float_names.push_back(name);
-		this->float_values.push_back(value);
+		this->floats.insert(this->floats.end(), pair<char*, float>(name, value));
 	}
 
 	void Properties::addInt(char* name, int value) {
-		this->int_names.push_back(name);
-		this->int_values.push_back(value);
+		this->ints.insert(this->ints.end(), pair<char*, int>(name, value));
 	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <map>
 #include <string>
 #include "../util/Annotations.hpp"
 #include "../Error.hpp"
@@ -52,15 +52,10 @@ namespace prop {
 
 		private:
 			//name vectors
-			vector<char*> string_names;
-			vector<char*> bool_names;
-			vector<char*> int_names;
-			vector<char*> float_names;
-			//value vectors
-			vector<char*> string_values;
-			vector<bool> bool_values;
-			vector<int> int_values;
-			vector<float> float_values;
+			map<char*, char*> strings;
+			map<char*, bool> bools;
+			map<char*, int> ints;
+			map<char*, float> floats;
 	};
 
 	/*
