@@ -2,6 +2,7 @@
 
 #include "Annotations.hpp"
 #include <cstdint>
+#include <glm/glm.hpp>
 
 #define PI 3.14159265358979323846
 #define PIx2 6.28318530717958647692

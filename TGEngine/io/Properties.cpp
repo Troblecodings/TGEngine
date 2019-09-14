@@ -143,18 +143,18 @@ namespace prop {
 	}
 
 	void Properties::addString(char* name, char* value) {
-		this->strings.insert(this->strings.end(), pair<char*, char*>(name, value));
+		this->strings[name] = value;
 	}
 
 	void Properties::addBoolean(char* name, bool value) {
-		this->bools.insert(this->bools.end(), pair<char*, bool>(name, value));
+		this->bools[name] = value;
 	}
 
 	void Properties::addFloat(char* name, float value) {
-		this->floats.insert(this->floats.end(), pair<char*, float>(name, value));
+		this->floats[name] = value;
 	}
 
 	void Properties::addInt(char* name, int value) {
-		this->ints.insert(this->ints.end(), pair<char*, int>(name, value));
+		this->ints[name] = value;
 	}
 }

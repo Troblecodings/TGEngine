@@ -13,7 +13,7 @@ int main(int argc, char** args) {
 	initEngine();
 	tge::gmc::Model actor2;
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\sadsad.glb", &actor2);
+	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
 	tge::gmc::models.push_back(&actor2);
 
 	std::cout << "Starting Editor" << std::endl;
