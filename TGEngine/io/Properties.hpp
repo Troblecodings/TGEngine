@@ -27,35 +27,35 @@ namespace prop {
 			 * Gets the value or returns 0. false or an empty string
 			 */
 			SINCE(0, 0, 3)
-				char* getString(char* name);
-			bool getBoolean(char* name);
-			float getFloat(char* name);
-			int getInt(char* name);
+				char* getString(const char* name);
+			bool getBoolean(const char* name);
+			float getFloat(const char* name);
+			int getInt(const char* name);
 
 			/*
 			 * Gets the value or returns the default if it shouldn't find the name
 			 */
 			SINCE(0, 0, 4)
-				char* getStringOrDefault(char* name, char* def);
-			bool getBooleanOrDefault(char* name, bool def);
-			float getFloatOrDefault(char* name, float def);
-			int getIntOrDefault(char* name, int def);
+				char* getStringOrDefault(const char* name, char* def);
+			bool getBooleanOrDefault(const char* name, bool def);
+			float getFloatOrDefault(const char* name, float def);
+			int getIntOrDefault(const char* name, int def);
 
 			/*
 			 * Add values to the properties
 			 */
 			SINCE(0, 0, 4)
-				void addString(char* name, char* value);
-			void addBoolean(char* name, bool value);
-			void addFloat(char* name, float value);
-			void addInt(char* name, int value);
+				void addString(const char* name, char* value);
+			void addBoolean(const char* name, bool value);
+			void addFloat(const char* name, float value);
+			void addInt(const char* name, int value);
 
 		private:
 			//name vectors
-			map<char*, char*> strings;
-			map<char*, bool> bools;
-			map<char*, int> ints;
-			map<char*, float> floats;
+			map<std::string, char*> strings;
+			map<std::string, bool> bools;
+			map<std::string, int> ints;
+			map<std::string, float> floats;
 	};
 
 	/*
