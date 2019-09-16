@@ -1,4 +1,5 @@
 #include "UIMaterial.hpp"
+#include "..\pipeline\Pipe.hpp"
 
 namespace tge {
 	namespace gmc {

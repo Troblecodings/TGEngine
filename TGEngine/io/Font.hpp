@@ -8,6 +8,8 @@
 #include "../io/Files.hpp"
 #include "../util/VectorUtil.hpp"
 #include "../gamecontent/UIMaterial.hpp"
+#include "../pipeline/buffer/VertexBuffer.hpp"
+#include "../pipeline/buffer/IndexBuffer.hpp"
 
 namespace tge {
 	namespace fnt {

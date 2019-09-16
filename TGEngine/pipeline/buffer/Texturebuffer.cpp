@@ -1,4 +1,5 @@
 #include "Texturebuffer.hpp"
+#include "Memory.hpp"
 
 namespace tge {
 	namespace tex {

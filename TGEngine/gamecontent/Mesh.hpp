@@ -6,8 +6,6 @@
 #include "../pipeline/buffer/VertexBuffer.hpp"
 #include "../pipeline/buffer/IndexBuffer.hpp"
 #include "../util/VectorUtil.hpp"
-#include "../gamecontent/Material.hpp"
-#include "../pipeline/Pipe.hpp"
 
 namespace tge {
 	namespace gmc {

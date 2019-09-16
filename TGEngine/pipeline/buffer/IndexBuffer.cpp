@@ -1,4 +1,5 @@
 #include "IndexBuffer.hpp"
+#include "Memory.hpp"
 
 uint32_t index_offset = 0;
 

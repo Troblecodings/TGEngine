@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../../pipeline/Device.hpp"
-#include "../../util/TGVertex.hpp"
-#include "Memory.hpp"
 #include "UniformBuffer.hpp"
 #include "StagingBuffer.hpp"
 

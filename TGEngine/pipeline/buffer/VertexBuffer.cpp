@@ -1,4 +1,6 @@
 #include "VertexBuffer.hpp"
+#include "Memory.hpp"
+#include "../../pipeline/Device.hpp"
 
 size_t vertex_offset = 0;
 

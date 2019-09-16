@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../pipeline/buffer/Texturebuffer.hpp"
-#include "../pipeline/Pipe.hpp"
 #include "../resources/ShaderPipes.hpp"
 
 namespace tge {

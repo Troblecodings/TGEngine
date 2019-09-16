@@ -18,7 +18,7 @@ int main(int argc, char** args) {
 
 	std::cout << "Starting Editor" << std::endl;
 
-	tge::gmc::LightActor light = tge::gmc::LightActor(2, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, -4));
+	tge::gmc::LightActor light = tge::gmc::LightActor(1, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
 	tge::gmc::lights.push_back(&light);
 
 	startTGEngine();

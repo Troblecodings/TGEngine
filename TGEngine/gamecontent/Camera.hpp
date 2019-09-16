@@ -1,74 +1,35 @@
 #pragma once
 #include "../Stdbase.hpp"
-#include "../pipeline/buffer/VertexBuffer.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "../io/Mouse.hpp"
-#include "../io/Keyboard.hpp"
-#include "../pipeline/window/Window.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Actor.hpp"
 
 namespace tge {
 	namespace gmc {
 
-		struct Camera {
-			double speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
-			float fov = (float)PI * 0.5f; // Field of view in radians
+		struct Camera : public Actor{
+			float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
+			
+			float fov = (float)PI * 0.7f; // Field of view in radians
 			float near_clip_plain = 0.01f; // The nearest thing to the camera
 			float far_clip_plain = 1000.0f; // The farest thing from the camera
+			
 			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
-			glm::mat4 world_transform = glm::mat4(1.0f); // The world transform for all verticies in the world 
-			glm::mat4 camera = glm::mat4(1.0f); // The camera transforms done with glm::lookAt
-			glm::mat4 matrix; // The actual computed matrix -> Calculated: perspective * camera * world_transform
-			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.5f); // The position of the camera in world space
-			glm::vec2 rotations = glm::vec2(0.0f, 0.0f); // The rotations which are used to build a quaternion
+			glm::vec3 worldTranslation{};
+			glm::quat worldRotation{};
+			glm::vec3 worldScale{ 1, 1, 1};
+
 			size_t camera_index;
-
-			/*
-			 * Applies rotation to the world_transform matrix
-			 *  -> used for static cameras - e.g. Editor
-			 */
-			SINCE(0, 0, 3)
-				void applyWorldRotation(double x, double y, double z, double angle);
-
-			/*
-			 * Applies translation to the world_transform matrix
-			 *  -> used for static cameras - e.g. Editor
-			 */
-			SINCE(0, 0, 4)
-				void applyWorldTranslation(double x, double y, double z);
-
-			/*
-			 * Applies scale to the world_transform matrix
-			 *  -> used for static cameras - e.g. Editor
-			 */
-			SINCE(0, 0, 4)
-				void applyWorldScale(double x, double y, double z);
-
-			/*
-			 * Applies rotation to the camera matrix
-			 *  -> used for first person cameras - e.g. FPS
-			 */
-			SINCE(0, 0, 4)
-				void applyCameraRotation(glm::vec2 in);
-
-			/*
-			 * Applies translation to the camera matrix
-			 *  -> used for first person cameras - e.g. FPS
-			 */
-			SINCE(0, 0, 4)
-				void applyCameraTranslation(double x, double y, double z);
-
 		};
 
 		extern UniformBuffer cameraUBO; // The uniform buffer for the camera matrix
 		extern std::vector<Camera*> cameras_on_scene; // Contains all cameras on the scene
 		extern size_t active_camera; // The index of the active camera
 		extern float multiplier; // defines the y mutliplier for the ui
-		extern float multiplierx; // defines the x mutliplier for the ui
 
 		/*
 		 * Updates the active camera camera matrix and uploads it to the uniform buffer in the shader

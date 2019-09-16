@@ -26,25 +26,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_NCMOUSELEAVE:
 			SetCursor(a_window->__impl_cursor);
 			break;
-		case WM_INPUT:
-			uint32_t size;
+		case WM_INPUT: {
+			uint32_t size = 0;
 			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &size, sizeof(RAWINPUTHEADER));
 			RAWINPUT input;
 			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
-			switch(input.header.dwType) {
-				case RIM_TYPEMOUSE:
-					tg_io::inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
-					break;
-				case RIM_TYPEKEYBOARD:
-					tg_io::__impl_key_update(input.data.keyboard.VKey, input.data.keyboard.Flags);
-					break;
-				default:
-					break;
+			switch (input.header.dwType) {
+			case RIM_TYPEMOUSE:
+				tg_io::inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
+				break;
+			case RIM_TYPEKEYBOARD:
+				tg_io::__impl_key_update(input.data.keyboard.VKey, input.data.keyboard.Flags);
+				break;
+			default:
+				break;
 			}
-			if(a_window->consume_input) {
+			if (a_window->consume_input) {
 				SetCursorPos(a_window->middleX, a_window->middleY);
 			}
 			break;
+		}
 		case WM_LBUTTONDOWN:
 			tg_io::FIRST_MOUSE_BUTTON = true;
 			break;
