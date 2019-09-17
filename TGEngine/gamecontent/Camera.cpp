@@ -24,10 +24,10 @@ namespace tge {
 
 		void updateCamera(int width, int height) {
 			Camera* ptr = cameras_on_scene[active_camera];
-			glm::quat qut = glm::quat(ptr->cameraRotation);
 			glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
-			ptr->matrix = projection * glm::translate(glm::mat4(1), ptr->translation) 
-				* (glm::translate(glm::mat4(1), ptr->worldTranslation) * glm::mat4_cast(glm::quat(ptr->worldRotation)) * glm::scale(glm::mat4(1), ptr->worldScale));
+			ptr->matrix = projection * 
+				glm::translate(glm::mat4(1), ptr->translation) * glm::mat4_cast(glm::quat(ptr->cameraRotation)) // Camera Matrix -> TR
+				* (glm::translate(glm::mat4(1), ptr->worldTranslation) * glm::mat4_cast(glm::quat(ptr->worldRotation)) * glm::scale(glm::mat4(1), ptr->worldScale)); // World rotation -> TRS
 			fillUniformBuffer(&cameraUBO, &ptr->matrix, sizeof(glm::mat4));
 		}
 
