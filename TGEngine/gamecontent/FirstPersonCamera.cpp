@@ -11,7 +11,7 @@ namespace tge {
 		}
 
 		void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta) {
-			camera->rotation = glm::quat(glm::vec3(delta.y, delta.x, 0));
+			camera->cameraRotation += glm::vec3(delta * camera->speed, 0);
 			updateCamera(windowList[0]->width, windowList[0]->height);
 		}
 

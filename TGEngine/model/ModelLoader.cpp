@@ -173,7 +173,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 					actor->translation = glm::make_vec3((float*)node.translation.data());
 				}
 				if (node.rotation.size() == 4) {
-					actor->rotation = glm::mat4_cast(glm::make_quat((float*)node.rotation.data()));
+					actor->rotation = glm::make_quat((float*)node.rotation.data());
 				}
 				if (node.scale.size() == 3) {
 					actor->scale = glm::make_vec3((float*)node.scale.data());

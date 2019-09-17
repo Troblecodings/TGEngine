@@ -19,8 +19,10 @@ namespace tge {
 			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
+			glm::vec3 cameraRotation{};
+
 			glm::vec3 worldTranslation{};
-			glm::quat worldRotation{};
+			glm::vec3 worldRotation{};
 			glm::vec3 worldScale{ 1, 1, 1};
 
 			size_t camera_index;

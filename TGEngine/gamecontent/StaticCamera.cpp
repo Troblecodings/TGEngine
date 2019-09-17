@@ -12,7 +12,7 @@ namespace tge {
 
 		void __impl_mouseinputHandleSC(Camera* camera, glm::vec2 pos, glm::vec2 delta) {
 			if(!tg_io::FIRST_MOUSE_BUTTON)return;
-			camera->rotation = glm::quat({ delta * camera->speed, 0 });
+			camera->worldRotation += glm::vec3(delta.y, delta.x , 0) * camera->speed;
 			updateCamera(windowList[0]->width, windowList[0]->height);
 		}
 
