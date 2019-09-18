@@ -17,7 +17,7 @@ namespace tge {
 
 		void __impl_keyboard_handleFPC(Camera* camera, uint16_t chr, bool down) {
 			if (!down) {
-				glm::quat mp = glm::quat(glm::vec3(camera->rotation.x, 0, 0));
+				glm::quat mp = glm::quat(glm::vec3(0, camera->rotation.x, 0));
 				if (chr == 'W') camera->translation += glm::vec3(0, 0, 0.1) * mp;
 				if (chr == 'S')	camera->translation += glm::vec3(0, 0, -0.1) * mp;
 				if (chr == 'A')	camera->translation += glm::vec3(0.1, 0, 0) * mp;
