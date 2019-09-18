@@ -26,7 +26,7 @@ namespace tge {
 			Camera* ptr = cameras_on_scene[active_camera];
 			glm::mat4 projection = glm::perspective(ptr->fov, width / (float)height, ptr->near_clip_plain, ptr->far_clip_plain);
 			ptr->matrix = projection * 
-				glm::translate(glm::mat4(1), ptr->translation) * glm::mat4_cast(glm::quat(ptr->cameraRotation)) // Camera Matrix -> TR
+				glm::mat4_cast(glm::quat(ptr->cameraRotation)) * glm::translate(glm::mat4(1), ptr->translation) // Camera Matrix -> RT
 				* (glm::translate(glm::mat4(1), ptr->worldTranslation) * glm::mat4_cast(glm::quat(ptr->worldRotation)) * glm::scale(glm::mat4(1), ptr->worldScale)); // World rotation -> TRS
 			fillUniformBuffer(&cameraUBO, &ptr->matrix, sizeof(glm::mat4));
 		}
