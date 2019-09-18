@@ -11,16 +11,17 @@ namespace tge {
 		}
 
 		void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta) {
-			camera->cameraRotation += glm::vec3(delta.y, delta.x, 0) * camera->speed;
+			camera->rotation += glm::vec3(delta.y, delta.x, 0) * camera->speed;
 			updateCamera(windowList[0]->width, windowList[0]->height);
 		}
 
 		void __impl_keyboard_handleFPC(Camera* camera, uint16_t chr, bool down) {
 			if (!down) {
-				if (chr == 'W') camera->translation += glm::vec3(0, 0, 0.1) * glm::quat(camera->cameraRotation);
-				if (chr == 'S')	camera->translation += glm::vec3(0, 0, -0.1) * glm::quat(camera->cameraRotation);
-				if (chr == 'A')	camera->translation += glm::vec3(0.1, 0, 0) * glm::quat(camera->cameraRotation);
-				if (chr == 'D') camera->translation += glm::vec3(-0.1, 0, 0) * glm::quat(camera->cameraRotation);
+				glm::quat mp = glm::quat(glm::vec3(camera->rotation.x, 0, 0));
+				if (chr == 'W') camera->translation += glm::vec3(0, 0, 0.1) * mp;
+				if (chr == 'S')	camera->translation += glm::vec3(0, 0, -0.1) * mp;
+				if (chr == 'A')	camera->translation += glm::vec3(0.1, 0, 0) * mp;
+				if (chr == 'D') camera->translation += glm::vec3(-0.1, 0, 0) * mp;
 				updateCamera(windowList[0]->width, windowList[0]->height);
 			}
 		}

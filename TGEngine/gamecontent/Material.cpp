@@ -60,7 +60,7 @@ namespace tge {
 			if (this->doubleSided) 
 				vlibRasterizationState.cullMode = VK_CULL_MODE_NONE;
 			else
-				vlibRasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT;
+				vlibRasterizationState.cullMode = VK_CULL_MODE_BACK_BIT;
 
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
