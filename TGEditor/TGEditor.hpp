@@ -6,8 +6,8 @@
 #include <util/TGVertex.hpp>
 #include <gamecontent/Mesh.hpp>
 #include <gamecontent/Material.hpp>
-#include <gamecontent/FirstPersonCamera.hpp>
-#include <gamecontent/StaticCamera.hpp>
+#include <gamecontent/camera/FirstPersonCamera.hpp>
+#include <gamecontent/camera/StaticCamera.hpp>
 
 using namespace tge::ui;
 

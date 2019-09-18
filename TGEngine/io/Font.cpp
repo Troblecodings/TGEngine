@@ -1,5 +1,5 @@
 #include "Font.hpp"
-#include "..\gamecontent\Camera.hpp"
+#include "../gamecontent/camera/Camera.hpp"
 
 namespace tge {
 	namespace fnt {

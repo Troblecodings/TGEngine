@@ -70,6 +70,12 @@
     <Filter Include="Quelldateien\util">
       <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\gamecontent\camera">
+      <UniqueIdentifier>{3c1aaa48-112e-4434-94fa-8eda84fb8ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\gamecontent\camera">
+      <UniqueIdentifier>{e7daef0f-44a6-4e9f-96a8-bd3b05d60387}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -210,12 +216,6 @@
     <ClInclude Include="gamecontent\Actor.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
-    <ClInclude Include="gamecontent\Camera.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
-    <ClInclude Include="gamecontent\FirstPersonCamera.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="gamecontent\Light.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
@@ -223,9 +223,6 @@
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
     <ClInclude Include="gamecontent\Mesh.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
-    <ClInclude Include="gamecontent\StaticCamera.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
     <ClInclude Include="gamecontent\UIMaterial.hpp">
@@ -236,6 +233,18 @@
     </ClInclude>
     <ClInclude Include="model\ModelLoader.hpp">
       <Filter>Headerdateien\model</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\camera\2DCamera.hpp">
+      <Filter>Headerdateien\gamecontent\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\camera\Camera.hpp">
+      <Filter>Headerdateien\gamecontent\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\camera\FirstPersonCamera.hpp">
+      <Filter>Headerdateien\gamecontent\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecontent\camera\StaticCamera.hpp">
+      <Filter>Headerdateien\gamecontent\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -365,12 +374,6 @@
     <ClCompile Include="gamecontent\Actor.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
-    <ClCompile Include="gamecontent\Camera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="gamecontent\FirstPersonCamera.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="gamecontent\Light.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
@@ -378,9 +381,6 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="gamecontent\Mesh.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="gamecontent\StaticCamera.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="gamecontent\UIMaterial.cpp">
@@ -391,6 +391,18 @@
     </ClCompile>
     <ClCompile Include="model\ModelLoader.cpp">
       <Filter>Quelldateien\model</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\camera\2DCamera.cpp">
+      <Filter>Quelldateien\gamecontent\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\camera\Camera.cpp">
+      <Filter>Quelldateien\gamecontent\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\camera\FirstPersonCamera.cpp">
+      <Filter>Quelldateien\gamecontent\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\camera\StaticCamera.cpp">
+      <Filter>Quelldateien\gamecontent\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

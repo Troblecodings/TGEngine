@@ -1,6 +1,6 @@
 #include "Camera.hpp"
-#include "../io/Mouse.hpp"
-#include "../io/Keyboard.hpp"
+#include "../../io/Mouse.hpp"
+#include "../../io/Keyboard.hpp"
 
 namespace tge {
 	namespace gmc {

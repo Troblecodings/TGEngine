@@ -22,12 +22,13 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
-    <ClInclude Include="gamecontent\Camera.hpp" />
-    <ClInclude Include="gamecontent\FirstPersonCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\2DCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\Camera.hpp" />
+    <ClInclude Include="gamecontent\camera\FirstPersonCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\StaticCamera.hpp" />
     <ClInclude Include="gamecontent\Light.hpp" />
     <ClInclude Include="gamecontent\Material.hpp" />
     <ClInclude Include="gamecontent\Mesh.hpp" />
-    <ClInclude Include="gamecontent\StaticCamera.hpp" />
     <ClInclude Include="gamecontent\UIMaterial.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\Keyboard.hpp" />
@@ -76,12 +77,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamecontent\Actor.cpp" />
-    <ClCompile Include="gamecontent\Camera.cpp" />
-    <ClCompile Include="gamecontent\FirstPersonCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\2DCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\Camera.cpp" />
+    <ClCompile Include="gamecontent\camera\FirstPersonCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\StaticCamera.cpp" />
     <ClCompile Include="gamecontent\Light.cpp" />
     <ClCompile Include="gamecontent\Material.cpp" />
     <ClCompile Include="gamecontent\Mesh.cpp" />
-    <ClCompile Include="gamecontent\StaticCamera.cpp" />
     <ClCompile Include="gamecontent\UIMaterial.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\Keyboard.cpp" />

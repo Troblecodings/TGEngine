@@ -7,7 +7,7 @@
 #include "gamecontent/Actor.hpp"
 #include "ui/UIEntity.hpp"
 #include "gamecontent/UIMaterial.hpp"
-#include "gamecontent/Camera.hpp"
+#include "gamecontent/camera/Camera.hpp"
 
 SINCE(0, 0, 5)
 void initEngine();
