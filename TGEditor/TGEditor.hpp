@@ -8,6 +8,7 @@
 #include <gamecontent/Material.hpp>
 #include <gamecontent/camera/FirstPersonCamera.hpp>
 #include <gamecontent/camera/StaticCamera.hpp>
+#include <gamecontent/camera/2DCamera.hpp>
 
 using namespace tge::ui;
 

@@ -9,9 +9,11 @@ tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 
 int main(int argc, char** args) {
-	tge::gmc::createFirstPersonCamera(&camera);
 	initEngine();
 	tge::gmc::Model actor2;
+
+	tge::gmc::TopDownCamera topdown = { 0.5, 0, 800, 600 };
+	tge::gmc::setTopDownCamera(&topdown);
 
 	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
 	tge::gmc::models.push_back(&actor2);

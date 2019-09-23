@@ -10,6 +10,14 @@ extern const unsigned int ColorOnlyNormalInputCount;
 extern const unsigned int ColorOnlyNormalLayoutBindingCount;
 extern ShaderPipe ColorOnlyNormalPipe;
 
+extern VkPipelineShaderStageCreateInfo Tex2DShader[2];
+extern const VkVertexInputAttributeDescription Tex2DInput[];
+extern const VkDescriptorSetLayoutBinding Tex2DLayoutBinding[];
+extern const unsigned int Tex2DShaderCount;
+extern const unsigned int Tex2DInputCount;
+extern const unsigned int Tex2DLayoutBindingCount;
+extern ShaderPipe Tex2DPipe;
+
 extern VkPipelineShaderStageCreateInfo TexturedBasicShader[2];
 extern const VkVertexInputAttributeDescription TexturedBasicInput[];
 extern const VkDescriptorSetLayoutBinding TexturedBasicLayoutBinding[];
