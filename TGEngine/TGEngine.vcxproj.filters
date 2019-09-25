@@ -246,6 +246,9 @@
     <ClInclude Include="gamecontent\camera\StaticCamera.hpp">
       <Filter>Headerdateien\gamecontent\camera</Filter>
     </ClInclude>
+    <ClInclude Include="gamecontent\PlayerController.hpp">
+      <Filter>Headerdateien\gamecontent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -403,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="gamecontent\camera\StaticCamera.cpp">
       <Filter>Quelldateien\gamecontent\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecontent\PlayerController.cpp">
+      <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

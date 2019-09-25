@@ -7,13 +7,14 @@ tge::gmc::Mesh mesh2;
 tge::gmc::Camera camera;
 tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
+tge::gmc::TopDownCamera topdown = tge::gmc::TopDownCamera{ 0, 0, 800, 600 };
 
 int main(int argc, char** args) {
 	initEngine();
 	tge::gmc::Model actor2;
 
-	tge::gmc::TopDownCamera topdown = { 0.5, 0, 800, 600 };
 	tge::gmc::setTopDownCamera(&topdown);
+	tge::gmc::playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
 	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
 	tge::gmc::models.push_back(&actor2);

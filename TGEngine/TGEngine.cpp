@@ -1,5 +1,6 @@
 #include "TGEngine.hpp"
 #include "gamecontent/Light.hpp"
+#include "pipeline/window/Window.hpp"
 
 using namespace std;
 using namespace tge::tex;
@@ -101,6 +102,21 @@ void startTGEngine() {
 
 		if(delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
+
+			tge::gmc::Input input = {};
+			if (1 & states) {
+				input.y1 = 0.01;
+			}
+			if (2 & states) {
+				input.y1 = -0.01;
+			}
+			if (4 & states) {
+				input.x1 = 0.01;
+			}
+			if (8 & states) {
+				input.x1 = -0.01;
+			}
+			tge::gmc::playercontroller(&input);
 
 			tge::ui::ui_scene_entity.update();
 			vertexBuffer.pointCount = vertex_offset;
