@@ -5,6 +5,9 @@
 using namespace std;
 using namespace tge::tex;
 
+VertexBuffer vertexBuffer;
+IndexBuffer indexBuffer;
+
 void initEngine() {
 	tge::nio::initFileSystem();
 	properties = new prop::Properties();
@@ -36,26 +39,27 @@ void initEngine() {
 	for each (tge::gmc::LightActor * var in tge::gmc::lights) {
 		var->updateLight();
 	}
-}
 
-void startTGEngine() {
-
-	createSwapchain();
-	createFramebuffer();
-
-	VertexBuffer vertexBuffer = {};
+	vertexBuffer = {};
 	vertexBuffer.maximumVertexCount = 9000000;
 	createVertexBuffer(&vertexBuffer);
 
-	IndexBuffer indexBuffer = {};
+	indexBuffer = {};
 	indexBuffer.maximumIndexCount = 90000000;
 	createIndexBuffer(&indexBuffer);
 	createCommandBuffer();
 
-	tge::ui::ui_scene_entity.init();
-
 	vertexBuffer.start();
 	indexBuffer.start();
+
+	createSwapchain();
+	createFramebuffer();
+
+	tge::ui::ui_scene_entity.init();
+}
+
+void startTGEngine() {
+
 
 	for(size_t i = 0; i < tge::gmc::models.size(); i++) {
 		for (size_t j = 0; j < tge::gmc::models[i]->actors.size(); j++)
@@ -117,40 +121,6 @@ void startTGEngine() {
 				input.x1 = -0.01;
 			}
 			tge::gmc::playercontroller(&input);
-
-			tge::ui::ui_scene_entity.update();
-			vertexBuffer.pointCount = vertex_offset;
-			vertexBuffer.start();
-			indexBuffer.start();
-			tge::ui::ui_scene_entity.draw(&indexBuffer, &vertexBuffer);
-			vertexBuffer.end();
-			indexBuffer.end();
-
-			for each (tge::gmc::LightActor * var in tge::gmc::lights) {
-				var->updateLight();
-			}
-
-			startSingleTimeCommand();
-			vlibBufferCopy.srcOffset = vlibBufferCopy.dstOffset = vertex_offset * VERTEX_SIZE;
-			vlibBufferCopy.size = vertexBuffer.pointCount * VERTEX_SIZE;
-			vkCmdCopyBuffer(
-				SINGELTIME_COMMAND_BUFFER,
-				vertexBuffer.stag_buf.staging_buffer,
-				vertexBuffer.vertex_buffer,
-				1,
-				&vlibBufferCopy
-			);
-			vlibBufferCopy.srcOffset = 0;
-			vlibBufferCopy.dstOffset = index_offset * sizeof(uint32_t);
-			vlibBufferCopy.size = indexBuffer.indexCount * sizeof(uint32_t);
-			vkCmdCopyBuffer(
-				SINGELTIME_COMMAND_BUFFER,
-				indexBuffer.stag_buf.staging_buffer,
-				indexBuffer.index_buffer,
-				1,
-				&vlibBufferCopy
-			);
-			endSingleTimeCommand();
 		}
 
 		submit(&indexBuffer, &vertexBuffer);

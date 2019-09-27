@@ -10,7 +10,7 @@ const unsigned int ColorOnlyNormalLayoutBindingCount = 2;
 ShaderPipe ColorOnlyNormalPipe;
 
 VkPipelineShaderStageCreateInfo Tex2DShader[2];
-const VkVertexInputAttributeDescription Tex2DInput[] = {{ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,12},{ 2, 0, VK_FORMAT_R32G32B32_SFLOAT,20}};
+const VkVertexInputAttributeDescription Tex2DInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT,16}};
 const VkDescriptorSetLayoutBinding Tex2DLayoutBinding[] = {{ 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_VERTEX_BIT},{ 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_FRAGMENT_BIT},{ 2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
 const unsigned int Tex2DShaderCount = 2;
 const unsigned int Tex2DInputCount = 3;

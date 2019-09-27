@@ -35,7 +35,7 @@ void VertexBuffer::start() {
 }
 
 VertexBuffer* VertexBuffer::add(glm::vec2 vec) {
-	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)&vec, sizeof(vec));
 	this->offset += sizeof(vec);
 	return this;
 }

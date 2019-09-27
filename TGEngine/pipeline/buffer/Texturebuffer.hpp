@@ -32,10 +32,10 @@ namespace tge {
 			public:
 				Sampler sampler = VK_NULL_HANDLE;// holds a custom sampler
 				uint8_t* imageData = nullptr; // stores the image data -> see stb
+				uint32_t miplevels = AUTO_MIPMAP; // the maximum mipmap levels -> currently not changable
 
 			private:
 				const char* textureName = nullptr; // name
-				uint32_t miplevels = AUTO_MIPMAP; // the maximum mipmap levels -> currently not changable
 				// TODO changable
 
 				int width = 0; // stores the width -> see stb

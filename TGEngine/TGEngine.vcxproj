@@ -198,6 +198,8 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </CustomBuild>
+    <None Include="resources\FragmentTextured2D.glsl" />
+    <None Include="resources\VertexTextured2D.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png" />

@@ -1,6 +1,10 @@
 #include "TGEditor.hpp"
 #include <gamecontent/Light.hpp>
 #include <model/ModelLoader.hpp>
+#include <resources/ShaderPipes.hpp>
+
+using namespace tge::gmc;
+using namespace tge::tex;
 
 tge::gmc::Mesh mesh;
 tge::gmc::Mesh mesh2;
@@ -11,13 +15,41 @@ tge::gmc::TopDownCamera topdown = tge::gmc::TopDownCamera{ 0, 0, 800, 600 };
 
 int main(int argc, char** args) {
 	initEngine();
-	tge::gmc::Model actor2;
+	Model actor2;
 
-	tge::gmc::setTopDownCamera(&topdown);
-	tge::gmc::playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
+	setTopDownCamera(&topdown);
+	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
-	tge::mdl::loadGltf(argc > 1 ? args[1] : "resource\\glTF-Sample-Models\\2.0\\Cube\\glTF\\Cube.gltf", &actor2);
-	tge::gmc::models.push_back(&actor2);
+	Texture textex = Texture("resource\\grass.png");
+	vlibSamplerCreateInfo.magFilter = VK_FILTER_NEAREST;
+	vlibSamplerCreateInfo.minFilter = VK_FILTER_NEAREST;
+	vlibSamplerCreateInfo.anisotropyEnable = FALSE;
+	vlibSamplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+	vlibSamplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	vlibSamplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	createSampler(&textex.sampler);
+	textex.miplevels = 1;
+	textex.initTexture();
+	tge::tex::textures.push_back(&textex);
+
+	Material mat = Material(&Tex2DPipe);
+	mat.doubleSided = true;
+	mat.texture = &textex;
+	materiallist.push_back(&mat);
+
+	vertexBuffer.add(glm::vec4(-4, -4, 0, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
+	vertexBuffer.add(glm::vec4(4, -4, 16, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
+	vertexBuffer.add(glm::vec4(4, 4, 16, 16))->add(glm::vec4(1, 1, 1, 1))->endVertex();
+	vertexBuffer.add(glm::vec4(-4, 4, 0, 16))->add(glm::vec4(1, 1, 1, 1))->endVertex();
+
+	indexBuffer.addIndex(0);
+	indexBuffer.addIndex(1);
+	indexBuffer.addIndex(2);
+	indexBuffer.addIndex(0);
+	indexBuffer.addIndex(2);
+	indexBuffer.addIndex(3);
+
+	render_offset.push_back({0, 6, 0});
 
 	std::cout << "Starting Editor" << std::endl;
 
