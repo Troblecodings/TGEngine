@@ -28,7 +28,7 @@ namespace ShaderTool.Command
                     return List();
             }
 
-            Console.WriteLine("Wrong params! Possible: add/rm/list");
+            Console.WriteLine("Wrong params! Possible: add/rm/list/import");
             return WRONG_PARAMS;
         }
 
@@ -59,16 +59,16 @@ namespace ShaderTool.Command
             }
             string[] exnamesplit = args[0].Replace("\\", "/").Split("/");
             string filename = exnamesplit[exnamesplit.Length - 1].Split(".")[0];
-            int rtc = Add(new string[] { filename });
-            if (rtc != 0)
-                return rtc;
+            Load();
+            if (Cache.PRELOAD.texturs.ContainsKey(filename))
+                return WRONG_PARAMS;
             byte[] tex = File.ReadAllBytes(args[0]);
             FileStream stream = File.Open(Program.CWD + "\\Resources.tgr", FileMode.Append);
-            TextureDesc texture;
+            TextureDesc texture = new TextureDesc();
             texture.offset = stream.Position;
             texture.size = tex.Length;
             stream.Write(tex, 0, tex.Length);
-            Cache.PRELOAD.texturedesc.Add(texture);
+            Cache.PRELOAD.texturs.Add(filename, texture);
             return WRONG_PARAMS;
         }
 
@@ -76,9 +76,9 @@ namespace ShaderTool.Command
         {
             AsssertValues(args, 1);
             Load();
-            if (Cache.PRELOAD.texturenames.Contains(args[0]))
+            if (Cache.PRELOAD.texturs.ContainsKey(args[0]))
                 return WRONG_PARAMS;
-            Cache.PRELOAD.texturenames.Add(args[0]);
+            Cache.PRELOAD.texturs.Add(args[0], new TextureDesc());
             Flush();
             return 0;
         }
@@ -87,7 +87,7 @@ namespace ShaderTool.Command
         {
             AsssertValues(args, 1);
             Load();
-            if (!Cache.PRELOAD.texturenames.Remove(args[0]))
+            if (!Cache.PRELOAD.texturs.Remove(args[0]))
                 return WRONG_PARAMS;
             Flush();
             return 0;
@@ -96,7 +96,11 @@ namespace ShaderTool.Command
         public static int List()
         {
             Load();
-            Cache.PRELOAD.texturenames.ForEach(Console.WriteLine);
+            var enumerator = Cache.PRELOAD.texturs.Keys.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                Console.WriteLine(enumerator.Current);
+            }
             return 0;
         }
     }

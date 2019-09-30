@@ -5,7 +5,7 @@ using System.Text;
 namespace ShaderTool.Util
 {
   
-    struct TextureDesc
+    class TextureDesc
     {
         public long offset;
         public long size;
@@ -13,8 +13,7 @@ namespace ShaderTool.Util
 
     class Resource
     {
-        public List<string> texturenames = new List<string>();
-        public List<TextureDesc> texturedesc = new List<TextureDesc>();
+        public Dictionary<string, TextureDesc> texturs = new Dictionary<string, TextureDesc>();
     }
 
     class Cache

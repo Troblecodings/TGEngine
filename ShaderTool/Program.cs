@@ -28,7 +28,7 @@ namespace ShaderTool {
                     return 0;
             }
 
-            Console.WriteLine("Wrong parameters! Possible: pipe!");
+            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/exit!");
             return WRONG_PARAMS;
         }
 

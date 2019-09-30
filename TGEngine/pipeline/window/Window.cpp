@@ -22,10 +22,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			return 0;
 
 		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
-			sizeof(RAWINPUTHEADER)) != dwSize)
+			sizeof(RAWINPUTHEADER)) != dwSize) {
 			OUT_LV_DEBUG("Odd size")
+		}
 
-			RAWINPUT* raw = (RAWINPUT*)lpb;
+		RAWINPUT* raw = (RAWINPUT*)lpb;
 
 		if (raw->header.dwType == RIM_TYPEKEYBOARD)
 		{
