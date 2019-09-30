@@ -1,19 +1,31 @@
 ﻿using ShaderTool.Command;
 using System;
 using static ShaderTool.Error;
-using static ShaderTool.Util;
+using static ShaderTool.Util.Util;
 
 namespace ShaderTool {
     class Program {
 
-        public static string CWD;
+        public static string CWD = Environment.CurrentDirectory;
+        public static bool console = false;
 
         public static int Execute(string id, string[] arg) {
             switch (id) {
+                case "setcwd":
+                    CWD = arg[0];
+                    return 0;
+                case "settool":
+                    CWD = Environment.CurrentDirectory + "../../../../../TGEngine/resources";
+                    return 0;
                 case "pipe":
                     return Pipe.PipeCommand(arg);
                 case "shader":
                     return Shader.ShaderCommand(arg);
+                case "texture":
+                    return Texture.TextureCommand(arg);
+                case "exit":
+                    Environment.Exit(0);
+                    return 0;
             }
 
             Console.WriteLine("Wrong parameters! Possible: pipe!");
@@ -24,6 +36,7 @@ namespace ShaderTool {
 
             args = GetParamas(args);
             if (args.Length < 1) {
+                console = true;
                 while (true) {
                     Console.Write(">>> ");
                     args = Console.ReadLine().Split(" ");
@@ -38,12 +51,11 @@ namespace ShaderTool {
         }
 
         public static string[] GetParamas(string[] args) {
-            CWD = Environment.CurrentDirectory;
             for (int i = 0; i < args.Length - 1; i++) {
                 if (args[i] == "--dir") {
                     string path = args[i + 1];
                     if (path == "tool") {
-                        CWD += "../../../../../TGEngine/resources";
+                        CWD = Environment.CurrentDirectory + "../../../../../TGEngine/resources";
                     } else {
                         CWD = path;
                     }

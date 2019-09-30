@@ -1,7 +1,7 @@
 ﻿using System;
 using static ShaderTool.Error;
 
-namespace ShaderTool {
+namespace ShaderTool.Util {
     class Util {
         // Array left shift
         public static string[] GetParams(string[] old_args) {
@@ -19,7 +19,8 @@ namespace ShaderTool {
         public static void AsssertNoneNull(string[] args) {
             if (args == null) {
                 Console.WriteLine("Not enough arguments!");
-                Environment.Exit(NOT_ENOUGH_PARAMS);
+                if (!Program.console)
+                    Environment.Exit(NOT_ENOUGH_PARAMS);
             }
         }
 
@@ -27,7 +28,8 @@ namespace ShaderTool {
         public static void AsssertValues(string[] args, int minlen) {
             if (args.Length < minlen) {
                 Console.WriteLine("Not enough arguments!");
-                Environment.Exit(NOT_ENOUGH_PARAMS);
+                if(!Program.console)
+                    Environment.Exit(NOT_ENOUGH_PARAMS);
             }
         }
     }
