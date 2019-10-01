@@ -22,7 +22,9 @@ extern prop::Properties* properties;
 extern uint32_t imagecount;
 
 SINCE(0, 0, 4)
-#define TGE_VERSION VK_MAKE_VERSION(0, 0, 4)
+#define TGE_VERSION VK_MAKE_VERSION(0, 0, 5)
+
+#define CHECKFAIL HANDEL(lastResult)
 
 SINCE(0, 0, 1)
 #define HANDEL(result)\

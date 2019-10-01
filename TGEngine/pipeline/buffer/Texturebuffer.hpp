@@ -9,10 +9,13 @@
 namespace tge::tex {
 
 	struct TextureOutput{
-		unsigned int id;
+		uint32_t id;
 		int x;
 		int y;
 		int comp;
+		VkImage image;
+		VkImageView view;
+		uint32_t samplerid
 	};
 
 	struct TextureIn {
