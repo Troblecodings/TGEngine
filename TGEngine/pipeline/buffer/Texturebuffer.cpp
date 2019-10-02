@@ -17,10 +17,13 @@ namespace tge::tex {
 			TextureIn tex = input[i];
 			TextureOutput out = output[i];
 
-			stbi_uc* buffer = new stbi_uc[tex.size];
-			fread(buffer, sizeof(char), tex.size, resc);
-			stbi_uc* loaded = stbi_load_from_memory(buffer, tex.size, &out.x, &out.y, &out.comp, STBI_rgb_alpha);
-			delete[] buffer;
+			if (ftell(resc) != tex.offset)
+				fseek(resc, tex.offset, SEEK_SET);
+
+			stbi_uc* imgbuffer = new stbi_uc[tex.size];
+			fread(imgbuffer, sizeof(char), tex.size, resc);
+			stbi_uc* loaded = stbi_load_from_memory(imgbuffer, tex.size, &out.x, &out.y, &out.comp, STBI_rgb_alpha);
+			delete[] imgbuffer;
 			
 			// Todo do Vulkan stuff
 
@@ -46,13 +49,46 @@ namespace tge::tex {
 			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &out.image);
 			CHECKFAIL;
 
+			VkBufferCreateInfo bufferCreateInfo;
+			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+			bufferCreateInfo.pNext = nullptr;
+			bufferCreateInfo.flags = 0;
+			bufferCreateInfo.size = 4 * out.x * out.y;
+			bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+			bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			bufferCreateInfo.queueFamilyIndexCount = 0;
+			bufferCreateInfo.pQueueFamilyIndices = nullptr;
+
+			VkBuffer buffer;
+			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer);
+			CHECKFAIL;
+
+			VkMemoryRequirements requirements;
+			vkGetBufferMemoryRequirements(device, buffer, &requirements);
+
+			VkMemoryAllocateInfo memoryAllocateInfo;
+			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			memoryAllocateInfo.pNext = nullptr;
+			memoryAllocateInfo.allocationSize = requirements.size;
+			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
+			
+			VkDeviceMemory devicememory;
+			vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &devicememory);
+			
+			void* memory;
+			uint32_t tmp_size = bufferCreateInfo.size;
+			vkMapMemory(device, devicememory, 0, tmp_size, 0, &memory);
+			memcpy(memory, loaded, tmp_size);
+			vkUnmapMemory(device, devicememory);
+			delete[] loaded;
+
 			VkImageViewCreateInfo imageViewCreateInfo;
 			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			imageViewCreateInfo.pNext = nullptr;
 			imageViewCreateInfo.flags = 0;
 			imageViewCreateInfo.image = out.image;
 			imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // What about cube maps? Checks? TextureIn?
-			imageViewCreateInfo.format = imageCreateInfo.format; // See above
+			imageViewCreateInfo.format = imageCreateInfo.format;                         // This may change depending on format
 			imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
 			imageViewCreateInfo.subresourceRange = {
 				VK_IMAGE_ASPECT_COLOR_BIT,
@@ -64,6 +100,10 @@ namespace tge::tex {
 
 			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &out.view);
 			CHECKFAIL;
+
+			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imagedesc[i].imageView = out.view;
+			imagedesc[i].sampler = tex.sampler;
 		}
 		fclose(resc);
 

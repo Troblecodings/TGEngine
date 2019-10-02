@@ -15,13 +15,14 @@ namespace tge::tex {
 		int comp;
 		VkImage image;
 		VkImageView view;
-		uint32_t samplerid
 	};
 
 	struct TextureIn {
-		const unsigned long long size;
+		uint64_t offset;
+		uint64_t size;
+		VkSampler sampler;
 	};
 
-	void createTextures(TextureIn* input, size_t size, TextureOutput* output);
+	void createTextures(TextureIn* input, uint32_t size, TextureOutput* output);
 
 }
