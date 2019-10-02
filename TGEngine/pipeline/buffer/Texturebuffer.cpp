@@ -1,4 +1,5 @@
 #include "Texturebuffer.hpp"
+#include "../CommandBuffer.hpp"
 
 namespace tge::tex {
 
@@ -73,14 +74,22 @@ namespace tge::tex {
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
 			
 			VkDeviceMemory devicememory;
-			vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &devicememory);
-			
+			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &devicememory);
+			CHECKFAIL;
+
 			void* memory;
 			uint32_t tmp_size = bufferCreateInfo.size;
 			vkMapMemory(device, devicememory, 0, tmp_size, 0, &memory);
 			memcpy(memory, loaded, tmp_size);
 			vkUnmapMemory(device, devicememory);
 			delete[] loaded;
+
+			startSingleTimeCommand();
+			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, buffer, out.image, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0, nullptr);
+			endSingleTimeCommand();
+
+			vkFreeMemory(device, devicememory, nullptr);
+			vkDestroyBuffer(device, buffer, nullptr);
 
 			VkImageViewCreateInfo imageViewCreateInfo;
 			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
