@@ -23,8 +23,7 @@ namespace tge {
 			}
 			delete[] tempbitmap;
 
-			this->texture = new tex::Texture(height * 64, height * 64);
-			this->texture->imageData = colorData;
+			//this->texture = new tex::Texture(height * 64, height * 64);
 
 			this->mat = gmc::UIMaterial(this->texture);
 			TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
@@ -36,7 +35,7 @@ namespace tge {
 			pos.x /= gmc::multiplier * 0.002f;
 			while(*text) {
 				stbtt_aligned_quad quad;
-				stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
+				//stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
 				uint32_t idcount = (uint32_t)buffer->pointCount;
 				quad.x0 *= gmc::multiplier * 0.002f;
 				quad.x1 *= gmc::multiplier * 0.002f;
@@ -65,7 +64,7 @@ namespace tge {
 			glm::vec2 pos = glm::vec2(0, 0);
 			while(*chr) {
 				stbtt_aligned_quad quad;
-				stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
+				//stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
 				chr++;
 			}
 			pos.y = this->height * 0.0015f;

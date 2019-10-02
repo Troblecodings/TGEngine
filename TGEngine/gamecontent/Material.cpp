@@ -74,9 +74,9 @@ namespace tge {
 			lightbuffer.updateDescriptor();
 
 			if(this->texture != nullptr) {
-				tex::textureDescriptor.descriptorset = this->descriptorIndex;
-				tex::textureDescriptor.binding = 2;
-				this->texture->updateDescriptor();
+				//tex::textureDescriptor.descriptorset = this->descriptorIndex;
+				//tex::textureDescriptor.binding = 2;
+				//this->texture->updateDescriptor();
 			}
 		}
 

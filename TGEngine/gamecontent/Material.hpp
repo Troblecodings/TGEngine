@@ -22,7 +22,7 @@ namespace tge {
 			public:
 				ShaderPipe* pipe = &TexturedBasicPipe;
 				glm::vec4 color = glm::vec4(1.0f);
-				tex::Texture* texture = nullptr;
+				tex::TextureOutput* texture = nullptr;
 
 				bool doubleSided = false;
 
@@ -34,9 +34,9 @@ namespace tge {
 			public:
 
 				Material() {}
-				Material(tex::Texture* texture) : Material(texture, glm::vec4(1.0f)) {}
+				Material(tex::TextureOutput* texture) : Material(texture, glm::vec4(1.0f)) {}
 				Material(glm::vec4 color) : Material(nullptr, color) {}
-				Material(tex::Texture* texture, glm::vec4 color);
+				Material(tex::TextureOutput* texture, glm::vec4 color);
 				Material(ShaderPipe* pipe);
 
 				virtual void createMaterial();

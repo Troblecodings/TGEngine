@@ -10,19 +10,25 @@ namespace tge::tex {
 
 	struct TextureOutput{
 		uint32_t id;
+		VkImage image;
+		VkImageView view;
+	};
+
+	struct TextureLoaded {
+		stbi_uc* data;
+		VkSampler sampler;
 		int x;
 		int y;
 		int comp;
-		VkImage image;
-		VkImageView view;
 	};
 
 	struct TextureIn {
 		uint64_t offset;
 		uint64_t size;
-		VkSampler sampler;
 	};
 
-	void createTextures(TextureIn* input, uint32_t size, TextureOutput* output);
+	void loadTextures(TextureIn input, uint32_t size, TextureLoaded* loaded);
+
+	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output);
 
 }

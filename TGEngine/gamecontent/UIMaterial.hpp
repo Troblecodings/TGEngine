@@ -8,9 +8,9 @@ namespace tge {
 		class UIMaterial : public Material {
 
 		public:
-			UIMaterial(tex::Texture* texture) : UIMaterial(texture, glm::vec4(1.0f)) {}
+			UIMaterial(tex::TextureOutput* texture) : UIMaterial(texture, glm::vec4(1.0f)) {}
 			UIMaterial(glm::vec4 color) : UIMaterial(nullptr, color) {}
-			UIMaterial(tex::Texture* texture, glm::vec4 color);
+			UIMaterial(tex::TextureOutput* texture, glm::vec4 color);
 
 			virtual void createMaterial() override;
 		};

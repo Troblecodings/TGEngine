@@ -4,7 +4,7 @@
 namespace tge {
 	namespace gmc {
 
-		UIMaterial::UIMaterial(tex::Texture* texture, glm::vec4 color) : Material(texture == nullptr ? &UIColorPipe : &UITexturedPipe) {
+		UIMaterial::UIMaterial(tex::TextureOutput* texture, glm::vec4 color) : Material(texture == nullptr ? &UIColorPipe : &UITexturedPipe) {
 			this->type = UI_MAT_TYPE;
 			this->texture = texture;
 			this->color = color;
@@ -20,9 +20,9 @@ namespace tge {
 			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
 
 			if(this->texture != nullptr) {
-				tex::textureDescriptor.descriptorset = this->descriptorIndex;
-				tex::textureDescriptor.binding = 0;
-				this->texture->updateDescriptor();
+				//tex::textureDescriptor.descriptorset = this->descriptorIndex;
+				//tex::textureDescriptor.binding = 0;
+				//this->texture->updateDescriptor();
 			}
 		}
 

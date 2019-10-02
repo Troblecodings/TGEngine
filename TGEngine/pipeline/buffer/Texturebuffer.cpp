@@ -5,27 +5,14 @@ namespace tge::tex {
 
 	using namespace tge::nio;
 
-	void createTextures(TextureIn* input, uint32_t size, TextureOutput* output)
+	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output)
 	{
 		// TODO default format checks
-
-		File resc = open("resources\Resources.tgr", "rb");
 
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
 
 		for (uint32_t i = 0; i < size; i++)
 		{
-			TextureIn tex = input[i];
-			TextureOutput out = output[i];
-
-			if (ftell(resc) != tex.offset)
-				fseek(resc, tex.offset, SEEK_SET);
-
-			stbi_uc* imgbuffer = new stbi_uc[tex.size];
-			fread(imgbuffer, sizeof(char), tex.size, resc);
-			stbi_uc* loaded = stbi_load_from_memory(imgbuffer, tex.size, &out.x, &out.y, &out.comp, STBI_rgb_alpha);
-			delete[] imgbuffer;
-			
 			// Todo do Vulkan stuff
 
 			// TODO general validation checks for image creation
@@ -114,7 +101,6 @@ namespace tge::tex {
 			imagedesc[i].imageView = out.view;
 			imagedesc[i].sampler = tex.sampler;
 		}
-		fclose(resc);
 
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -129,6 +115,27 @@ namespace tge::tex {
 		// TODO set descriptor set
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 		delete[] imagedesc;
+	}
+
+	void loadTextures(TextureIn input, uint32_t size, TextureLoaded* loaded)
+	{
+		File resc = open("resources\Resources.tgr", "rb");
+
+		for (size_t i = 0; i < size; i++)
+		{
+			TextureIn tex = input[i];
+			TextureLoaded out = loaded[i];
+
+			if (ftell(resc) != tex.offset)
+				fseek(resc, tex.offset, SEEK_SET);
+
+			stbi_uc* imgbuffer = new stbi_uc[tex.size];
+			fread(imgbuffer, sizeof(char), tex.size, resc);
+			stbi_uc* loaded = stbi_load_from_memory(imgbuffer, tex.size, &out.x, &out.y, &out.comp, STBI_rgb_alpha);
+			delete[] imgbuffer;
+		}
+
+		fclose(resc);
 	}
 
 }

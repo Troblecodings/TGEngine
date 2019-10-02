@@ -19,8 +19,8 @@ namespace tge {
 
 			private:
 				uint32_t height = 20;
-				gmc::UIMaterial mat = gmc::UIMaterial((tex::Texture*)nullptr);
-				tex::Texture* texture = nullptr;
+				gmc::UIMaterial mat = gmc::UIMaterial(0);
+				tex::TextureOutput* texture = nullptr;
 				stbtt_bakedchar cdata[256];
 				uint32_t materialIndex = -1;
 

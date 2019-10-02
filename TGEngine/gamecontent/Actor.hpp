@@ -48,7 +48,7 @@ namespace tge {
 
 			std::vector<Actor*> actors;
 			std::vector<VkSampler> samplers;
-			std::vector<tex::Texture> textures;
+			std::vector<tex::TextureOutput> textures;
 			std::vector<Material> materials;
 			std::vector<RenderOffsets> offsets;
 		};
