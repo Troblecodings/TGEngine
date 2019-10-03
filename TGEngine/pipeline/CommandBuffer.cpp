@@ -73,17 +73,6 @@ void endSingleTimeCommand() {
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each(tge::tex::Texture * tex in tge::tex::textures) {
-		tex->load(SINGELTIME_COMMAND_BUFFER);
-	}
-
-	for each (tge::gmc::Model* act in tge::gmc::models) {
-		for each (tge::tex::Texture tex in act->textures)
-		{
-			tex.load(SINGELTIME_COMMAND_BUFFER);
-		}
-	}
-
 	vlibImageMemoryBarrier.subresourceRange.levelCount = 1;
 	vlibImageMemoryBarrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
@@ -104,16 +93,6 @@ void startupCommands() {
 		}
 
 	endSingleTimeCommand();
-
-	for each(tge::tex::Texture* tex in tge::tex::textures) {
-		tex->dispose();
-	}
-	for each (tge::gmc::Model * act in tge::gmc::models) {
-		for each (tge::tex::Texture tex in act->textures)
-		{
-			tex.dispose();
-		}
-	}
 }
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {

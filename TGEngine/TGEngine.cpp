@@ -31,7 +31,6 @@ void initEngine() {
 
 	tge::gmc::initLight();
 	tge::gmc::initCameras();
-	initAllTextures();
 	initDescriptors();
 
 	allocateAllBuffers();
@@ -133,7 +132,6 @@ void startTGEngine() {
 		counter++;
 	}
 
-	destroyAllTextures();
 	destroySemaphores();
 	destroyCommandBuffer();
 	destroyMemory();

@@ -11,9 +11,15 @@ namespace tge::tex {
 
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
 
+		startSingleTimeCommand();
+
+		//vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, )
+
 		for (uint32_t i = 0; i < size; i++)
 		{
 			// Todo do Vulkan stuff
+			TextureLoaded tex = input[i];
+			TextureOutput out = output[i];
 
 			// TODO general validation checks for image creation
 			// Hold my beer! https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#resources-image-creation-limits
@@ -23,7 +29,7 @@ namespace tge::tex {
 			imageCreateInfo.flags = 0;
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // TODO format checks this is optimistic
-			imageCreateInfo.extent = { out.x, out.y, 1};
+			imageCreateInfo.extent = { (uint32_t)tex.x, (uint32_t)tex.y, 1};
 			imageCreateInfo.mipLevels = 1; // TODO Miplevel selection. TextureIn?
 			imageCreateInfo.arrayLayers = 1; // TODO layered textures. TextureIn?
 			imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -32,7 +38,7 @@ namespace tge::tex {
 			imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			imageCreateInfo.queueFamilyIndexCount = 0;
 			imageCreateInfo.pQueueFamilyIndices = nullptr;
-			imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+			imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
 			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &out.image);
 			CHECKFAIL;
@@ -41,7 +47,7 @@ namespace tge::tex {
 			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 			bufferCreateInfo.pNext = nullptr;
 			bufferCreateInfo.flags = 0;
-			bufferCreateInfo.size = 4 * out.x * out.y;
+			bufferCreateInfo.size = 4 * tex.x * tex.y;
 			bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 			bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			bufferCreateInfo.queueFamilyIndexCount = 0;
@@ -67,13 +73,11 @@ namespace tge::tex {
 			void* memory;
 			uint32_t tmp_size = bufferCreateInfo.size;
 			vkMapMemory(device, devicememory, 0, tmp_size, 0, &memory);
-			memcpy(memory, loaded, tmp_size);
+			memcpy(memory, tex.data, tmp_size);
 			vkUnmapMemory(device, devicememory);
-			delete[] loaded;
+			delete[] tex.data;
 
-			startSingleTimeCommand();
 			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, buffer, out.image, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0, nullptr);
-			endSingleTimeCommand();
 
 			vkFreeMemory(device, devicememory, nullptr);
 			vkDestroyBuffer(device, buffer, nullptr);
@@ -101,6 +105,7 @@ namespace tge::tex {
 			imagedesc[i].imageView = out.view;
 			imagedesc[i].sampler = tex.sampler;
 		}
+		endSingleTimeCommand();
 
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -117,11 +122,11 @@ namespace tge::tex {
 		delete[] imagedesc;
 	}
 
-	void loadTextures(TextureIn input, uint32_t size, TextureLoaded* loaded)
+	void loadTextures(TextureIn* input, uint32_t size, TextureLoaded* loaded)
 	{
-		File resc = open("resources\Resources.tgr", "rb");
+		File resc = open("resource\\Resources.tgr", "rb");
 
-		for (size_t i = 0; i < size; i++)
+		for (uint32_t i = 0; i < size; i++)
 		{
 			TextureIn tex = input[i];
 			TextureLoaded out = loaded[i];

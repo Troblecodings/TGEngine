@@ -1,10 +1,11 @@
 #pragma once
 
 #include "../../io/Files.hpp"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include "vulkan/vulkan.h"
 #include "../Device.hpp"
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
+#include "../../../stb/stb_image.h"
 
 namespace tge::tex {
 
@@ -15,7 +16,7 @@ namespace tge::tex {
 	};
 
 	struct TextureLoaded {
-		stbi_uc* data;
+		uint8_t* data;
 		VkSampler sampler;
 		int x;
 		int y;
@@ -27,7 +28,7 @@ namespace tge::tex {
 		uint64_t size;
 	};
 
-	void loadTextures(TextureIn input, uint32_t size, TextureLoaded* loaded);
+	void loadTextures(TextureIn* input, uint32_t size, TextureLoaded* loaded);
 
 	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output);
 

@@ -2,6 +2,7 @@
 #include <gamecontent/Light.hpp>
 #include <model/ModelLoader.hpp>
 #include <resources/ShaderPipes.hpp>
+#include <pipeline/buffer/Texturebuffer.hpp>
 
 using namespace tge::gmc;
 using namespace tge::tex;
@@ -20,21 +21,19 @@ int main(int argc, char** args) {
 	setTopDownCamera(&topdown);
 	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
-	Texture textex = Texture("resource\\grass.png");
-	vlibSamplerCreateInfo.magFilter = VK_FILTER_NEAREST;
-	vlibSamplerCreateInfo.minFilter = VK_FILTER_NEAREST;
-	vlibSamplerCreateInfo.anisotropyEnable = FALSE;
-	vlibSamplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-	vlibSamplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	vlibSamplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	createSampler(&textex.sampler);
-	textex.miplevels = 1;
-	textex.initTexture();
-	tge::tex::textures.push_back(&textex);
+	TextureIn texture;
+	texture.offset = 0;
+	texture.size = 10839;
+
+	TextureLoaded outtex;
+	loadTextures(&texture, 1, &outtex);
+
+	TextureOutput out;
+	createTextures(&outtex, 1, &out);
 
 	Material mat = Material(&Tex2DPipe);
 	mat.doubleSided = true;
-	mat.texture = &textex;
+	mat.texture = &out;
 	materiallist.push_back(&mat);
 
 	vertexBuffer.add(glm::vec4(-4, -4, 0, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();

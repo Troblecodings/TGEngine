@@ -34,7 +34,7 @@ namespace tge {
 
 		void UITextureComponent::init() {
 			if(this->materialIndex == -1) {
-				this->mat = gmc::UIMaterial(this->texture, this->color);
+				this->mat = gmc::UIMaterial(0, this->color);
 				TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
 					this->materialIndex = (uint32_t)lastSize;
 			}

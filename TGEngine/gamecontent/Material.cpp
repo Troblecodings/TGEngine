@@ -13,7 +13,7 @@ namespace tge {
 		std::vector<Material*> materiallist;
 		std::vector<RenderOffsets> render_offset;
 
-		Material::Material(tex::Texture* texture, glm::vec4 color) {
+		Material::Material(tex::TextureOutput* texture, glm::vec4 color) {
 			this->texture = texture;
 			this->setColor(color);
 
