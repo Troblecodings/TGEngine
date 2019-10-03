@@ -23,7 +23,7 @@ int main(int argc, char** args) {
 
 	TextureIn texture;
 	texture.offset = 0;
-	texture.size = 10839;
+	texture.size = 665;
 
 	TextureLoaded outtex;
 	loadTextures(&texture, 1, &outtex);

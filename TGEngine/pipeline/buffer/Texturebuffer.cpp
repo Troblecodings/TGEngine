@@ -11,15 +11,16 @@ namespace tge::tex {
 
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
 
-		startSingleTimeCommand();
+		VkBuffer* bufferlist = new VkBuffer[size];
+		VkDeviceMemory* memorylist = new VkDeviceMemory[size];
 
-		//vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, )
+		VkImageMemoryBarrier* entrymemorybarriers = new VkImageMemoryBarrier[size];
 
 		for (uint32_t i = 0; i < size; i++)
 		{
 			// Todo do Vulkan stuff
-			TextureLoaded tex = input[i];
-			TextureOutput out = output[i];
+			TextureLoaded* tex = &input[i];
+			TextureOutput* out = &output[i];
 
 			// TODO general validation checks for image creation
 			// Hold my beer! https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#resources-image-creation-limits
@@ -29,64 +30,71 @@ namespace tge::tex {
 			imageCreateInfo.flags = 0;
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // TODO format checks this is optimistic
-			imageCreateInfo.extent = { (uint32_t)tex.x, (uint32_t)tex.y, 1};
+			imageCreateInfo.extent = { (uint32_t)tex->x, (uint32_t)tex->y, 1};
 			imageCreateInfo.mipLevels = 1; // TODO Miplevel selection. TextureIn?
 			imageCreateInfo.arrayLayers = 1; // TODO layered textures. TextureIn?
 			imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 			imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // Why would one use linear? Maybe take a look
-			imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT & VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+			imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 			imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			imageCreateInfo.queueFamilyIndexCount = 0;
 			imageCreateInfo.pQueueFamilyIndices = nullptr;
 			imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &out.image);
+			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &out->image);
+			CHECKFAIL;
+
+			VkMemoryRequirements requirements;
+			vkGetImageMemoryRequirements(device, out->image, &requirements);
+
+			VkMemoryAllocateInfo memoryAllocateInfo;
+			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			memoryAllocateInfo.pNext = nullptr;
+			memoryAllocateInfo.allocationSize = requirements.size;
+			memoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex; // Goofy
+
+			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &out->imagememory);
+			CHECKFAIL;
+
+			lastResult = vkBindImageMemory(device, out->image, out->imagememory, 0);
 			CHECKFAIL;
 
 			VkBufferCreateInfo bufferCreateInfo;
 			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 			bufferCreateInfo.pNext = nullptr;
 			bufferCreateInfo.flags = 0;
-			bufferCreateInfo.size = 4 * tex.x * tex.y;
+			bufferCreateInfo.size = 4 * tex->x * tex->y;
 			bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 			bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			bufferCreateInfo.queueFamilyIndexCount = 0;
 			bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
-			VkBuffer buffer;
-			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer);
+			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &bufferlist[i]);
 			CHECKFAIL;
 
-			VkMemoryRequirements requirements;
-			vkGetBufferMemoryRequirements(device, buffer, &requirements);
+			vkGetBufferMemoryRequirements(device, bufferlist[i], &requirements);
 
-			VkMemoryAllocateInfo memoryAllocateInfo;
-			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			memoryAllocateInfo.pNext = nullptr;
 			memoryAllocateInfo.allocationSize = requirements.size;
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
 			
-			VkDeviceMemory devicememory;
-			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &devicememory);
+			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memorylist[i]);
+			CHECKFAIL;
+
+			lastResult = vkBindBufferMemory(device, bufferlist[i], memorylist[i], 0);
 			CHECKFAIL;
 
 			void* memory;
 			uint32_t tmp_size = bufferCreateInfo.size;
-			vkMapMemory(device, devicememory, 0, tmp_size, 0, &memory);
-			memcpy(memory, tex.data, tmp_size);
-			vkUnmapMemory(device, devicememory);
-			delete[] tex.data;
-
-			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, buffer, out.image, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0, nullptr);
-
-			vkFreeMemory(device, devicememory, nullptr);
-			vkDestroyBuffer(device, buffer, nullptr);
+			vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory);
+			memcpy(memory, tex->data, tmp_size);
+			vkUnmapMemory(device, memorylist[i]);
+			delete[] tex->data;
 
 			VkImageViewCreateInfo imageViewCreateInfo;
 			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			imageViewCreateInfo.pNext = nullptr;
 			imageViewCreateInfo.flags = 0;
-			imageViewCreateInfo.image = out.image;
+			imageViewCreateInfo.image = out->image;
 			imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // What about cube maps? Checks? TextureIn?
 			imageViewCreateInfo.format = imageCreateInfo.format;                         // This may change depending on format
 			imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
@@ -98,14 +106,41 @@ namespace tge::tex {
 				VK_REMAINING_ARRAY_LAYERS
 			}; // Look into the subresourcerange -> tide to miplevels and mipmaps
 
-			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &out.view);
+			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &out->view);
 			CHECKFAIL;
 
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			imagedesc[i].imageView = out.view;
-			imagedesc[i].sampler = tex.sampler;
+			imagedesc[i].imageView = out->view;
+			imagedesc[i].sampler = tex->sampler;
+
+			entrymemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			entrymemorybarriers[i].pNext = nullptr;
+			entrymemorybarriers[i].srcAccessMask = 0;
+			entrymemorybarriers[i].dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			entrymemorybarriers[i].oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			entrymemorybarriers[i].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+			entrymemorybarriers[i].srcQueueFamilyIndex = 0;
+			entrymemorybarriers[i].dstQueueFamilyIndex = 0;
+			entrymemorybarriers[i].image = out->image;
+			entrymemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
+		}
+		
+		startSingleTimeCommand();
+		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, entrymemorybarriers);
+		for (uint32_t i = 0; i < size; i++)
+		{
+			VkBufferImageCopy copy = vlibBufferImageCopy;
+			copy.imageExtent.width = input[i].x;
+			copy.imageExtent.height = input[i].y;
+			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, bufferlist[i], output[i].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 		}
 		endSingleTimeCommand();
+
+		for (uint32_t i = 0; i < size; i++)
+		{
+			vkFreeMemory(device, memorylist[i], nullptr);
+			vkDestroyBuffer(device, bufferlist[i], nullptr);
+		}
 
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -119,7 +154,6 @@ namespace tge::tex {
 		descwrite.pBufferInfo = nullptr;
 		// TODO set descriptor set
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
-		delete[] imagedesc;
 	}
 
 	void loadTextures(TextureIn* input, uint32_t size, TextureLoaded* loaded)
@@ -128,15 +162,15 @@ namespace tge::tex {
 
 		for (uint32_t i = 0; i < size; i++)
 		{
-			TextureIn tex = input[i];
-			TextureLoaded out = loaded[i];
+			TextureIn* tex = &input[i];
+			TextureLoaded* out = &loaded[i];
 
-			if (ftell(resc) != tex.offset)
-				fseek(resc, tex.offset, SEEK_SET);
+			if (ftell(resc) != tex->offset)
+				fseek(resc, tex->offset, SEEK_SET);
 
-			stbi_uc* imgbuffer = new stbi_uc[tex.size];
-			fread(imgbuffer, sizeof(char), tex.size, resc);
-			stbi_uc* loaded = stbi_load_from_memory(imgbuffer, tex.size, &out.x, &out.y, &out.comp, STBI_rgb_alpha);
+			stbi_uc* imgbuffer = new stbi_uc[tex->size];
+			fread(imgbuffer, sizeof(char), tex->size, resc);
+			out->data = stbi_load_from_memory(imgbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
 			delete[] imgbuffer;
 		}
 

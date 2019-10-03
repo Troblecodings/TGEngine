@@ -13,6 +13,7 @@ namespace tge::tex {
 		uint32_t id;
 		VkImage image;
 		VkImageView view;
+		VkDeviceMemory imagememory;
 	};
 
 	struct TextureLoaded {
