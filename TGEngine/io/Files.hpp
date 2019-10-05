@@ -16,6 +16,16 @@
 #define GetCurrentDir getcwd
 #endif
 
+#define TGE_GET_RESOURCE(EXEC) for (uint32_t i = 0; i < size; i++) \
+{\
+	ResourceDescriptor* tex = &input[i];\
+    if (ftell(file) != tex->offset)\
+    fseek(file, tex->offset, SEEK_SET); \
+    stbi_uc* imgbuffer = new stbi_uc[tex->size]; \
+    fread(imgbuffer, sizeof(char), tex->size, file); \
+    EXEC\
+}
+
 namespace tge {
 	namespace nio {
 

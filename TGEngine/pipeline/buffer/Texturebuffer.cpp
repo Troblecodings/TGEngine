@@ -3,8 +3,6 @@
 
 namespace tge::tex {
 
-	using namespace tge::nio;
-
 	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output)
 	{
 		// TODO default format checks
@@ -30,7 +28,7 @@ namespace tge::tex {
 			imageCreateInfo.flags = 0;
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // TODO format checks this is optimistic
-			imageCreateInfo.extent = { (uint32_t)tex->x, (uint32_t)tex->y, 1};
+			imageCreateInfo.extent = { (uint32_t)tex->x, (uint32_t)tex->y, 1 };
 			imageCreateInfo.mipLevels = 1; // TODO Miplevel selection. TextureIn?
 			imageCreateInfo.arrayLayers = 1; // TODO layered textures. TextureIn?
 			imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -76,7 +74,7 @@ namespace tge::tex {
 
 			memoryAllocateInfo.allocationSize = requirements.size;
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
-			
+
 			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memorylist[i]);
 			CHECKFAIL;
 
@@ -85,7 +83,8 @@ namespace tge::tex {
 
 			void* memory;
 			uint32_t tmp_size = bufferCreateInfo.size;
-			vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory);
+			lastResult = vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory);
+			CHECKFAIL;
 			memcpy(memory, tex->data, tmp_size);
 			vkUnmapMemory(device, memorylist[i]);
 			delete[] tex->data;
@@ -124,7 +123,7 @@ namespace tge::tex {
 			entrymemorybarriers[i].image = out->image;
 			entrymemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
 		}
-		
+
 		startSingleTimeCommand();
 		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, entrymemorybarriers);
 		for (uint32_t i = 0; i < size; i++)
@@ -156,25 +155,20 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
-	void loadTextures(TextureIn* input, uint32_t size, TextureLoaded* loaded)
+	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded)
 	{
-		File resc = open("resource\\Resources.tgr", "rb");
+		TGE_GET_RESOURCE(
+			TextureLoaded * out = &loaded[i];
+		    out->data = stbi_load_from_memory(imgbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
+		)
+	}
 
-		for (uint32_t i = 0; i < size; i++)
-		{
-			TextureIn* tex = &input[i];
-			TextureLoaded* out = &loaded[i];
+	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded)
+	{
+	}
 
-			if (ftell(resc) != tex->offset)
-				fseek(resc, tex->offset, SEEK_SET);
-
-			stbi_uc* imgbuffer = new stbi_uc[tex->size];
-			fread(imgbuffer, sizeof(char), tex->size, resc);
-			out->data = stbi_load_from_memory(imgbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
-			delete[] imgbuffer;
-		}
-
-		fclose(resc);
+	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler)
+	{
 	}
 
 }

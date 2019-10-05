@@ -9,6 +9,17 @@
 
 namespace tge::tex {
 
+	using namespace tge::nio;
+
+	struct ResourceDescriptor {
+		uint64_t offset;
+		uint64_t size;
+	};
+
+	struct SamplerLoaded {
+
+	};
+
 	struct TextureOutput{
 		uint32_t id;
 		VkImage image;
@@ -24,12 +35,11 @@ namespace tge::tex {
 		int comp;
 	};
 
-	struct TextureIn {
-		uint64_t offset;
-		uint64_t size;
-	};
+	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded);
 
-	void loadTextures(TextureIn* input, uint32_t size, TextureLoaded* loaded);
+	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler);
+
+	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded);
 
 	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output);
 

@@ -21,15 +21,19 @@ int main(int argc, char** args) {
 	setTopDownCamera(&topdown);
 	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
-	TextureIn texture;
+	ResourceDescriptor texture;
 	texture.offset = 0;
 	texture.size = 665;
 
+	File resc = open("resource\\Resources.tgr", "rb");
+
 	TextureLoaded outtex;
-	loadTextures(&texture, 1, &outtex);
+	loadTextures(resc, &texture, 1, &outtex);
 
 	TextureOutput out;
 	createTextures(&outtex, 1, &out);
+
+	fclose(resc);
 
 	Material mat = Material(&Tex2DPipe);
 	mat.doubleSided = true;
