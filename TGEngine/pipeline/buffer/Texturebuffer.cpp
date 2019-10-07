@@ -3,6 +3,8 @@
 
 namespace tge::tex {
 
+	TextureDefaults defaults;
+
 	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output)
 	{
 		// TODO default format checks
@@ -172,28 +174,32 @@ namespace tge::tex {
 
 	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler)
 	{
-		VkSamplerCreateInfo samplerCreateInfo;
-		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerCreateInfo.pNext = 0;
-		samplerCreateInfo.flags = 0;
-		samplerCreateInfo.magFilter = input->filter;
-		samplerCreateInfo.minFilter = input->filter;
-		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST; // TODO MipMaping
-		samplerCreateInfo.addressModeU = input->uSamplerMode;
-		samplerCreateInfo.addressModeV = input->vSamplerMode;
-		samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerCreateInfo.mipLodBias = 0;
-		samplerCreateInfo.anisotropyEnable = input->anisotropyFiltering > 0;
-		samplerCreateInfo.maxAnisotropy = input->anisotropyFiltering;
-		samplerCreateInfo.compareEnable = VK_FALSE;
-		samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
-		samplerCreateInfo.minLod = 0;
-		samplerCreateInfo.maxLod = 1; // TODO Lod
-		samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
-		samplerCreateInfo.unnormalizedCoordinates = VK_TRUE;
+		for (size_t i = 0; i < size; i++)
+		{
+			SamplerLoaded loaded = input[i];
+			VkSamplerCreateInfo samplerCreateInfo;
+			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+			samplerCreateInfo.pNext = 0;
+			samplerCreateInfo.flags = 0;
+			samplerCreateInfo.magFilter = loaded.filterMagnification;
+			samplerCreateInfo.minFilter = loaded.filterMignification;
+			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST; // TODO MipMaping
+			samplerCreateInfo.addressModeU = loaded.uSamplerMode;
+			samplerCreateInfo.addressModeV = loaded.vSamplerMode;
+			samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+			samplerCreateInfo.mipLodBias = 0;
+			samplerCreateInfo.anisotropyEnable = defaults.anisotropyFilter > 0;
+			samplerCreateInfo.maxAnisotropy = defaults.anisotropyFilter;
+			samplerCreateInfo.compareEnable = VK_FALSE;
+			samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
+			samplerCreateInfo.minLod = 0;
+			samplerCreateInfo.maxLod = 1; // TODO Lod
+			samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
+			samplerCreateInfo.unnormalizedCoordinates = VK_TRUE;
 
-		lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, sampler);
-		CHECKFAIL;
+			lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler[i]);
+			CHECKFAIL;
+		}
 	}
 
 }

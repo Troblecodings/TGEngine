@@ -11,16 +11,24 @@ namespace tge::tex {
 
 	using namespace tge::nio;
 
+	struct TextureDefaults {
+		VkSampler sampler;
+		float anisotropyFilter;
+		uint32_t mipmapLevels;
+	};
+
+	extern TextureDefaults defaults;
+
 	struct ResourceDescriptor {
 		uint64_t offset;
 		uint64_t size;
 	};
 
 	struct SamplerLoaded {
-		float anisotropyFiltering;
 		VkSamplerAddressMode uSamplerMode;
 		VkSamplerAddressMode vSamplerMode;
-		VkFilter filter;
+		VkFilter filterMagnification;
+		VkFilter filterMignification;
 	};
 
 	struct TextureOutput{
