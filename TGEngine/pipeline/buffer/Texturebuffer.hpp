@@ -17,7 +17,10 @@ namespace tge::tex {
 	};
 
 	struct SamplerLoaded {
-
+		float anisotropyFiltering;
+		VkSamplerAddressMode uSamplerMode;
+		VkSamplerAddressMode vSamplerMode;
+		VkFilter filter;
 	};
 
 	struct TextureOutput{

@@ -21,8 +21,8 @@
 	ResourceDescriptor* tex = &input[i];\
     if (ftell(file) != tex->offset)\
     fseek(file, tex->offset, SEEK_SET); \
-    stbi_uc* imgbuffer = new stbi_uc[tex->size]; \
-    fread(imgbuffer, sizeof(char), tex->size, file); \
+    stbi_uc* resbuffer = new stbi_uc[tex->size]; \
+    fread(resbuffer, sizeof(char), tex->size, file); \
     EXEC\
 }
 
