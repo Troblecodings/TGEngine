@@ -15,6 +15,7 @@ namespace tge::tex {
 		VkDeviceMemory* memorylist = new VkDeviceMemory[size];
 
 		VkImageMemoryBarrier* entrymemorybarriers = new VkImageMemoryBarrier[size];
+		VkImageMemoryBarrier* exitmemorybarriers = new VkImageMemoryBarrier[size];
 
 		for (uint32_t i = 0; i < size; i++)
 		{
@@ -124,6 +125,17 @@ namespace tge::tex {
 			entrymemorybarriers[i].dstQueueFamilyIndex = 0;
 			entrymemorybarriers[i].image = out->image;
 			entrymemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
+
+			exitmemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			exitmemorybarriers[i].pNext = nullptr;
+			exitmemorybarriers[i].srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			exitmemorybarriers[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			exitmemorybarriers[i].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+			exitmemorybarriers[i].newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			exitmemorybarriers[i].srcQueueFamilyIndex = 0;
+			exitmemorybarriers[i].dstQueueFamilyIndex = 0;
+			exitmemorybarriers[i].image = out->image;
+			exitmemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
 		}
 
 		startSingleTimeCommand();
@@ -135,6 +147,7 @@ namespace tge::tex {
 			copy.imageExtent.height = input[i].y;
 			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, bufferlist[i], output[i].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 		}
+		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, exitmemorybarriers);
 		endSingleTimeCommand();
 
 		for (uint32_t i = 0; i < size; i++)
