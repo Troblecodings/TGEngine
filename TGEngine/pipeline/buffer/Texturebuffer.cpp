@@ -5,8 +5,7 @@ namespace tge::tex {
 
 	TextureDefaults defaults;
 
-	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output)
-	{
+	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output) {
 		// TODO default format checks
 
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
@@ -17,8 +16,7 @@ namespace tge::tex {
 		VkImageMemoryBarrier* entrymemorybarriers = new VkImageMemoryBarrier[size];
 		VkImageMemoryBarrier* exitmemorybarriers = new VkImageMemoryBarrier[size];
 
-		for (uint32_t i = 0; i < size; i++)
-		{
+		for (uint32_t i = 0; i < size; i++) {
 			// Todo do Vulkan stuff
 			TextureLoaded* tex = &input[i];
 			TextureOutput* out = &output[i];
@@ -140,8 +138,7 @@ namespace tge::tex {
 
 		startSingleTimeCommand();
 		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, entrymemorybarriers);
-		for (uint32_t i = 0; i < size; i++)
-		{
+		for (uint32_t i = 0; i < size; i++) {
 			VkBufferImageCopy copy = vlibBufferImageCopy;
 			copy.imageExtent.width = input[i].x;
 			copy.imageExtent.height = input[i].y;
@@ -150,8 +147,7 @@ namespace tge::tex {
 		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, exitmemorybarriers);
 		endSingleTimeCommand();
 
-		for (uint32_t i = 0; i < size; i++)
-		{
+		for (uint32_t i = 0; i < size; i++) {
 			vkFreeMemory(device, memorylist[i], nullptr);
 			vkDestroyBuffer(device, bufferlist[i], nullptr);
 		}
@@ -170,25 +166,21 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
-	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded)
-	{
+	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded) {
 		TGE_GET_RESOURCE(
 			TextureLoaded * out = &loaded[i];
-		    out->data = stbi_load_from_memory(resbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
+		out->data = stbi_load_from_memory(resbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
 		)
 	}
 
-	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded)
-	{
+	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded) {
 		TGE_GET_RESOURCE(
 			memcpy(loaded, resbuffer, input->size);
 		)
 	}
 
-	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler)
-	{
-		for (size_t i = 0; i < size; i++)
-		{
+	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler) {
+		for (size_t i = 0; i < size; i++) {
 			SamplerLoaded loaded = input[i];
 			VkSamplerCreateInfo samplerCreateInfo;
 			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
