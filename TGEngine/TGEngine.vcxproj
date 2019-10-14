@@ -330,13 +330,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -383,13 +383,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -438,13 +438,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -493,13 +493,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>

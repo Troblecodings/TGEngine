@@ -1,18 +1,11 @@
 #include "Descriptors.hpp"
 #include "../vlib/VulkanDescriptor.hpp"
 
-VkDescriptorPool descriptorPool;
-VkDescriptorSetLayout descriptorSetLayout;
-std::vector<VkDescriptorSet> descriptorSets;
-
-uint32_t uniform_count;
-uint32_t image_sampler_count;
-
-// TODO switch back to global texture binding for 3D 2D and so on ... map on same binding
+VkPipelineLayout pipelineLayout;
+VkDescriptorSet mainDescriptorSet;
 
 void initDescriptors() {
-	vlibDescriptorPoolCreateInfo.poolSizeCount = 2; // Descriptor types
-	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlibDescriptorPoolCreateInfo.poolSizeCount];
+	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[2];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	sizes[0].descriptorCount = 1;
 
@@ -23,9 +16,11 @@ void initDescriptors() {
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	descriptorPoolCreateInfo.pNext = nullptr;
 	descriptorPoolCreateInfo.flags = 0;
-	descriptorPoolCreateInfo.maxSets = 100; // Todo validation checks
-	descriptorPoolCreateInfo.poolSizeCount = 1;
+	descriptorPoolCreateInfo.maxSets = 10; // Todo validation checks and modifiable
+	descriptorPoolCreateInfo.poolSizeCount = 2;
 	descriptorPoolCreateInfo.pPoolSizes = sizes;
+
+	VkDescriptorPool descriptorPool;
 	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
 	CHECKFAIL;
 
@@ -49,6 +44,7 @@ void initDescriptors() {
 	descriptorSetLayoutCreateInfo.bindingCount = 2;
 	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
+	VkDescriptorSetLayout descriptorSetLayout;
 	lastResult = vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
 	CHECKFAIL;
 
@@ -61,6 +57,16 @@ void initDescriptors() {
 	pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
 	pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
-	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, );
+	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+	CHECKFAIL;
+
+	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo;
+	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	descriptorSetAllocateInfo.pNext = nullptr;
+	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
+	descriptorSetAllocateInfo.descriptorSetCount = 1; // TODO Change this to a modifable value ... in case we need more
+	descriptorSetAllocateInfo.pSetLayouts = &descriptorSetLayout;
+	
+	lastResult = vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet);
 	CHECKFAIL;
 }
