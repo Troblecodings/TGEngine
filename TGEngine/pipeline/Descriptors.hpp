@@ -5,11 +5,8 @@
 #include "../pipeline/buffer/Memory.hpp"
 #include "../vlib/VulkanDescriptor.hpp"
 
-extern VkDescriptorPool descriptor_pool; // holds the descriptor pool -> see initDescriptors()
-extern std::vector<VkDescriptorSet> descriptorSets; // contains the desciptorset handles from vulkan
-extern std::vector<VkDescriptorSetLayout> descriptorSetLayouts; // contains the desciptorsetlayout handles from vulkan
-extern std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings; // contains the desciptorsetlayoutbindings from vulkan
-extern std::vector<VkPipelineLayout> pipeLayouts; // contians the PipelineLayouts
+extern VkDescriptorPool descriptorPool; // holds the descriptor pool -> see initDescriptors()
+extern VkDescriptorSetLayout descriptorSetLayout; // layout of all descriptors
 
 extern uint32_t uniform_count; // holds the count of uniform buffer Descriptor objects
 extern uint32_t image_sampler_count; // holds the count of image sampler buffer Descriptor objects

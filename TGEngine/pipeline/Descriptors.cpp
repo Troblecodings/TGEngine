@@ -1,115 +1,66 @@
 #include "Descriptors.hpp"
 #include "../vlib/VulkanDescriptor.hpp"
 
-VkDescriptorPool descriptor_pool;
+VkDescriptorPool descriptorPool;
+VkDescriptorSetLayout descriptorSetLayout;
 std::vector<VkDescriptorSet> descriptorSets;
-std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
-std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
-std::vector<VkPipelineLayout> pipeLayouts;
 
 uint32_t uniform_count;
 uint32_t image_sampler_count;
 
-void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags) {
-	descriptor_bindings.push_back({ binding, type, 1, flags });
-}
-
 // TODO switch back to global texture binding for 3D 2D and so on ... map on same binding
 
 void initDescriptors() {
-	vlibDescriptorPoolCreateInfo.poolSizeCount = 2;
+	vlibDescriptorPoolCreateInfo.poolSizeCount = 2; // Descriptor types
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlibDescriptorPoolCreateInfo.poolSizeCount];
+	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	sizes[0].descriptorCount = 1;
 
-	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetUniformBuffers, 100);
-	sizes[0] = vlibDescriptorPoolSize;
+	sizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	sizes[1].descriptorCount = 1;
 
-	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetSamplers, 100);
-	sizes[1] = vlibDescriptorPoolSize;
+	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
+	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	descriptorPoolCreateInfo.pNext = nullptr;
+	descriptorPoolCreateInfo.flags = 0;
+	descriptorPoolCreateInfo.maxSets = 100; // Todo validation checks
+	descriptorPoolCreateInfo.poolSizeCount = 1;
+	descriptorPoolCreateInfo.pPoolSizes = sizes;
+	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
+	CHECKFAIL;
 
-	vlibDescriptorPoolCreateInfo.pPoolSizes = sizes;
-	lastResult = vkCreateDescriptorPool(device, &vlibDescriptorPoolCreateInfo, nullptr, &descriptor_pool);
-	HANDEL(lastResult)
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[2];
+	descriptorSetLayoutBinding[0].binding = 0;
+	descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutBinding[0].descriptorCount = 1;
+	descriptorSetLayoutBinding[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	descriptorSetLayoutBinding[0].pImmutableSamplers = VK_NULL_HANDLE;
 
-	vlibAllocateInfo.descriptorPool = descriptor_pool;
-}
+	descriptorSetLayoutBinding[1].binding = 1;
+	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorSetLayoutBinding[1].descriptorCount = 1;
+	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
-uint32_t createLayouts() {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(pipeLayouts)
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSetLayouts)
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	descriptorSetLayoutCreateInfo.pNext = nullptr;
+	descriptorSetLayoutCreateInfo.flags = 0;
+	descriptorSetLayoutCreateInfo.bindingCount = 2;
+	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
-	lastResult = vkCreateDescriptorSetLayout(device, &vlibDescriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayouts[lastSize]);
-	HANDEL(lastResult)
+	lastResult = vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
+	CHECKFAIL;
 
-	vlibLayoutInfo.pSetLayouts = &descriptorSetLayouts[lastSize];
-	lastResult = vkCreatePipelineLayout(device, &vlibLayoutInfo, nullptr, &pipeLayouts[lastSize]);
-	HANDEL(lastResult);
+	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutCreateInfo.pNext = nullptr;
+	pipelineLayoutCreateInfo.flags = 0;
+	pipelineLayoutCreateInfo.setLayoutCount = 1;
+	pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
+	pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+	pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
-		return (uint32_t)lastSize;
-}
-
-void destroyDesctiptorLayout(uint32_t layout) {
-	vkDestroyDescriptorSetLayout(device, descriptorSetLayouts[layout], nullptr);
-}
-
-void destroyDescriptorSet(uint32_t layout) {
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptorSets[layout]);
-	HANDEL(lastResult);
-}
-
-uint32_t createDescriptorSet(uint32_t layout) {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSets)
-
-		vlibAllocateInfo.pSetLayouts = &descriptorSetLayouts[layout];
-	lastResult = vkAllocateDescriptorSets(device, &vlibAllocateInfo, &descriptorSets[lastSize]);
-	HANDEL(lastResult)
-		return (uint32_t)lastSize;
-}
-
-void destroyDescriptors() {
-	for each(VkDescriptorSetLayout var in descriptorSetLayouts) {
-		vkDestroyDescriptorSetLayout(device, var, nullptr);
-	}
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptorSets.size(), descriptorSets.data());
-	HANDEL(lastResult);
-	descriptorSets.clear();
-};
-
-void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {
-	if(this->type != VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) return;
-	update();
-
-	VkDescriptorImageInfo imageinfo;
-	imageinfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageinfo.imageView = view;
-	imageinfo.sampler = sampler;
-
-	vlibDescriptorWrites.pBufferInfo = nullptr;
-	vlibDescriptorWrites.pImageInfo = &imageinfo;
-
-	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
-}
-
-void Descriptor::updateBufferInfo(uint32_t buffer, size_t size) {
-	if(this->type != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) return;
-	update();
-
-	VkDescriptorBufferInfo bufferinfo;
-	bufferinfo.buffer = buffers[buffer];
-	bufferinfo.range = size;
-	bufferinfo.offset = 0;
-
-	vlibDescriptorWrites.pBufferInfo = &bufferinfo;
-	vlibDescriptorWrites.pImageInfo = nullptr;
-
-	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
-}
-
-void Descriptor::update() {
-	vlibDescriptorWrites.descriptorType = this->type;
-	vlibDescriptorWrites.dstArrayElement = 0;
-	vlibDescriptorWrites.dstBinding = this->binding;
-	vlibDescriptorWrites.descriptorCount = 1;
-	vlibDescriptorWrites.dstSet = descriptorSets[this->descriptorset];
+	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, );
+	CHECKFAIL;
 }
