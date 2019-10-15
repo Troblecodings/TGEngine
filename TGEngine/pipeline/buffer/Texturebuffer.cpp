@@ -1,5 +1,6 @@
 #include "Texturebuffer.hpp"
 #include "../CommandBuffer.hpp"
+#include "../Descriptors.hpp"
 
 namespace tge::tex {
 
@@ -18,8 +19,7 @@ namespace tge::tex {
 
 		for (uint32_t i = 0; i < size; i++) {
 			// Todo do Vulkan stuff
-			TextureLoaded* tex = &input[i];
-			TextureOutput* out = &output[i];
+			TextureLoaded tex = input[i];
 
 			// TODO general validation checks for image creation
 			// Hold my beer! https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#resources-image-creation-limits
@@ -29,7 +29,7 @@ namespace tge::tex {
 			imageCreateInfo.flags = 0;
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // TODO format checks this is optimistic
-			imageCreateInfo.extent = { (uint32_t)tex->x, (uint32_t)tex->y, 1 };
+			imageCreateInfo.extent = { (uint32_t)tex.x, (uint32_t)tex.y, 1 };
 			imageCreateInfo.mipLevels = 1; // TODO Miplevel selection. TextureIn?
 			imageCreateInfo.arrayLayers = 1; // TODO layered textures. TextureIn?
 			imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -40,11 +40,11 @@ namespace tge::tex {
 			imageCreateInfo.pQueueFamilyIndices = nullptr;
 			imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &out->image);
+			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &output[i].image);
 			CHECKFAIL;
 
 			VkMemoryRequirements requirements;
-			vkGetImageMemoryRequirements(device, out->image, &requirements);
+			vkGetImageMemoryRequirements(device, output[i].image, &requirements);
 
 			VkMemoryAllocateInfo memoryAllocateInfo;
 			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -52,17 +52,17 @@ namespace tge::tex {
 			memoryAllocateInfo.allocationSize = requirements.size;
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex; // Goofy
 
-			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &out->imagememory);
+			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &output[i].imagememory);
 			CHECKFAIL;
 
-			lastResult = vkBindImageMemory(device, out->image, out->imagememory, 0);
+			lastResult = vkBindImageMemory(device, output[i].image, output[i].imagememory, 0);
 			CHECKFAIL;
 
 			VkBufferCreateInfo bufferCreateInfo;
 			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 			bufferCreateInfo.pNext = nullptr;
 			bufferCreateInfo.flags = 0;
-			bufferCreateInfo.size = 4 * tex->x * tex->y;
+			bufferCreateInfo.size = 4 * tex.x * tex.y;
 			bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 			bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			bufferCreateInfo.queueFamilyIndexCount = 0;
@@ -86,15 +86,15 @@ namespace tge::tex {
 			uint32_t tmp_size = bufferCreateInfo.size;
 			lastResult = vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory);
 			CHECKFAIL;
-			memcpy(memory, tex->data, tmp_size);
+			memcpy(memory, tex.data, tmp_size);
 			vkUnmapMemory(device, memorylist[i]);
-			delete[] tex->data;
+			delete[] tex.data;
 
 			VkImageViewCreateInfo imageViewCreateInfo;
 			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			imageViewCreateInfo.pNext = nullptr;
 			imageViewCreateInfo.flags = 0;
-			imageViewCreateInfo.image = out->image;
+			imageViewCreateInfo.image = output[i].image;
 			imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // What about cube maps? Checks? TextureIn?
 			imageViewCreateInfo.format = imageCreateInfo.format;                         // This may change depending on format
 			imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
@@ -106,12 +106,12 @@ namespace tge::tex {
 				VK_REMAINING_ARRAY_LAYERS
 			}; // Look into the subresourcerange -> tide to miplevels and mipmaps
 
-			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &out->view);
+			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &output[i].view);
 			CHECKFAIL;
 
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			imagedesc[i].imageView = out->view;
-			imagedesc[i].sampler = tex->sampler;
+			imagedesc[i].imageView = output[i].view;
+			imagedesc[i].sampler = tex.sampler;
 
 			entrymemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			entrymemorybarriers[i].pNext = nullptr;
@@ -121,7 +121,7 @@ namespace tge::tex {
 			entrymemorybarriers[i].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 			entrymemorybarriers[i].srcQueueFamilyIndex = 0;
 			entrymemorybarriers[i].dstQueueFamilyIndex = 0;
-			entrymemorybarriers[i].image = out->image;
+			entrymemorybarriers[i].image = output[i].image;
 			entrymemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
 
 			exitmemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -132,7 +132,7 @@ namespace tge::tex {
 			exitmemorybarriers[i].newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			exitmemorybarriers[i].srcQueueFamilyIndex = 0;
 			exitmemorybarriers[i].dstQueueFamilyIndex = 0;
-			exitmemorybarriers[i].image = out->image;
+			exitmemorybarriers[i].image = output[i].image;
 			exitmemorybarriers[i].subresourceRange = imageViewCreateInfo.subresourceRange;
 		}
 
@@ -155,14 +155,15 @@ namespace tge::tex {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstBinding = 0;
-		descwrite.pImageInfo = imagedesc;
+		descwrite.dstSet = mainDescriptorSet;
+		descwrite.dstBinding = 1;
+		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = size;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descwrite.dstArrayElement = 0;
-		descwrite.pTexelBufferView = nullptr;
+		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
-		// TODO set descriptor set
+		descwrite.pTexelBufferView = nullptr;
+
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 

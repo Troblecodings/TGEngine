@@ -6,6 +6,7 @@
 #include "../vlib/VulkanDescriptor.hpp"
 
 extern VkPipelineLayout pipelineLayout;
+extern VkDescriptorSet mainDescriptorSet;
 
 /*
  * This initialiazes the descriptor systems (Pool, Memory, Layouts ...)
