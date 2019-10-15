@@ -140,8 +140,6 @@ void startTGEngine() {
 	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
-	destroyDescriptors();
-	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	destroyPipeline();
 	destroyRenderPass();
 	destroyDepthTest();
