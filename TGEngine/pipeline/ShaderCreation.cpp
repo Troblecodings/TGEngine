@@ -38,7 +38,6 @@ ShaderPipe::ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
 
 	vlibDescriptorSetLayoutCreateInfo.bindingCount = layoutCount;
 	vlibDescriptorSetLayoutCreateInfo.pBindings = layouts;
-	this->layoutIndex = createLayouts();
 }
 
 void ShaderPipe::precreation() {

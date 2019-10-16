@@ -75,10 +75,9 @@ namespace tge {
 			this->color = color;
 		}
 
-
 		void Material::addToBuffer(VkCommandBuffer buffer) {
 			vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[this->pipelineIndex]);
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeLayouts[this->pipe->layoutIndex], 0, 1, &descriptorSets[this->descriptorIndex], 0, nullptr);
+			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet, 0, nullptr);
 		}
 
 		void Material::destroy() {

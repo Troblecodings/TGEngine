@@ -11,17 +11,13 @@ uint32_t createPipeline(uint32_t layout) {
 
 	vlibMultisampleState.rasterizationSamples = used_msaa_flag;
 
-	vlibGraphicsPipelineCreateInfo.layout = pipeLayouts[layout];
+	vlibGraphicsPipelineCreateInfo.layout = pipelineLayout;
 	vlibGraphicsPipelineCreateInfo.renderPass = render_pass;
 
 	TG_VECTOR_GET_SIZE_AND_RESIZE(pipelines)
 		lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlibGraphicsPipelineCreateInfo, nullptr, &pipelines[lastSize]);
 	HANDEL(lastResult);
 	return (uint32_t)lastSize;
-}
-
-void destroyPipelineLayout(uint32_t layout) {
-	vkDestroyPipelineLayout(device, pipeLayouts[layout], nullptr);
 }
 
 void destroyPipeline(uint32_t layout) {
