@@ -14,7 +14,6 @@ public:
 	UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t binding);
 
 	uint32_t size = 0;
-	Descriptor descriptor = Descriptor();
 	uint32_t index = 0;
 	void* memory = 0;
 

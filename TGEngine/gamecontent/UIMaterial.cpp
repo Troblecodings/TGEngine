@@ -17,7 +17,6 @@ namespace tge {
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 			vlibRasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT;
 			vlibDepthStencilState.depthTestEnable = VK_TRUE;
-			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
 
 			if(this->texture != nullptr) {
 				//tex::textureDescriptor.descriptorset = this->descriptorIndex;

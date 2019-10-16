@@ -64,15 +64,6 @@ namespace tge {
 
 			this->pipelineIndex = createPipeline(this->pipe->layoutIndex);
 
-			this->descriptorIndex = createDescriptorSet(this->pipe->layoutIndex);
-			cameraUBO.descriptor.descriptorset = lightbuffer.descriptor.descriptorset = this->descriptorIndex;
-
-			cameraUBO.descriptor.binding = 0;
-			cameraUBO.updateDescriptor();
-
-			lightbuffer.descriptor.binding = 1;
-			lightbuffer.updateDescriptor();
-
 			if(this->texture != nullptr) {
 				//tex::textureDescriptor.descriptorset = this->descriptorIndex;
 				//tex::textureDescriptor.binding = 2;
@@ -91,7 +82,6 @@ namespace tge {
 		}
 
 		void Material::destroy() {
-			destroyDescriptorSet(this->descriptorIndex);
 			destroyPipeline(this->pipelineIndex);
 		}
 
