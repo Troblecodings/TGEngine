@@ -38,7 +38,7 @@ void initDescriptors() {
 	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
-	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfo.pNext = nullptr;
 	descriptorSetLayoutCreateInfo.flags = 0;
 	descriptorSetLayoutCreateInfo.bindingCount = 2;
