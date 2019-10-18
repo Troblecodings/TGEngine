@@ -8,13 +8,13 @@ import subprocess
 import struct
 import shutil
 from shutil import copyfile
+import platform
 
-def clear(): os.system("cls")
-
-
-def readtoint(read):
-    return struct.unpack('b', read)[0]
-
+osn = platform.system()
+if osn == "linux":
+    def clear(): os.system("cls")
+else:
+    def clear(): os.system("clear")
 
 vulkan = os.getenv("VULKAN_SDK")
 dependencies_file = None
@@ -83,6 +83,8 @@ def trigger(id):
         if id == 0:
             exit(0)
         elif id == 1:
+            if not os.path.exists("dependencies"):
+                os.mkdir("dependencies")
             print("Thanks to David Quenzer for giving me access to his cloud storage!")
             getstb()
             print("Checking version!")
