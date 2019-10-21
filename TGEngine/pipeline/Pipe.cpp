@@ -2,31 +2,19 @@
 #include "window/Window.hpp"
 #include "Descriptors.hpp"
 
-std::vector<VkPipeline> pipelines;
+namespace tge::pip {
 
-uint32_t createPipeline(uint32_t layout) {
-	Window* win = windowList[0];
-	vlibScissor.extent.height = (uint32_t)(vlibViewport.height = (float)win->height);
-	vlibScissor.extent.width = (uint32_t)(vlibViewport.width = (float)win->width);
+	void createMaterialPipelines(VkPipeline* pipelines) {
+		Window* win = windowList[0];
+		vlibScissor.extent.height = (uint32_t)(vlibViewport.height = (float)win->height);
+		vlibScissor.extent.width = (uint32_t)(vlibViewport.width = (float)win->width);
 
-	vlibMultisampleState.rasterizationSamples = used_msaa_flag;
+		vlibMultisampleState.rasterizationSamples = used_msaa_flag;
 
-	vlibGraphicsPipelineCreateInfo.layout = pipelineLayout;
-	vlibGraphicsPipelineCreateInfo.renderPass = render_pass;
+		vlibGraphicsPipelineCreateInfo.layout = pipelineLayout;
+		vlibGraphicsPipelineCreateInfo.renderPass = render_pass;
 
-	TG_VECTOR_GET_SIZE_AND_RESIZE(pipelines)
 		lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &vlibGraphicsPipelineCreateInfo, nullptr, &pipelines[lastSize]);
-	HANDEL(lastResult);
-	return (uint32_t)lastSize;
-}
-
-void destroyPipeline(uint32_t layout) {
-	vkDestroyPipeline(device, pipelines[layout], nullptr);
-}
-
-void destroyPipeline() {
-	for each(VkPipeline var in pipelines) {
-		vkDestroyPipeline(device, var, nullptr);
+		CHECKFAIL;
 	}
-	pipelines.clear();
 }

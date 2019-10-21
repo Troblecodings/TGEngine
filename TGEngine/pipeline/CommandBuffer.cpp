@@ -135,22 +135,11 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		uint32_t off = 0;
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet, 0, nullptr);
 
-		for each (tge::gmc::Model* actor in tge::gmc::models)
-		{
-			for each (tge::gmc::RenderOffsets offset in actor->offsets)
-			{
-				off += offset.offset;
-				actor->materials[offset.material].addToBuffer(buffer);
-				vkCmdDrawIndexed(buffer, offset.size, 1, off, 0, 0);
-			}
-		}
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe);
 
-		for each(tge::gmc::RenderOffsets coffset in tge::gmc::render_offset) {
-			tge::gmc::materiallist[coffset.material]->addToBuffer(buffer);
-			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
-		}
+		vkCmdDrawIndexed(buffer, ibuffer->indexCount, 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 
