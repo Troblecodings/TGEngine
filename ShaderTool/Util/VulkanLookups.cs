@@ -9,6 +9,8 @@
                     return VkFormat.VK_FORMAT_R32G32B32_SFLOAT;
                 case "vec4":
                     return VkFormat.VK_FORMAT_R32G32B32A32_SFLOAT;
+                case "uint":
+                    return VkFormat.VK_FORMAT_R32_UINT;
                 default:
                     return VkFormat.VK_FORMAT_UNDEFINED;
             }
@@ -16,6 +18,7 @@
 
         public static uint LookupSize(VkFormat format) {
             switch (format) {
+                case VkFormat.VK_FORMAT_R32_UINT:
                 case VkFormat.VK_FORMAT_R32_SFLOAT:
                     return 4;
                 case VkFormat.VK_FORMAT_R32G32_SFLOAT:

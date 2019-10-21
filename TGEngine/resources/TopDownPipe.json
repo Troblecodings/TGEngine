@@ -1,0 +1,36 @@
+{
+  "Name": "TopDown",
+  "ShaderNames": [
+    "VertexTopDown",
+    "FragmentTopDown"
+  ],
+  "Inputs": [
+    {
+      "Id": 0,
+      "Offset": 0,
+      "Layout": 106
+    },
+    {
+      "Id": 1,
+      "Offset": 12,
+      "Layout": 98
+    },
+    {
+      "Id": 2,
+      "Offset": 16,
+      "Layout": 103
+    }
+  ],
+  "Descriptors": [
+    {
+      "Binding": 0,
+      "Type": 6,
+      "flag": 1
+    },
+    {
+      "Binding": 1,
+      "Type": 1,
+      "flag": 16
+    }
+  ]
+}
