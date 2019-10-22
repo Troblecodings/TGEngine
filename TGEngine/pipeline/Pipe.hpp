@@ -10,7 +10,10 @@
 namespace tge::pip {
 
 	struct PipelineInputInfo {
-
+		ShaderPipe pipe;
+		uint32_t stride;
 	};
+
+	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);
 
 }
