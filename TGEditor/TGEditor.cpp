@@ -21,9 +21,9 @@ int main(int argc, char** args) {
 	setTopDownCamera(&topdown);
 	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
-	ResourceDescriptor texture;
-	texture.offset = 0;
-	texture.size = 665;
+	ResourceDescriptor texture[2];
+	texture[0].offset = 0;
+	texture[0].size = 665;
 
 	File resc = open("resource\\Resources.tgr", "rb");
 

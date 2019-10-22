@@ -9,6 +9,8 @@
 
 namespace tge::pip {
 
-	void createMaterialPipelines(Material* materials, uint32_t size, VkPipeline* pipelines);
+	struct PipelineInputInfo {
+
+	};
 
 }

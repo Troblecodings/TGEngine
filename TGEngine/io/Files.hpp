@@ -18,11 +18,10 @@
 
 #define TGE_GET_RESOURCE(EXEC) for (uint32_t i = 0; i < size; i++) \
 {\
-	ResourceDescriptor* tex = &input[i];\
-    if (ftell(file) != tex->offset)\
-    fseek(file, tex->offset, SEEK_SET); \
-    stbi_uc* resbuffer = new stbi_uc[tex->size]; \
-    fread(resbuffer, sizeof(char), tex->size, file); \
+    if (ftell(file) != input[i].offset)\
+    fseek(file, input[i].offset, SEEK_SET); \
+    stbi_uc* resbuffer = new stbi_uc[input[i].size]; \
+    fread(resbuffer, sizeof(char), input[i].size, file); \
     EXEC\
 }
 
@@ -34,6 +33,11 @@ namespace tge {
 		typedef FILE* File;
 
 		extern char current_working_dir[];
+
+		struct ResourceDescriptor {
+			uint64_t offset;
+			uint64_t size;
+		};
 
 		/*
 		 * Querys the current working directory and initalizes all other systems

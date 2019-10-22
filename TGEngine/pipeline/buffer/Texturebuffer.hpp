@@ -19,26 +19,21 @@ namespace tge::tex {
 
 	extern TextureDefaults defaults;
 
-	struct ResourceDescriptor {
-		uint64_t offset;
-		uint64_t size;
-	};
-
-	struct SamplerLoaded {
+	struct SamplerInputInfo {
 		VkSamplerAddressMode uSamplerMode;
 		VkSamplerAddressMode vSamplerMode;
 		VkFilter filterMagnification;
 		VkFilter filterMignification;
 	};
 
-	struct TextureOutput{
+	struct Texture {
 		uint32_t id;
 		VkImage image;
 		VkImageView view;
 		VkDeviceMemory imagememory;
 	};
 
-	struct TextureLoaded {
+	struct TextureInputInfo {
 		uint8_t* data;
 		VkSampler sampler;
 		int x;
@@ -46,12 +41,12 @@ namespace tge::tex {
 		int comp;
 	};
 
-	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded);
+	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);
 
-	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler);
+	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler);
 
-	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded);
+	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded);
 
-	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output);
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);
 
 }

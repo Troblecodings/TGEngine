@@ -6,7 +6,7 @@ namespace tge::tex {
 
 	TextureDefaults defaults;
 
-	void createTextures(TextureLoaded* input, uint32_t size, TextureOutput* output) {
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output) {
 		// TODO default format checks
 
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
@@ -19,7 +19,7 @@ namespace tge::tex {
 
 		for (uint32_t i = 0; i < size; i++) {
 			// Todo do Vulkan stuff
-			TextureLoaded tex = input[i];
+			TextureInputInfo tex = input[i];
 
 			// TODO general validation checks for image creation
 			// Hold my beer! https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#resources-image-creation-limits
@@ -167,22 +167,21 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
-	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureLoaded* loaded) {
+	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded) {
 		TGE_GET_RESOURCE(
-			TextureLoaded * out = &loaded[i];
-		out->data = stbi_load_from_memory(resbuffer, tex->size, &out->x, &out->y, &out->comp, STBI_rgb_alpha);
+			loaded[i].data = stbi_load_from_memory(resbuffer, input[i].size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
 		)
 	}
 
-	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerLoaded* loaded) {
+	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded) {
 		TGE_GET_RESOURCE(
-			memcpy(loaded, resbuffer, input->size);
+			memcpy(&loaded[i], resbuffer, input[i].size);
 		)
 	}
 
-	void createSampler(SamplerLoaded* input, uint32_t size, VkSampler* sampler) {
+	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler) {
 		for (size_t i = 0; i < size; i++) {
-			SamplerLoaded loaded = input[i];
+			SamplerInputInfo loaded = input[i];
 			VkSamplerCreateInfo samplerCreateInfo;
 			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 			samplerCreateInfo.pNext = 0;
