@@ -18,7 +18,7 @@ void createFramebuffer() {
 		 VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 		 nullptr,
 		 0,
-		 render_pass,
+		 renderpass,
 		 3,
 		 VK_NULL_HANDLE,
 		 (uint32_t)win->width,

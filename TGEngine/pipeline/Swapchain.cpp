@@ -60,7 +60,7 @@ void createColorResouce() {
 	vlibImageCreateInfo.extent.height = windowList[0]->height;
 	vlibImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	vlibImageCreateInfo.format = used_format.format;
-	vlibImageCreateInfo.samples = used_msaa_flag;
+	vlibImageCreateInfo.samples = usedMSAAFlag;
 	vlibImageCreateInfo.mipLevels = 1;
 	lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &color_image);
 	HANDEL(lastResult);

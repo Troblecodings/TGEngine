@@ -9,7 +9,7 @@ extern std::vector<VkPresentModeKHR> present_mode;
 extern VkSurfaceFormatKHR used_format;
 extern VkFormat used_depth_format;
 extern VkPresentModeKHR used_present_mode;
-extern VkSampleCountFlagBits used_msaa_flag;
+extern VkSampleCountFlagBits usedMSAAFlag;
 
 SINCE(0, 0, 1)
 void prePipeline();

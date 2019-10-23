@@ -102,7 +102,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
 				nullptr,
-				render_pass,
+				renderpass,
 				0,
 				frame_buffer[i],
 				VK_FALSE,
@@ -118,7 +118,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		VkRenderPassBeginInfo render_pass_begin_info = {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			nullptr,
-			render_pass,
+			renderpass,
 			frame_buffer[i],
 			{
 				0,

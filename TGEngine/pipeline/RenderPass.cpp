@@ -1,13 +1,13 @@
 #include "RenderPass.hpp"
 
-VkRenderPass render_pass;
+VkRenderPass renderpass;
 
 void createRenderpass() {
 	//Attachment for color images
 	VkAttachmentDescription attachment_description = {
 		0,
 		used_format.format,
-		used_msaa_flag,
+		usedMSAAFlag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -20,7 +20,7 @@ void createRenderpass() {
 	VkAttachmentDescription depth_attachment_description = {
 		0,
 		used_depth_format,
-		used_msaa_flag,
+		usedMSAAFlag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -99,10 +99,10 @@ void createRenderpass() {
 		&subpass_dependency
 	};
 
-	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
+	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &renderpass);
 	HANDEL(lastResult);
 }
 
 void destroyRenderPass() {
-	vkDestroyRenderPass(device, render_pass, nullptr);
+	vkDestroyRenderPass(device, renderpass, nullptr);
 }
