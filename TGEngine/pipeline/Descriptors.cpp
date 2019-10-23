@@ -24,7 +24,7 @@ void initDescriptors() {
 	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
 	CHECKFAIL;
 
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[2];
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[3];
 	descriptorSetLayoutBinding[0].binding = 0;
 	descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorSetLayoutBinding[0].descriptorCount = 1;
@@ -37,11 +37,17 @@ void initDescriptors() {
 	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
+	descriptorSetLayoutBinding[2].binding = 2;
+	descriptorSetLayoutBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutBinding[2].descriptorCount = 1;
+	descriptorSetLayoutBinding[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBinding[2].pImmutableSamplers = VK_NULL_HANDLE;
+
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfo.pNext = nullptr;
 	descriptorSetLayoutCreateInfo.flags = 0;
-	descriptorSetLayoutCreateInfo.bindingCount = 2;
+	descriptorSetLayoutCreateInfo.bindingCount = 3;
 	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
 	VkDescriptorSetLayout descriptorSetLayout;

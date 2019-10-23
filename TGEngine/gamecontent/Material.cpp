@@ -1,8 +1,7 @@
 #include "Material.hpp"
-#include "Light.hpp"
-#include "../pipeline/Pipe.hpp"
 
 namespace tge::gmc{
 
+	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material) {}
 
 }
