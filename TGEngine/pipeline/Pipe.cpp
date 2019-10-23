@@ -105,6 +105,18 @@ namespace tge::pip {
 			pipelineColorBlendStateCreateInfo.blendConstants[2] = 1;
 			pipelineColorBlendStateCreateInfo.blendConstants[3] = 1;
 
+			VkPipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo;
+			pipelineDepthStencilStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+			pipelineDepthStencilStateCreateInfo.pNext = nullptr;
+			pipelineDepthStencilStateCreateInfo.flags = 0;
+			pipelineDepthStencilStateCreateInfo.depthTestEnable = VK_TRUE;
+			pipelineDepthStencilStateCreateInfo.depthWriteEnable = VK_TRUE;
+			pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+			pipelineDepthStencilStateCreateInfo.depthBoundsTestEnable = VK_FALSE;
+			pipelineDepthStencilStateCreateInfo.stencilTestEnable = VK_FALSE;
+			pipelineDepthStencilStateCreateInfo.minDepthBounds = 0;
+			pipelineDepthStencilStateCreateInfo.maxDepthBounds = 1.0;
+
 			graphicsPipelineCreateInfo[i].sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			graphicsPipelineCreateInfo[i].pNext = nullptr;
 			graphicsPipelineCreateInfo[i].flags = 0;
@@ -116,7 +128,7 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].pViewportState = &pipelineViewportStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pRasterizationState = &pipelineRasterizationStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pMultisampleState = &pipelineMultisampleStateCreateInfo;
-			graphicsPipelineCreateInfo[i].pDepthStencilState = nullptr;
+			graphicsPipelineCreateInfo[i].pDepthStencilState = &pipelineDepthStencilStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pColorBlendState = &pipelineColorBlendStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pDynamicState = nullptr;
 			graphicsPipelineCreateInfo[i].layout = pipelineLayout;
