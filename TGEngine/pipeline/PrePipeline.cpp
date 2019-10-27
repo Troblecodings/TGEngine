@@ -11,6 +11,10 @@ VkSampleCountFlagBits  usedMSAAFlag;
 void prePipeline() {
 	uint32_t count = 0;
 
+	
+	OUT_LV_DEBUG("Max uniform " << deviceProperties.limits.maxPerStageDescriptorUniformBuffers)
+	OUT_LV_DEBUG("Max sampler " << deviceProperties.limits.maxPerStageDescriptorSamplers)
+
 	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
 	HANDEL(lastResult)
 

@@ -111,7 +111,7 @@ namespace tge::tex {
 
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imagedesc[i].imageView = output[i].view;
-			imagedesc[i].sampler = tex.sampler;
+			imagedesc[i].sampler = nullptr;
 
 			entrymemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			entrymemorybarriers[i].pNext = nullptr;
@@ -156,10 +156,10 @@ namespace tge::tex {
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
 		descwrite.dstSet = mainDescriptorSet;
-		descwrite.dstBinding = 1;
+		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = size;
-		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
@@ -189,6 +189,9 @@ namespace tge::tex {
 	}
 
 	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler) {
+		// TODO Validation checks
+		VkDescriptorImageInfo* imageInfo = new VkDescriptorImageInfo[size];
+
 		for (size_t i = 0; i < size; i++) {
 			SamplerInputInfo loaded = input[i];
 			VkSamplerCreateInfo samplerCreateInfo;
@@ -213,7 +216,24 @@ namespace tge::tex {
 
 			lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler[i]);
 			CHECKFAIL;
+
+			imageInfo[i].sampler = sampler[i];
+			imageInfo[i].imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			imageInfo[i].imageView = nullptr;
 		}
+
+		VkWriteDescriptorSet descwrite;
+		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descwrite.pNext = nullptr;
+		descwrite.dstSet = mainDescriptorSet;
+		descwrite.dstBinding = 1;
+		descwrite.dstArrayElement = 0;
+		descwrite.descriptorCount = size;
+		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		descwrite.pImageInfo = imageInfo;
+		descwrite.pBufferInfo = nullptr;
+		descwrite.pTexelBufferView = nullptr;
+		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
 }
