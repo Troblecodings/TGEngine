@@ -8,7 +8,7 @@ uint diffuseTexture;
 vec4 color;
 vec2 uvmanipulator;
 uint align;
-}
+};
 
 layout(binding = 2) uniform MATERIALS{
     Material mat[4096];

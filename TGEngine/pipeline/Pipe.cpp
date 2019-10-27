@@ -7,7 +7,7 @@ namespace tge::pip {
 
 	VkPipeline defaultPipeline;
 
-	void inline createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines) {
+	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines) {
 
 		VkGraphicsPipelineCreateInfo* graphicsPipelineCreateInfo = new VkGraphicsPipelineCreateInfo[size];
 
@@ -144,7 +144,7 @@ namespace tge::pip {
 		CHECKFAIL;
 	}
 
-	void inline initPipelines() {
+	void initPipelines() {
 
 		//TODO Autogenerate pipelines
 		PipelineInputInfo pipelineInputInfo;

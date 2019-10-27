@@ -111,7 +111,9 @@
     <ClCompile Include="pipeline\buffer\UniformBuffer.cpp" />
     <ClCompile Include="pipeline\buffer\VertexBuffer.cpp" />
     <ClCompile Include="resources\ShaderPipes.cpp" />
-    <ClCompile Include="resources\VertexTopDown.glsl" />
+    <CustomBuild Include="resources\VertexTopDown.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
     <ClCompile Include="ui\UIDrawable.cpp" />
     <ClCompile Include="ui\UIEntity.cpp" />
     <ClCompile Include="ui\UITextComponent.cpp" />
@@ -262,14 +264,14 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
@@ -278,14 +280,14 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

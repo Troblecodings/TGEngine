@@ -174,9 +174,13 @@ namespace tge::tex {
 	}
 
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded) {
-		TGE_GET_RESOURCE(
-			memcpy(&loaded[i], resbuffer, input[i].size);
-		)
+		for (uint32_t i = 0; i < size; i++)
+		{
+			ResourceDescriptor desc = input[i];
+			if (ftell(file) != desc.offset)
+				fseek(file, desc.offset, SEEK_SET);
+			fread(&loaded[i], sizeof(char), desc.size, file);
+		}
 	}
 
 	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler) {

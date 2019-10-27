@@ -6,7 +6,6 @@
 #include "pipeline/Draw.hpp"
 #include "gamecontent/Actor.hpp"
 #include "ui/UIEntity.hpp"
-#include "gamecontent/UIMaterial.hpp"
 #include "gamecontent/camera/Camera.hpp"
 
 extern VertexBuffer vertexBuffer;

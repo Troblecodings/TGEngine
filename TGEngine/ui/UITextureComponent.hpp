@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UIDrawable.hpp"
-#include "../gamecontent/UIMaterial.hpp"
 
 using namespace tge::tex;
 
@@ -24,15 +23,9 @@ namespace tge {
 			class UITextureComponent : public UIDrawable {
 
 			private:
-				tex::TextureLoaded* texture = nullptr;
-				gmc::UIMaterial mat = gmc::UIMaterial(0);
 				glm::vec4 color = glm::vec4(1.0f);
 				uint32_t materialIndex = -1;
 				uint32_t offsetIndex = -1;
-
-			public:
-				UITextureComponent(TextureLoaded* texture) : UITextureComponent(texture, glm::vec4(1.0f)) {}
-				UITextureComponent(TextureLoaded* texture, glm::vec4 color) : texture(texture), color(color) {}
 
 			protected:
 				virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;

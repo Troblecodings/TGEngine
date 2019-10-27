@@ -95,7 +95,6 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
-	destroyPipeline();
 	destroyRenderPass();
 	destroyColorResouce();
 	destroyDepthTest();
@@ -112,15 +111,6 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
-	for(size_t i = 0; i < tge::gmc::materiallist.size(); i++) {
-		tge::gmc::materiallist[i]->createMaterial();
-	}
-	for (size_t i = 0; i < tge::gmc::models.size(); i++) {
-		for (size_t x = 0; x < tge::gmc::models[i]->materials.size(); x++)
-		{
-			(&tge::gmc::models[i]->materials[x])->createMaterial();
-		}
-	}
 	createSwapchain();
 	if(lastResult == VK_ERROR_INITIALIZATION_FAILED) {
 		OUT_LV_DEBUG("Windows break the swapchain!")
