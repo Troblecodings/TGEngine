@@ -4,6 +4,8 @@
 
 using namespace std;
 using namespace tge::tex;
+using namespace tge::gmc;
+using namespace tge::pip;
 
 VertexBuffer vertexBuffer;
 IndexBuffer indexBuffer;
@@ -23,14 +25,16 @@ void initEngine() {
 	initShader();
 	initShaderPipes();
 
-	tge::gmc::multiplier = (windowList[0]->height / (float)windowList[0]->width);
+	initPipelines();
+
+	multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
 
-	tge::gmc::initLight();
-	tge::gmc::initCameras();
+	initLight();
+	initCameras();
 	initDescriptors();
 
 	allocateAllBuffers();
@@ -60,18 +64,12 @@ void initEngine() {
 void startTGEngine() {
 
 
-	for(size_t i = 0; i < tge::gmc::models.size(); i++) {
-		for (size_t j = 0; j < tge::gmc::models[i]->actors.size(); j++)
+	for(size_t i = 0; i < models.size(); i++) {
+		for (size_t j = 0; j < models[i]->actors.size(); j++)
 		{
-			tge::gmc::models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
+			models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
 		}
 	}
-	OUT_LV_DEBUG(tge::gmc::materiallist.size())
-		for each(tge::gmc::Material * mat in tge::gmc::materiallist) {
-			OUT_LV_DEBUG(mat)
-				OUT_LV_DEBUG(mat->getType())
-				mat->createMaterial();
-		}
 
 	index_offset = indexBuffer.indexCount;
 	vertex_offset = vertexBuffer.pointCount;
@@ -106,7 +104,7 @@ void startTGEngine() {
 		if(delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
-			tge::gmc::Input input = {};
+			Input input = {};
 			if (1 & states) {
 				input.y1 = 0.01;
 			}
@@ -119,7 +117,7 @@ void startTGEngine() {
 			if (8 & states) {
 				input.x1 = -0.01;
 			}
-			tge::gmc::playercontroller(&input);
+			playercontroller(&input);
 		}
 
 		submit(&indexBuffer, &vertexBuffer);
@@ -140,7 +138,6 @@ void startTGEngine() {
 	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroySwapchain();
-	destroyPipeline();
 	destroyRenderPass();
 	destroyDepthTest();
 	destroyColorResouce();

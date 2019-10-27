@@ -25,6 +25,14 @@ const unsigned int TexturedBasicInputCount = 3;
 const unsigned int TexturedBasicLayoutBindingCount = 3;
 ShaderPipe TexturedBasicPipe;
 
+VkPipelineShaderStageCreateInfo TopDownShader[2];
+const VkVertexInputAttributeDescription TopDownInput[] = {{ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32_UINT,12},{ 2, 0, VK_FORMAT_R32G32_SFLOAT,16}};
+const VkDescriptorSetLayoutBinding TopDownLayoutBinding[] = {{ 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_VERTEX_BIT},{ 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
+const unsigned int TopDownShaderCount = 2;
+const unsigned int TopDownInputCount = 3;
+const unsigned int TopDownLayoutBindingCount = 2;
+ShaderPipe TopDownPipe;
+
 VkPipelineShaderStageCreateInfo UIColorShader[2];
 const VkVertexInputAttributeDescription UIColorInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT,16}};
 const unsigned int UIColorShaderCount = 2;
@@ -51,6 +59,9 @@ void initShaderPipes(){
     TexturedBasicShader[0] = VertexTextured;
     TexturedBasicShader[1] = FragmentTextured;
     TexturedBasicPipe = ShaderPipe(TexturedBasicShader, TexturedBasicInput, TexturedBasicLayoutBinding, TexturedBasicShaderCount, TexturedBasicInputCount, TexturedBasicLayoutBindingCount);
+    TopDownShader[0] = VertexTopDown;
+    TopDownShader[1] = FragmentTopDown;
+    TopDownPipe = ShaderPipe(TopDownShader, TopDownInput, TopDownLayoutBinding, TopDownShaderCount, TopDownInputCount, TopDownLayoutBindingCount);
     UIColorShader[0] = VertexUI;
     UIColorShader[1] = FragmentUIColor;
     UIColorPipe = ShaderPipe(UIColorShader, UIColorInput, nullptr, UIColorShaderCount, UIColorInputCount, UIColorLayoutBindingCount);

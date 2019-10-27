@@ -24,10 +24,6 @@ namespace tge {
 			delete[] tempbitmap;
 
 			//this->texture = new tex::Texture(height * 64, height * 64);
-
-			this->mat = gmc::UIMaterial(this->texture);
-			TG_VECTOR_APPEND_NORMAL(gmc::materiallist, &this->mat)
-				this->materialIndex = (uint32_t)lastSize;
 		}
 
 		void Font::drawString(glm::vec2 pos, char* text, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color) {

@@ -100,9 +100,7 @@ namespace tge {
 		static void loadMaterials(tinygltf::Model* gltfModel, gmc::Model* model) {
 			if (gltfModel->materials.size() < 1) {
 				// TODO Make this default Material ...
-				gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
-				material.createMaterial();
-				model->materials.push_back(material);
+				// TODO Creation for materials
 				return;
 			}
 			for each (tinygltf::Material mat in gltfModel->materials) {
@@ -112,25 +110,20 @@ namespace tge {
 
 				auto doubleSided = mat.additionalValues.find("doubleSided");
 
-				gmc::Material material;
-
 				if (colorTex != mat.values.end()) {
-					material = gmc::Material(&model->textures[colorTex->second.TextureIndex()],
-						colorFactor != mat.values.end() ? glm::make_vec4(colorFactor->second.ColorFactor().data()) : glm::vec4(1));
+					// TODO 
 				}
 				else if (colorFactor != mat.values.end()) {
-					gmc::Material material = gmc::Material(glm::make_vec4(colorFactor->second.ColorFactor().data()));
+					// TODO 
 				}
 				else {
 					// TODO Make this default Material ...
-					gmc::Material material = gmc::Material(glm::vec4(0, 0, 0, 1.0));
+					// TODO 
 				}
 
-				if (doubleSided != mat.additionalValues.end())
-					material.doubleSided = doubleSided->second.bool_value;
+				if (doubleSided != mat.additionalValues.end());
+				// TODO 
 
-				material.createMaterial();
-				model->materials.push_back(material);
 #ifdef DEBUG
 				for (auto ptr = mat.values.begin(); ptr != mat.values.end(); ptr++) {
 					OUT_LV_DEBUG(ptr->first << " = " << ptr->second.string_value)
@@ -198,13 +191,10 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 						const tinygltf::BufferView& posView = gltfModel->bufferViews[posAccessor.bufferView];
 						const float* posBuffer = reinterpret_cast<const float*>(&(gltfModel->buffers[posView.buffer].data[posAccessor.byteOffset + posView.byteOffset]));
 
-						FIND(normal, float, "NORMAL")
-							FIND(uv, float, "TEXCOORD_0")
+						FIND(normal, float, "NORMAL");
+						FIND(uv, float, "TEXCOORD_0");
 
-							// TODO TANGENT? UV_1? JOINTS? WEIGHT? ...
-							gmc::RenderOffsets offset;
-						offset.material = prim.material < 0 ? 0 : prim.material;
-						offset.offset = mesh->indices.size();
+						// TODO TANGENT? UV_1? JOINTS? WEIGHT? ...
 
 						if (prim.indices > -1) {
 							for (size_t i = 0; i < posAccessor.count; i++)
@@ -220,8 +210,6 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							const tinygltf::Accessor& indexAccessor = gltfModel->accessors[prim.indices];
 							const tinygltf::BufferView& indexView = gltfModel->bufferViews[indexAccessor.bufferView];
 							const void* indexBuffer = &(gltfModel->buffers[indexView.buffer].data[indexAccessor.byteOffset + indexView.byteOffset]);
-
-							offset.size = indexAccessor.count;
 
 							switch (indexAccessor.componentType)
 							{
@@ -250,10 +238,8 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 								};
 								mesh->add(vert);
 							}
-							offset.size = mesh->indices.size();
 						}
 
-						model->offsets.push_back(offset);
 					}
 				}
 			}

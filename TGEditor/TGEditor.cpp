@@ -21,24 +21,19 @@ int main(int argc, char** args) {
 	setTopDownCamera(&topdown);
 	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
 
-	ResourceDescriptor texture[2];
-	texture[0].offset = 0;
-	texture[0].size = 665;
+	ResourceDescriptor texture;
+	texture.offset = 0;
+	texture.size = 665;
 
 	File resc = open("resource\\Resources.tgr", "rb");
 
-	TextureLoaded outtex;
+	TextureInputInfo outtex;
 	loadTextures(resc, &texture, 1, &outtex);
 
-	TextureOutput out;
+	Texture out;
 	createTextures(&outtex, 1, &out);
 
 	fclose(resc);
-
-	Material mat = Material(&Tex2DPipe);
-	mat.doubleSided = true;
-	mat.texture = &out;
-	materiallist.push_back(&mat);
 
 	vertexBuffer.add(glm::vec4(-4, -4, 0, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
 	vertexBuffer.add(glm::vec4(4, -4, 16, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
@@ -51,8 +46,6 @@ int main(int argc, char** args) {
 	indexBuffer.addIndex(0);
 	indexBuffer.addIndex(2);
 	indexBuffer.addIndex(3);
-
-	render_offset.push_back({0, 6, 0});
 
 	std::cout << "Starting Editor" << std::endl;
 

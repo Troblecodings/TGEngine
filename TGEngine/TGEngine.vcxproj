@@ -30,7 +30,6 @@
     <ClInclude Include="gamecontent\Material.hpp" />
     <ClInclude Include="gamecontent\Mesh.hpp" />
     <ClInclude Include="gamecontent\PlayerController.hpp" />
-    <ClInclude Include="gamecontent\UIMaterial.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\Keyboard.hpp" />
     <ClInclude Include="io\Font.hpp" />
@@ -86,7 +85,6 @@
     <ClCompile Include="gamecontent\Material.cpp" />
     <ClCompile Include="gamecontent\Mesh.cpp" />
     <ClCompile Include="gamecontent\PlayerController.cpp" />
-    <ClCompile Include="gamecontent\UIMaterial.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\Keyboard.cpp" />
     <ClCompile Include="io\Font.cpp" />

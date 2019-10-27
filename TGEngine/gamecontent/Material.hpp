@@ -11,9 +11,15 @@ namespace tge::gmc {
 		uint32_t diffuseTexture;
 		glm::vec4 color;
 		glm::vec2 uvmanipulator;
-		uint32_t align; // Used for memory alignment 
+		uint32_t id; 
 	};
 
-	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material);
+	extern VkBuffer materialUBO;
+	extern VkDeviceMemory materialMemory;
 
+	void inline initMaterials();
+
+	void inline loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material);
+
+	void inline createMaterials(Material* material, uint32_t size);
 }

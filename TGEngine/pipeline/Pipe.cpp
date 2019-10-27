@@ -5,7 +5,9 @@
 
 namespace tge::pip {
 
-	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines) {
+	VkPipeline defaultPipeline;
+
+	void inline createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines) {
 
 		VkGraphicsPipelineCreateInfo* graphicsPipelineCreateInfo = new VkGraphicsPipelineCreateInfo[size];
 
@@ -140,5 +142,20 @@ namespace tge::pip {
 		
 		lastResult = vkCreateGraphicsPipelines(device, nullptr, size, graphicsPipelineCreateInfo, nullptr, pipelines);
 		CHECKFAIL;
+	}
+
+	void inline initPipelines() {
+
+		//TODO Autogenerate pipelines
+		PipelineInputInfo pipelineInputInfo;
+		pipelineInputInfo.pipe = TopDownPipe;
+		pipelineInputInfo.stride = sizeof(glm::vec3) * 2;
+		pipelineInputInfo.width = windowList[0]->width;
+		pipelineInputInfo.height = windowList[0]->height;
+		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
+		pipelineInputInfo.lineWidth = 1;
+		
+		createPipelines(&pipelineInputInfo, 1, &defaultPipeline);
 	}
 }
