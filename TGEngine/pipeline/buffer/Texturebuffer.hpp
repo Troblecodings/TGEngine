@@ -13,8 +13,8 @@ namespace tge::tex {
 
 	struct TextureDefaults {
 		VkSampler sampler;
-		float anisotropyFilter;
-		uint32_t mipmapLevels;
+		float     anisotropyFilter;
+		uint32_t  mipmapLevels;
 	};
 
 	extern TextureDefaults defaults;
@@ -22,23 +22,23 @@ namespace tge::tex {
 	struct SamplerInputInfo {
 		VkSamplerAddressMode uSamplerMode;
 		VkSamplerAddressMode vSamplerMode;
-		VkFilter filterMagnification;
-		VkFilter filterMignification;
+		VkFilter             filterMagnification;
+		VkFilter             filterMignification;
 	};
 
 	struct Texture {
-		uint32_t id;
-		VkImage image;
-		VkImageView view;
+		uint32_t       id;
+		VkImage        image;
+		VkImageView    view;
 		VkDeviceMemory imagememory;
 	};
 
 	struct TextureInputInfo {
-		uint8_t* data;
+		uint8_t*  data;
 		VkSampler sampler;
-		int x;
-		int y;
-		int comp;
+		int       x;
+		int       y;
+		int       comp;
 	};
 
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);

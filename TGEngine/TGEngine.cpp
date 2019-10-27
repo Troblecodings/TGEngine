@@ -25,30 +25,26 @@ void initEngine() {
 	initShader();
 	initShaderPipes();
 
-	initPipelines();
-
 	multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	createDepthTest();
 	createColorResouce();
 	createRenderpass();
+	initDescriptors();
+
+	initPipelines();
 
 	initLight();
 	initCameras();
-	initDescriptors();
 
 	allocateAllBuffers();
 
-	for each (tge::gmc::LightActor * var in tge::gmc::lights) {
-		var->updateLight();
-	}
-
 	vertexBuffer = {};
-	vertexBuffer.maximumVertexCount = 9000000;
+	vertexBuffer.maximumVertexCount = 900000;
 	createVertexBuffer(&vertexBuffer);
 
 	indexBuffer = {};
-	indexBuffer.maximumIndexCount = 90000000;
+	indexBuffer.maximumIndexCount = 9000000;
 	createIndexBuffer(&indexBuffer);
 	createCommandBuffer();
 

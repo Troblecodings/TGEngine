@@ -11,8 +11,8 @@ layout(location = 0) in vec3 pos;
 layout(location = 1) in uint id;
 layout(location = 2) in vec2 uv;
 
-layout(location = 0) out uint idOut;
-layout(location = 1) out vec2 uvOut;
+layout(location = 0) out vec2 uvOut;
+layout(location = 1) out uint idOut;
 
 out gl_PerVertex{
    vec4 gl_Position;

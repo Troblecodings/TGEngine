@@ -4,9 +4,8 @@
 #include <glm/glm.hpp>
 #include "Device.hpp"
 
-class ShaderPipe {
+struct ShaderPipe {
 
-public:
 	unsigned int layoutIndex;
 	VkPipelineShaderStageCreateInfo* shader;
 	VkVertexInputAttributeDescription* inputs;
@@ -15,7 +14,6 @@ public:
 	unsigned int inputCount;
 	unsigned int layoutCount;
 
-public:
 	ShaderPipe() {}
 	ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
 		const VkVertexInputAttributeDescription* inputs,

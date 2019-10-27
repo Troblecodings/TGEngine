@@ -23,22 +23,42 @@ int main(int argc, char** args) {
 
 	ResourceDescriptor texture;
 	texture.offset = 0;
-	texture.size = 665;
+	texture.size = 10839;
 
 	File resc = open("resource\\Resources.tgr", "rb");
 
-	TextureInputInfo outtex;
-	loadTextures(resc, &texture, 1, &outtex);
-
-	Texture out;
-	createTextures(&outtex, 1, &out);
+	TextureInputInfo outtex[2];
+	loadTextures(resc, &texture, 1, outtex);
 
 	fclose(resc);
 
-	vertexBuffer.add(glm::vec4(-4, -4, 0, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
-	vertexBuffer.add(glm::vec4(4, -4, 16, 0))->add(glm::vec4(1, 1, 1, 1))->endVertex();
-	vertexBuffer.add(glm::vec4(4, 4, 16, 16))->add(glm::vec4(1, 1, 1, 1))->endVertex();
-	vertexBuffer.add(glm::vec4(-4, 4, 0, 16))->add(glm::vec4(1, 1, 1, 1))->endVertex();
+	SamplerInputInfo samplerInputInfo;
+	samplerInputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	samplerInputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	samplerInputInfo.filterMagnification = VK_FILTER_NEAREST;
+	samplerInputInfo.filterMignification = VK_FILTER_NEAREST;
+
+	VkSampler defaultSampler;
+	createSampler(&samplerInputInfo, 1, &defaultSampler);
+
+	outtex[0].sampler = defaultSampler;
+
+	outtex[1].data = new uint8_t[4] { 255, 255, 255, 255};
+	outtex[1].sampler = defaultSampler;
+	outtex[1].x = 1;
+	outtex[1].y = 1;
+	outtex[1].comp = 1;
+
+	Texture out[2];
+	createTextures(outtex, 2, out);
+
+	Material mat;
+	mat.color = glm::vec4(1);
+
+	vertexBuffer.add(glm::vec3(-1, -1, 0))->add(glm::vec3(0, 0, 0))->endVertex();
+	vertexBuffer.add(glm::vec3(1, -1, 0))->add(glm::vec3(0, 1, 0))->endVertex();
+	vertexBuffer.add(glm::vec3(1, 1, 0))->add(glm::vec3(0, 1, 1))->endVertex();
+	vertexBuffer.add(glm::vec3(-1, 1, 0))->add(glm::vec3(0, 0, 1))->endVertex();
 
 	indexBuffer.addIndex(0);
 	indexBuffer.addIndex(1);

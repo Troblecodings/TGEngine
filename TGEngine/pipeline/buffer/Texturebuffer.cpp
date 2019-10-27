@@ -163,14 +163,19 @@ namespace tge::tex {
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
-
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
 	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded) {
-		TGE_GET_RESOURCE(
-			loaded[i].data = stbi_load_from_memory(resbuffer, input[i].size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
-		)
+		for (uint32_t i = 0; i < size; i++)
+		{
+			ResourceDescriptor desc = input[i];
+			if (ftell(file) != desc.offset)
+				fseek(file, desc.offset, SEEK_SET);
+			stbi_uc* resbuffer = new stbi_uc[desc.size];
+			fread(resbuffer, sizeof(char), desc.size, file);
+            loaded[i].data = stbi_load_from_memory(resbuffer, desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
+		}
 	}
 
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded) {
@@ -204,7 +209,7 @@ namespace tge::tex {
 			samplerCreateInfo.minLod = 0;
 			samplerCreateInfo.maxLod = 1; // TODO Lod
 			samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
-			samplerCreateInfo.unnormalizedCoordinates = VK_TRUE;
+			samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
 
 			lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler[i]);
 			CHECKFAIL;

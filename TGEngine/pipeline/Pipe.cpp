@@ -79,7 +79,7 @@ namespace tge::pip {
 			pipelineMultisampleStateCreateInfo.flags = 0;
 			pipelineMultisampleStateCreateInfo.rasterizationSamples = usedMSAAFlag;
 			pipelineMultisampleStateCreateInfo.sampleShadingEnable = VK_FALSE;
-			pipelineMultisampleStateCreateInfo.minSampleShading = 0;
+			pipelineMultisampleStateCreateInfo.minSampleShading = 1.0f;
 			pipelineMultisampleStateCreateInfo.pSampleMask = nullptr;
 			pipelineMultisampleStateCreateInfo.alphaToCoverageEnable = VK_FALSE;
 			pipelineMultisampleStateCreateInfo.alphaToOneEnable = VK_FALSE;
@@ -92,7 +92,7 @@ namespace tge::pip {
 			pipelineColorBlendAttachmentState.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 			pipelineColorBlendAttachmentState.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 			pipelineColorBlendAttachmentState.alphaBlendOp = VK_BLEND_OP_ADD;
-			pipelineColorBlendAttachmentState.colorWriteMask ;
+			pipelineColorBlendAttachmentState.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
 			VkPipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo;
 			pipelineColorBlendStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
