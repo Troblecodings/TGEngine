@@ -5,19 +5,22 @@ VkPipelineLayout pipelineLayout;
 VkDescriptorSet mainDescriptorSet;
 
 void initDescriptors() {
-	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[2];
+	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	sizes[0].descriptorCount = 1;
+	sizes[0].descriptorCount = 2;
 
-	sizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	sizes[1].descriptorCount = 1;
+	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+	sizes[1].descriptorCount = 2048;
+
+	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLER;
+	sizes[2].descriptorCount = 16;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	descriptorPoolCreateInfo.pNext = nullptr;
 	descriptorPoolCreateInfo.flags = 0;
 	descriptorPoolCreateInfo.maxSets = 10; // Todo validation checks and modifiable
-	descriptorPoolCreateInfo.poolSizeCount = 2;
+	descriptorPoolCreateInfo.poolSizeCount = 3;
 	descriptorPoolCreateInfo.pPoolSizes = sizes;
 
 	VkDescriptorPool descriptorPool;
