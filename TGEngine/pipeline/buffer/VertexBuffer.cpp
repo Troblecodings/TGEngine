@@ -10,6 +10,7 @@ void createVertexBuffer(VertexBuffer* buffer_storage) {
 	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer_storage->vertex_buffer);
 	HANDEL(lastResult)
 
+		VkMemoryRequirements lastRequirements;
 		vkGetBufferMemoryRequirements(device, buffer_storage->vertex_buffer, &lastRequirements);
 
 	buffer_storage->max_size = vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;

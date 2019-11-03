@@ -5,14 +5,13 @@
 namespace tge {
 	namespace gmc {
 
+		using namespace tge::buf;
+
 		std::vector<Camera*> cameras_on_scene;
-		UniformBuffer cameraUBO;
 		float multiplier = 1;
 		size_t active_camera = 0;
 
 		void initCameras() {
-			cameraUBO = UniformBuffer(sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT, 0);
-
 			if (cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
 			if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
 		}
@@ -27,7 +26,7 @@ namespace tge {
 			glm::mat4 matrix = glm::perspective(ptr->fov, width / (float)height, ptr->nearClipPlain, ptr->farClipPlain) // Perspective
 				* (glm::mat4_cast(glm::quat(ptr->rotation)) * glm::translate(glm::mat4(1), ptr->translation)) // Camera Matrix -> RT
 				* (glm::translate(glm::mat4(1), ptr->worldTranslation) * glm::mat4_cast(glm::quat(ptr->worldRotation)) * glm::scale(glm::mat4(1), ptr->worldScale)); // World rotation -> TRS
-			fillUniformBuffer(&cameraUBO, &matrix, sizeof(glm::mat4));
+			fillUniformBuffer(TRANSFORM_BUFFER, &matrix, sizeof(glm::mat4));
 		}
 
 		void __impl_input_handle(glm::vec2 pos, glm::vec2 delta) {

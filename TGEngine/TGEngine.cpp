@@ -1,11 +1,13 @@
 #include "TGEngine.hpp"
 #include "gamecontent/Light.hpp"
 #include "pipeline/window/Window.hpp"
+#include "pipeline/buffer/UniformBuffer.hpp"
 
 using namespace std;
 using namespace tge::tex;
 using namespace tge::gmc;
 using namespace tge::pip;
+using namespace tge::buf;
 
 VertexBuffer vertexBuffer;
 IndexBuffer indexBuffer;
@@ -34,10 +36,9 @@ void initEngine() {
 
 	initPipelines();
 
-	initLight();
 	initCameras();
 
-	allocateAllBuffers();
+	initUniformBuffers();
 
 	vertexBuffer = {};
 	vertexBuffer.maximumVertexCount = 900000;
@@ -128,7 +129,6 @@ void startTGEngine() {
 
 	destroySemaphores();
 	destroyCommandBuffer();
-	destroyMemory();
 	destroyIndexBuffer(&indexBuffer);
 	destroyVertexBuffer(&vertexBuffer);
 	destroyStagingBuffer();

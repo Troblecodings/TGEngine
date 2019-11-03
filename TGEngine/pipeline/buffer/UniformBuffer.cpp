@@ -1,48 +1,65 @@
 #include "UniformBuffer.hpp"
 
-UniformBuffer::UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t binding) : size(size) {
-	VkBuffer uniform_buffer;
+namespace tge::buf {
 
-	VkBufferCreateInfo uniform_buffer_create_info = {
-		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-		nullptr,
-		0,
-		this->size,
-		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-		VK_SHARING_MODE_EXCLUSIVE,
-		0,
-		nullptr
-	};
+	BufferObject buffers[2];
 
-	lastResult = vkCreateBuffer(device, &uniform_buffer_create_info, nullptr, &uniform_buffer);
-	HANDEL(lastResult)
+	void initUniformBuffers() {
+		BufferInputInfo bufferInputInfo[2];
+		bufferInputInfo[0].flags = VK_SHADER_STAGE_VERTEX_BIT;
+		bufferInputInfo[0].size = sizeof(glm::mat4) * 2049;
+		bufferInputInfo[0].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+		bufferInputInfo[0].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
-		this->index = addBuffer(uniform_buffer);
-}
+		bufferInputInfo[1].flags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		bufferInputInfo[1].size = 32 /*Size of a Material in byte*/ * 2048;
+		bufferInputInfo[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+		bufferInputInfo[1].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
-void UniformBuffer::updateDescriptor() {
-	VkDescriptorBufferInfo descriptorBufferInfo;
-	descriptorBufferInfo.buffer = buffers[index];
-	descriptorBufferInfo.offset = buffer_offsets[index];
-	descriptorBufferInfo.range = buffer_sizes[index];
+		createBuffers(bufferInputInfo, 2, buffers);
 
-	VkWriteDescriptorSet writeDescriptorSet;
-	writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	writeDescriptorSet.pNext = nullptr;
-	writeDescriptorSet.dstSet = mainDescriptorSet;
-	writeDescriptorSet.dstBinding = 0;
-	writeDescriptorSet.dstArrayElement = 0;
-	writeDescriptorSet.descriptorCount = 1;
-	writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	writeDescriptorSet.pImageInfo = nullptr;
-	writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-	writeDescriptorSet.pTexelBufferView = nullptr;
-	vkUpdateDescriptorSets(device, 1, &writeDescriptorSet, 0, nullptr);
-}
+		VkDescriptorBufferInfo infoTransform;
+		infoTransform.buffer = buffers[0].buffer;
+		infoTransform.offset = 0;
+		infoTransform.range = bufferInputInfo[0].size;
 
-void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size, uint32_t offset) {
-	vkDeviceWaitIdle(device);
-	mapMemory(buffer->index, &buffer->memory, size, offset);
-	memcpy(buffer->memory, input, size);
-	unmapMemory();
+		VkDescriptorBufferInfo infoMaterial;
+		infoMaterial.buffer = buffers[0].buffer;
+		infoMaterial.offset = 0;
+		infoMaterial.range = bufferInputInfo[0].size;
+
+		VkWriteDescriptorSet writeDescriptorSet[2];
+		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptorSet[0].pNext = nullptr;
+		writeDescriptorSet[0].dstSet = mainDescriptorSet;
+		writeDescriptorSet[0].dstBinding = 0;
+		writeDescriptorSet[0].dstArrayElement = 0;
+		writeDescriptorSet[0].descriptorCount = 1;
+		writeDescriptorSet[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		writeDescriptorSet[0].pImageInfo = nullptr;
+		writeDescriptorSet[0].pBufferInfo = &infoTransform;
+		writeDescriptorSet[0].pTexelBufferView = nullptr;
+
+		writeDescriptorSet[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptorSet[1].pNext = nullptr;
+		writeDescriptorSet[1].dstSet = mainDescriptorSet;
+		writeDescriptorSet[1].dstBinding = 3;
+		writeDescriptorSet[1].dstArrayElement = 0;
+		writeDescriptorSet[1].descriptorCount = 1;
+		writeDescriptorSet[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		writeDescriptorSet[1].pImageInfo = nullptr;
+		writeDescriptorSet[1].pBufferInfo = &infoMaterial;
+		writeDescriptorSet[1].pTexelBufferView = nullptr;
+
+		vkUpdateDescriptorSets(device, 2, writeDescriptorSet, 0, nullptr);
+	}
+
+	void fillUniformBuffer(uint32_t uniformBufferIndex, void* data, VkDeviceSize size, VkDeviceSize offset) {
+		VkDeviceMemory memory = buffers[uniformBufferIndex].memory;
+		void* dstPtr;
+		vkMapMemory(device, memory, offset, offset, 0, &dstPtr);
+		memcpy(dstPtr, data, size);
+		vkUnmapMemory(device, memory);
+	}
+
 }

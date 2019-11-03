@@ -4,7 +4,7 @@
 
 layout(binding = 0) uniform DATA_BLOCK {
     mat4 basicTransform;
-    mat4 localTransforms[4096];
+    mat4 localTransforms[2048];
 } data;
 
 layout(location = 0) in vec3 pos;
@@ -19,7 +19,7 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = (vec4(pos, 1) * data.basicTransform) * data.localTransforms[id];
+    gl_Position = (vec4(pos, 1) * data.basicTransform);
     idOut = id;
     uvOut = uv;
 }
