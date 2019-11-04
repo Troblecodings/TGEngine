@@ -57,7 +57,7 @@ namespace tge::buf {
 	void fillUniformBuffer(uint32_t uniformBufferIndex, void* data, VkDeviceSize size, VkDeviceSize offset) {
 		VkDeviceMemory memory = buffers[uniformBufferIndex].memory;
 		void* dstPtr;
-		vkMapMemory(device, memory, offset, offset, 0, &dstPtr);
+		vkMapMemory(device, memory, offset, size, 0, &dstPtr);
 		memcpy(dstPtr, data, size);
 		vkUnmapMemory(device, memory);
 	}

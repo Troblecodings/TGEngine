@@ -29,6 +29,9 @@ namespace tge::buf {
 			memoryAllocateInfo.memoryTypeIndex = uboInputInfo.memoryIndex;
 			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &ubo[i].memory);
 			CHECKFAIL;
+
+			lastResult = vkBindBufferMemory(device, ubo[i].buffer, ubo[i].memory, 0);
+			CHECKFAIL;
 		}
 	}
 
