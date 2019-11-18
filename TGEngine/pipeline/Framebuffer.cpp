@@ -26,7 +26,9 @@ void createFramebuffer() {
 		 1
 	};
 
-	VkImageView views[3] = { color_image_view, depth_image_view };
+	VkImageView views[3];
+	views[0] = color_image_view;
+	views[1] = depth_image_view;
 
 	for(size_t i = 0; i < imagecount; i++) {
 		vlibImageViewCreateInfo.image = swapchain_images[i];

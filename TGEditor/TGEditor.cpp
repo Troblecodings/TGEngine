@@ -53,9 +53,10 @@ int main(int argc, char** args) {
 	createTextures(outtex, 2, out);
 
 	Material mat;
-	mat.color = glm::vec4(1);
 	mat.diffuseTexture = 0;
+	mat.color = glm::vec4(1);
 	mat.uvmanipulator = glm::vec2(0);
+	mat.samplerid = 0;
 
 	vertexBuffer.add(glm::vec3(-1, -1, 0))->add(glm::vec3(0, 0, 0))->endVertex();
 	vertexBuffer.add(glm::vec3(1, -1, 0))->add(glm::vec3(0, 1, 0))->endVertex();

@@ -407,9 +407,6 @@
     <ClCompile Include="gamecontent\PlayerController.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
-    <ClCompile Include="resources\VertexTopDown.glsl">
-      <Filter>Shader</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -473,5 +470,6 @@
     <CustomBuild Include="resources\VertexUI.glsl">
       <Filter>Shader</Filter>
     </CustomBuild>
+    <CustomBuild Include="resources\VertexTopDown.glsl" />
   </ItemGroup>
 </Project>

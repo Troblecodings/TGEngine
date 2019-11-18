@@ -8,10 +8,10 @@ namespace tge::gmc {
 	using namespace tge::nio;
 
 	struct Material {
-		uint32_t diffuseTexture;
+		uint32_t  diffuseTexture;
 		glm::vec4 color;
 		glm::vec2 uvmanipulator;
-		uint32_t id; 
+		uint32_t  samplerid; 
 	};
 
 	extern VkBuffer materialUBO;

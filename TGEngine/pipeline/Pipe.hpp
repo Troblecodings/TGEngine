@@ -17,7 +17,7 @@ namespace tge::pip {
 
 	extern VkPipeline defaultPipeline;
 
-	void inline createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);
+	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);
 
 	void initPipelines();
 }
