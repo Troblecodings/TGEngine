@@ -9,11 +9,11 @@ void initDescriptors() {
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	sizes[0].descriptorCount = 2;
 
-	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	sizes[1].descriptorCount = 2048;
+	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
+	sizes[1].descriptorCount = 16;
 
-	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-	sizes[2].descriptorCount = 16;
+	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+	sizes[2].descriptorCount = 2048;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

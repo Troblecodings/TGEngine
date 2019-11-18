@@ -470,6 +470,8 @@
     <CustomBuild Include="resources\VertexUI.glsl">
       <Filter>Shader</Filter>
     </CustomBuild>
-    <CustomBuild Include="resources\VertexTopDown.glsl" />
+    <CustomBuild Include="resources\VertexTopDown.glsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

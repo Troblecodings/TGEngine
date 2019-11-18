@@ -4,7 +4,7 @@
 
 layout(binding = 0) uniform DATA_BLOCK {
     mat4 basicTransform;
-    mat4 localTransforms[2048];
+    mat4 localTransforms[256];
 } data;
 
 layout(location = 0) in vec3 pos;

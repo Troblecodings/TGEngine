@@ -52,7 +52,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		}
 		else if (raw->header.dwType == RIM_TYPEMOUSE)
 		{
-			OUT_LV_DEBUG(raw->data.mouse.usFlags)
 		}
 
 		//	tg_io::inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });

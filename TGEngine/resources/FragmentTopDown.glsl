@@ -12,7 +12,7 @@ uint samplerId;
 };
 
 layout(binding = 3) uniform MATERIALS{
-    Material mat[2048];
+    Material mat[256];
 } data;
 
 layout(location = 0) in vec2 uv;

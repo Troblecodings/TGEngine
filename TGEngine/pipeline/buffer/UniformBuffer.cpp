@@ -7,12 +7,12 @@ namespace tge::buf {
 	void initUniformBuffers() {
 		BufferInputInfo bufferInputInfo[2];
 		bufferInputInfo[0].flags = VK_SHADER_STAGE_VERTEX_BIT;
-		bufferInputInfo[0].size = sizeof(glm::mat4) * 2049;
+		bufferInputInfo[0].size = sizeof(glm::mat4) * 257;
 		bufferInputInfo[0].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[0].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
 		bufferInputInfo[1].flags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		bufferInputInfo[1].size = 32 /*Size of a Material in byte*/ * 2048;
+		bufferInputInfo[1].size = 48 /*Size of a Material in byte*/ * 256;
 		bufferInputInfo[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[1].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
@@ -24,9 +24,9 @@ namespace tge::buf {
 		infoTransform.range = bufferInputInfo[0].size;
 
 		VkDescriptorBufferInfo infoMaterial;
-		infoMaterial.buffer = buffers[0].buffer;
+		infoMaterial.buffer = buffers[1].buffer;
 		infoMaterial.offset = 0;
-		infoMaterial.range = bufferInputInfo[0].size;
+		infoMaterial.range = bufferInputInfo[1].size;
 
 		VkWriteDescriptorSet writeDescriptorSet[2];
 		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

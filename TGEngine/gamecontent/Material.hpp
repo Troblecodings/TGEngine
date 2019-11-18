@@ -12,14 +12,10 @@ namespace tge::gmc {
 		glm::vec4 color;
 		glm::vec2 uvmanipulator;
 		uint32_t  samplerid; 
+		uint16_t  alignment; // This is for alignment porpuse
 	};
 
-	extern VkBuffer materialUBO;
-	extern VkDeviceMemory materialMemory;
+	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material);
 
-	void inline initMaterials();
-
-	void inline loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material);
-
-	void inline createMaterials(Material* material, uint32_t size);
+	void createMaterials(Material* material, uint32_t size);
 }
