@@ -38,13 +38,9 @@ int main(int argc, char** args) {
 	samplerInputInfo.filterMagnification = VK_FILTER_NEAREST;
 	samplerInputInfo.filterMignification = VK_FILTER_NEAREST;
 
-	VkSampler defaultSampler;
-	createSampler(&samplerInputInfo, 1, &defaultSampler);
-
-	outtex[0].sampler = defaultSampler;
+	createSampler(samplerInputInfo);
 
 	outtex[1].data = new uint8_t[4] { 255, 255, 255, 255};
-	outtex[1].sampler = defaultSampler;
 	outtex[1].x = 1;
 	outtex[1].y = 1;
 	outtex[1].comp = 1;

@@ -1,7 +1,7 @@
 #version 460
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(binding = 1) uniform sampler samplerArr[16];
+layout(binding = 1) uniform sampler mainsampler;
 layout(binding = 2) uniform texture2D images[2048];
 
 struct Material {
@@ -22,5 +22,5 @@ layout(location = 0) out vec4 colorOut;
 
 void main() {
     Material material = data.mat[id];
-    colorOut = texture(sampler2D(images[material.diffuseTexture], samplerArr[material.samplerId]), uv + material.uvmanipulator) * material.color;
+    colorOut = texture(sampler2D(images[material.diffuseTexture], mainsampler), uv + material.uvmanipulator) * material.color;
 }

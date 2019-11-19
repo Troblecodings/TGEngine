@@ -10,7 +10,7 @@ void initDescriptors() {
 	sizes[0].descriptorCount = 2;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-	sizes[1].descriptorCount = 16;
+	sizes[1].descriptorCount = 1;
 
 	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 	sizes[2].descriptorCount = 2048;
@@ -36,7 +36,7 @@ void initDescriptors() {
 
 	descriptorSetLayoutBinding[1].binding = 1;
 	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-	descriptorSetLayoutBinding[1].descriptorCount =  16;
+	descriptorSetLayoutBinding[1].descriptorCount =  1;
 	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 

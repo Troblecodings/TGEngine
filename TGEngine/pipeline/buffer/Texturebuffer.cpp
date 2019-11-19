@@ -9,7 +9,11 @@ namespace tge::tex {
 	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output) {
 		// TODO default format checks
 
+#ifdef DISABLE_TEXTURE_FILL
 		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
+#else
+		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[2048];
+#endif // DISABLE_TEXTURE_FILL
 
 		VkBuffer* bufferlist = new VkBuffer[size];
 		VkDeviceMemory* memorylist = new VkDeviceMemory[size];
@@ -152,13 +156,28 @@ namespace tge::tex {
 			vkDestroyBuffer(device, bufferlist[i], nullptr);
 		}
 
+#ifndef DISABLE_TEXTURE_FILL
+		VkImageView usedview = imagedesc[0].imageView;
+
+		for (uint32_t i = size; i < 2048; i++) {
+			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imagedesc[i].imageView = usedview;
+			imagedesc[i].sampler = nullptr;
+		}
+#endif // !DISABLE_TEXTURE_FILL
+
+
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
 		descwrite.dstSet = mainDescriptorSet;
 		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
+#ifndef DISABLE_TEXTURE_FILL
+		descwrite.descriptorCount = 2048;
+#else
 		descwrite.descriptorCount = size;
+#endif
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
@@ -188,49 +207,47 @@ namespace tge::tex {
 		}
 	}
 
-	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler) {
+	void createSampler(SamplerInputInfo loaded) {
 		// TODO Validation checks
-		VkDescriptorImageInfo* imageInfo = new VkDescriptorImageInfo[size];
+		VkDescriptorImageInfo imageInfo;
 
-		for (size_t i = 0; i < size; i++) {
-			SamplerInputInfo loaded = input[i];
-			VkSamplerCreateInfo samplerCreateInfo;
-			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-			samplerCreateInfo.pNext = 0;
-			samplerCreateInfo.flags = 0;
-			samplerCreateInfo.magFilter = loaded.filterMagnification;
-			samplerCreateInfo.minFilter = loaded.filterMignification;
-			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST; // TODO MipMaping
-			samplerCreateInfo.addressModeU = loaded.uSamplerMode;
-			samplerCreateInfo.addressModeV = loaded.vSamplerMode;
-			samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-			samplerCreateInfo.mipLodBias = 0;
-			samplerCreateInfo.anisotropyEnable = defaults.anisotropyFilter > 0;
-			samplerCreateInfo.maxAnisotropy = defaults.anisotropyFilter;
-			samplerCreateInfo.compareEnable = VK_FALSE;
-			samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
-			samplerCreateInfo.minLod = 0;
-			samplerCreateInfo.maxLod = 1; // TODO Lod
-			samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
-			samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
+		VkSamplerCreateInfo samplerCreateInfo;
+		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerCreateInfo.pNext = 0;
+		samplerCreateInfo.flags = 0;
+		samplerCreateInfo.magFilter = loaded.filterMagnification;
+		samplerCreateInfo.minFilter = loaded.filterMignification;
+		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST; // TODO MipMaping
+		samplerCreateInfo.addressModeU = loaded.uSamplerMode;
+		samplerCreateInfo.addressModeV = loaded.vSamplerMode;
+		samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerCreateInfo.mipLodBias = 0;
+		samplerCreateInfo.anisotropyEnable = defaults.anisotropyFilter > 0;
+		samplerCreateInfo.maxAnisotropy = defaults.anisotropyFilter;
+		samplerCreateInfo.compareEnable = VK_FALSE;
+		samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
+		samplerCreateInfo.minLod = 0;
+		samplerCreateInfo.maxLod = 1; // TODO Lod
+		samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
+		samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
 
-			lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler[i]);
-			CHECKFAIL;
+		VkSampler sampler;
+		lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler);
+		CHECKFAIL;
 
-			imageInfo[i].sampler = sampler[i];
-			imageInfo[i].imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			imageInfo[i].imageView = nullptr;
-		}
-
+		imageInfo.sampler = sampler;
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageInfo.imageView = nullptr;
+	
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
 		descwrite.dstSet = mainDescriptorSet;
 		descwrite.dstBinding = 1;
 		descwrite.dstArrayElement = 0;
-		descwrite.descriptorCount = size;
+		descwrite.descriptorCount = 1;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-		descwrite.pImageInfo = imageInfo;
+		descwrite.pImageInfo = &imageInfo;
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);

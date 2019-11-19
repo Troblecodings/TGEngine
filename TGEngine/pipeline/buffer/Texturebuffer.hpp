@@ -35,7 +35,6 @@ namespace tge::tex {
 
 	struct TextureInputInfo {
 		uint8_t*  data;
-		VkSampler sampler;
 		int       x;
 		int       y;
 		int       comp;
@@ -43,7 +42,7 @@ namespace tge::tex {
 
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);
 
-	void createSampler(SamplerInputInfo* input, uint32_t size, VkSampler* sampler);
+	void createSampler(SamplerInputInfo input);
 
 	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded);
 
