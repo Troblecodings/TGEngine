@@ -43,8 +43,10 @@
         public static VkDescriptorType GetTypeFromLine(string line) {
             if (line.Contains("sampler2D")) {
                 return VkDescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            } else if (line.Contains("uniform")) {
-                return VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            } else if (line.Contains("sampler")) {
+                return VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER;
+            } else if (line.Contains("texture2D")) {
+                return VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
             }
             return VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         }

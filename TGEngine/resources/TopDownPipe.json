@@ -29,12 +29,12 @@
     },
     {
       "Binding": 1,
-      "Type": 6,
+      "Type": 0,
       "flag": 16
     },
     {
       "Binding": 2,
-      "Type": 6,
+      "Type": 2,
       "flag": 16
     },
     {
