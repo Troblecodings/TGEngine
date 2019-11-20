@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using static ShaderTool.Error;
-using static ShaderTool.Util;
+using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
     /**

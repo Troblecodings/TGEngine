@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Memory.hpp"
 #include "StagingBuffer.hpp"
 
 struct IndexBuffer {

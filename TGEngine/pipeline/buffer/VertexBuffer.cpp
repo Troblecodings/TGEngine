@@ -1,4 +1,6 @@
 #include "VertexBuffer.hpp"
+#include "Memory.hpp"
+#include "../../pipeline/Device.hpp"
 
 size_t vertex_offset = 0;
 
@@ -8,6 +10,7 @@ void createVertexBuffer(VertexBuffer* buffer_storage) {
 	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer_storage->vertex_buffer);
 	HANDEL(lastResult)
 
+		VkMemoryRequirements lastRequirements;
 		vkGetBufferMemoryRequirements(device, buffer_storage->vertex_buffer, &lastRequirements);
 
 	buffer_storage->max_size = vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;
@@ -33,7 +36,7 @@ void VertexBuffer::start() {
 }
 
 VertexBuffer* VertexBuffer::add(glm::vec2 vec) {
-	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)&vec, sizeof(vec));
 	this->offset += sizeof(vec);
 	return this;
 }

@@ -22,13 +22,14 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
-    <ClInclude Include="gamecontent\Camera.hpp" />
-    <ClInclude Include="gamecontent\FirstPersonCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\2DCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\Camera.hpp" />
+    <ClInclude Include="gamecontent\camera\FirstPersonCamera.hpp" />
+    <ClInclude Include="gamecontent\camera\StaticCamera.hpp" />
     <ClInclude Include="gamecontent\Light.hpp" />
     <ClInclude Include="gamecontent\Material.hpp" />
     <ClInclude Include="gamecontent\Mesh.hpp" />
-    <ClInclude Include="gamecontent\StaticCamera.hpp" />
-    <ClInclude Include="gamecontent\UIMaterial.hpp" />
+    <ClInclude Include="gamecontent\PlayerController.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\Keyboard.hpp" />
     <ClInclude Include="io\Font.hpp" />
@@ -76,13 +77,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamecontent\Actor.cpp" />
-    <ClCompile Include="gamecontent\Camera.cpp" />
-    <ClCompile Include="gamecontent\FirstPersonCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\2DCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\Camera.cpp" />
+    <ClCompile Include="gamecontent\camera\FirstPersonCamera.cpp" />
+    <ClCompile Include="gamecontent\camera\StaticCamera.cpp" />
     <ClCompile Include="gamecontent\Light.cpp" />
     <ClCompile Include="gamecontent\Material.cpp" />
     <ClCompile Include="gamecontent\Mesh.cpp" />
-    <ClCompile Include="gamecontent\StaticCamera.cpp" />
-    <ClCompile Include="gamecontent\UIMaterial.cpp" />
+    <ClCompile Include="gamecontent\PlayerController.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\Keyboard.cpp" />
     <ClCompile Include="io\Font.cpp" />
@@ -109,6 +111,9 @@
     <ClCompile Include="pipeline\buffer\UniformBuffer.cpp" />
     <ClCompile Include="pipeline\buffer\VertexBuffer.cpp" />
     <ClCompile Include="resources\ShaderPipes.cpp" />
+    <CustomBuild Include="resources\VertexTopDown.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
     <ClCompile Include="ui\UIDrawable.cpp" />
     <ClCompile Include="ui\UIEntity.cpp" />
     <ClCompile Include="ui\UITextComponent.cpp" />
@@ -194,6 +199,9 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </CustomBuild>
+    <None Include="resources\FragmentTextured2D.glsl" />
+    <None Include="resources\FragmentTopDown.glsl" />
+    <None Include="resources\VertexTextured2D.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\docs\logo.png" />
@@ -256,14 +264,14 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
@@ -272,14 +280,14 @@
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)run\$(PlatformShortname)\$(Configuration)\</IntDir>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -290,7 +298,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
@@ -324,13 +332,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -344,7 +352,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
@@ -377,13 +385,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -398,7 +406,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
@@ -432,13 +440,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>
@@ -453,7 +461,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\tinygltf;$(ProjectDir)..\stb;$(ProjectDir)..\dependencies\Include;$(ProjectDir)..\dependencies\Third-Party\Include;$(ProjectDir)..\dependencies\fbx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsCpp</CompileAs>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>SDL2.lib;vulkan-1.lib;</AdditionalDependencies>
@@ -487,13 +495,13 @@
       <AdditionalInputs>%(Identity)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild>
-      <LinkObjects>true</LinkObjects>
+      <LinkObjects>false</LinkObjects>
     </CustomBuild>
     <CustomBuild>
-      <OutputItemType>ClInclude</OutputItemType>
+      <OutputItemType>None</OutputItemType>
     </CustomBuild>
     <CustomBuild>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>Compiling %(Identity)</Message>
     </CustomBuild>
   </ItemDefinitionGroup>

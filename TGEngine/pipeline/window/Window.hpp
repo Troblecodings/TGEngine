@@ -5,6 +5,7 @@
 #include <string>
 #include "../../io/Mouse.hpp"
 #include "../../io/Keyboard.hpp"
+#include "../../gamecontent/PlayerController.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #ifndef _WIN_H_
@@ -17,6 +18,7 @@
 
 extern HMODULE sys_module;
 extern std::vector<HWND> __impl_window_list;
+extern unsigned char states;
 
 struct Window {
 

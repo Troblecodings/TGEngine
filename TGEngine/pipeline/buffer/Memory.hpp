@@ -3,27 +3,20 @@
 #include "../../pipeline/Device.hpp"
 #include "../../vlib/VulkanBuffer.hpp"
 
-extern std::vector<VkBuffer> buffers;
-extern std::vector<VkDeviceSize> buffer_sizes;
-extern std::vector<VkDeviceSize> buffer_offsets;
-extern VkDeviceMemory device_memory;
-extern VkMemoryRequirements lastRequirements;
-extern VkDeviceSize _impl_size;
+namespace tge::buf {
 
-/*
- * Adds a buffer to the creation list
- */
-SINCE(0, 0, 4)
-uint32_t addBuffer(VkBuffer buffer);
+	struct BufferInputInfo {
+		VkShaderStageFlags flags;
+		uint32_t           size;
+		uint32_t           memoryIndex;
+		VkBufferUsageFlags bufferUsageFlag;
+	};
 
-SINCE(0, 0, 2)
-void allocateAllBuffers();
+	struct BufferObject {
+		VkBuffer buffer;
+		VkDeviceMemory memory;
+	};
 
-SINCE(0, 0, 2)
-void mapMemory(uint32_t buffer_index, void** mapped_memory, uint32_t size = 0, uint32_t offset = 0);
+	void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo);
 
-SINCE(0, 0, 2)
-void unmapMemory();
-
-SINCE(0, 0, 2)
-void destroyMemory();
+}

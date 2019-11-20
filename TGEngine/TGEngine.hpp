@@ -6,8 +6,10 @@
 #include "pipeline/Draw.hpp"
 #include "gamecontent/Actor.hpp"
 #include "ui/UIEntity.hpp"
-#include "gamecontent/UIMaterial.hpp"
-#include "gamecontent/Camera.hpp"
+#include "gamecontent/camera/Camera.hpp"
+
+extern VertexBuffer vertexBuffer;
+extern IndexBuffer indexBuffer;
 
 SINCE(0, 0, 5)
 void initEngine();

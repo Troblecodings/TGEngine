@@ -1,0 +1,41 @@
+{
+  "Name": "Tex2D",
+  "ShaderNames": [
+    "VertexTextured2D",
+    "FragmentTextured2D"
+  ],
+  "Inputs": [
+    {
+      "Id": 0,
+      "Offset": 0,
+      "Layout": 103
+    },
+    {
+      "Id": 1,
+      "Offset": 8,
+      "Layout": 103
+    },
+    {
+      "Id": 2,
+      "Offset": 16,
+      "Layout": 109
+    }
+  ],
+  "Descriptors": [
+    {
+      "Binding": 0,
+      "Type": 6,
+      "flag": 1
+    },
+    {
+      "Binding": 1,
+      "Type": 6,
+      "flag": 16
+    },
+    {
+      "Binding": 2,
+      "Type": 1,
+      "flag": 16
+    }
+  ]
+}

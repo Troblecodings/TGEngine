@@ -2,7 +2,7 @@
 using System.IO;
 using System;
 using static ShaderTool.Error;
-using static ShaderTool.Util;
+using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
     class Shader {

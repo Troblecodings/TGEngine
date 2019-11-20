@@ -73,17 +73,6 @@ void endSingleTimeCommand() {
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each(tge::tex::Texture * tex in tge::tex::textures) {
-		tex->load(SINGELTIME_COMMAND_BUFFER);
-	}
-
-	for each (tge::gmc::Model* act in tge::gmc::models) {
-		for each (tge::tex::Texture tex in act->textures)
-		{
-			tex.load(SINGELTIME_COMMAND_BUFFER);
-		}
-	}
-
 	vlibImageMemoryBarrier.subresourceRange.levelCount = 1;
 	vlibImageMemoryBarrier.subresourceRange.baseMipLevel = 0;
 	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
@@ -104,16 +93,6 @@ void startupCommands() {
 		}
 
 	endSingleTimeCommand();
-
-	for each(tge::tex::Texture* tex in tge::tex::textures) {
-		tex->dispose();
-	}
-	for each (tge::gmc::Model * act in tge::gmc::models) {
-		for each (tge::tex::Texture tex in act->textures)
-		{
-			tex.dispose();
-		}
-	}
 }
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
@@ -123,7 +102,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
 				nullptr,
-				render_pass,
+				renderpass,
 				0,
 				frame_buffer[i],
 				VK_FALSE,
@@ -139,7 +118,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		VkRenderPassBeginInfo render_pass_begin_info = {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			nullptr,
-			render_pass,
+			renderpass,
 			frame_buffer[i],
 			{
 				0,
@@ -156,22 +135,11 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		uint32_t off = 0;
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet, 0, nullptr);
 
-		for each (tge::gmc::Model* actor in tge::gmc::models)
-		{
-			for each (tge::gmc::RenderOffsets offset in actor->offsets)
-			{
-				off += offset.offset;
-				actor->materials[offset.material].addToBuffer(buffer);
-				vkCmdDrawIndexed(buffer, offset.size, 1, off, 0, 0);
-			}
-		}
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
 
-		for each(tge::gmc::RenderOffsets coffset in tge::gmc::render_offset) {
-			tge::gmc::materiallist[coffset.material]->addToBuffer(buffer);
-			vkCmdDrawIndexed(buffer, coffset.size, 1, coffset.offset, 0, 0);
-		}
+		vkCmdDrawIndexed(buffer, ibuffer->indexCount, 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(buffer);
 

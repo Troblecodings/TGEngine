@@ -8,7 +8,7 @@
 #include "Pipe.hpp"
 #include "RenderPass.hpp"
 #include "DepthStencil.hpp"
-#include "../gamecontent/Camera.hpp"
+#include "../gamecontent/camera/Camera.hpp"
 #include "buffer/IndexBuffer.hpp"
 #include "buffer/VertexBuffer.hpp"
 #include "../ui/UIEntity.hpp"

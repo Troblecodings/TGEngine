@@ -7,15 +7,7 @@
 namespace tge {
 	namespace gmc {
 
-		extern UniformBuffer lightbuffer; // the light buffer for the postion and intensity of the light(s)
 		extern uint32_t lightCount;
-
-		/*
-		 * Internal method to initialize the light buffer
-		 */
-		INTERNAL
-			SINCE(0, 0, 4)
-			void initLight();
 
 		class LightActor {
 

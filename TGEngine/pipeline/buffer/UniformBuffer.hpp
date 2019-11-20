@@ -3,23 +3,15 @@
 #include "Memory.hpp"
 #include "../Descriptors.hpp"
 
-class UniformBuffer {
+namespace tge::buf {
 
-public:
+	constexpr uint32_t TRANSFORM_BUFFER = 0;
+	constexpr uint32_t MATERIAL_BUFFER = 1;
 
-	INTERNAL
-		SINCE(0, 0, 4)
-		UniformBuffer() {} // Default constructor
-	UniformBuffer(uint32_t size, VkShaderStageFlags flags) : UniformBuffer(size, flags, 0) {}
-	UniformBuffer(uint32_t size, VkShaderStageFlags flags, uint32_t binding);
+	extern BufferObject buffers[2];
 
-	uint32_t size = 0;
-	Descriptor descriptor = Descriptor();
-	uint32_t index = 0;
-	void* memory = 0;
+	void initUniformBuffers();
 
-	void updateDescriptor();
-};
+	void fillUniformBuffer(uint32_t uniformBufferIndex, void* data, VkDeviceSize size, VkDeviceSize offset = 0);
 
-SINCE(0, 0, 2)
-void fillUniformBuffer(UniformBuffer* buffer, void* input, uint32_t size, uint32_t offset = 0);
+}

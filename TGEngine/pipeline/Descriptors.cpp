@@ -1,115 +1,87 @@
 #include "Descriptors.hpp"
 #include "../vlib/VulkanDescriptor.hpp"
 
-VkDescriptorPool descriptor_pool;
-std::vector<VkDescriptorSet> descriptorSets;
-std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
-std::vector<VkDescriptorSetLayoutBinding> descriptor_bindings;
-std::vector<VkPipelineLayout> pipeLayouts;
-
-uint32_t uniform_count;
-uint32_t image_sampler_count;
-
-void addDescriptorBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags) {
-	descriptor_bindings.push_back({ binding, type, 1, flags });
-}
-
-// TODO switch back to global texture binding for 3D 2D and so on ... map on same binding
+VkPipelineLayout pipelineLayout;
+VkDescriptorSet mainDescriptorSet;
 
 void initDescriptors() {
-	vlibDescriptorPoolCreateInfo.poolSizeCount = 2;
-	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[vlibDescriptorPoolCreateInfo.poolSizeCount];
+	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
+	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	sizes[0].descriptorCount = 2;
 
-	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetUniformBuffers, 100);
-	sizes[0] = vlibDescriptorPoolSize;
+	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
+	sizes[1].descriptorCount = 1;
 
-	vlibDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	vlibDescriptorPoolSize.descriptorCount = TGE_MIN(deviceProperties.limits.maxDescriptorSetSamplers, 100);
-	sizes[1] = vlibDescriptorPoolSize;
+	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+	sizes[2].descriptorCount = 2048;
 
-	vlibDescriptorPoolCreateInfo.pPoolSizes = sizes;
-	lastResult = vkCreateDescriptorPool(device, &vlibDescriptorPoolCreateInfo, nullptr, &descriptor_pool);
-	HANDEL(lastResult)
+	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
+	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	descriptorPoolCreateInfo.pNext = nullptr;
+	descriptorPoolCreateInfo.flags = 0;
+	descriptorPoolCreateInfo.maxSets = 10; // Todo validation checks and modifiable
+	descriptorPoolCreateInfo.poolSizeCount = 3;
+	descriptorPoolCreateInfo.pPoolSizes = sizes;
 
-	vlibAllocateInfo.descriptorPool = descriptor_pool;
-}
+	VkDescriptorPool descriptorPool;
+	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
+	CHECKFAIL;
 
-uint32_t createLayouts() {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(pipeLayouts)
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSetLayouts)
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[4];
+	descriptorSetLayoutBinding[0].binding = 0;
+	descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutBinding[0].descriptorCount = 1;
+	descriptorSetLayoutBinding[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	descriptorSetLayoutBinding[0].pImmutableSamplers = VK_NULL_HANDLE;
 
-	lastResult = vkCreateDescriptorSetLayout(device, &vlibDescriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayouts[lastSize]);
-	HANDEL(lastResult)
+	descriptorSetLayoutBinding[1].binding = 1;
+	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+	descriptorSetLayoutBinding[1].descriptorCount =  1;
+	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
-	vlibLayoutInfo.pSetLayouts = &descriptorSetLayouts[lastSize];
-	lastResult = vkCreatePipelineLayout(device, &vlibLayoutInfo, nullptr, &pipeLayouts[lastSize]);
-	HANDEL(lastResult);
+	descriptorSetLayoutBinding[2].binding = 2;
+	descriptorSetLayoutBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+	descriptorSetLayoutBinding[2].descriptorCount = 2048;
+	descriptorSetLayoutBinding[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBinding[2].pImmutableSamplers = VK_NULL_HANDLE;
 
-		return (uint32_t)lastSize;
-}
+	descriptorSetLayoutBinding[3].binding = 3;
+	descriptorSetLayoutBinding[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutBinding[3].descriptorCount = 1;
+	descriptorSetLayoutBinding[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBinding[3].pImmutableSamplers = VK_NULL_HANDLE;
 
-void destroyDesctiptorLayout(uint32_t layout) {
-	vkDestroyDescriptorSetLayout(device, descriptorSetLayouts[layout], nullptr);
-}
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptorSetLayoutCreateInfo.pNext = nullptr;
+	descriptorSetLayoutCreateInfo.flags = 0;
+	descriptorSetLayoutCreateInfo.bindingCount = 4;
+	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
-void destroyDescriptorSet(uint32_t layout) {
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, 1, &descriptorSets[layout]);
-	HANDEL(lastResult);
-}
+	VkDescriptorSetLayout descriptorSetLayout;
+	lastResult = vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
+	CHECKFAIL;
 
-uint32_t createDescriptorSet(uint32_t layout) {
-	TG_VECTOR_GET_SIZE_AND_RESIZE(descriptorSets)
+	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutCreateInfo.pNext = nullptr;
+	pipelineLayoutCreateInfo.flags = 0;
+	pipelineLayoutCreateInfo.setLayoutCount = 1;
+	pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
+	pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+	pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
-		vlibAllocateInfo.pSetLayouts = &descriptorSetLayouts[layout];
-	lastResult = vkAllocateDescriptorSets(device, &vlibAllocateInfo, &descriptorSets[lastSize]);
-	HANDEL(lastResult)
-		return (uint32_t)lastSize;
-}
+	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+	CHECKFAIL;
 
-void destroyDescriptors() {
-	for each(VkDescriptorSetLayout var in descriptorSetLayouts) {
-		vkDestroyDescriptorSetLayout(device, var, nullptr);
-	}
-	lastResult = vkFreeDescriptorSets(device, descriptor_pool, (uint32_t)descriptorSets.size(), descriptorSets.data());
-	HANDEL(lastResult);
-	descriptorSets.clear();
-};
-
-void Descriptor::updateImageInfo(VkSampler sampler, VkImageView view) {
-	if(this->type != VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) return;
-	update();
-
-	VkDescriptorImageInfo imageinfo;
-	imageinfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageinfo.imageView = view;
-	imageinfo.sampler = sampler;
-
-	vlibDescriptorWrites.pBufferInfo = nullptr;
-	vlibDescriptorWrites.pImageInfo = &imageinfo;
-
-	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
-}
-
-void Descriptor::updateBufferInfo(uint32_t buffer, size_t size) {
-	if(this->type != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) return;
-	update();
-
-	VkDescriptorBufferInfo bufferinfo;
-	bufferinfo.buffer = buffers[buffer];
-	bufferinfo.range = size;
-	bufferinfo.offset = 0;
-
-	vlibDescriptorWrites.pBufferInfo = &bufferinfo;
-	vlibDescriptorWrites.pImageInfo = nullptr;
-
-	vkUpdateDescriptorSets(device, 1, &vlibDescriptorWrites, 0, nullptr);
-}
-
-void Descriptor::update() {
-	vlibDescriptorWrites.descriptorType = this->type;
-	vlibDescriptorWrites.dstArrayElement = 0;
-	vlibDescriptorWrites.dstBinding = this->binding;
-	vlibDescriptorWrites.descriptorCount = 1;
-	vlibDescriptorWrites.dstSet = descriptorSets[this->descriptorset];
+	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo;
+	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	descriptorSetAllocateInfo.pNext = nullptr;
+	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
+	descriptorSetAllocateInfo.descriptorSetCount = 1; // TODO Change this to a modifable value ... in case we need more
+	descriptorSetAllocateInfo.pSetLayouts = &descriptorSetLayout;
+	
+	lastResult = vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet);
+	CHECKFAIL;
 }

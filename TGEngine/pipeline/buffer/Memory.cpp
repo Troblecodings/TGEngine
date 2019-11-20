@@ -1,54 +1,38 @@
 #include "Memory.hpp"
 
-std::vector<VkBuffer> buffers = {};
-std::vector<VkDeviceSize> buffer_sizes = {};
-std::vector<VkDeviceSize> buffer_offsets = { 0 };
-VkDeviceMemory device_memory;
-VkDeviceSize _impl_size;
-VkMemoryRequirements lastRequirements;
+namespace tge::buf {
 
-uint32_t addBuffer(VkBuffer buffer) {
-	vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);
+	void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo) {
+		for (uint32_t i = 0; i < size; i++) {
+			BufferInputInfo uboInputInfo = inputInfo[i];
 
-	_impl_size += lastRequirements.size;
+			VkBufferCreateInfo bufferCreateInfo;
+			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+			bufferCreateInfo.pNext = nullptr;
+			bufferCreateInfo.flags = 0;
+			bufferCreateInfo.size = uboInputInfo.size;
+			bufferCreateInfo.usage = uboInputInfo.bufferUsageFlag;
+			bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			bufferCreateInfo.queueFamilyIndexCount = 0;
+			bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
-	size_t csize = buffer_offsets.size();
-	buffer_offsets.resize(csize + 1);
-	buffer_offsets[csize] = buffer_offsets[csize - 1] + lastRequirements.size;
+			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &ubo[i].buffer);
+			CHECKFAIL;
 
-	csize = buffer_sizes.size();
-	buffer_sizes.resize(csize + 1);
-	buffer_sizes[csize] = lastRequirements.size;
+			VkMemoryRequirements memoryRequirements;
+			vkGetBufferMemoryRequirements(device, ubo[i].buffer, &memoryRequirements);
 
-	buffers.resize(csize + 1);
-	buffers[csize] = buffer;
-	return (uint32_t)csize;
-}
+			VkMemoryAllocateInfo memoryAllocateInfo;
+			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			memoryAllocateInfo.pNext = nullptr;
+			memoryAllocateInfo.allocationSize = memoryRequirements.size;
+			memoryAllocateInfo.memoryTypeIndex = uboInputInfo.memoryIndex;
+			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &ubo[i].memory);
+			CHECKFAIL;
 
-void allocateAllBuffers() {
-	vlibBufferMemoryAllocateInfo.allocationSize = _impl_size;
-	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &device_memory);
-	HANDEL(lastResult)
-
-		for(size_t i = 0; i < buffers.size(); i++) {
-			lastResult = vkBindBufferMemory(device, buffers[i], device_memory, buffer_offsets[i]);
-			HANDEL(lastResult)
+			lastResult = vkBindBufferMemory(device, ubo[i].buffer, ubo[i].memory, 0);
+			CHECKFAIL;
 		}
-}
-
-void mapMemory(uint32_t buffer_index, void** mapped_memory, uint32_t size, uint32_t offset) {
-	lastResult = vkMapMemory(device, device_memory, buffer_offsets[buffer_index] + offset, size == 0 ? buffer_sizes[buffer_index]: size, 0, mapped_memory);
-	HANDEL(lastResult)
-}
-
-void unmapMemory() {
-	vkUnmapMemory(device, device_memory);
-}
-
-void destroyMemory() {
-	for(VkBuffer buffer : buffers) {
-		vkDestroyBuffer(device, buffer, nullptr);
 	}
-	vkFreeMemory(device, device_memory, nullptr);
+
 }

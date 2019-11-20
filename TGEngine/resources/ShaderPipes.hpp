@@ -10,6 +10,14 @@ extern const unsigned int ColorOnlyNormalInputCount;
 extern const unsigned int ColorOnlyNormalLayoutBindingCount;
 extern ShaderPipe ColorOnlyNormalPipe;
 
+extern VkPipelineShaderStageCreateInfo Tex2DShader[2];
+extern const VkVertexInputAttributeDescription Tex2DInput[];
+extern const VkDescriptorSetLayoutBinding Tex2DLayoutBinding[];
+extern const unsigned int Tex2DShaderCount;
+extern const unsigned int Tex2DInputCount;
+extern const unsigned int Tex2DLayoutBindingCount;
+extern ShaderPipe Tex2DPipe;
+
 extern VkPipelineShaderStageCreateInfo TexturedBasicShader[2];
 extern const VkVertexInputAttributeDescription TexturedBasicInput[];
 extern const VkDescriptorSetLayoutBinding TexturedBasicLayoutBinding[];
@@ -17,6 +25,14 @@ extern const unsigned int TexturedBasicShaderCount;
 extern const unsigned int TexturedBasicInputCount;
 extern const unsigned int TexturedBasicLayoutBindingCount;
 extern ShaderPipe TexturedBasicPipe;
+
+extern VkPipelineShaderStageCreateInfo TopDownShader[2];
+extern const VkVertexInputAttributeDescription TopDownInput[];
+extern const VkDescriptorSetLayoutBinding TopDownLayoutBinding[];
+extern const unsigned int TopDownShaderCount;
+extern const unsigned int TopDownInputCount;
+extern const unsigned int TopDownLayoutBindingCount;
+extern ShaderPipe TopDownPipe;
 
 extern VkPipelineShaderStageCreateInfo UIColorShader[2];
 extern const VkVertexInputAttributeDescription UIColorInput[];

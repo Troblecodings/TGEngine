@@ -98,75 +98,63 @@ namespace prop {
 		}
 	}
 
-	char* Properties::getStringOrDefault(char* name, char* def) {
-		for(size_t i = 0; i < this->string_names.size(); i++) {
-			if(strcmp(name, this->string_names[i]) == 0) {
-				return this->string_values[i];
-			}
-		}
+	char* Properties::getStringOrDefault(const char* name, char* def) {
+		auto it = this->strings.find(name);
+		if (it != this->strings.end())
+			return it->second;
 		return def;
 	}
 
-	bool Properties::getBooleanOrDefault(char* name, bool def) {
-		for(size_t i = 0; i < this->bool_names.size(); i++) {
-			if(strcmp(name, this->bool_names[i]) == 0) {
-				return this->bool_values[i];
-			}
-		}
+	bool Properties::getBooleanOrDefault(const char* name, bool def) {
+		auto it = this->bools.find(name);
+		if (it != this->bools.end())
+			return it->second;
 		return def;
 	}
 
-	float Properties::getFloatOrDefault(char* name, float def) {
-		for(size_t i = 0; i < this->float_names.size(); i++) {
-			if(strcmp(name, this->float_names[i]) == 0) {
-				return this->float_values[i];
-			}
-		}
+	float Properties::getFloatOrDefault(const char* name, float def) {
+		auto it = this->floats.find(name);
+		if (it != this->floats.end())
+			return it->second;
 		return def;
 	}
 
-	int Properties::getIntOrDefault(char* name, int def) {
-		for(size_t i = 0; i < this->int_names.size(); i++) {
-			if(strcmp(name, this->int_names[i]) == 0) {
-				return this->int_values[i];
-			}
-		}
+	int Properties::getIntOrDefault(const char* name, int def) {
+		auto it = this->ints.find(name);
+		if (it != this->ints.end())
+			return it->second;
 		return def;
 	}
 
-	char* Properties::getString(char* name) {
+	char* Properties::getString(const char* name) {
 		return this->getStringOrDefault(name, "");
 	}
 
-	bool Properties::getBoolean(char* name) {
+	bool Properties::getBoolean(const char* name) {
 		return this->getBooleanOrDefault(name, false);
 	}
 
-	float Properties::getFloat(char* name) {
+	float Properties::getFloat(const char* name) {
 		return this->getFloatOrDefault(name, 0.0);
 	}
 
-	int Properties::getInt(char* name) {
+	int Properties::getInt(const char* name) {
 		return this->getIntOrDefault(name, 0);
 	}
 
-	void Properties::addString(char* name, char* value) {
-		this->string_names.push_back(name);
-		this->string_values.push_back(value);
+	void Properties::addString(const char* name, char* value) {
+		this->strings[name] = value;
 	}
 
-	void Properties::addBoolean(char* name, bool value) {
-		this->bool_names.push_back(name);
-		this->bool_values.push_back(value);
+	void Properties::addBoolean(const char* name, bool value) {
+		this->bools[name] = value;
 	}
 
-	void Properties::addFloat(char* name, float value) {
-		this->float_names.push_back(name);
-		this->float_values.push_back(value);
+	void Properties::addFloat(const char* name, float value) {
+		this->floats[name] = value;
 	}
 
-	void Properties::addInt(char* name, int value) {
-		this->int_names.push_back(name);
-		this->int_values.push_back(value);
+	void Properties::addInt(const char* name, int value) {
+		this->ints[name] = value;
 	}
 }

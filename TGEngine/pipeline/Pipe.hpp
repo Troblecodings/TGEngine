@@ -1,23 +1,23 @@
 #pragma once
 
 #include "../Stdbase.hpp"
-#include "Device.hpp"
-#include "RenderPass.hpp"
-#include <vector>
-#include "Descriptors.hpp"
-#include "../vlib/VulkanPipeline.hpp"
+#include "../resources/ShaderPipes.hpp"
 
-extern std::vector<VkPipeline> pipelines;
+namespace tge::pip {
 
-SINCE(0, 0, 1)
-uint32_t createPipeline(uint32_t layout = 0);
+	struct PipelineInputInfo {
+		ShaderPipe      pipe;
+		uint32_t        stride;
+		uint32_t        width;
+		uint32_t        height;
+		VkCullModeFlags cullMode;
+		VkPolygonMode   polygonMode;
+		float           lineWidth;
+	};
 
-SINCE(0, 0, 4)
-void destroyPipelineLayout(uint32_t layout);
+	extern VkPipeline defaultPipeline;
 
+	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);
 
-SINCE(0, 0, 4)
-void destroyPipeline(uint32_t layout);
-
-SINCE(0, 0, 1)
-void destroyPipeline();
+	void initPipelines();
+}

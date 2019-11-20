@@ -7,7 +7,8 @@
 #include "../stb/stb_truetype.h"
 #include "../io/Files.hpp"
 #include "../util/VectorUtil.hpp"
-#include "../gamecontent/UIMaterial.hpp"
+#include "../pipeline/buffer/VertexBuffer.hpp"
+#include "../pipeline/buffer/IndexBuffer.hpp"
 
 namespace tge {
 	namespace fnt {
@@ -17,8 +18,6 @@ namespace tge {
 
 			private:
 				uint32_t height = 20;
-				gmc::UIMaterial mat = gmc::UIMaterial((tex::Texture*)nullptr);
-				tex::Texture* texture = nullptr;
 				stbtt_bakedchar cdata[256];
 				uint32_t materialIndex = -1;
 

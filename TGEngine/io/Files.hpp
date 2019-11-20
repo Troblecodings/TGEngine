@@ -25,6 +25,11 @@ namespace tge {
 
 		extern char current_working_dir[];
 
+		struct ResourceDescriptor {
+			uint64_t offset;
+			uint64_t size;
+		};
+
 		/*
 		 * Querys the current working directory and initalizes all other systems
 		 *

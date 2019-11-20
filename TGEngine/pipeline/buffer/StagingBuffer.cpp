@@ -8,6 +8,7 @@ void createStagingBuffer(StagingBuffer* buffer) {
 	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer->staging_buffer);
 	HANDEL(lastResult)
 
+		VkMemoryRequirements lastRequirements;
 		vkGetBufferMemoryRequirements(device, buffer->staging_buffer, &lastRequirements);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;
