@@ -37,11 +37,11 @@ namespace tge::pip {
 
 		VkPipelineColorBlendAttachmentState pipelineColorBlendAttachmentState;
 		pipelineColorBlendAttachmentState.blendEnable = VK_TRUE;
-		pipelineColorBlendAttachmentState.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-		pipelineColorBlendAttachmentState.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+		pipelineColorBlendAttachmentState.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+		pipelineColorBlendAttachmentState.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		pipelineColorBlendAttachmentState.colorBlendOp = VK_BLEND_OP_ADD;
 		pipelineColorBlendAttachmentState.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		pipelineColorBlendAttachmentState.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		pipelineColorBlendAttachmentState.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		pipelineColorBlendAttachmentState.alphaBlendOp = VK_BLEND_OP_ADD;
 		pipelineColorBlendAttachmentState.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
@@ -50,13 +50,13 @@ namespace tge::pip {
 		pipelineColorBlendStateCreateInfo.pNext = nullptr;
 		pipelineColorBlendStateCreateInfo.flags = 0;
 		pipelineColorBlendStateCreateInfo.logicOpEnable = VK_TRUE;
-		pipelineColorBlendStateCreateInfo.logicOp = VK_LOGIC_OP_AND;
+		pipelineColorBlendStateCreateInfo.logicOp = VK_LOGIC_OP_CLEAR;
 		pipelineColorBlendStateCreateInfo.attachmentCount = 1;
 		pipelineColorBlendStateCreateInfo.pAttachments = &pipelineColorBlendAttachmentState;
-		pipelineColorBlendStateCreateInfo.blendConstants[0] = 1;
-		pipelineColorBlendStateCreateInfo.blendConstants[1] = 1;
-		pipelineColorBlendStateCreateInfo.blendConstants[2] = 1;
-		pipelineColorBlendStateCreateInfo.blendConstants[3] = 1;
+		pipelineColorBlendStateCreateInfo.blendConstants[0] = VK_COMPONENT_SWIZZLE_IDENTITY;
+		pipelineColorBlendStateCreateInfo.blendConstants[1] = VK_COMPONENT_SWIZZLE_IDENTITY;
+		pipelineColorBlendStateCreateInfo.blendConstants[2] = VK_COMPONENT_SWIZZLE_IDENTITY;
+		pipelineColorBlendStateCreateInfo.blendConstants[3] = VK_COMPONENT_SWIZZLE_IDENTITY;
 
 		VkPipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo;
 		pipelineDepthStencilStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -64,11 +64,33 @@ namespace tge::pip {
 		pipelineDepthStencilStateCreateInfo.flags = 0;
 		pipelineDepthStencilStateCreateInfo.depthTestEnable = VK_TRUE;
 		pipelineDepthStencilStateCreateInfo.depthWriteEnable = VK_TRUE;
-		pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+		pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS;
 		pipelineDepthStencilStateCreateInfo.depthBoundsTestEnable = VK_FALSE;
 		pipelineDepthStencilStateCreateInfo.stencilTestEnable = VK_FALSE;
 		pipelineDepthStencilStateCreateInfo.minDepthBounds = 0;
 		pipelineDepthStencilStateCreateInfo.maxDepthBounds = 1.0;
+		
+		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_KEEP;
+		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.front.compareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+		pipelineDepthStencilStateCreateInfo.front.compareMask = 0;
+		pipelineDepthStencilStateCreateInfo.front.writeMask = 0;
+		pipelineDepthStencilStateCreateInfo.front.reference = 0;
+
+		pipelineDepthStencilStateCreateInfo.back.failOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.back.passOp = VK_STENCIL_OP_KEEP;
+		pipelineDepthStencilStateCreateInfo.back.depthFailOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.back.compareOp = VK_COMPARE_OP_LESS;
+		pipelineDepthStencilStateCreateInfo.back.compareMask = 0;
+		pipelineDepthStencilStateCreateInfo.back.writeMask = 0;
+		pipelineDepthStencilStateCreateInfo.back.reference = 0;
+
+		VkPipelineTessellationStateCreateInfo pipelineTessellationStateCreateInfo;
+		pipelineTessellationStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+		pipelineTessellationStateCreateInfo.pNext = nullptr;
+		pipelineTessellationStateCreateInfo.flags = 0;
+		pipelineTessellationStateCreateInfo.patchControlPoints = 1;
 
 		for (size_t i = 0; i < size; i++) {
 			PipelineInputInfo in = input[i];
@@ -108,15 +130,15 @@ namespace tge::pip {
 			pipelineRasterizationStateCreateInfo[i].sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 			pipelineRasterizationStateCreateInfo[i].pNext = nullptr;
 			pipelineRasterizationStateCreateInfo[i].flags = 0;
-			pipelineRasterizationStateCreateInfo[i].depthClampEnable = VK_FALSE;
-			pipelineRasterizationStateCreateInfo[i].rasterizerDiscardEnable = VK_TRUE;
+			pipelineRasterizationStateCreateInfo[i].depthClampEnable = VK_TRUE;
+			pipelineRasterizationStateCreateInfo[i].rasterizerDiscardEnable = VK_FALSE;
 			pipelineRasterizationStateCreateInfo[i].polygonMode = in.polygonMode;
 			pipelineRasterizationStateCreateInfo[i].cullMode = in.cullMode;
 			pipelineRasterizationStateCreateInfo[i].frontFace = VK_FRONT_FACE_CLOCKWISE;
 			pipelineRasterizationStateCreateInfo[i].depthBiasEnable = VK_FALSE;
-			pipelineRasterizationStateCreateInfo[i].depthBiasConstantFactor = 0;
+			pipelineRasterizationStateCreateInfo[i].depthBiasConstantFactor = 1;
 			pipelineRasterizationStateCreateInfo[i].depthBiasClamp = 0;
-			pipelineRasterizationStateCreateInfo[i].depthBiasSlopeFactor = 0;
+			pipelineRasterizationStateCreateInfo[i].depthBiasSlopeFactor = 1;
 			pipelineRasterizationStateCreateInfo[i].lineWidth = in.lineWidth;
 
 			graphicsPipelineCreateInfo[i].sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -126,7 +148,7 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].pStages = in.pipe.shader;
 			graphicsPipelineCreateInfo[i].pVertexInputState = &pipelineVertexInputStateCreateInfo[i];
 			graphicsPipelineCreateInfo[i].pInputAssemblyState = &pipelineInputStateCreateInfo;
-			graphicsPipelineCreateInfo[i].pTessellationState = nullptr;
+			graphicsPipelineCreateInfo[i].pTessellationState = &pipelineTessellationStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pViewportState = &pipelineViewportStateCreateInfo[i];
 			graphicsPipelineCreateInfo[i].pRasterizationState = &pipelineRasterizationStateCreateInfo[i];
 			graphicsPipelineCreateInfo[i].pMultisampleState = &pipelineMultisampleStateCreateInfo;
@@ -152,7 +174,7 @@ namespace tge::pip {
 		pipelineInputInfo.stride = sizeof(glm::vec3) * 2;
 		pipelineInputInfo.width = windowList[0]->width;
 		pipelineInputInfo.height = windowList[0]->height;
-		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		pipelineInputInfo.cullMode = 0;
 		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pipelineInputInfo.lineWidth = 1;
 		
