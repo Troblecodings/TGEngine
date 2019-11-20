@@ -11,6 +11,8 @@ std::vector<HWND> __impl_window_list;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	Window* a_window = windowList[0];
 
+	OUT_LV_DEBUG(msg)
+
 	switch (msg) {
 	case WM_INPUT: {
 		uint32_t dwSize = 0;
@@ -59,7 +61,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		if (a_window->consume_input) {
 			SetCursorPos(a_window->middleX, a_window->middleY);
 		}
-		break;
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 	case WM_QUIT:
 	case WM_CLOSE:
@@ -101,11 +103,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		else if (wParam == SC_RESTORE) {
 			a_window->minimized = false;
 		}
-		break;
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 	default:
-		break;
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
-	return DefWindowProc(hwnd, msg, wParam, lParam);
+	return 0;
 }
 #endif
 
@@ -238,9 +240,8 @@ void createWindow(Window* window) {
 	Rid[0].usUsage = 0x02;
 	if (window->consume_input) {
 		Rid[0].dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;   // adds HID mouse and also ignores legacy mouse messages if it consumes input
-	}
-	else {
-		Rid[0].dwFlags = RIDEV_NOLEGACY;
+	} else {
+		Rid[0].dwFlags = 0;
 	}
 	Rid[0].hwndTarget = window->__impl_window;
 
