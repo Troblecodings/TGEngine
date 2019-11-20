@@ -49,7 +49,7 @@ namespace tge::pip {
 		pipelineColorBlendStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 		pipelineColorBlendStateCreateInfo.pNext = nullptr;
 		pipelineColorBlendStateCreateInfo.flags = 0;
-		pipelineColorBlendStateCreateInfo.logicOpEnable = VK_TRUE;
+		pipelineColorBlendStateCreateInfo.logicOpEnable = VK_FALSE;
 		pipelineColorBlendStateCreateInfo.logicOp = VK_LOGIC_OP_CLEAR;
 		pipelineColorBlendStateCreateInfo.attachmentCount = 1;
 		pipelineColorBlendStateCreateInfo.pAttachments = &pipelineColorBlendAttachmentState;

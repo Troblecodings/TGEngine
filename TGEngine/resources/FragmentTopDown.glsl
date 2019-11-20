@@ -22,6 +22,5 @@ layout(location = 0) out vec4 colorOut;
 
 void main() {
     Material material = data.mat[id];
-    //colorOut = texture(sampler2D(images[material.diffuseTexture], mainsampler), uv + material.uvmanipulator) * material.color;
-	colorOut = vec4(1, 1, 1, 1);
+    colorOut = texture(sampler2D(images[material.diffuseTexture], mainsampler), uv + material.uvmanipulator) * material.color;
 }

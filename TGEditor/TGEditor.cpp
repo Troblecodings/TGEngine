@@ -49,7 +49,7 @@ int main(int argc, char** args) {
 	createTextures(outtex, 2, out);
 
 	Material mat;
-	mat.diffuseTexture = 1;
+	mat.diffuseTexture = 0;
 	mat.color = glm::vec4(1);
 	mat.uvmanipulator = glm::vec2(0);
 	mat.samplerid = 0;
