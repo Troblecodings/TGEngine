@@ -158,11 +158,11 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].layout = pipelineLayout;
 			graphicsPipelineCreateInfo[i].renderPass = renderpass;
 			graphicsPipelineCreateInfo[i].subpass = 0;
-			graphicsPipelineCreateInfo[i].basePipelineHandle = nullptr;
+			graphicsPipelineCreateInfo[i].basePipelineHandle = VK_NULL_HANDLE;
 			graphicsPipelineCreateInfo[i].basePipelineIndex = 0;
 		}
 
-		lastResult = vkCreateGraphicsPipelines(device, nullptr, size, graphicsPipelineCreateInfo, nullptr, pipelines);
+		lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, size, graphicsPipelineCreateInfo, nullptr, pipelines);
 		CHECKFAIL;
 	}
 

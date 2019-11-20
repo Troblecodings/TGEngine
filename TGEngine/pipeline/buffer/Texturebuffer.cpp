@@ -115,7 +115,7 @@ namespace tge::tex {
 
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imagedesc[i].imageView = output[i].view;
-			imagedesc[i].sampler = nullptr;
+			imagedesc[i].sampler = VK_NULL_HANDLE;
 
 			entrymemorybarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			entrymemorybarriers[i].pNext = nullptr;
@@ -162,7 +162,7 @@ namespace tge::tex {
 		for (uint32_t i = size; i < 2048; i++) {
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imagedesc[i].imageView = usedview;
-			imagedesc[i].sampler = nullptr;
+			imagedesc[i].sampler = VK_NULL_HANDLE;
 		}
 #endif // !DISABLE_TEXTURE_FILL
 
@@ -237,7 +237,7 @@ namespace tge::tex {
 
 		imageInfo.sampler = sampler;
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.imageView = nullptr;
+		imageInfo.imageView = VK_NULL_HANDLE;
 	
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
