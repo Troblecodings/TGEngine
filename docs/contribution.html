@@ -1,13 +1,15 @@
 <!doctype html>
 <html>
+
 <head>
     <title>TGEngine Contributions</title>
     <link rel="icon" href="logo.png" type="image/x-icon" sizes="16x16">
-    <script type="application/javascript" src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
     <script type="application/javascript">
         window._idl = {};
         _idl.variant = "modal";
-        (function() {
+        (function () {
             var idl = document.createElement('script');
             idl.async = true;
             idl.src = 'https://members.internetdefenseleague.org/include/?url=' + (_idl.url || '') + '&campaign=' + (_idl.campaign || '') + '&variant=' + (_idl.variant || 'modal');
@@ -16,13 +18,14 @@
     </script>
     <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
+
 <body>
 
     <h1>Contributions</h1>
 
     <div class="menu">
         <a href="#contribute">Want to contribute?</a>
-        <a href="#standarts">Standarts</a>
+        <a href="#standards">Standards</a>
         <a href="./index.html">Home</a>
     </div>
 
@@ -30,38 +33,54 @@
         <h1 id="contribute">Want to contribute?</h1>
 
         <p>Everyone is welcome to help in development! I am thankful for every improvement, addition or fix.</p>
-        <p><em><strong>Please review the <a href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before contributing in any way to the repository!</strong></em></p>
-        <p>Additional information can be found <a href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a></p>
-        <h1 id="standarts">Standarts</h1>
-        <p>Every pull request needs to meet certain standarts. And thus are as following.</p>
-        <p><em>Note: Currently most standarts are not used yet by the engine itself. This is going to be changed asap</em></p>
+        <p><em><strong>Please review the <a
+                       href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a>
+                    before contributing in any way to the repository!</strong></em></p>
+        <p>Additional information can be found <a
+               href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a></p>
+
+        <h1 id="standards">Standards</h1>
+        <p>Every pull request needs to meet certain standards.</p>
+        <p><em>Note: Most standards are not used yet by the engine itself at the current date. This is going to be
+                changed as soon as possible.</em></p>
         <div id="subcontainer">
             <div class="submenu">
-                <a href="#includes">Includes / Header</a><br>
-                <a href="#variables">Variables / Makros</a><br>
-                <a href="#methodes">Methodes</a><br>
+                <a href="#general">General</a>
+                <a href="#includes">Includes, Headers</a><br>
+                <a href="#variables">Variables, Macros</a><br>
+                <a href="#methods">Methods</a><br>
                 <a href="#modules">Modules</a><br>
-                <a href="#classes">Class / Struct / Union</a>
+                <a href="#classes">Classes, Structs, Unions</a>
             </div>
         </div>
-        <h2 id="includes">Includes / Header</h2>
+        <h2 id="general">
+        <ul>
+            <li>Everything should be put in namespaces</li>
+            <li>Do not use "set namespace", use tge::namespace instead</li>
+            <li>Do not use anything but vectors for dynamic lists</li>
+        </ul>
+        </h2>
+        <h2 id="includes">Includes, Headers</h2>
         <ul>
             <li>
                 The first statement in a header file should be<br>
                 <pre class="prettyprint">#pragma once</pre>
-                <em><p>Note: due to the pragma preprocessor not being a standart this might not be possible for your compiler</p></em>
+                <em>
+                    <p>Note: This might not be possible for your compiler due to the pragma preprocessor not being a
+                        standard</p>
+                </em>
             </li>
             <li>The second statements are the includes</li>
-            <li>Each .cpp source file should include it's according header file and nothing else</li>
-            <li>Subfolders should be seppareted by a slash <strong class="mark">(/)</strong></li>
-            <li><strong class="mark">../</strong> are allowed and must be used if you use dependencies</li>
-            <li>Each dependencie should be in the <strong class="mark">root</strong> folder or in the <strong class="mark">dependencies</strong> folder</li>
-            <li>Each header must be part of a moduel</li>
+            <li>Subfolders should be separated by a slash <strong class="mark">(/)</strong></li>
+            <li><strong class="mark">../</strong> is allowed and must be used if you use dependencies</li>
+            <li>Each dependency should be in the <strong class="mark">root</strong> folder or in the <strong
+                        class="mark">dependencies</strong> folder</li>
+            <li>Each header must be part of a module</li>
         </ul>
-        <h2 id="variables">Variables / Makros</h2>
+        <h2 id="variables">Variables, Macros</h2>
         <ul>
-            <li>Every normal variable should be <a href="https://en.wikipedia.org/wiki/Snake_case">snake case</a> and lower case</li>
-            <li>Every makro or const variable needs to be written in caps and snake case</li>
+            <li>Every normal variable should be <a href="https://en.wikipedia.org/wiki/Camel_case">camelCase</a></li>
+            <li>Every macro or constant variable has to be written in CAPS and <a href="https://en.wikipedia.org/wiki/Snake_case">snake_case</a></li>
             <li>Attributes are at the top of the class or struct</li>
             <li>
                 Attribute order in classes:
@@ -74,16 +93,17 @@
                     <li>private</li>
                 </ul>
             </li>
-            <li>Makros should be the first definition in the header files after includes</li>
-            <li>You should not use static variables (except for dependencies)</li>
+            <li>Macros should be the first definition in the header files after the includes</li>
+            <li>Static variables should not be used (except for dependencies)</li>
+            <li>Use TGE_MACRONAME as the macroname (prefix with TGE_)</li>
+            <li>Declare variables with "extends"</li>
         </ul>
-        <h2 id="methodes">Methodes</h2>
+        <h2 id="methods">Methods</h2>
         <ul>
-            <li>Every methode should be <a href="https://en.wikipedia.org/wiki/Snake_case">snake case</a> and lower case</li>
-            <li>Every static methode must start with an underscore <strong class="mark">(_)</strong></li>
-            <li>Methodes are underneath attributes in classes or structs</li>
+            <li>Every method should be <a href="https://en.wikipedia.org/wiki/Snake_case">snake case</a></li>
+            <li>Methods are below attributes in classes or structs</li>
             <li>
-                Methodes order in classes:
+                Methods order in classes:
                 <ul>
                     <li>const public</li>
                     <li>const protected</li>
@@ -93,25 +113,31 @@
                     <li>private</li>
                 </ul>
             </li>
-            <li>Every methode should have a SINCE annotation (not needed if the class/struct/union already has one)</li>
+            <li>Exceptions are not to be used in any case</li>
+            <li>Do not force use inline methods, leave them up to the compiler</li>
+            <li>Use a pPrefix for input parameters</li>
+            <li>Do not override methods</li>
         </ul>
         <h2 id="modules">Modules</h2>
         <ul>
             <li>Modules are namespaces</li>
             <li>
-                Each moduel is a submodule of <em><strong class="mark">tge</strong></em>
+                Each module is a submodule of <em><strong class="mark">tge</strong></em>
                 <pre class="prettyprint">namespace tge {
-    namespace nio {</pre><p><em>Note that we are not using C++17 standarts for compiling so nested namespace defenitions are not allowed</em></p>
+    namespace nio {</pre>
             </li>
-            <li>You must not use spaces or underscores in module names</li>
+            <li>Spaces or underscores cannot be used in module names</li>
         </ul>
-        <h2 id="classes">Class / Struct / Union</h2>
+        <h2 id="classes">Classes, Structs, Unions</h2>
         <ul>
-            <li>Every struct or union has the same standarts as classes</li>
-            <li>Every class should be written in upper camel case (pascale case)</li>
-            <li>Classes can have a SINCE annotation</li>
-            <li>Thus can contain methodes</li>
+            <li>Avoid using classes and objects, use structs and unions instead</li>
+            <li>Every struct or union has the same standards as classes</li>
+            <li>Every class and struct should be written in UpperCamelCase (Pascal case)</li>
+            <li>They can therefore contain methods</li>
+            <li>Avoid inheriting classes or structs</li>
+            <li>Avoid declaring methods in structs, is permitted if absolutely necessary</li>
         </ul>
     </div>
 </body>
+
 </html>
