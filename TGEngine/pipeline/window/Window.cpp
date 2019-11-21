@@ -11,8 +11,6 @@ std::vector<HWND> __impl_window_list;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	Window* a_window = windowList[0];
 
-	OUT_LV_DEBUG(msg)
-
 	switch (msg) {
 	case WM_INPUT: {
 		uint32_t dwSize = 0;
