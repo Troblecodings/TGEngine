@@ -174,7 +174,7 @@ namespace tge::pip {
 		pipelineInputInfo.stride = sizeof(glm::vec3) * 2;
 		pipelineInputInfo.width = windowList[0]->width;
 		pipelineInputInfo.height = windowList[0]->height;
-		pipelineInputInfo.cullMode = 0;
+		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pipelineInputInfo.lineWidth = 1;
 		
