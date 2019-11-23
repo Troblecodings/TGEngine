@@ -55,10 +55,10 @@ int main(int argc, char** args) {
 	mat.samplerid = 0;
 	createMaterials(&mat, 1);
 
-	vertexBuffer.add(glm::vec3(-1, -1, 0))->add(glm::vec3(0, 0, 0))->endVertex();
-	vertexBuffer.add(glm::vec3(1, -1, 0))->add(glm::vec3(0, 1, 0))->endVertex();
-	vertexBuffer.add(glm::vec3(1, 1, 0))->add(glm::vec3(0, 1, 1))->endVertex();
-	vertexBuffer.add(glm::vec3(-1, 1, 0))->add(glm::vec3(0, 0, 1))->endVertex();
+	vertexBuffer.add(glm::vec3(-2, -2, 0))->add(glm::vec3(0, 0, 0))->endVertex();
+	vertexBuffer.add(glm::vec3(2, -2, 0))->add(glm::vec3(0, 10, 0))->endVertex();
+	vertexBuffer.add(glm::vec3(2, 2, 0))->add(glm::vec3(0, 10, 10))->endVertex();
+	vertexBuffer.add(glm::vec3(-2, 2, 0))->add(glm::vec3(0, 0, 10))->endVertex();
 
 	indexBuffer.addIndex(0);
 	indexBuffer.addIndex(1);
