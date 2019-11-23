@@ -7,19 +7,20 @@ layout(binding = 0) uniform DATA_BLOCK {
     mat4 localTransforms[256];
 } data;
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in uint id;
-layout(location = 2) in vec2 uv;
+layout(push_constant) uniform PUSH_CONST{
+    uint id;
+} pushconst;
+
+layout(location = 0) in vec2 pos;
+layout(location = 1) in vec2 uv;
 
 layout(location = 0) out vec2 uvOut;
-layout(location = 1) out uint idOut;
 
 out gl_PerVertex{
    vec4 gl_Position;
 };
 
 void main(){
-    gl_Position = (vec4(pos, 1) * data.basicTransform);
-    idOut = id;
+    gl_Position = (vec4(pos, 0, 1) * data.basicTransform * data.localTransforms[pushconst.id]);
     uvOut = uv;
 }
