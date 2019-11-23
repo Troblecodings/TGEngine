@@ -222,9 +222,6 @@
     <ClInclude Include="gamecontent\Material.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
-    <ClInclude Include="gamecontent\Mesh.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="pipeline\ShaderCreation.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
@@ -381,9 +378,6 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="gamecontent\Material.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
-    <ClCompile Include="gamecontent\Mesh.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\ShaderCreation.cpp">

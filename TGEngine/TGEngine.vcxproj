@@ -28,7 +28,6 @@
     <ClInclude Include="gamecontent\camera\StaticCamera.hpp" />
     <ClInclude Include="gamecontent\Light.hpp" />
     <ClInclude Include="gamecontent\Material.hpp" />
-    <ClInclude Include="gamecontent\Mesh.hpp" />
     <ClInclude Include="gamecontent\PlayerController.hpp" />
     <ClInclude Include="io\Files.hpp" />
     <ClInclude Include="io\Keyboard.hpp" />
@@ -83,7 +82,6 @@
     <ClCompile Include="gamecontent\camera\StaticCamera.cpp" />
     <ClCompile Include="gamecontent\Light.cpp" />
     <ClCompile Include="gamecontent\Material.cpp" />
-    <ClCompile Include="gamecontent\Mesh.cpp" />
     <ClCompile Include="gamecontent\PlayerController.cpp" />
     <ClCompile Include="io\Files.cpp" />
     <ClCompile Include="io\Keyboard.cpp" />
