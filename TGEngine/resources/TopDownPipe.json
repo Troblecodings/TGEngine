@@ -8,16 +8,11 @@
     {
       "Id": 0,
       "Offset": 0,
-      "Layout": 106
+      "Layout": 103
     },
     {
       "Id": 1,
-      "Offset": 12,
-      "Layout": 98
-    },
-    {
-      "Id": 2,
-      "Offset": 16,
+      "Offset": 8,
       "Layout": 103
     }
   ],
