@@ -171,7 +171,7 @@ namespace tge::pip {
 		//TODO Autogenerate pipelines
 		PipelineInputInfo pipelineInputInfo;
 		pipelineInputInfo.pipe = TopDownPipe;
-		pipelineInputInfo.stride = sizeof(glm::vec3) * 2;
+		pipelineInputInfo.stride = sizeof(glm::vec4);
 		pipelineInputInfo.width = windowList[0]->width;
 		pipelineInputInfo.height = windowList[0]->height;
 		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
