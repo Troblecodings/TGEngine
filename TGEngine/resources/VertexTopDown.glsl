@@ -21,6 +21,6 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = (vec4(pos, 0, 1) * data.basicTransform * data.localTransforms[pushconst.id]);
+    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * data.localTransforms[pushconst.id]);
     uvOut = uv;
 }

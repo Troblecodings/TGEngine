@@ -12,7 +12,7 @@ struct Material {
 };
 
 layout(push_constant) uniform PUSH_CONST{
-    uint id;
+    layout(offset = 4) uint id;
 } pushconst;
 
 layout(binding = 3) uniform MATERIALS{
