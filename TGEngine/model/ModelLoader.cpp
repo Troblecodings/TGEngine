@@ -52,7 +52,7 @@ namespace tge {
 
 			// Load sampler
 		static void loadSampler(tinygltf::Model* gltfModel, gmc::Model* model) {
-			model->samplers.resize(gltfModel->samplers.size());
+			/*model->samplers.resize(gltfModel->samplers.size());
 			for (size_t i = 0; i < model->samplers.size(); i++)
 			{
 				Sampler sampler = gltfModel->samplers[i];
@@ -63,7 +63,7 @@ namespace tge {
 				vlibSamplerCreateInfo.addressModeV = getVkWrapMode(sampler.wrapT);
 				vlibSamplerCreateInfo.addressModeW = vlibSamplerCreateInfo.addressModeV;
 				//tex::createSampler(&model->samplers[i]); TODO Sampler creation
-			}
+			}*/
 		}
 
 		// Loads textures
@@ -157,7 +157,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 				tinygltf::Node node = gltfModel->nodes[i];
 
 				tge::gmc::Actor* actor = new tge::gmc::Actor();
-				tge::gmc::Mesh* mesh = actor->mesh = new tge::gmc::Mesh();
+				//tge::gmc::Mesh* mesh = actor->mesh = new tge::gmc::Mesh();
 				model->actors[i] = actor;
 
 				if (node.matrix.size() == 16) {
@@ -204,7 +204,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
 									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
 								};
-								mesh->vertices.push_back(vert);
+								// mesh->vertices.push_back(vert);
 							}
 
 							const tinygltf::Accessor& indexAccessor = gltfModel->accessors[prim.indices];
@@ -214,13 +214,13 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 							switch (indexAccessor.componentType)
 							{
 							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
-								ADD_INDEX(uint32_t)
+							//	ADD_INDEX(uint32_t)
 									break;
 							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
-								ADD_INDEX(uint16_t)
+							//	ADD_INDEX(uint16_t)
 									break;
 							case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
-								ADD_INDEX(uint8_t)
+							//	ADD_INDEX(uint8_t)
 									break;
 							default:
 								OUT_LV_DEBUG("Index type not supported!")
@@ -236,7 +236,7 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 									uvBuffer ? glm::make_vec2(&uvBuffer[i * 2]) : glm::vec2(0),
 									normalBuffer ? glm::normalize(glm::make_vec3(&normalBuffer[i * 3])) : glm::vec3(0)
 								};
-								mesh->add(vert);
+								//mesh->add(vert);
 							}
 						}
 
@@ -283,8 +283,9 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 			loadMaterials(&gltfModel, model);
 			loadNodes(&gltfModel, model);
 
-			if (model->actors.size() < 1 || !model->actors[0]->mesh || model->actors[0]->mesh->vertices.size() < 1)
+/*			if (model->actors.size() < 1 || !model->actors[0]->mesh || model->actors[0]->mesh->vertices.size() < 1)
 				return;
+			
 			// AABB Calculation
 			tge::gmc::AABB aabb = { model->actors[0]->mesh->vertices[0].position,  model->actors[0]->mesh->vertices[0].position };
 
@@ -302,12 +303,12 @@ for (size_t i = 0; i < indexAccessor.count; i++)\
 					aabb.min.z = TGE_MIN(aabb.min.z, vert.z);
 				}
 			}
-			model->aabb = aabb;
+			model->aabb = aabb;*/
 #ifdef DEBUG
-			aabb.print();
+			//aabb.print();
 #endif // DEBUG
 
-			glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
+			//glm::vec3 offset = glm::vec3(0) - (((aabb.max - aabb.min) / 2.0f) + aabb.min);
 		}
 	}
 }

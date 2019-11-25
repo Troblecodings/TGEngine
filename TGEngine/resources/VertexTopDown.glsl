@@ -4,11 +4,10 @@
 
 layout(binding = 0) uniform DATA_BLOCK {
     mat4 basicTransform;
-    mat4 localTransforms[256];
 } data;
 
 layout(push_constant) uniform PUSH_CONST{
-    uint id;
+    mat4 localTransform;
 } pushconst;
 
 layout(location = 0) in vec2 pos;
@@ -21,6 +20,6 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * data.localTransforms[pushconst.id]);
+    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform);
     uvOut = uv;
 }

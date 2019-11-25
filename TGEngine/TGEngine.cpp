@@ -64,7 +64,7 @@ void startTGEngine() {
 	for(size_t i = 0; i < models.size(); i++) {
 		for (size_t j = 0; j < models[i]->actors.size(); j++)
 		{
-			models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
+			//models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
 		}
 	}
 

@@ -7,10 +7,7 @@
 using namespace tge::gmc;
 using namespace tge::tex;
 
-tge::gmc::Mesh mesh;
-tge::gmc::Mesh mesh2;
 tge::gmc::Camera camera;
-tge::gmc::Mesh map;
 UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 tge::gmc::TopDownCamera topdown = tge::gmc::TopDownCamera{ 0, 0, 800, 600 };
 
