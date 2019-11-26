@@ -1,5 +1,6 @@
 #include "CommandBuffer.hpp"
 #include "../gamecontent/Actor.hpp"
+#include "../gamecontent/Actor.hpp"
 
 VkCommandPool command_pool;
 VkFence single_time_command_ready;
@@ -139,12 +140,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
 
-		uint32_t testpush[] = { 0, 0};
-		vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 4, testpush);
-		
-		vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 4, 4, &testpush[1]);
-
-		vkCmdDrawIndexed(buffer, ibuffer->indexCount, 1, 0, 0, 0);
+		tge::gmc::loadToCommandBuffer(buffer);
 
 		vkCmdEndRenderPass(buffer);
 

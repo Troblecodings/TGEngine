@@ -40,12 +40,10 @@ void initEngine() {
 
 	initUniformBuffers();
 
-	vertexBuffer = {};
-	vertexBuffer.maximumVertexCount = 900000;
+	vertexBuffer.maximumVertexCount = 9000;
 	createVertexBuffer(&vertexBuffer);
 
-	indexBuffer = {};
-	indexBuffer.maximumIndexCount = 9000000;
+	indexBuffer.maximumIndexCount = 90000;
 	createIndexBuffer(&indexBuffer);
 	createCommandBuffer();
 
@@ -59,14 +57,6 @@ void initEngine() {
 }
 
 void startTGEngine() {
-
-
-	for(size_t i = 0; i < models.size(); i++) {
-		for (size_t j = 0; j < models[i]->actors.size(); j++)
-		{
-			//models[i]->actors[j]->mesh->consume(&vertexBuffer, &indexBuffer);
-		}
-	}
 
 	index_offset = indexBuffer.indexCount;
 	vertex_offset = vertexBuffer.pointCount;

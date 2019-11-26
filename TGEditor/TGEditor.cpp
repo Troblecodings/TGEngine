@@ -1,6 +1,5 @@
 #include "TGEditor.hpp"
 #include <gamecontent/Light.hpp>
-#include <model/ModelLoader.hpp>
 #include <resources/ShaderPipes.hpp>
 #include <pipeline/buffer/Texturebuffer.hpp>
 
@@ -13,7 +12,6 @@ tge::gmc::TopDownCamera topdown = tge::gmc::TopDownCamera{ 0, 0, 800, 600 };
 
 int main(int argc, char** args) {
 	initEngine();
-	Model actor2;
 
 	setTopDownCamera(&topdown);
 	playercontroller = [](tge::gmc::Input* input) { topdown.positiony += input->y1; topdown.positionx -= input->x1; tge::gmc::setTopDownCamera(&topdown); };
@@ -45,12 +43,9 @@ int main(int argc, char** args) {
 	Texture out[2];
 	createTextures(outtex, 2, out);
 
-	Material mat;
-	mat.diffuseTexture = 0;
-	mat.color = glm::vec4(1);
-	mat.uvmanipulator = glm::vec2(0);
-	mat.samplerid = 0;
-	createMaterials(&mat, 1);
+	createdMaterials = new Material[1];
+	createdMaterials[0].diffuseTexture = 0;
+	createdMaterials[0].color = glm::vec4(1);
 
 	vertexBuffer.add(glm::vec4(-2, -2, 0, 0))->endVertex();
 	vertexBuffer.add(glm::vec4(2, -2, 10, 0))->endVertex();
