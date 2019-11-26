@@ -11,5 +11,4 @@
 
 using namespace tge::ui;
 
-extern tge::gmc::Camera camera;
-extern UIEntity entity;
+extern tge::gmc::TopDownCamera topdown;

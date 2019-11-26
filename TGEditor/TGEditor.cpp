@@ -6,11 +6,11 @@
 using namespace tge::gmc;
 using namespace tge::tex;
 
-tge::gmc::Camera camera;
-UIEntity entity = UIEntity(TOP_LEFT, { 0.3, 0.15 });
 tge::gmc::TopDownCamera topdown = tge::gmc::TopDownCamera{ 0, 0, 800, 600 };
 
 int main(int argc, char** args) {
+	std::cout << "Starting Editor" << std::endl;
+
 	initEngine();
 
 	setTopDownCamera(&topdown);
@@ -47,37 +47,25 @@ int main(int argc, char** args) {
 	createdMaterials[0].color = glm::vec4(1);
 	createdMaterials[0].diffuseTexture = 0;
 
-	vertexBuffer.add(glm::vec4(-2, -2, 0, 0))->endVertex();
-	vertexBuffer.add(glm::vec4(2, -2, 10, 0))->endVertex();
-	vertexBuffer.add(glm::vec4(2, 2, 10, 10))->endVertex();
-	vertexBuffer.add(glm::vec4(-2, 2, 0, 10))->endVertex();
-
-	indexBuffer.addIndex(0);
-	indexBuffer.addIndex(1);
-	indexBuffer.addIndex(2);
-	indexBuffer.addIndex(0);
-	indexBuffer.addIndex(2);
-	indexBuffer.addIndex(3);
+	uint32_t actorIdx[] = { 0, 1, 2, 0, 2, 3};
+	float actorVertex[] = { -0.5, -0.5, 0, 0, 0.5, -0.5, 1, 0, 0.5, 0.5, 1, 1, -0.5, 0.5, 0, 1};
 
 	ActorInputInfo actorInputs;
-	actorInputs.size = 6;
-	actorInputs.offset = 0;
-	actorInputs.localTransform = glm::mat4(1);
+	actorInputs.localTransform = {
+		1, 0, 0, -1,
+		0, 1, 0, 1,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+	actorInputs.indices = actorIdx;
+	actorInputs.vertices = (uint8_t*) actorVertex;
+	actorInputs.material = 0;
+	actorInputs.indexCount = 6;
+	actorInputs.vertexCount = 4;
+
 	createActor(&actorInputs, 1);
-
-	std::cout << "Starting Editor" << std::endl;
-
-	tge::gmc::LightActor light = tge::gmc::LightActor(1, glm::vec3(0.05, 0.05, 0.05), glm::vec3(0, 0, 0));
-	tge::gmc::lights.push_back(&light);
 
 	startTGEngine();
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;
 	return 0;
-}
-
-void init() {
-}
-
-void drawloop(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-
 }

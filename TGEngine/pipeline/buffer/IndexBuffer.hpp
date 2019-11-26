@@ -18,6 +18,8 @@ struct IndexBuffer {
 	SINCE(0, 0, 4)
 		void start();
 
+	void addAll(void* data, size_t points);
+
 	SINCE(0, 0, 4)
 		void end();
 };
