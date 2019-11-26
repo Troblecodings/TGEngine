@@ -8,8 +8,8 @@ namespace tge::gmc {
 	using namespace tge::nio;
 
 	struct Material {
-		uint32_t  diffuseTexture;
 		glm::vec4 color;
+		uint32_t  diffuseTexture;
 	};
 
 	extern Material* createdMaterials;

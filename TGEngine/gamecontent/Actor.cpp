@@ -19,9 +19,9 @@ namespace tge::gmc {
 	}
 
 	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize) {
-		localTranformIds.resize(pSize);
-		countData.resize(pSize);
-		offsetData.resize(pSize);
+		localTranformIds.reserve(pSize);
+		countData.reserve(pSize);
+		offsetData.reserve(pSize);
 		for (size_t i = 0; i < pSize; i++) {
 			localTranformIds.push_back(pInputInfo[i].localTransform);
 			countData.push_back(pInputInfo[i].size);

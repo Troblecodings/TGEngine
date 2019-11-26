@@ -44,8 +44,8 @@ int main(int argc, char** args) {
 	createTextures(outtex, 2, out);
 
 	createdMaterials = new Material[1];
-	createdMaterials[0].diffuseTexture = 0;
 	createdMaterials[0].color = glm::vec4(1);
+	createdMaterials[0].diffuseTexture = 0;
 
 	vertexBuffer.add(glm::vec4(-2, -2, 0, 0))->endVertex();
 	vertexBuffer.add(glm::vec4(2, -2, 10, 0))->endVertex();
@@ -58,6 +58,12 @@ int main(int argc, char** args) {
 	indexBuffer.addIndex(0);
 	indexBuffer.addIndex(2);
 	indexBuffer.addIndex(3);
+
+	ActorInputInfo actorInputs;
+	actorInputs.size = 6;
+	actorInputs.offset = 0;
+	actorInputs.localTransform = glm::mat4(1);
+	createActor(&actorInputs, 1);
 
 	std::cout << "Starting Editor" << std::endl;
 
