@@ -222,14 +222,8 @@
     <ClInclude Include="gamecontent\Material.hpp">
       <Filter>Headerdateien\gamecontent</Filter>
     </ClInclude>
-    <ClInclude Include="gamecontent\Mesh.hpp">
-      <Filter>Headerdateien\gamecontent</Filter>
-    </ClInclude>
     <ClInclude Include="pipeline\ShaderCreation.hpp">
       <Filter>Headerdateien\pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="model\ModelLoader.hpp">
-      <Filter>Headerdateien\model</Filter>
     </ClInclude>
     <ClInclude Include="gamecontent\camera\2DCamera.hpp">
       <Filter>Headerdateien\gamecontent\camera</Filter>
@@ -383,14 +377,8 @@
     <ClCompile Include="gamecontent\Material.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
-    <ClCompile Include="gamecontent\Mesh.cpp">
-      <Filter>Quelldateien\gamecontent</Filter>
-    </ClCompile>
     <ClCompile Include="pipeline\ShaderCreation.cpp">
       <Filter>Quelldateien\pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="model\ModelLoader.cpp">
-      <Filter>Quelldateien\model</Filter>
     </ClCompile>
     <ClCompile Include="gamecontent\camera\2DCamera.cpp">
       <Filter>Quelldateien\gamecontent\camera</Filter>

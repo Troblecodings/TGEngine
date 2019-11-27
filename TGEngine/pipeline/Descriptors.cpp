@@ -7,7 +7,7 @@ VkDescriptorSet mainDescriptorSet;
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	sizes[0].descriptorCount = 2;
+	sizes[0].descriptorCount = 1;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
 	sizes[1].descriptorCount = 1;
@@ -27,7 +27,7 @@ void initDescriptors() {
 	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
 	CHECKFAIL;
 
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[4];
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[3];
 	descriptorSetLayoutBinding[0].binding = 0;
 	descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorSetLayoutBinding[0].descriptorCount = 1;
@@ -46,17 +46,11 @@ void initDescriptors() {
 	descriptorSetLayoutBinding[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBinding[2].pImmutableSamplers = VK_NULL_HANDLE;
 
-	descriptorSetLayoutBinding[3].binding = 3;
-	descriptorSetLayoutBinding[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutBinding[3].descriptorCount = 1;
-	descriptorSetLayoutBinding[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	descriptorSetLayoutBinding[3].pImmutableSamplers = VK_NULL_HANDLE;
-
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfo.pNext = nullptr;
 	descriptorSetLayoutCreateInfo.flags = 0;
-	descriptorSetLayoutCreateInfo.bindingCount = 4;
+	descriptorSetLayoutCreateInfo.bindingCount = 3;
 	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
 	VkDescriptorSetLayout descriptorSetLayout;
@@ -66,11 +60,11 @@ void initDescriptors() {
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRanges[0].offset = 0;
-	pushConstantRanges[0].size = 4; // 32 bit -> uint
+	pushConstantRanges[0].size = 64; // mat4
 
 	pushConstantRanges[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pushConstantRanges[1].offset = 4;
-	pushConstantRanges[1].size = 4; // 32 bit -> uint
+	pushConstantRanges[1].offset = 64;
+	pushConstantRanges[1].size = 20; // Material
 
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
 	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

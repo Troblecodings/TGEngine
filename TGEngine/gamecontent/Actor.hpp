@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Mesh.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <iostream>
@@ -8,49 +7,25 @@
 #include "../util/VectorUtil.hpp"
 #include "Material.hpp"
 
-namespace tge {
-	namespace gmc {
+namespace tge::gmc {
 
-		struct AABB {
-			glm::vec3 min;
-			glm::vec3 max;
+	struct ActorInputInfo {
+		glm::mat4 localTransform;
+		uint32_t*  indices;
+		uint8_t*  vertices;
+		uint8_t   material;
+		uint32_t  indexCount;
+		uint16_t  vertexCount;
+	};
 
-			void print();
-		};
+	extern std::vector<glm::mat4> localTranformIds;
+	extern std::vector<uint32_t> countData;
+	extern std::vector<uint32_t> offsetData;
 
-		struct Actor {
+	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);
 
-			Actor* parent;
-			Mesh* mesh;
-			AABB aabb;
+	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);
 
-			glm::mat4 matrix = glm::mat4(1);
-			glm::quat rotation = glm::quat(0, 0, 0, 0);
-			glm::vec3 translation = glm::vec3(0);
-			glm::vec3 scale = glm::vec3(1);
+	void loadToCommandBuffer(VkCommandBuffer pBuffer);
 
-			/*
-             * Returns the overall transform matrix from this Actor
-             */
-			SINCE(0, 0, 4)
-			glm::mat4 transforms();
-
-
-			/*
-			 * Returns the overall transform matrix from this Actor
-			 */
-			SINCE(0, 0, 4)
-			glm::mat4 localTransform();
-		};
-
-		struct Model {
-			AABB aabb;
-
-			std::vector<Actor*> actors;
-			std::vector<VkSampler> samplers;
-			std::vector<Material> materials;
-		};
-
-		extern std::vector<Model*> models;
-	}
 }

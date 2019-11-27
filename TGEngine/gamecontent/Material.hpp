@@ -8,14 +8,11 @@ namespace tge::gmc {
 	using namespace tge::nio;
 
 	struct Material {
-		uint32_t  diffuseTexture;
 		glm::vec4 color;
-		glm::vec2 uvmanipulator;
-		uint32_t  samplerid; 
-		uint16_t  alignment; // This is for alignment porpuse
+		uint32_t  diffuseTexture;
 	};
 
-	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size, Material* material);
+	extern Material* createdMaterials;
 
-	void createMaterials(Material* material, uint32_t size);
+	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size);
 }
