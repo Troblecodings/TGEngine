@@ -23,9 +23,9 @@ def scanFile(file, name):
         for line in fp.readlines():
             if lineTest(line):
                 tmp += " <details><summary>" + line + "</summary></details>"
-    print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")
     if tmp == "":
         return;
+    print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")
     with open(docsfld + name, "w") as fp:
         fp.write(preset.replace("%DOCCONT%", tmp))
         

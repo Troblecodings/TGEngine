@@ -22,6 +22,8 @@ extern VkDeviceSize offsets;
 extern bool started;
 
 SINCE(0, 0, 1)
+/*
+*/
 void createCommandBuffer();
 
 SINCE(0, 0, 4)
