@@ -15,11 +15,10 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-             <details><summary>			void initFileSystem();
-</summary></details> <details><summary>			File open(char* name, char* mode);
-</summary></details> <details><summary>			File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
-</summary></details> <details><summary>			uint8_t* readAll(char* name);
-</summary></details>
+            <details><summary>		void initFileSystem()</summary>Querys the current working directory and initalizes all other systems<br><br> Use "current_working_dir" to get the cwd after quereing.<br> (Is automatically called in startTGEngine())<br></details><details><summary>		File open(char* name, char* mode)</summary>Opens the file<br> (In debug mode it checks if the open was successfull)<br></details><details><summary>		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength)</summary>Opens the file and get's the size of the file<br> (In debug mode it checks if the open was successfull)<br> (the long* needs to be vailid pointer, will be checked in debug mode)<br></details><details><summary>		uint8_t* readAll(char* name)</summary>Reads all bytes out of a file<br> (In debug mode it checks if the open was successfull)<br></details><h3>Structs</h3>
+<details><summary>ResourceDescriptor</summary>
+<p>Attributes</p>
+			uint64_t offset</details>
     </div>
 </body>
 </html>

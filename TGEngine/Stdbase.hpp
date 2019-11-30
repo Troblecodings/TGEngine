@@ -21,18 +21,15 @@
 extern prop::Properties* properties;
 extern uint32_t imagecount;
 
-SINCE(0, 0, 4)
 #define TGE_VERSION VK_MAKE_VERSION(0, 0, 5)
 
 #define CHECKFAIL HANDEL(lastResult)
 
-SINCE(0, 0, 1)
 #define HANDEL(result)\
 if (result != VK_SUCCESS) {\
 TGERROR(result)\
 }
 
-SINCE(0, 0, 1)
 #define HANDEL_RECREATE(result)\
 if(result == VK_ERROR_OUT_OF_DATE_KHR){\
 if(windowList[0]->minimized){\
@@ -43,8 +40,6 @@ recreateSwapchain(ibuffer, vbuffer);\
 HANDEL(result)\
 }
 
-SINCE(0, 0, 1)
-USAGE_DEBUG
 #ifdef DEBUG
 #define OUT_LV_DEBUG(out) std::cout << "DEBUG: " << out << std::endl;
 #else

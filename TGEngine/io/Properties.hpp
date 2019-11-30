@@ -12,22 +12,19 @@ namespace prop {
 
 	using namespace std;
 
-	SINCE(0, 0, 1)
-		enum TagType {
+	enum TagType {
 		BOOLEAN, INT, FLOAT, STRING, NaN
 	};
 
 	/*
 	 * Property storage -> only for tiny bits of data
 	 */
-	SINCE(0, 0, 1)
-		class Properties {
+	class Properties {
 		public:
 			/*
 			 * Gets the value or returns 0. false or an empty string
 			 */
-			SINCE(0, 0, 3)
-				char* getString(const char* name);
+			char* getString(const char* name);
 			bool getBoolean(const char* name);
 			float getFloat(const char* name);
 			int getInt(const char* name);
@@ -35,8 +32,7 @@ namespace prop {
 			/*
 			 * Gets the value or returns the default if it shouldn't find the name
 			 */
-			SINCE(0, 0, 4)
-				char* getStringOrDefault(const char* name, char* def);
+			char* getStringOrDefault(const char* name, char* def);
 			bool getBooleanOrDefault(const char* name, bool def);
 			float getFloatOrDefault(const char* name, float def);
 			int getIntOrDefault(const char* name, int def);
@@ -44,8 +40,7 @@ namespace prop {
 			/*
 			 * Add values to the properties
 			 */
-			SINCE(0, 0, 4)
-				void addString(const char* name, char* value);
+			void addString(const char* name, char* value);
 			void addBoolean(const char* name, bool value);
 			void addFloat(const char* name, float value);
 			void addInt(const char* name, int value);
@@ -68,6 +63,5 @@ namespace prop {
 	*    <float name="testfloat" value="0.9"/>
 	*  </xml>
 	*/
-	SINCE(0, 0, 1)
-		void readProperties(char* path, Properties* prop);
+	void readProperties(char* path, Properties* prop);
 }

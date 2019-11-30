@@ -7,15 +7,12 @@ extern VkResult lastResult;
 extern VkInstance instance;
 extern VkDebugUtilsMessengerEXT debugMessager;
 
-SINCE(0, 0, 1)
 void createInstance();
 
+#ifdef DEBUG
 /*
  * This defines the debug callback for the messages of the vulkan debug extension
  */
-#ifdef DEBUG
-USAGE_DEBUG
-SINCE(0, 0, 4)
 VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT                  messageType,
@@ -23,5 +20,4 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	void* pUserData);
 #endif
 
-SINCE(0, 0, 1)
 void destroyInstance();

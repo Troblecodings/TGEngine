@@ -81,9 +81,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="TGEngine.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -249,9 +246,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
-      <Filter>Quelldateien\util</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Math.cpp">
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\CommandBuffer.cpp">

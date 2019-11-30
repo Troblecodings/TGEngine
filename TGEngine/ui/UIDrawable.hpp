@@ -7,8 +7,7 @@ namespace tge {
 		/*
 		 * 	Component class that holds the actual draw and update calls
 		 */
-		SINCE(0, 0, 4)
-			class UIDrawable {
+		class UIDrawable {
 
 			protected:
 				// Parent this belongs to

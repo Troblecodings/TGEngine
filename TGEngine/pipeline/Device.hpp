@@ -11,8 +11,6 @@ extern VkDevice device;
 extern VkQueue queue;
 extern VkPhysicalDeviceMemoryProperties memoryProperties;
 
-SINCE(0, 0, 1)
 void createDevice();
 
-SINCE(0, 0, 1)
 void destroyDevice();

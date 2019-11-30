@@ -38,12 +38,6 @@ TARGET_CODE
 #define END_UNFINISHED // End of unfinished code
 
 USAGE_DOCS
-TARGET_CLASS
-TARGET_METHODE
-#define SINCE(major, minor, version) // Tells since which engine version this method is in the engine
-// Remember that methods as well as parameters and/or it's function can change eventhough the version may stay the same
-
-USAGE_DOCS
 TARGET_METHODE
 TARGET_PARAMETER
 #define INTERNAL // Defines a method or parameter to be internal -> This methods or parameters shouldn't be used

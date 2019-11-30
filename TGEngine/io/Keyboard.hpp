@@ -13,13 +13,11 @@ namespace tg_io {
 	/*
 	 * Internal keyinput handling method
 	 */
-	SINCE(0, 0, 3)
-		void __impl_key_update(uint16_t key, bool state);
+	void __impl_key_update(uint16_t key, bool state);
 
 	/*
 	 * With this method you can add a Listener that is called everytime a keyinput is detected
 	 */
-	SINCE(0, 0, 3)
-		void addKeyListener(void(*key_handle)(uint16_t, bool));
+	void addKeyListener(void(*key_handle)(uint16_t, bool));
 
 }
