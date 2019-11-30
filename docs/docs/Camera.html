@@ -16,7 +16,7 @@
     </div>
     <div class="container">
             <details><summary>			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL</summary></details><details><summary>			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL</summary></details><details><summary>			glm::vec3 rotation{}</summary></details><details><summary>		void updateCamera(int width, int height)</summary>Updates the active camera camera matrix and uploads it to the uniform buffer in the shader<br>   -> Also sets perspective with the given width and height<br></details><details><summary>		void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)</summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary>		void __impl_keyinput_handle(uint16_t chr, bool down)</summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary>		void initCameras()</summary>Initalizes the camera Uniformbuffer and etc.<br></details><details><summary>		void createCamera(Camera* camera)</summary>Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera<br> from StaticCamera.hpp for example.<br><br>   -> mouse_input_handler will not be set<br>   -> key_input_handler will not be set<br></details><h3>Structs</h3>
-<details><summary>#pragma</summary>
+<details><summary>Camera</summary>
 <p>Attributes</p>
 	namespace gmc </details>
     </div>

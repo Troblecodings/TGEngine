@@ -35,8 +35,13 @@ def scanFile(file, name):
             
             if lineTest(line):
                 tmp += "<details><summary>" + tmpspl[len(tmpspl) - 1] + "</summary>" + detail + "</details>"
-            if "struct" in line:
-                tmpstr += "<details><summary>" + line.replace("struct ", "").split(" ")[0] + "</summary>" + detail + "\n<p>Attributes</p>" + line.split("{")[1].split("}")[0] + "</details>"
+            if "struct " in line:
+                tst = line.split("struct ")
+                if len(tst) == 1:
+                    tst = tst[0]
+                else:
+                    tst = tst[1]
+                tmpstr += "<details><summary>" + tst.split("{")[0].strip() + "</summary>" + detail + "\n<p>Attributes</p>" + line.split("{")[1].split("}")[0] + "</details>"
     if tmp == "" and tmpstr == "":
         return;
     print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")
