@@ -23,12 +23,18 @@ namespace ShaderTool {
                     return Shader.ShaderCommand(arg);
                 case "texture":
                     return Texture.TextureCommand(arg);
+                case "map":
+                    return Map.MapCommand(arg);
+                case "actor":
+                    return Actor.ActorCommand(arg);
+                case "material":
+                    return Material.MaterialCommand(arg);
                 case "exit":
                     Environment.Exit(0);
                     return 0;
             }
 
-            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/exit!");
+            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/map/actor/material/exit!");
             return WRONG_PARAMS;
         }
 
