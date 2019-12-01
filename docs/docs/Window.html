@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,11 +22,11 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>	void pollevents()</summary></details><details><summary>GetWindowRect(hDesktop, &desktop)</summary></details><details><summary>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)</summary></details><details><summary>void createWindow(Window* window)</summary>Creates a window based on the properties<br></details><details><summary>void createWindowClass()</summary>Creates the actual window<br> Attention! Much platform code here!<br></details><details><summary>void destroyWindows()</summary>Destroys all windows<br></details><details><summary>void createWindowSurfaces()</summary>Create surfaces for each created window<br></details><details><summary>void getMonitor()</summary>Don't use<br></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void pollevents()</pre></summary></details><details><summary><pre class='prettyprint'>GetWindowRect(hDesktop, &desktop)</pre></summary></details><details><summary><pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)</pre></summary></details><details><summary><pre class='prettyprint'>void createWindow(Window* window)</pre></summary>Creates a window based on the properties<br></details><details><summary><pre class='prettyprint'>void createWindowClass()</pre></summary>Creates the actual window<br> Attention! Much platform code here!<br></details><details><summary><pre class='prettyprint'>void destroyWindows()</pre></summary>Destroys all windows<br></details><details><summary><pre class='prettyprint'>void createWindowSurfaces()</pre></summary>Create surfaces for each created window<br></details><details><summary><pre class='prettyprint'>void getMonitor()</pre></summary>Don't use<br></details><h3>Structs</h3>
 <details><summary>Window</summary>
-<p>Attributes</p>
-
-	void pollevents()</details>
+<br><br><pre class='prettyprint'><br><br>void pollevents();<br><br>int x = 0,<br>y = 0,<br>width = 0,<br>height = 0;<br><br>long middleX = 0, middleY = 0;<br><br>bool close_request = false,<br>decorated = true,<br>cursor = true,<br>consume_input = true,<br>focused = true,<br>minimized = false;<br><br>VkSurfaceKHR surface;<br><br>HWND __impl_window;<br>HCURSOR __impl_cursor;<br><br></pre></details>
     </div>
 </body>
 </html>

@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,11 +22,11 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>void precreation()</summary></details><details><summary>VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size)</summary></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void precreation()</pre></summary></details><details><summary><pre class='prettyprint'>VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size)</pre></summary></details><h3>Structs</h3>
 <details><summary>ShaderPipe</summary>
-<p>Attributes</p>
-
-	unsigned int layoutIndex</details>
+<br><br><pre class='prettyprint'><br><br>unsigned int layoutIndex;<br>VkPipelineShaderStageCreateInfo* shader;<br>VkVertexInputAttributeDescription* inputs;<br>VkDescriptorSetLayoutBinding* layouts;<br>unsigned int shaderCount;<br>unsigned int inputCount;<br>unsigned int layoutCount;<br><br>ShaderPipe() {<br></pre></details>
     </div>
 </body>
 </html>

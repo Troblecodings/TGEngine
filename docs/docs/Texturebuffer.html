@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,16 +22,14 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded)</summary></details><details><summary>void createSampler(SamplerInputInfo input)</summary></details><details><summary>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded)</summary></details><details><summary>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output)</summary></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded)</pre></summary></details><details><summary><pre class='prettyprint'>void createSampler(SamplerInputInfo input)</pre></summary></details><details><summary><pre class='prettyprint'>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded)</pre></summary></details><details><summary><pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output)</pre></summary></details><h3>Structs</h3>
 <details><summary>TextureDefaults</summary>
-<p>Attributes</p>
-		VkSampler sampler</details><details><summary>SamplerInputInfo</summary>
-<p>Attributes</p>
-		VkSamplerAddressMode uSamplerMode</details><details><summary>Texture</summary>
-<p>Attributes</p>
-		uint32_t       id</details><details><summary>TextureInputInfo</summary>
-<p>Attributes</p>
-		uint8_t*  data</details>
+<br><br><pre class='prettyprint'><br>VkSampler sampler;<br>float     anisotropyFilter;<br>uint32_t  mipmapLevels;<br><br></pre></details><details><summary>SamplerInputInfo</summary>
+<br><br><pre class='prettyprint'><br>VkSamplerAddressMode uSamplerMode;<br>VkSamplerAddressMode vSamplerMode;<br>VkFilter             filterMagnification;<br>VkFilter             filterMignification;<br><br></pre></details><details><summary>Texture</summary>
+<br><br><pre class='prettyprint'><br>uint32_t       id;<br>VkImage        image;<br>VkImageView    view;<br>VkDeviceMemory imagememory;<br><br></pre></details><details><summary>TextureInputInfo</summary>
+<br><br><pre class='prettyprint'><br>uint8_t*  data;<br>int       x;<br>int       y;<br>int       comp;<br><br></pre></details>
     </div>
 </body>
 </html>

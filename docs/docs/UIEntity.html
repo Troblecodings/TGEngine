@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,7 +22,9 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>				UIEntity* parent = nullptr</summary>Entity class that holds draw and update components<br></details><details><summary>				void addDrawable(UIDrawable* component)</summary></details><details><summary>void addUpdatable(UIUpdatable* component)</summary></details><details><summary>void addChildren(UIEntity* children)</summary></details><details><summary>void removeDrawable(UIDrawable* component)</summary></details><details><summary>void removeUpdatable(UIUpdatable* component)</summary></details><details><summary>void removeChildren(UIEntity* children)</summary></details><details><summary>				void init()</summary></details><details><summary>void update()</summary></details><details><summary>void draw(IndexBuffer* index, VertexBuffer* vertex)</summary></details><details><summary>				bool isEnabled()</summary></details><details><summary>void setEnabled(bool enabled)</summary></details><details><summary>				bool isVisible()</summary></details><details><summary>void setVisible(bool visible)</summary></details><details><summary>				glm::vec2 getPosition()</summary></details><details><summary>glm::vec2 getExtent()</summary></details><details><summary>				glm::vec2 getLocalPosition()</summary></details><details><summary>glm::vec2 getLocalExtent()</summary></details><details><summary>glm::vec2 getOffset()</summary></details><details><summary>				void setPosition(glm::vec2 position)</summary></details><details><summary>void setExtent(glm::vec2 extent)</summary></details><details><summary>void setOffset(glm::vec2 offset)</summary></details><details><summary>void setOffset(Anchor anchor)</summary></details><details><summary>				void onAddTo(UIEntity* parent)</summary></details><details><summary>void onRemoveFrom(UIEntity* parent)</summary></details><details><summary>				glm::vec2 __getPosition()</summary></details><details><summary>glm::vec2 __getOffset()</summary></details><details><summary>void __update()</summary></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>UIEntity* parent = nullptr</pre></summary>Entity class that holds draw and update components<br></details><details><summary><pre class='prettyprint'>void addDrawable(UIDrawable* component)</pre></summary></details><details><summary><pre class='prettyprint'>void addUpdatable(UIUpdatable* component)</pre></summary></details><details><summary><pre class='prettyprint'>void addChildren(UIEntity* children)</pre></summary></details><details><summary><pre class='prettyprint'>void removeDrawable(UIDrawable* component)</pre></summary></details><details><summary><pre class='prettyprint'>void removeUpdatable(UIUpdatable* component)</pre></summary></details><details><summary><pre class='prettyprint'>void removeChildren(UIEntity* children)</pre></summary></details><details><summary><pre class='prettyprint'>void init()</pre></summary></details><details><summary><pre class='prettyprint'>void update()</pre></summary></details><details><summary><pre class='prettyprint'>void draw(IndexBuffer* index, VertexBuffer* vertex)</pre></summary></details><details><summary><pre class='prettyprint'>bool isEnabled()</pre></summary></details><details><summary><pre class='prettyprint'>void setEnabled(bool enabled)</pre></summary></details><details><summary><pre class='prettyprint'>bool isVisible()</pre></summary></details><details><summary><pre class='prettyprint'>void setVisible(bool visible)</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 getPosition()</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 getExtent()</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 getLocalPosition()</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 getLocalExtent()</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 getOffset()</pre></summary></details><details><summary><pre class='prettyprint'>void setPosition(glm::vec2 position)</pre></summary></details><details><summary><pre class='prettyprint'>void setExtent(glm::vec2 extent)</pre></summary></details><details><summary><pre class='prettyprint'>void setOffset(glm::vec2 offset)</pre></summary></details><details><summary><pre class='prettyprint'>void setOffset(Anchor anchor)</pre></summary></details><details><summary><pre class='prettyprint'>void onAddTo(UIEntity* parent)</pre></summary></details><details><summary><pre class='prettyprint'>void onRemoveFrom(UIEntity* parent)</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 __getPosition()</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec2 __getOffset()</pre></summary></details><details><summary><pre class='prettyprint'>void __update()</pre></summary></details><h3>Structs</h3>
 
     </div>
 </body>

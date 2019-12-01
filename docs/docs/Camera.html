@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,10 +22,11 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL</summary></details><details><summary>			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL</summary></details><details><summary>			glm::vec3 rotation{}</summary></details><details><summary>		void updateCamera(int width, int height)</summary>Updates the active camera camera matrix and uploads it to the uniform buffer in the shader<br>   -> Also sets perspective with the given width and height<br></details><details><summary>		void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)</summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary>		void __impl_keyinput_handle(uint16_t chr, bool down)</summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary>		void initCameras()</summary>Initalizes the camera Uniformbuffer and etc.<br></details><details><summary>		void createCamera(Camera* camera)</summary>Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera<br> from StaticCamera.hpp for example.<br><br>   -> mouse_input_handler will not be set<br>   -> key_input_handler will not be set<br></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL</pre></summary></details><details><summary><pre class='prettyprint'>void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL</pre></summary></details><details><summary><pre class='prettyprint'>glm::vec3 rotation{}</pre></summary></details><details><summary><pre class='prettyprint'>void updateCamera(int width, int height)</pre></summary>Updates the active camera camera matrix and uploads it to the uniform buffer in the shader<br>   -> Also sets perspective with the given width and height<br></details><details><summary><pre class='prettyprint'>void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)</pre></summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary><pre class='prettyprint'>void __impl_keyinput_handle(uint16_t chr, bool down)</pre></summary>Internal method. You shouldn't use it ... I mean you can but why would you?<br></details><details><summary><pre class='prettyprint'>void initCameras()</pre></summary>Initalizes the camera Uniformbuffer and etc.<br></details><details><summary><pre class='prettyprint'>void createCamera(Camera* camera)</pre></summary>Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera<br> from StaticCamera.hpp for example.<br><br>   -> mouse_input_handler will not be set<br>   -> key_input_handler will not be set<br></details><h3>Structs</h3>
 <details><summary>Camera</summary>
-<p>Attributes</p>
-	namespace gmc </details>
+<br><br><pre class='prettyprint'><br>float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0<br><br>float fov = (float)PI * 0.5f; // Field of view in radians<br>float nearClipPlain = 0.01f; // The nearest thing to the camera<br>float farClipPlain = 1000.0f; // The farest thing from the camera<br><br>void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)<br>void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)<br><br>glm::vec3 rotation{<br></pre></details>
     </div>
 </body>
 </html>

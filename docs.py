@@ -34,14 +34,25 @@ def scanFile(file, name):
                 detail = detail[0:len(detail)-1]
             
             if lineTest(line):
-                tmp += "<details><summary>" + tmpspl[len(tmpspl) - 1] + "</summary>" + detail + "</details>"
+                tmp += "<details><summary><pre class='prettyprint'>" + tmpspl[len(tmpspl) - 1].strip() + "</pre></summary>" + detail + "</details>"
             if "struct " in line:
                 tst = line.split("struct ")
                 if len(tst) == 1:
                     tst = tst[0]
                 else:
                     tst = tst[1]
-                tmpstr += "<details><summary>" + tst.split("{")[0].strip() + "</summary>" + detail + "\n<p>Attributes</p>" + line.split("{")[1].split("}")[0] + "</details>"
+                structname = tst.split("{")[0].strip()
+                splitstr = re.split(r"struct\s+" + structname + "\s*{", rgl)
+                if len(splitstr) == 1:
+                    splitstr = splitstr[0]
+                else:
+                    splitstr = splitstr[1]
+                splitstr = splitstr.split("}")[0]
+                atrs = ""
+                for atr in splitstr.split("\n"):
+                    if re.match(r"[()#{}]|extern|namespace", atr) == None:
+                        atrs += atr.strip() + "<br>"
+                tmpstr += "<details><summary>" + structname + "</summary>" + detail + "\n<br><br><pre class='prettyprint'>" + atrs + "</pre></details>"
     if tmp == "" and tmpstr == "":
         return;
     print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")

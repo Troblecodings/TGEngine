@@ -4,9 +4,16 @@
     <title>TGEngine Documentations</title>
     <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
 </head>
 <body>
 
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
     <h1>Documentations</h1>
 
     <div class="menu">
@@ -15,7 +22,9 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-            <details><summary>			char* getString(const char* name)</summary>Property storage -> only for tiny bits of data<br>/<br><br> Gets the value or returns 0. false or an empty string<br></details><details><summary>bool getBoolean(const char* name)</summary></details><details><summary>float getFloat(const char* name)</summary></details><details><summary>int getInt(const char* name)</summary></details><details><summary>			char* getStringOrDefault(const char* name, char* def)</summary>Gets the value or returns the default if it shouldn't find the name<br></details><details><summary>bool getBooleanOrDefault(const char* name, bool def)</summary></details><details><summary>float getFloatOrDefault(const char* name, float def)</summary></details><details><summary>int getIntOrDefault(const char* name, int def)</summary></details><details><summary>			void addString(const char* name, char* value)</summary>Add values to the properties<br></details><details><summary>void addBoolean(const char* name, bool value)</summary></details><details><summary>void addFloat(const char* name, float value)</summary></details><details><summary>void addInt(const char* name, int value)</summary></details><h3>Structs</h3>
+        <p>Click an a function or struct to see more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>char* getString(const char* name)</pre></summary>Property storage -> only for tiny bits of data<br>/<br><br> Gets the value or returns 0. false or an empty string<br></details><details><summary><pre class='prettyprint'>bool getBoolean(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>float getFloat(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>int getInt(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>char* getStringOrDefault(const char* name, char* def)</pre></summary>Gets the value or returns the default if it shouldn't find the name<br></details><details><summary><pre class='prettyprint'>bool getBooleanOrDefault(const char* name, bool def)</pre></summary></details><details><summary><pre class='prettyprint'>float getFloatOrDefault(const char* name, float def)</pre></summary></details><details><summary><pre class='prettyprint'>int getIntOrDefault(const char* name, int def)</pre></summary></details><details><summary><pre class='prettyprint'>void addString(const char* name, char* value)</pre></summary>Add values to the properties<br></details><details><summary><pre class='prettyprint'>void addBoolean(const char* name, bool value)</pre></summary></details><details><summary><pre class='prettyprint'>void addFloat(const char* name, float value)</pre></summary></details><details><summary><pre class='prettyprint'>void addInt(const char* name, int value)</pre></summary></details><h3>Structs</h3>
 
     </div>
 </body>
