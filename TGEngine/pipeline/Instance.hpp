@@ -11,7 +11,7 @@ void createInstance();
 
 #ifdef DEBUG
 /*
- * This defines the debug callback for the messages of the vulkan debug extension
+ * This defines the debug callback for the messages of the Vulkan debug extension
  */
 VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
