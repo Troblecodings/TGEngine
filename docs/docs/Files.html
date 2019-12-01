@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <p>Click on a function or struct to reveal more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void initFileSystem()</pre></summary>Querys the current working directory and initalizes all other systems<br><br> Use "current_working_dir" to get the cwd after quereing.<br> (Is automatically called in startTGEngine())<br></details><details><summary><pre class='prettyprint'>File open(char* name, char* mode)</pre></summary>Opens the file<br> (In debug mode it checks if the open was successful)<br></details><details><summary><pre class='prettyprint'>File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength)</pre></summary>Opens the file and gets the size of the file<br> (In debug mode it checks if the open was successful)<br> (the long* needs to be valid pointer, will be checked in debug mode)<br></details><details><summary><pre class='prettyprint'>uint8_t* readAll(char* name)</pre></summary>Reads all bytes of a file<br> (In debug mode it checks if the open was successful)<br></details><h3>Structs</h3>
+<details><summary>ResourceDescriptor</summary>
+<br><br><pre class='prettyprint'><br>uint64_t offset;<br>uint64_t size;<br><br></pre></details>
+    </div>
+</body>
+</html>

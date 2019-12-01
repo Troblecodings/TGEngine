@@ -11,8 +11,6 @@
 extern std::vector<VkFramebuffer> frame_buffer;
 extern std::vector<VkImageView> image_view;
 
-SINCE(0, 0, 1)
 void createFramebuffer();
 
-SINCE(0, 0, 1)
 void destroyFrameBuffer();

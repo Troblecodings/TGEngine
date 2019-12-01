@@ -18,8 +18,7 @@ namespace tge {
 		 *     can be changed
 		 *	-----------------------------------------------------------
 		 */
-		SINCE(0, 0, 4)
-			class UITextComponent : public UIDrawable {
+		class UITextComponent : public UIDrawable {
 
 			private:
 				glm::vec4 fontColor;

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block 
+    }    
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <p>Click on a function or struct to reveal more information</p>
+        <h3>Functions</h3>
+        <details><summary><pre class='prettyprint'>void createStagingBuffer(StagingBuffer* staging_buffer)</pre></summary></details><details><summary><pre class='prettyprint'>void destroyStagingBuffer()</pre></summary></details><h3>Structs</h3>
+<details><summary>StagingBuffer</summary>
+<br><br><pre class='prettyprint'><br>VkDeviceSize size;<br>VkBuffer* destination;<br><br>VkBuffer staging_buffer;<br>VkDeviceMemory staging_buffer_device_memory;<br><br></pre></details>
+    </div>
+</body>
+</html>

@@ -51,7 +51,6 @@ x = desktop.right;\
 y = desktop.bottom;
 
 
-SINCE(0, 0, 3)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
@@ -59,33 +58,31 @@ extern uint32_t d_width, d_height;
 extern std::vector<Window*> windowList;
 
 /*
- * Creates a window based on the properties
+ * Creates a window with the constraints given
+ * by the read properties, therfore this is
+ * defined by the according xml file
+ * See Stdbase.hpp
+ *   -> extern prop::Properties* properties;
  */
-SINCE(0, 0, 1)
 void createWindow(Window* window);
 
 /*
  * Creates the actual window
  * Attention! Much platform code here!
  */
-SINCE(0, 0, 3)
 void createWindowClass();
 
 /*
  * Destroys all windows
  */
-SINCE(0, 0, 4)
 void destroyWindows();
 
 /*
  * Create surfaces for each created window
  */
-SINCE(0, 0, 4)
 void createWindowSurfaces();
 
 /*
  * Don't use
  */
-UNFINISHED
-SINCE(0, 0, 1)
 void getMonitor();

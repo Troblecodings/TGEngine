@@ -13,8 +13,7 @@
 namespace tge {
 	namespace fnt {
 
-		SINCE(0, 0, 4)
-			class Font {
+		class Font {
 
 			private:
 				uint32_t height = 20;
@@ -32,14 +31,11 @@ namespace tge {
 				/*
 				* Draws a string to the screen (UI only)
 				*/
-				SINCE(0, 0, 3)
-					void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color);
+				void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color);
 
-				SINCE(0, 0, 4)
-					uint32_t getMaterialIndex();
+				uint32_t getMaterialIndex();
 
-				SINCE(0, 0, 4)
-					glm::vec2 getExtent(char* chr);
+				glm::vec2 getExtent(char* chr);
 		};
 	}
 }

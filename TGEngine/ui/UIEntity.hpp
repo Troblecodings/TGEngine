@@ -25,8 +25,7 @@ namespace tge {
 		/*
 		 * 	Entity class that holds draw and update components
 		 */
-		SINCE(0, 0, 4)
-			class UIEntity {
+		class UIEntity {
 
 			private:
 				// The parent entity (can be null for none)
@@ -100,8 +99,7 @@ namespace tge {
 				void onRemoveFrom(UIEntity* parent);
 
 			private:
-				INTERNAL
-					glm::vec2 __getPosition();
+				glm::vec2 __getPosition();
 				glm::vec2 __getOffset();
 				void __update();
 		};
