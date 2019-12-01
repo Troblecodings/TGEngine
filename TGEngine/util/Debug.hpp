@@ -8,6 +8,6 @@
 
 /*
  * Prints a version with the Format MAJOR.MINOR.VERSION e.g. 1.0.0
- * You can built it with VK_MAKE_VERSION
+ * You can build it with VK_MAKE_VERSION
  */
 void printVersion(int version);
