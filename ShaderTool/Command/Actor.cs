@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
@@ -12,7 +13,7 @@ namespace ShaderTool.Command {
 
             switch (args[0]) {
                 case "add":
-                    return ActorAdd(GetParams(args));
+                    return ActorAdd(GetParams(args)); // param 1: name, param 2: material
                 case "rm":
                     return 0;
                 case "make":
@@ -28,12 +29,28 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorAdd(string[] args) {
-            AsssertNoneNull(args);
-            return 0;
+            AsssertValues(args, 2); // has to be two params, one for name and one for material
+
+            string name = args[0];
+            string path = Program.CWD + "\\" + name + "Actor.json";
+
+            if (!File.Exists(path))
+                File.Create(path).Close();
+            
+            // TODO
+
+            return SUCESS;
         }
+
+        // TODO actorrm
+        // TODO actormake
+        // TODO actorlist
+        // TODO actorshow
+
     }
 
     class ActorData {
+        string name;
         float[][] localTransform;
         uint[] indices;
         float[] vertices;
