@@ -40,7 +40,7 @@ namespace tge {
 
 		/*
 		 * Opens the file
-		 * (In debug mode it checks if the open was successfull)
+		 * (In debug mode it checks if the open was successful)
 		 */
 		File open(char* name, char* mode);
 
