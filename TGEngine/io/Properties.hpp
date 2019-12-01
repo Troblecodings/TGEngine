@@ -30,7 +30,7 @@ namespace prop {
 			int getInt(const char* name);
 
 			/*
-			 * Gets the value or returns the default if it shouldn't find the name
+			 * Gets the value or returns the default in case it can't find the name
 			 */
 			char* getStringOrDefault(const char* name, char* def);
 			bool getBooleanOrDefault(const char* name, bool def);
