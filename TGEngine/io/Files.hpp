@@ -52,7 +52,7 @@ namespace tge {
 		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
 
 		/*
-		 * Reads all bytes out of a file
+		 * Reads all bytes of a file
 		 * (In debug mode it checks if the open was successfull)
 		 */
 		uint8_t* readAll(char* name);
