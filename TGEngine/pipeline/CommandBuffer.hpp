@@ -21,8 +21,6 @@ extern std::vector<VkCommandBuffer> command_buffers;
 extern VkDeviceSize offsets;
 extern bool started;
 
-/*
-*/
 void createCommandBuffer();
 
 void startSingleTimeCommand();

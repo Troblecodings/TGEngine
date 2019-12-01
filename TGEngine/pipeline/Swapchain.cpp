@@ -16,7 +16,7 @@ void createSwapchain() {
 	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities);
 	HANDEL(lastResult)
 
-		imagecount = TGE_MIN(TGE_MIN(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
+		imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
 	VkSwapchainCreateInfoKHR swapchain_create_info = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
