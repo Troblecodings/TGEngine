@@ -18,7 +18,7 @@ splitcommendreg = re.compile("^\/?\*")
 def scanFile(file, name):
     tmp = ""
     tmpstr = ""
-    name = name.replace(".hpp", "") + ".html"
+    name = name.replace(".hpp", ".html")
     with open(file) as fp:
         rgl = fp.read()
         for line in rgl.split(";"):
