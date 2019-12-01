@@ -45,7 +45,7 @@ namespace tge {
 		File open(char* name, char* mode);
 
 		/*
-		 * Opens the file and get's the size of the file
+		 * Opens the file and gets the size of the file
 		 * (In debug mode it checks if the open was successfull)
 		 * (the long* needs to be valid pointer, will be checked in debug mode)
 		 */
