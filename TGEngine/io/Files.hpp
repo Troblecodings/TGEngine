@@ -46,7 +46,7 @@ namespace tge {
 
 		/*
 		 * Opens the file and gets the size of the file
-		 * (In debug mode it checks if the open was successfull)
+		 * (In debug mode it checks if the open was successful)
 		 * (the long* needs to be valid pointer, will be checked in debug mode)
 		 */
 		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
