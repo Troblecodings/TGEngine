@@ -22,7 +22,7 @@ namespace prop {
 	class Properties {
 		public:
 			/*
-			 * Gets the value or returns 0. false or an empty string
+			 * Gets the value or returns 0, false or an empty string
 			 */
 			char* getString(const char* name);
 			bool getBoolean(const char* name);
