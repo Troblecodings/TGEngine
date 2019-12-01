@@ -33,7 +33,7 @@ namespace tge {
 		/*
 		 * Querys the current working directory and initalizes all other systems
 		 *
-		 * Use "current_working_dir" to get the cwd after quereing.
+		 * Use "current_working_dir" to get the cwd after querying.
 		 * (Is automatically called in startTGEngine())
 		 */
 		void initFileSystem();

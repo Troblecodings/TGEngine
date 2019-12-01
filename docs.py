@@ -57,7 +57,10 @@ def scanFile(file, name):
         return;
     print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")
     with open(docsfld + name, "w") as fp:
-        fp.write(preset.replace("%DOCCONT%", tmp + "<h3>Structs</h3>\n" + tmpstr))
+        structs = ""
+        if tmpstr != "":
+            structs = "<h3>Structs</h3>\n" + tmpstr
+        fp.write(preset.replace("%DOCCONT%", tmp + structs))
         
 
 

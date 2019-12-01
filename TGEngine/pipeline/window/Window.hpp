@@ -58,7 +58,11 @@ extern uint32_t d_width, d_height;
 extern std::vector<Window*> windowList;
 
 /*
- * Creates a window based on the properties
+ * Creates a window with the constraints given
+ * by the read properties, therfore this is
+ * defined by the according xml file
+ * See Stdbase.hpp
+ *   -> extern prop::Properties* properties;
  */
 void createWindow(Window* window);
 
