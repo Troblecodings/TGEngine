@@ -32,6 +32,8 @@ def scanFile(path, fileName):
         fileContent = f.read().replace("\t", "")
         htmlContent += parseFunctionsAndComments(fileContent)
         htmlContent += parseStructs(fileContent)
+    if htmlContent == "":
+        return
     with open(docsFolder + newFileName, "w") as newHtml:
         newHtml.write(htmlTemplate.replace("<!--CONTENT-->", htmlContent))
         print("<a href='" + newFileName + "'>" +
