@@ -1,78 +1,78 @@
 import os
-import os.path
-import re
+import re  # regular expressions
 
-docsfld = "docs/docs/"
-preset = None
+docsFolder = "docs/docs/"
+templatesFolder = "docs/templates/"
+htmlTemplate = ""
+htmlFunctionTemplate = ""
 
-with open(docsfld + "std.html") as std:
-    preset = std.read()
+with open(templatesFolder + "template.html") as html:
+    htmlTemplate = html.read()
 
-def lineTest(line):
-    spl = line.split("(")[0]
-    return '(' in line and ')' in line and re.match(r"^[^=#]+$", spl) and re.search(r"\s", spl)
-    
-
-splitcommendreg = re.compile("^\/?\*")
-
-def scanFile(file, name):
-    tmp = ""
-    tmpstr = ""
-    name = name.replace(".hpp", ".html")
-    with open(file) as fp:
-        rgl = fp.read()
-        for line in rgl.split(";"):
-            line = line.strip()
-            tmpspl = re.split("[\n\r]", line)
-            detail = ""
-            for item in tmpspl:
-                item = item.strip()
-                if splitcommendreg.match(item):
-                    detail += splitcommendreg.sub("", item) + "\n"
-            detail = detail.strip().replace("\n", "<br>")
-            if detail.endswith("/"):
-                detail = detail[0:len(detail)-1]
-            
-            if lineTest(line):
-                tmp += "<details><summary><pre class='prettyprint'>" + tmpspl[len(tmpspl) - 1].strip() + "</pre></summary>" + detail + "</details>"
-            if "struct " in line:
-                tst = line.split("struct ")
-                if len(tst) == 1:
-                    tst = tst[0]
-                else:
-                    tst = tst[1]
-                structname = tst.split("{")[0].strip()
-                splitstr = re.split(r"struct\s+" + structname + "\s*{", rgl)
-                if len(splitstr) == 1:
-                    splitstr = splitstr[0]
-                else:
-                    splitstr = splitstr[1]
-                splitstr = splitstr.split("}")[0]
-                atrs = ""
-                for atr in splitstr.split("\n"):
-                    if re.match(r"[()#{}]|extern|namespace", atr) == None:
-                        atrs += atr.strip() + "<br>"
-                tmpstr += "<details><summary>" + structname + "</summary>" + detail + "\n<br><br><pre class='prettyprint'>" + atrs + "</pre></details>"
-    if tmp == "" and tmpstr == "":
-        return;
-    print("<a href='" + name + "'>" + name.replace(".html", "") + "</a>")
-    with open(docsfld + name, "w") as fp:
-        structs = ""
-        if tmpstr != "":
-            structs = "<h3>Structs</h3>\n" + tmpstr
-        fp.write(preset.replace("%DOCCONT%", tmp + structs))
-        
+with open(templatesFolder + "template_functions-structs.html") as functionTemplate:
+    htmlFunctionTemplate = functionTemplate.read()
 
 
-def searchTree(pth):
-    for file in os.listdir(pth):
-        pt = pth + "/" + file
-        if os.path.isdir(pt):
-            searchTree(pt)
+# recursive function that applies the scanFile function to every .hpp
+def searchTree(path):
+    for file in os.listdir(path):
+        currentPath = path + "/" + file
+        if os.path.isdir(currentPath):
+            searchTree(currentPath)
             continue
         if file.endswith(".hpp"):
-            scanFile(pt, file)
+            scanFile(currentPath, file)
+
+
+# scans the entire file for comments, functions, structs, and documents them in an html
+def scanFile(path, fileName):
+    newFileName = fileName.replace(".hpp", ".html")
+    htmlContent = ""
+    with open(path) as f:
+        fileContent = f.read().replace("\t", "")
+        htmlContent += parseFunctionsAndComments(fileContent)
+        htmlContent += parseStructs(fileContent)
+    with open(docsFolder + newFileName, "w") as newHtml:
+        newHtml.write(htmlTemplate.replace("<!--CONTENT-->", htmlContent))
+        print("<a href='" + newFileName + "'>" +
+              newFileName.replace(".html", "") + "</a>")
+
+
+# finds all functions and comments (and also externally declared variables) and puts them into the html template
+def parseFunctionsAndComments(fileContent):
+    htmlFunctionContent = ""
+    myBeautifulRegex = re.compile(
+        r"/\*\s([\s\S]*?)\s\*/\s*(\w+ \w+.*);", re.MULTILINE)  # finds each comment/function pair and groups them in a list of tuples
+
+    for match in myBeautifulRegex.findall(fileContent):
+        # comment: match[0], function: match[1]
+        comment = ""
+        function = match[1]
+        for commentLine in re.split(r"[\n\r]", match[0]):
+            # removes the asterisks from the beginning of each comment
+            comment += re.sub(r"^[\*\s]*", "", commentLine).strip() + "<br>\n"
+        htmlFunctionContent += htmlFunctionTemplate.replace(
+            "<!--NAME-->", function).replace("<!--DETAILS-->", comment) + "\n"
+    return htmlFunctionContent
+
+
+# finds all structs and puts them into the html template
+def parseStructs(fileContent):
+
+    htmlStructsContent = ""
+    myOtherBeautifulRegex = re.compile(
+        r"struct (\w+) {\s([\s\S]+)\s};", re.MULTILINE)  # finds each struct
+
+    if "struct " in fileContent:
+        htmlStructsContent += "<h3>Structs</h3>\n"
+        for struct in myOtherBeautifulRegex.findall(fileContent):
+            structName = struct[0]
+            structContent = struct[1].replace("\n", "<br>\n")
+            htmlStructsContent += htmlFunctionTemplate.replace(
+                "<!--NAME-->", structName).replace("<!--DETAILS-->", structContent) + "\n"
+        return htmlStructsContent
+    else:
+        return ""
 
 
 searchTree("TGEngine")
-    
