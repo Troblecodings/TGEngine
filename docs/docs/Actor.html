@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,9 +24,19 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize)</pre></summary></details><details><summary><pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize)</pre></summary></details><details><summary><pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer)</pre></summary></details><h3>Structs</h3>
-<details><summary>ActorInputInfo</summary>
-<br><br><pre class='prettyprint'><br>glm::mat4 localTransform;<br>uint32_t*  indices;<br>uint8_t*  vertices;<br>uint8_t   material;<br>uint32_t  indexCount;<br>uint16_t  vertexCount;<br><br></pre></details>
+        <h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>ActorInputInfo</pre>
+    </summary>
+    glm::mat4 localTransform;<br>
+uint32_t*  indices;<br>
+uint8_t*  vertices;<br>
+uint8_t   material;<br>
+uint32_t  indexCount;<br>
+uint16_t  vertexCount;
+</details>
+
     </div>
 </body>
 </html>

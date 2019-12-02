@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,10 +24,22 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo)</pre></summary></details><h3>Structs</h3>
-<details><summary>BufferInputInfo</summary>
-<br><br><pre class='prettyprint'><br>VkShaderStageFlags flags;<br>uint32_t           size;<br>uint32_t           memoryIndex;<br>VkBufferUsageFlags bufferUsageFlag;<br><br></pre></details><details><summary>BufferObject</summary>
-<br><br><pre class='prettyprint'><br>VkBuffer buffer;<br>VkDeviceMemory memory;<br><br></pre></details>
+        <h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>BufferInputInfo</pre>
+    </summary>
+    VkShaderStageFlags flags;<br>
+uint32_t           size;<br>
+uint32_t           memoryIndex;<br>
+VkBufferUsageFlags bufferUsageFlag;<br>
+};<br>
+<br>
+struct BufferObject {<br>
+VkBuffer buffer;<br>
+VkDeviceMemory memory;
+</details>
+
     </div>
 </body>
 </html>

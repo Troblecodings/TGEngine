@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,9 +24,79 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void pollevents()</pre></summary></details><details><summary><pre class='prettyprint'>GetWindowRect(hDesktop, &desktop)</pre></summary></details><details><summary><pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)</pre></summary></details><details><summary><pre class='prettyprint'>void createWindow(Window* window)</pre></summary>Creates a window based on the properties<br></details><details><summary><pre class='prettyprint'>void createWindowClass()</pre></summary>Creates the actual window<br> Attention! Much platform code here!<br></details><details><summary><pre class='prettyprint'>void destroyWindows()</pre></summary>Destroys all windows<br></details><details><summary><pre class='prettyprint'>void createWindowSurfaces()</pre></summary>Create surfaces for each created window<br></details><details><summary><pre class='prettyprint'>void getMonitor()</pre></summary>Don't use<br></details><h3>Structs</h3>
-<details><summary>Window</summary>
-<br><br><pre class='prettyprint'><br><br>void pollevents();<br><br>int x = 0,<br>y = 0,<br>width = 0,<br>height = 0;<br><br>long middleX = 0, middleY = 0;<br><br>bool close_request = false,<br>decorated = true,<br>cursor = true,<br>consume_input = true,<br>focused = true,<br>minimized = false;<br><br>VkSurfaceKHR surface;<br><br>HWND __impl_window;<br>HCURSOR __impl_cursor;<br><br></pre></details>
+        <details>
+    <summary>
+        <pre class='prettyprint'>void createWindow(Window* window)</pre>
+    </summary>
+    Creates a window with the constraints given<br>
+by the read properties, therfore this is<br>
+defined by the according xml file<br>
+See Stdbase.hpp<br>
+-> extern prop::Properties* properties;<br>
+<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createWindowClass()</pre>
+    </summary>
+    Creates the actual window<br>
+Attention! Much platform code here!<br>
+<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyWindows()</pre>
+    </summary>
+    Destroys all windows<br>
+<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createWindowSurfaces()</pre>
+    </summary>
+    Create surfaces for each created window<br>
+<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void getMonitor()</pre>
+    </summary>
+    Don't use<br>
+<br>
+
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>Window</pre>
+    </summary>
+    <br>
+void pollevents();<br>
+<br>
+int x = 0,<br>
+y = 0,<br>
+width = 0,<br>
+height = 0;<br>
+<br>
+long middleX = 0, middleY = 0;<br>
+<br>
+bool close_request = false,<br>
+decorated = true,<br>
+cursor = true,<br>
+consume_input = true,<br>
+focused = true,<br>
+minimized = false;<br>
+<br>
+VkSurfaceKHR surface;<br>
+<br>
+HWND __impl_window;<br>
+HCURSOR __impl_cursor;
+</details>
+
     </div>
 </body>
 </html>

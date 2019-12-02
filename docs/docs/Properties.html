@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,7 +24,50 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>char* getString(const char* name)</pre></summary>Property storage -> only for tiny bits of data<br>/<br><br> Gets the value or returns 0, false or an empty string<br></details><details><summary><pre class='prettyprint'>bool getBoolean(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>float getFloat(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>int getInt(const char* name)</pre></summary></details><details><summary><pre class='prettyprint'>char* getStringOrDefault(const char* name, char* def)</pre></summary>Gets the value or returns the default in case it can't find the name<br></details><details><summary><pre class='prettyprint'>bool getBooleanOrDefault(const char* name, bool def)</pre></summary></details><details><summary><pre class='prettyprint'>float getFloatOrDefault(const char* name, float def)</pre></summary></details><details><summary><pre class='prettyprint'>int getIntOrDefault(const char* name, int def)</pre></summary></details><details><summary><pre class='prettyprint'>void addString(const char* name, char* value)</pre></summary>Add values to the properties<br></details><details><summary><pre class='prettyprint'>void addBoolean(const char* name, bool value)</pre></summary></details><details><summary><pre class='prettyprint'>void addFloat(const char* name, float value)</pre></summary></details><details><summary><pre class='prettyprint'>void addInt(const char* name, int value)</pre></summary></details>
+        <details>
+    <summary>
+        <pre class='prettyprint'>void addString(const char* name, char* value)</pre>
+    </summary>
+    Property storage -> only for tiny bits of data<br>
+/<br>
+class Properties {<br>
+public:<br>
+/*<br>
+Gets the value or returns 0, false or an empty string<br>
+/<br>
+char* getString(const char* name);<br>
+bool getBoolean(const char* name);<br>
+float getFloat(const char* name);<br>
+int getInt(const char* name);<br>
+<br>
+/*<br>
+Gets the value or returns the default in case it can't find the name<br>
+/<br>
+char* getStringOrDefault(const char* name, char* def);<br>
+bool getBooleanOrDefault(const char* name, bool def);<br>
+float getFloatOrDefault(const char* name, float def);<br>
+int getIntOrDefault(const char* name, int def);<br>
+<br>
+/*<br>
+Add values to the properties<br>
+<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void readProperties(char* path, Properties* prop)</pre>
+    </summary>
+    Reads a Property File in XML-Style<br>
+Example XML:<br>
+<xml><br>
+<boolean name="testboolean" value="true"/><br>
+<string name="teststring" value="test"/><br>
+<int name="testint" value="117"/><br>
+<float name="testfloat" value="0.9"/><br>
+</xml><br>
+
+</details>
+
     </div>
 </body>
 </html>
