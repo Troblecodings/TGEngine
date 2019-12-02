@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -31,14 +32,27 @@ namespace ShaderTool.Command {
         public static int ActorAdd(string[] args) {
             AsssertValues(args, 2); // has to be two params, one for name and one for material
 
-            string name = args[0];
-            string path = Program.CWD + "\\" + name + "Actor.json";
+            string actorName = args[0];
+            string materialName = args[1];
+            string path = Program.CWD + "\\" + actorName + "Actor.json";
+
+            Material.Load();
+            bool success = Material.MATERIALS.TryGetValue(materialName, out MaterialData materialData);
+
+            if (!success)
+                return WRONG_PARAMS; // material was not found
 
             if (!File.Exists(path))
                 File.Create(path).Close();
-            
-            // TODO
 
+            ActorData newActor = new ActorData {
+                name = actorName,
+                material = materialData.id
+            };
+
+            JsonConvert.SerializeObject(newActor);
+
+            File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Formatting.Indented));
             return SUCESS;
         }
 
@@ -50,12 +64,12 @@ namespace ShaderTool.Command {
     }
 
     class ActorData {
-        string name;
-        float[][] localTransform;
-        uint[] indices;
-        float[] vertices;
-        byte material;
-        uint indexCount;
-        ushort vertexCount;
+        public string name;
+        public float[][] localTransform;
+        public uint[] indices;
+        public float[] vertices;
+        public byte material;
+        public uint indexCount;
+        public ushort vertexCount;
     }
 }

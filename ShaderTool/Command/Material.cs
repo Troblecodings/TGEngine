@@ -10,7 +10,8 @@ using static ShaderTool.Util.Util;
 namespace ShaderTool.Command {
     class Material {
 
-        public static Dictionary<string, MaterialData> MATERIALS = new Dictionary<string, MaterialData>();
+        public static Dictionary<string, MaterialData> MATERIALS;
+        public static string actorPath = Program.CWD + "\\Materials.json";
 
         public static int MaterialCommand(string[] args) {
             AsssertNoneNull(args);
@@ -37,18 +38,24 @@ namespace ShaderTool.Command {
 
         public static void Load() {
 
-            string path = Program.CWD + "\\Materials.json";
+            if (!File.Exists(actorPath)) {
+                File.Create(actorPath).Close();
+            }
 
-            if (!File.Exists(path))
-                File.Create(path).Close();
+            string fileContent = File.ReadAllText(actorPath);
+            Dictionary<string, MaterialData> existingDict = JsonConvert.DeserializeObject<Dictionary<string, MaterialData>>(fileContent);
+
+            if (existingDict == null)
+                MATERIALS = new Dictionary<string, MaterialData>();
             else
-                MATERIALS = JsonConvert.DeserializeObject<Dictionary<string, MaterialData>>(File.ReadAllText(path));
+                MATERIALS = existingDict;
 
         }
 
         public static int MaterialSave() {
-
-            File.WriteAllText(Program.CWD + "/Resources.json", JsonConvert.SerializeObject(MATERIALS, Formatting.Indented));
+            string json = JsonConvert.SerializeObject(MATERIALS, Formatting.Indented);
+            Console.WriteLine(json);
+            File.WriteAllText(actorPath, json);
             return SUCESS;
 
         }
@@ -56,16 +63,21 @@ namespace ShaderTool.Command {
         public static int MaterialAdd(string[] args) {
 
             AsssertValues(args, 1);
-
-            if (MATERIALS.Count >= 255) { // max number of materials is 256 as the index is provided as a byte
+            if (MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
                 Console.WriteLine("Maximum limit of 256 textures reached, cannot add more");
                 return OVERFLOW;
             }
 
             string name = args[0];
+
             if (MATERIALS.ContainsKey(name))
                 return ALREADY_EXIST;
-            MATERIALS.Add(name, new MaterialData());
+
+            MaterialData newMaterial = new MaterialData {
+                id = (byte)MATERIALS.Count
+            };
+
+            MATERIALS.Add(name, newMaterial);
 
             return SUCESS;
 
@@ -109,7 +121,8 @@ namespace ShaderTool.Command {
     }
 
     class MaterialData {
-        float[] color;
-        uint diffuseTexture;
+        public byte id;
+        public float[] color;
+        public uint diffuseTexture;
     }
 }
