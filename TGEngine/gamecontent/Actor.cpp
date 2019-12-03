@@ -31,8 +31,8 @@ namespace tge::gmc {
 			countData.push_back(input.indexCount);
 			offsetData.push_back(indexBuffer.indexCount);
 			materialIds.push_back(input.material);
-			vertexBuffer.addAll(input.vertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
-			indexBuffer.addAll(input.indices, input.indexCount);
+			vertexBuffer.addAll(input.pVertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
+			indexBuffer.addAll(input.pIndices, input.indexCount);
 		}
 	}
 

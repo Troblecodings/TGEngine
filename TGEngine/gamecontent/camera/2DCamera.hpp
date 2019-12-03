@@ -6,6 +6,8 @@
 namespace tge {
 	namespace gmc {
 
+		/* This is a holder struct for 
+		 */
 		struct TopDownCamera {
 			float positionx;
 			float positiony;
@@ -13,6 +15,10 @@ namespace tge {
 			uint32_t screenheight;
 		};
 
+		/* Loads the top down matrix onto the device
+		 * this is used as basic tranform
+		 * 
+		 */
 		void setTopDownCamera(TopDownCamera* camera);
 
 	}
