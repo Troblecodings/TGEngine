@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,12 +24,71 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded)</pre></summary></details><details><summary><pre class='prettyprint'>void createSampler(SamplerInputInfo input)</pre></summary></details><details><summary><pre class='prettyprint'>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded)</pre></summary></details><details><summary><pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output)</pre></summary></details><h3>Structs</h3>
-<details><summary>TextureDefaults</summary>
-<br><br><pre class='prettyprint'><br>VkSampler sampler;<br>float     anisotropyFilter;<br>uint32_t  mipmapLevels;<br><br></pre></details><details><summary>SamplerInputInfo</summary>
-<br><br><pre class='prettyprint'><br>VkSamplerAddressMode uSamplerMode;<br>VkSamplerAddressMode vSamplerMode;<br>VkFilter             filterMagnification;<br>VkFilter             filterMignification;<br><br></pre></details><details><summary>Texture</summary>
-<br><br><pre class='prettyprint'><br>uint32_t       id;<br>VkImage        image;<br>VkImageView    view;<br>VkDeviceMemory imagememory;<br><br></pre></details><details><summary>TextureInputInfo</summary>
-<br><br><pre class='prettyprint'><br>uint8_t*  data;<br>int       x;<br>int       y;<br>int       comp;<br><br></pre></details>
+        <details>
+    <summary>
+        <pre class='prettyprint'>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createSampler(SamplerInputInfo input)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output)</pre>
+    </summary>
+    <br>
+
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>TextureDefaults</pre>
+    </summary>
+    VkSampler sampler;<br>
+float     anisotropyFilter;<br>
+uint32_t  mipmapLevels;
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>SamplerInputInfo</pre>
+    </summary>
+    VkSamplerAddressMode uSamplerMode;<br>
+VkSamplerAddressMode vSamplerMode;<br>
+VkFilter             filterMagnification;<br>
+VkFilter             filterMignification;
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>Texture</pre>
+    </summary>
+    uint32_t       id;<br>
+VkImage        image;<br>
+VkImageView    view;<br>
+VkDeviceMemory imagememory;
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>TextureInputInfo</pre>
+    </summary>
+    uint8_t*  data;<br>
+int       x;<br>
+int       y;<br>
+int       comp;
+</details>
+
     </div>
 </body>
 </html>
