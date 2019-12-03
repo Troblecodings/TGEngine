@@ -26,9 +26,9 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'></pre>
+        <pre class='prettyprint'>void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo)</pre>
     </summary>
-    void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo)<br>
+    <br>
 
 </details>
 <h3>Structs</h3>
@@ -39,11 +39,13 @@
     VkShaderStageFlags flags;<br>
 uint32_t           size;<br>
 uint32_t           memoryIndex;<br>
-VkBufferUsageFlags bufferUsageFlag;<br>
-};<br>
-<br>
-struct BufferObject {<br>
-VkBuffer buffer;<br>
+VkBufferUsageFlags bufferUsageFlag;
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>BufferObject</pre>
+    </summary>
+    VkBuffer buffer;<br>
 VkDeviceMemory memory;
 </details>
 

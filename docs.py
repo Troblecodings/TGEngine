@@ -4,7 +4,7 @@ import re  # regular expressions
 docsFolder = "docs/docs/"
 templatesFolder = "docs/templates/"
 
-# the templates use placeholders for the name/details of each struct etc.
+# the templates use placeholders for the name/details of each function/struct etc.
 htmlTemplate = ""
 htmlFunctionTemplate = ""
 
@@ -13,15 +13,21 @@ with open(templatesFolder + "template.html") as html:
 with open(templatesFolder + "template_functions-structs.html") as functionTemplate:
     htmlFunctionTemplate = functionTemplate.read()
 
+# will be concatenated with other regexes, which is why it isn't precompiled
+commentRegex = r"(?:/\*\s?([\s\S]*?)\s?\*/\s*?)?"
 
 # finds each comment/function pair and groups them in a list of tuples
 functionAndCommentRegex = re.compile(
-    r"(?:/\*\s?([\s\S]*?)\s?\*/\s*?)?(^\w.*\(.*\)[^;]?)", re.MULTILINE)
+    commentRegex + r"(^\w.*\(.*\)[^;]?)", re.MULTILINE)
 
 # finds each struct
 structRegex = re.compile(
-    r"struct (\w+) {\s([\s\S]+)\s};", re.MULTILINE)
+    commentRegex + r"^struct (\w+) {\s([\s\S]*?)\s};", re.MULTILINE)
 
+# TODO: classes
+# TODO: enums
+# TODO: externs
+# TODO: macros
 
 # recursive function that applies the scanFile function to every .hpp
 def searchTree(path):
@@ -57,10 +63,10 @@ def parseFunctionsAndComments(fileContent):
     for match in functionAndCommentRegex.findall(fileContent):
         # match will contain the comment(s) in [0] and the function name in [1]
         comment = ""
-        function = match[0]
+        function = match[1]
         if function.startswith("extern "):
             continue
-        for commentLine in re.split(r"[\n\r]", match[1]):
+        for commentLine in re.split(r"[\n\r]", match[0]):
             # removes the asterisks from the beginning of each comment
             comment += re.sub(r"^[\*\s]*", "", commentLine).strip() + "<br>\n"
         htmlFunctionContent += htmlFunctionTemplate.replace(
@@ -76,9 +82,11 @@ def parseStructs(fileContent):
     if "struct " in fileContent:
         htmlStructsContent += "<h3>Structs</h3>\n"
         for struct in structRegex.findall(fileContent):
-            # structName: match[0], content: match[1]
-            structName = struct[0]
-            structContent = struct[1].replace("\n", "<br>\n")
+            # structComment: match[0], name: match[1], content: match[2]
+            structComment = struct[0]
+            structName = struct[1]
+            structContent = struct[2].replace("\n", "<br>\n")
+            # TODO: add struct comment
             htmlStructsContent += htmlFunctionTemplate.replace(
                 "<!--NAME-->", structName).replace("<!--DETAILS-->", structContent) + "\n"
         return htmlStructsContent
@@ -93,7 +101,5 @@ for x in os.listdir(docsFolder[0:len(docsFolder) - 1]):
     if x in whitelist:
         continue
     os.remove(docsFolder + x)
-
-# NOTE: currently breaks on classes (example: Properties.html) and does not consider enums right now (also Properties.html / .hpp)
 
 searchTree("TGEngine")
