@@ -28,7 +28,23 @@
     <summary>
         <pre class='prettyprint'>void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size)</pre>
     </summary>
-    <br>
+    This holdes the materials for the render<br>
+this is equivalent to the according push constante<br>
+/<br>
+struct Material {<br>
+glm::vec4 color;<br>
+uint32_t  diffuseTexture;<br>
+};<br>
+<br>
+/* This holds all the materials for the push constant<br>
+<em>Note: This needs to be initalized before a load call</em><br>
+/<br>
+extern Material* createdMaterials;<br>
+<br>
+/*<br>
+Loads the materials into the createdMaterials<br>
+array deined by this file<br>
+<br>
 
 </details>
 <h3>Structs</h3>

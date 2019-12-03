@@ -28,21 +28,82 @@
     <summary>
         <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize)</pre>
     </summary>
-    <br>
+    This is struct holds all the information necessary<br>
+for an actor to be drawn<br>
+<br>
+use createActor to create the actors from this<br>
+struct(s)<br>
+<ul><br>
+<li></li><br>
+<li><strong class='atr'>localTransform</strong> is the local tranform that is calculated</li><br>
+<li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li><br>
+<li><strong class='atr'>pIndices</strong> is an array of indices</li><br>
+<li><strong class='atr'>vertexCount</strong> is the count of elements in pVertices</li><br>
+<li><strong class='atr'>pVertices</strong> is an array of vertices</li><br>
+<li><strong class='atr'>material</strong> is the id of the according material</li></ul><br>
+<br>
+<h4>Valid usage</h4><br>
+<ul><br>
+<li><strong class='atr'>indexCount</strong> needs to be greater than zero</li><br>
+<li><strong class='atr'>pIndices</strong> must be a valid pointer</li><br>
+<li><strong class='atr'>pIndices</strong> array must be at least the size of indexCount</li><br>
+<li><strong class='atr'>vertexCount</strong> needs to be greater than zero</li><br>
+<li><strong class='atr'>pVertices</strong> must be a valid pointer</li><br>
+<li><strong class='atr'>pVertices</strong> array must be at least the size of vertexCount</li><br>
+<li><strong class='atr'>material</strong> must be in the range form 0 to 255</li><br>
+<li><strong class='atr'>material</strong> must be a valid index in the createdMaterials arrays</li></ul><br>
+/<br>
+struct ActorInputInfo {<br>
+glm::mat4 localTransform;<br>
+uint32_t  indexCount;<br>
+uint32_t* pIndices;<br>
+uint16_t  vertexCount;<br>
+uint8_t*  pVertices;<br>
+// TODO copy material<br>
+uint8_t   material;<br>
+};<br>
+<br>
+/*<br>
+This holds the local tranforms of each actor<br>
+/<br>
+extern std::vector<glm::mat4> localTranformIds;<br>
+/*<br>
+This holds the count of indices of each actor<br>
+/<br>
+extern std::vector<uint32_t> countData;<br>
+/*<br>
+This holds the index offset of each actor<br>
+(Offset form the index buffers stating possition)<br>
+/<br>
+extern std::vector<uint32_t> offsetData;<br>
+/*<br>
+This holds the material ids for each actor<br>
+/<br>
+extern std::vector<uint8_t>  materialIds;<br>
+<br>
+/*<br>
+Loads the model from the disk<br>
+<br>
+<strong>Unfinished</strong><br>
+<br>
 
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize)</pre>
     </summary>
-    <br>
+    Creates the actors by loading everything into intermedate<br>
+vectors before storing it into the command buffer asap<br>
+<br>
 
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer)</pre>
     </summary>
-    <br>
+    This is an internal method which loads evry actor<br>
+into the according command buffer<br>
+<br>
 
 </details>
 <h3>Structs</h3>
@@ -51,11 +112,12 @@
         <pre class='prettyprint'>ActorInputInfo</pre>
     </summary>
     glm::mat4 localTransform;<br>
-uint32_t*  indices;<br>
-uint8_t*  vertices;<br>
-uint8_t   material;<br>
 uint32_t  indexCount;<br>
-uint16_t  vertexCount;
+uint32_t* pIndices;<br>
+uint16_t  vertexCount;<br>
+uint8_t*  pVertices;<br>
+// TODO copy material<br>
+uint8_t   material;
 </details>
 
     </div>
