@@ -26,26 +26,26 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector<void(*)(uint16_t, bool)> keyboard_handler</pre>
+        <pre class='prettyprint'> * Internal keayboard handling list
+</pre>
     </summary>
-    Internal keayboard handling list<br>
-<br>
+    extern std::vector<void(*)(uint16_t, bool)><br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void __impl_key_update(uint16_t key, bool state)</pre>
+        <pre class='prettyprint'> * Internal keyinput handling method
+</pre>
     </summary>
-    Internal keyinput handling method<br>
-<br>
+    void __impl_key_update(uint16_t key, bool state)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void addKeyListener(void(*key_handle)(uint16_t, bool))</pre>
+        <pre class='prettyprint'> * A Listener, which is called every time a key input is detected, can be added with this method
+</pre>
     </summary>
-    A Listener, which is called every time a key input is detected, can be added with this method<br>
-<br>
+    void addKeyListener(void(*key_handle)(uint16_t, bool))<br>
 
 </details>
 

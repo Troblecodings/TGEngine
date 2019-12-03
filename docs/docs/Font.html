@@ -26,16 +26,38 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color)</pre>
+        <pre class='prettyprint'>* Initializes all values (besides default constructor)
+* Adds new font to the cache and adds the generated texture +  it's material (UI)</pre>
     </summary>
-    Initializes all values (besides default constructor)<br>
-Adds new font to the cache and adds the generated texture +  it's material (UI)<br>
-/<br>
-Font(char* path) : Font(path, 30) {}<br>
-Font(char* path, uint32_t height);<br>
-<br>
-/*<br>
-Draws a string to the screen (UI only)<br>
+    Font(char* path) : Font(path, 30)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    Font(char* path, uint32_t height)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>* Draws a string to the screen (UI only)</pre>
+    </summary>
+    void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    uint32_t getMaterialIndex()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getExtent(char* chr)<br>
 
 </details>
 

@@ -26,42 +26,39 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>extern glm::vec2 pos</pre>
+        <pre class='prettyprint'> * These variables can be used to track the mouses position
+ */
+extern glm::vec2 pos;
+extern glm::vec2 delta;
+
+/*
+ * These variables can be used to check if the buttons are down;
+ */
+extern bool FIRST_MOUSE_BUTTON;
+extern bool SECOND_MOUSE_BUTTON;
+extern bool THIRED_MOUSE_BUTTON;
+
+/*
+ * Internal mouse handling list
+</pre>
     </summary>
-    These variables can be used to track the mouses position<br>
-<br>
+    extern std::vector<void(*)(glm::vec2, glm::vec2)><br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern bool FIRST_MOUSE_BUTTON</pre>
+        <pre class='prettyprint'> * Internal mouse handling method
+</pre>
     </summary>
-    These variables can be used to check if the buttons are down;<br>
-<br>
+    void inputupdate(glm::vec2 pos, glm::vec2 delta)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector<void(*)(glm::vec2, glm::vec2)> mouse_handler</pre>
+        <pre class='prettyprint'> * With this method you can add a Listener that is called everytime an input is detected
+</pre>
     </summary>
-    Internal mouse handling list<br>
-<br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void inputupdate(glm::vec2 pos, glm::vec2 delta)</pre>
-    </summary>
-    Internal mouse handling method<br>
-<br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void addListener(void(*mouse)(glm::vec2, glm::vec2))</pre>
-    </summary>
-    With this method you can add a Listener that is called everytime an input is detected<br>
-<br>
+    void addListener(void(*mouse)(glm::vec2, glm::vec2))<br>
 
 </details>
 

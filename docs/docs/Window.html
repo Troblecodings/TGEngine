@@ -26,47 +26,68 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>void createWindow(Window* window)</pre>
+        <pre class='prettyprint'></pre>
     </summary>
-    Creates a window with the constraints given<br>
-by the read properties, therfore this is<br>
-defined by the according xml file<br>
-See Stdbase.hpp<br>
--> extern prop::Properties* properties;<br>
-<br>
+    void pollevents()<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createWindowClass()</pre>
+        <pre class='prettyprint'></pre>
     </summary>
-    Creates the actual window<br>
-Attention! Much platform code here!<br>
-<br>
+    GetWindowRect(hDesktop, &desktop)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void destroyWindows()</pre>
+        <pre class='prettyprint'></pre>
     </summary>
-    Destroys all windows<br>
-<br>
+    LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createWindowSurfaces()</pre>
+        <pre class='prettyprint'> * Creates a window with the constraints given
+ * by the read properties, therfore this is
+ * defined by the according xml file
+ * See Stdbase.hpp
+ *   -> extern prop::Properties* properties;
+</pre>
     </summary>
-    Create surfaces for each created window<br>
-<br>
+    void createWindow(Window* window)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void getMonitor()</pre>
+        <pre class='prettyprint'> * Creates the actual window
+ * Attention! Much platform code here!
+</pre>
     </summary>
-    Don't use<br>
-<br>
+    void createWindowClass()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Destroys all windows
+</pre>
+    </summary>
+    void destroyWindows()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Create surfaces for each created window
+</pre>
+    </summary>
+    void createWindowSurfaces()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Don't use
+</pre>
+    </summary>
+    void getMonitor()<br>
 
 </details>
 <h3>Structs</h3>

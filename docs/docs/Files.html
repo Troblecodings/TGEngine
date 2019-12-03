@@ -26,32 +26,41 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>void initFileSystem()</pre>
+        <pre class='prettyprint'> * Querys the current working directory and initalizes all other systems
+ *
+ * Use "current_working_dir" to get the cwd after querying.
+ * (Is automatically called in startTGEngine())
+</pre>
     </summary>
-    Querys the current working directory and initalizes all other systems<br>
-<br>
-Use "current_working_dir" to get the cwd after querying.<br>
-(Is automatically called in startTGEngine())<br>
-<br>
+    void initFileSystem()<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>File open(char* name, char* mode)</pre>
+        <pre class='prettyprint'> * Opens the file
+ * (In debug mode it checks if the open was successful)
+</pre>
     </summary>
-    Opens the file<br>
-(In debug mode it checks if the open was successful)<br>
-<br>
+    File open(char* name, char* mode)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength)</pre>
+        <pre class='prettyprint'> * Opens the file and gets the size of the file
+ * (In debug mode it checks if the open was successful)
+ * (the long* needs to be valid pointer, will be checked in debug mode)
+</pre>
     </summary>
-    Opens the file and gets the size of the file<br>
-(In debug mode it checks if the open was successful)<br>
-(the long* needs to be valid pointer, will be checked in debug mode)<br>
-<br>
+    File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Reads all bytes of a file
+ * (In debug mode it checks if the open was successful)
+</pre>
+    </summary>
+    uint8_t* readAll(char* name)<br>
 
 </details>
 <h3>Structs</h3>

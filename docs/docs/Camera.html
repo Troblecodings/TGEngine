@@ -26,47 +26,70 @@
         <h3>Functions</h3>
         <details>
     <summary>
-        <pre class='prettyprint'>void updateCamera(int width, int height)</pre>
+        <pre class='prettyprint'></pre>
     </summary>
-    Updates the active camera camera matrix and uploads it to the uniform buffer in the shader<br>
--> Also sets perspective with the given width and height<br>
+    float fov = (float)P<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)<br>
 <br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)</pre>
+        <pre class='prettyprint'></pre>
     </summary>
-    Internal method. You shouldn't use it ... I mean you can but why would you?<br>
+    void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)<br>
 <br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void __impl_keyinput_handle(uint16_t chr, bool down)</pre>
+        <pre class='prettyprint'> * Updates the active camera camera matrix and uploads it to the uniform buffer in the shader
+ *   -> Also sets perspective with the given width and height
+</pre>
     </summary>
-    Internal method. You shouldn't use it ... I mean you can but why would you?<br>
-<br>
+    void updateCamera(int width, int height)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void initCameras()</pre>
+        <pre class='prettyprint'> * Internal method. You shouldn't use it ... I mean you can but why would you?
+</pre>
     </summary>
-    Initalizes the camera Uniformbuffer and etc.<br>
-<br>
+    void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)<br>
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createCamera(Camera* camera)</pre>
+        <pre class='prettyprint'> * Internal method. You shouldn't use it ... I mean you can but why would you?
+</pre>
     </summary>
-    Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera<br>
-from StaticCamera.hpp for example.<br>
-<br>
--> mouse_input_handler will not be set<br>
--> key_input_handler will not be set<br>
-<br>
+    void __impl_keyinput_handle(uint16_t chr, bool down)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Initalizes the camera Uniformbuffer and etc.
+</pre>
+    </summary>
+    void initCameras()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'> * Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera
+ * from StaticCamera.hpp for example.
+ *
+ *   -> mouse_input_handler will not be set
+ *   -> key_input_handler will not be set
+</pre>
+    </summary>
+    void createCamera(Camera* camera)<br>
 
 </details>
 <h3>Structs</h3>

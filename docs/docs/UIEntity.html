@@ -24,7 +24,259 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        
+        <details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 localPosition = glm::vec2(0)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 extent = glm::vec2(0)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 offsetPoint = glm::vec2(0)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 cachedPosition = glm::vec2(0)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 cachedExtent = glm::vec2(0)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    UIEntity(Anchor anchor) : UIEntity(anchor, glm::vec2(0))<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    UIEntity(Anchor anchor, glm::vec2 extent) : anchor(anchor), extent(extent)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    UIEntity(glm::vec2 position) : UIEntity(position, glm::vec2(0))<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    UIEntity(glm::vec2 position, glm::vec2 extent) : localPosition(position), extent(extent)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void addDrawable(UIDrawable* component)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void addUpdatable(UIUpdatable* component)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void addChildren(UIEntity* children)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void removeDrawable(UIDrawable* component)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void removeUpdatable(UIUpdatable* component)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void removeChildren(UIEntity* children)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void init()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void update()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void draw(IndexBuffer* index, VertexBuffer* vertex)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    bool isEnabled()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setEnabled(bool enabled)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    bool isVisible()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setVisible(bool visible)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getPosition()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getExtent()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getLocalPosition()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getLocalExtent()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 getOffset()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setPosition(glm::vec2 position)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setExtent(glm::vec2 extent)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setOffset(glm::vec2 offset)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void setOffset(Anchor anchor)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void onAddTo(UIEntity* parent)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void onRemoveFrom(UIEntity* parent)<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 __getPosition()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    glm::vec2 __getOffset()<br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'></pre>
+    </summary>
+    void __update()<br>
+
+</details>
+
     </div>
 </body>
 </html>
