@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,9 +24,98 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void start()</pre></summary></details><details><summary><pre class='prettyprint'>VertexBuffer* add(glm::vec2 vec)</pre></summary></details><details><summary><pre class='prettyprint'>VertexBuffer* add(glm::vec3 vec)</pre></summary></details><details><summary><pre class='prettyprint'>VertexBuffer* add(glm::vec4 vec)</pre></summary></details><details><summary><pre class='prettyprint'>VertexBuffer* addAll(void* data, size_t size, size_t points)</pre></summary></details><details><summary><pre class='prettyprint'>VertexBuffer* endVertex()</pre></summary></details><details><summary><pre class='prettyprint'>void end()</pre></summary></details><details><summary><pre class='prettyprint'>void createVertexBuffer(VertexBuffer* buffer_storage)</pre></summary></details><details><summary><pre class='prettyprint'>void destroyVertexBuffer(VertexBuffer* buffer_storage)</pre></summary></details><h3>Structs</h3>
-<details><summary>VertexBuffer</summary>
-<br><br><pre class='prettyprint'><br>uint32_t maximumVertexCount;<br>VkBuffer vertex_buffer;<br>VkDeviceMemory vertex_buffer_memory;<br>StagingBuffer stag_buf;<br>VkDeviceSize max_size;<br>size_t pointCount;<br>size_t offset;<br>void* memory;<br><br>void start();<br><br>VertexBuffer* add(glm::vec2 vec);<br><br>VertexBuffer* add(glm::vec3 vec);<br><br>VertexBuffer* add(glm::vec4 vec);<br><br>VertexBuffer* addAll(void* data, size_t size, size_t points);<br><br>VertexBuffer* endVertex();<br><br>void end();<br><br></pre></details>
+        <details>
+    <summary>
+        <pre class='prettyprint'>void start()</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer* add(glm::vec2 vec)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer* add(glm::vec3 vec)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer* add(glm::vec4 vec)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer* addAll(void* data, size_t size, size_t points)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer* endVertex()</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void end()</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createVertexBuffer(VertexBuffer* buffer_storage)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyVertexBuffer(VertexBuffer* buffer_storage)</pre>
+    </summary>
+    <br>
+
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer</pre>
+    </summary>
+    uint32_t maximumVertexCount;<br>
+VkBuffer vertex_buffer;<br>
+VkDeviceMemory vertex_buffer_memory;<br>
+StagingBuffer stag_buf;<br>
+VkDeviceSize max_size;<br>
+size_t pointCount;<br>
+size_t offset;<br>
+void* memory;<br>
+<br>
+void start();<br>
+<br>
+VertexBuffer* add(glm::vec2 vec);<br>
+<br>
+VertexBuffer* add(glm::vec3 vec);<br>
+<br>
+VertexBuffer* add(glm::vec4 vec);<br>
+<br>
+VertexBuffer* addAll(void* data, size_t size, size_t points);<br>
+<br>
+VertexBuffer* endVertex();<br>
+<br>
+void end();
+</details>
+
     </div>
 </body>
 </html>

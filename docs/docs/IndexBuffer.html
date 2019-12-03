@@ -11,8 +11,8 @@
 
     <style>
     summary {
-        display: block 
-    }    
+        display: block
+    }
     </style>
     <h1>Documentations</h1>
 
@@ -24,9 +24,71 @@
     <div class="container">
         <p>Click on a function or struct to reveal more information</p>
         <h3>Functions</h3>
-        <details><summary><pre class='prettyprint'>void addIndex(uint32_t index)</pre></summary></details><details><summary><pre class='prettyprint'>void start()</pre></summary></details><details><summary><pre class='prettyprint'>void addAll(void* data, size_t points)</pre></summary></details><details><summary><pre class='prettyprint'>void end()</pre></summary></details><details><summary><pre class='prettyprint'>void createIndexBuffer(IndexBuffer* buffer)</pre></summary></details><details><summary><pre class='prettyprint'>void destroyIndexBuffer(IndexBuffer* buffer)</pre></summary></details><h3>Structs</h3>
-<details><summary>IndexBuffer</summary>
-<br><br><pre class='prettyprint'><br>uint32_t maximumIndexCount;<br><br>VkBuffer index_buffer;<br>VkDeviceMemory device_memory;<br>uint32_t max_size;<br>uint32_t indexCount;<br>StagingBuffer stag_buf;<br>void* memory;<br><br>void addIndex(uint32_t index);<br><br>void start();<br><br>void addAll(void* data, size_t points);<br><br>void end();<br><br></pre></details>
+        <details>
+    <summary>
+        <pre class='prettyprint'>void addIndex(uint32_t index)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void start()</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void addAll(void* data, size_t points)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void end()</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createIndexBuffer(IndexBuffer* buffer)</pre>
+    </summary>
+    <br>
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyIndexBuffer(IndexBuffer* buffer)</pre>
+    </summary>
+    <br>
+
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>IndexBuffer</pre>
+    </summary>
+    uint32_t maximumIndexCount;<br>
+<br>
+VkBuffer index_buffer;<br>
+VkDeviceMemory device_memory;<br>
+uint32_t max_size;<br>
+uint32_t indexCount;<br>
+StagingBuffer stag_buf;<br>
+void* memory;<br>
+<br>
+void addIndex(uint32_t index);<br>
+<br>
+void start();<br>
+<br>
+void addAll(void* data, size_t points);<br>
+<br>
+void end();
+</details>
+
     </div>
 </body>
 </html>
