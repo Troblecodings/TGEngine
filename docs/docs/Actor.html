@@ -22,40 +22,64 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/gamecontent/Actor.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize)</pre>
+        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize)</pre>
+        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer)</pre>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>ActorInputInfo</pre>
     </summary>
-    glm::mat4 localTransform;<br>
-uint32_t*  indices;<br>
-uint8_t*  vertices;<br>
-uint8_t   material;<br>
-uint32_t  indexCount;<br>
-uint16_t  vertexCount;
+    <!--COMMENT-->
+    <pre class="prettyprint">glm::mat4 localTransform;
+uint32_t*  indices;
+uint8_t*  vertices;
+uint8_t   material;
+uint32_t  indexCount;
+uint16_t  vertexCount;</pre>
 </details>
 
     </div>

@@ -22,72 +22,59 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/Stdbase.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/vlib/VulkanBuffer.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern prop::Properties* properties;</pre>
+        <pre class='prettyprint'>extern VkBufferCreateInfo vlibBufferCreateInfo;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern uint32_t imagecount;</pre>
+        <pre class='prettyprint'>extern VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCopy vlibBufferCopy;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceLocalMemoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceHostVisibleCoherentIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <h3>Macros</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>#define VK_USE_PLATFORM_WIN32_KHR</pre>
+        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define TGE_VERSION VK_MAKE_VERSION(0, 0, 5)</pre>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define CHECKFAIL HANDEL(lastResult)</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define HANDEL(result)\
-if (result != VK_SUCCESS) {\
-TGERROR(result)\
-}</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define HANDEL_RECREATE(result)\
-if(result == VK_ERROR_OUT_OF_DATE_KHR){\
-if(windowList[0]-&gt;minimized){\
-return;\
-}\
-recreateSwapchain(ibuffer, vbuffer);\
-} else {\
-HANDEL(result)\
-}</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define OUT_LV_DEBUG(out) std::cout &lt;&lt; "DEBUG: " &lt;&lt; out &lt;&lt; std::endl;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define OUT_LV_DEBUG(out)</pre>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>

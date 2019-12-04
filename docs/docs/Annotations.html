@@ -22,126 +22,104 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/pipeline/window/Window.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/util/Annotations.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-<h3>Functions</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void createWindow(Window* window);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void createWindowClass();</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void destroyWindows();</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void createWindowSurfaces();</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void getMonitor();</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<h3>Externs</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern HMODULE sys_module;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern std::vector&lt;HWND&gt; __impl_window_list;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern unsigned char states;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern uint32_t d_width, d_height;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern std::vector&lt;Window*&gt; windowList;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Macros</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>#define _WIN_H_</pre>
+        <pre class='prettyprint'>#define USAGE(enum_usage) // Defines the usage of an annotation within this header</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"</pre>
+        <pre class='prettyprint'>#define USAGE_DOCS USAGE("DOCUMANTATION")</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
-RECT desktop;\
-GetWindowRect(hDesktop, &desktop);\
-x = desktop.right;\
-y = desktop.bottom;</pre>
+        <pre class='prettyprint'>#define USAGE_DEBUG USAGE("DEBUG")</pre>
     </summary>
     <!--COMMENT-->
 </details>
-<h3>Structs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>Window</pre>
+        <pre class='prettyprint'>#define USAGE_CODE USAGE("CODE")</pre>
     </summary>
     <!--COMMENT-->
-    <pre class="prettyprint">
-void pollevents();
-
-int x = 0,
-y = 0,
-width = 0,
-height = 0;
-
-long middleX = 0, middleY = 0;
-
-bool close_request = false,
-decorated = true,
-cursor = true,
-consume_input = true,
-focused = true,
-minimized = false;
-
-VkSurfaceKHR surface;
-
-HWND __impl_window;
-HCURSOR __impl_cursor;</pre>
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define USAGE_DEPRECATION USAGE("DEPRECATION")</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TARGET(enum_target) // Defines the target of an annotation within this header</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TARGET_METHODE TARGET("METHODE")</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TARGET_CLASS TARGET("CLASS")</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TARGET_CODE TARGET("CODE")</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TARGET_PARAMETER TARGET("PARAMETER")</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define DEPRECATED // Deprecated code or method follows</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define INSTEAD_USE(use) // You should use this method instead (Only used in combination with DEPRECATED)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define END_DEPRECATED // End of deprecated code</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define UNFINISHED // Unfinished code or method follows</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define END_UNFINISHED // End of unfinished code</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define INTERNAL // Defines a method or parameter to be internal -&gt; This methods or parameters shouldn't be used</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 
     </div>

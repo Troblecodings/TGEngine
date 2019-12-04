@@ -22,71 +22,92 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/buffer/Texturebuffer.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded)</pre>
+        <pre class='prettyprint'>void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createSampler(SamplerInputInfo input)</pre>
+        <pre class='prettyprint'>void createSampler(SamplerInputInfo input);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded)</pre>
+        <pre class='prettyprint'>void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output)</pre>
+        <pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern TextureDefaults defaults;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define STB_IMAGE_IMPLEMENTATION</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define STB_IMAGE_STATIC</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>TextureDefaults</pre>
     </summary>
-    VkSampler sampler;<br>
-float     anisotropyFilter;<br>
-uint32_t  mipmapLevels;
+    <!--COMMENT-->
+    <pre class="prettyprint">VkSampler sampler;
+float     anisotropyFilter;
+uint32_t  mipmapLevels;</pre>
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>SamplerInputInfo</pre>
     </summary>
-    VkSamplerAddressMode uSamplerMode;<br>
-VkSamplerAddressMode vSamplerMode;<br>
-VkFilter             filterMagnification;<br>
-VkFilter             filterMignification;
+    <!--COMMENT-->
+    <pre class="prettyprint">VkSamplerAddressMode uSamplerMode;
+VkSamplerAddressMode vSamplerMode;
+VkFilter             filterMagnification;
+VkFilter             filterMignification;</pre>
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>Texture</pre>
     </summary>
-    uint32_t       id;<br>
-VkImage        image;<br>
-VkImageView    view;<br>
-VkDeviceMemory imagememory;
+    <!--COMMENT-->
+    <pre class="prettyprint">uint32_t       id;
+VkImage        image;
+VkImageView    view;
+VkDeviceMemory imagememory;</pre>
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>TextureInputInfo</pre>
     </summary>
-    uint8_t*  data;<br>
-int       x;<br>
-int       y;<br>
-int       comp;
+    <!--COMMENT-->
+    <pre class="prettyprint">uint8_t*  data;
+int       x;
+int       y;
+int       comp;</pre>
 </details>
 
     </div>

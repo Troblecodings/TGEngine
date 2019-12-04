@@ -22,23 +22,27 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/io/Keyboard.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void __impl_key_update(uint16_t key, bool state)</pre>
+        <pre class='prettyprint'>void __impl_key_update(uint16_t key, bool state);</pre>
     </summary>
-    Internal keyinput handling method<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void addKeyListener(void(*key_handle)(uint16_t, bool))</pre>
+        <pre class='prettyprint'>void addKeyListener(void(*key_handle)(uint16_t, bool));</pre>
     </summary>
-    A Listener, which is called every time a key input is detected, can be added with this method<br>
-<br>
-
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;void(*)(uint16_t, bool)&gt; keyboard_handler;</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 
     </div>
