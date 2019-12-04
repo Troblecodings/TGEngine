@@ -29,31 +29,41 @@
     <summary>
         <pre class='prettyprint'>void updateCamera(int width, int height);</pre>
     </summary>
-    <!--COMMENT-->
+    Updates the active camera camera matrix and uploads it to the uniform buffer in the shader
+-> Also sets perspective with the given width and height
+
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void __impl_input_handle(glm::vec2 pos, glm::vec2 delta);</pre>
     </summary>
-    <!--COMMENT-->
+    Internal method. You shouldn't use it ... I mean you can but why would you?
+
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void __impl_keyinput_handle(uint16_t chr, bool down);</pre>
     </summary>
-    <!--COMMENT-->
+    Internal method. You shouldn't use it ... I mean you can but why would you?
+
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void initCameras();</pre>
     </summary>
-    <!--COMMENT-->
+    Initalizes the camera Uniformbuffer and etc.
+
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void createCamera(Camera* camera);</pre>
     </summary>
-    <!--COMMENT-->
+    Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera
+from StaticCamera.hpp for example.
+
+-> mouse_input_handler will not be set
+-> key_input_handler will not be set
+
 </details>
 <h3>Externs</h3>
 <details>
