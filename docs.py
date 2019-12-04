@@ -5,20 +5,15 @@ import re  # regular expressions
 # used to group information, like a cpp struct
 class CppGroupConstruct:  # group construct: classes, structs, enums
     def __init__(self):
-        comment = None
-        name = None
-        content = None
-    comment = None
-    name = None
-    content = None
+        self.comment = None
+        self.name = None
+        self.content = None
 
 
 class CppDefinition:  # definition: externs, macros, functions
     def __init__(self):
         self.comment = None
         self.definition = None
-    comment = None
-    definition = None
 
 
 class FileContent:
@@ -28,12 +23,6 @@ class FileContent:
         self.externs = []
         self.macros = []
         self.functions = []
-
-    structs = []
-    enums = []
-    externs = []
-    macros = []
-    functions = []
 
 
 # this order will also determine which order they appear in in the html
@@ -131,7 +120,7 @@ def convertHeaderContentToHTML(headerContent):
                         "<!--DEFINITION-->", escapedAngleBracketsDefinition
                     )
                     if definition.comment is not None:
-                        definitionHtml.replace(
+                        definitionHtml = definitionHtml.replace(
                             "<!--COMMENT-->", definition.comment
                         )
                     htmlContent += definitionHtml + "\n"
@@ -145,8 +134,9 @@ def convertHeaderContentToHTML(headerContent):
                         "<!--CONTENT-->", groupConstruct.content
                     )
                     if groupConstruct.comment is not None:
-                        groupConstructHtml.replace(
-                            "<!--COMMENT-->", groupConstruct.comment)
+                        groupConstructHtml = groupConstructHtml.replace(
+                            "<!--COMMENT-->", groupConstruct.comment
+                        )
                     htmlContent += groupConstructHtml + "\n"
 
     return htmlContent
