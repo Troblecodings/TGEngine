@@ -7,6 +7,10 @@ namespace tge {
 		// TODO make this modulare
 		// Perhaps autogenerate
 
+		/* This holds the Input comping from the window
+		 * it is used to pass the input values platform 
+		 * independent from the window to the playercontroller
+		 */
 		struct Input {
 			float x1;
 			float y1;
@@ -14,6 +18,8 @@ namespace tge {
 			float y2;
 		};
 
+		/* This is a function pointer to handel player inputs
+		 */
 		extern void(*playercontroller)(Input*);
 	}
 }

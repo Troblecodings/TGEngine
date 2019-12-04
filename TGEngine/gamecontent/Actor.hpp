@@ -16,7 +16,6 @@ namespace tge::gmc {
 	 * use createActor to create the actors from this
 	 * struct(s)
 	 * <ul>
-	 * <li></li>
 	 * <li><strong class='atr'>localTransform</strong> is the local tranform that is calculated</li>
 	 * <li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>
 	 * <li><strong class='atr'>pIndices</strong> is an array of indices</li>
