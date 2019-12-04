@@ -3,18 +3,32 @@ import re  # regular expressions
 
 
 # used to group information, like a cpp struct
-class cppGroupConstruct:  # group construct: classes, structs, enums
+class CppGroupConstruct:  # group construct: classes, structs, enums
+    def __init__(self):
+        self.comment = None
+        self.name = None
+        self.content = None
     comment = None
     name = None
     content = None
 
 
-class cppDefinition:  # definition: externs, macros, functions
+class CppDefinition:  # definition: externs, macros, functions
+    def __init__(self):
+        self.comment = None
+        self.definition = None
     comment = None
     definition = None
 
 
-class fileContent:
+class FileContent:
+    def __init__(self):
+        self.structs = []
+        self.enums = []
+        self.externs = []
+        self.macros = []
+        self.functions = []
+
     structs = []
     enums = []
     externs = []
@@ -60,7 +74,7 @@ def readFile(path):
 
 
 def parsedFileContent(file):
-    headerContent = fileContent()
+    headerContent = FileContent()
     file = file.replace("\t", "")
     regexIterator = regularExpression.finditer(file)
     for match in regexIterator:
@@ -71,7 +85,7 @@ def parsedFileContent(file):
 
         # handle group constructs
         if match.group("group") is not None:  # is class, struct or enum
-            construct = cppGroupConstruct()
+            construct = CppGroupConstruct()
             construct.comment = commentContent
             construct.name = match.group("groupName")
             construct.content = match.group("groupContent")
@@ -85,7 +99,7 @@ def parsedFileContent(file):
 
         # handle definitions
         elif match.group("definition") is not None:  # is extern, macro or function
-            definition = cppDefinition()
+            definition = CppDefinition()
             definition.comment = commentContent
             definition.definition = match.group("definition")
             if match.group("extern") is not None:
@@ -95,7 +109,7 @@ def parsedFileContent(file):
             elif match.group("function") is not None:
                 headerContent.functions.append(definition)
 
-    return fileContent
+    return headerContent
 
 
 def convertHeaderContentToHTML(headerContent):
@@ -133,7 +147,7 @@ def convertHeaderContentToHTML(headerContent):
                     if groupConstruct.comment is not None:
                         groupConstructHtml.replace(
                             "<!--COMMENT-->", groupConstruct.comment)
-                htmlContent += groupConstructHtml + "\n"
+                    htmlContent += groupConstructHtml + "\n"
 
     return htmlContent
 
