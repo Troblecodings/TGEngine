@@ -5,9 +5,9 @@ import re  # regular expressions
 # used to group information, like a cpp struct
 class CppGroupConstruct:  # group construct: classes, structs, enums
     def __init__(self):
-        self.comment = None
-        self.name = None
-        self.content = None
+        comment = None
+        name = None
+        content = None
     comment = None
     name = None
     content = None
@@ -55,7 +55,7 @@ def initRegex():
     reGroupConstruct = r"(?P<group>^(?P<groupType>class|struct|enum) (?P<groupName>\w+) (?:\: \w+ \w+ )?{\s(?P<groupContent>[\s\S]*?)\s};)"
 
     reExtern = r"(?P<extern>^extern .*)"
-    reMacro = r"(?P<macro>^#define .*)"
+    reMacro = r"(?P<macro>^#define .*(?:\s(?:.*\\\s)+.*)?)"
     reFunction = r"(?P<function>^\w.*\(.*\);)"
 
     reDefinition = r"(?P<definition>" + \
@@ -177,7 +177,6 @@ def searchTree(path):
             searchTree(currentPath)
             continue
         if file.endswith(".hpp"):
-            print("starting " + currentPath)
             generateDoc(currentPath, file)
 
 

@@ -24,13 +24,6 @@
     <div class="container">
         <pre class="prettyprint">Path: TGEngine/Stdbase.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-<h3>Functions</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>recreateSwapchain(ibuffer, vbuffer);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Externs</h3>
 <details>
     <summary>
@@ -65,13 +58,24 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define HANDEL(result)\</pre>
+        <pre class='prettyprint'>#define HANDEL(result)\
+if (result != VK_SUCCESS) {\
+TGERROR(result)\
+}</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define HANDEL_RECREATE(result)\</pre>
+        <pre class='prettyprint'>#define HANDEL_RECREATE(result)\
+if(result == VK_ERROR_OUT_OF_DATE_KHR){\
+if(windowList[0]-&gt;minimized){\
+return;\
+}\
+recreateSwapchain(ibuffer, vbuffer);\
+} else {\
+HANDEL(result)\
+}</pre>
     </summary>
     <!--COMMENT-->
 </details>

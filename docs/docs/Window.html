@@ -27,12 +27,6 @@
 <h3>Functions</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>GetWindowRect(hDesktop, &desktop);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
         <pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);</pre>
     </summary>
     <!--COMMENT-->
@@ -113,7 +107,11 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\</pre>
+        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
+RECT desktop;\
+GetWindowRect(hDesktop, &desktop);\
+x = desktop.right;\
+y = desktop.bottom;</pre>
     </summary>
     <!--COMMENT-->
 </details>

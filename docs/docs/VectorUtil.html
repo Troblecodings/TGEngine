@@ -27,18 +27,6 @@
 <h3>Functions</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>vector.resize(lastSize + sz);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>memcpy(vector.data() + lastSize, to_append, sz * sizeof(*to_append));</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
         <pre class='prettyprint'>vector.push_back(to_append);</pre>
     </summary>
     <!--COMMENT-->
@@ -65,7 +53,9 @@
 <h3>Macros</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_APPEND_LIST(vector, to_append, sz) lastSize = vector.size();\</pre>
+        <pre class='prettyprint'>#define TG_VECTOR_APPEND_LIST(vector, to_append, sz) lastSize = vector.size();\
+vector.resize(lastSize + sz);\
+memcpy(vector.data() + lastSize, to_append, sz * sizeof(*to_append));</pre>
     </summary>
     <!--COMMENT-->
 </details>

@@ -64,13 +64,17 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\</pre>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\</pre>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>
