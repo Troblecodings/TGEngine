@@ -57,11 +57,11 @@ int main(int argc, char** args) {
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	actorInputs.indices = actorIdx;
-	actorInputs.vertices = (uint8_t*) actorVertex;
-	actorInputs.material = 0;
 	actorInputs.indexCount = 6;
+	actorInputs.pIndices = actorIdx;
 	actorInputs.vertexCount = 4;
+	actorInputs.pVertices = (uint8_t*) actorVertex;
+	actorInputs.material = 0;
 
 	createActor(&actorInputs, 1);
 

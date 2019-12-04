@@ -5,6 +5,14 @@
 
 namespace tge::buf {
 
+	/*
+	 * This holds the information about a buffer
+	 * <ul>
+	 * <li>flags;
+	 * <li>size;
+	 * <li>memoryIndex;
+	 * <li>bufferUsageFlag;
+	 */
 	struct BufferInputInfo {
 		VkShaderStageFlags flags;
 		uint32_t           size;
