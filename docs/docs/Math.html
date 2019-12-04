@@ -22,7 +22,7 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/util/VectorUtil.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/util/Math.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
 <h3>Functions</h3>
 <details>
@@ -514,48 +514,6 @@
 <details>
     <summary>
         <pre class='prettyprint'>void printVersion(int version);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>glm::vec3 normal = glm::vec3(1.0f, 1.0f, 1.0f);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>bool operator==(const TGVertex& lhs);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>vector.resize(lastSize + sz);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>memcpy(vector.data() + lastSize, to_append, sz * sizeof(*to_append));</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>vector.push_back(to_append);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>vector.resize(lastSize + 1);</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>vector.resize(lastSize + 1);</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -1370,12 +1328,6 @@
     </summary>
     <!--COMMENT-->
 </details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern size_t lastSize;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Macros</h3>
 <details>
     <summary>
@@ -1689,50 +1641,33 @@
     </summary>
     <!--COMMENT-->
 </details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define VERTEX_SIZE sizeof(TGVertex)</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_APPEND_LIST(vector, to_append, sz) lastSize = vector.size();\</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_APPEND(vector, to_append) TG_VECTOR_APPEND_LIST(vector, to_append, 1)</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_APPEND_NORMAL(vector, to_append) lastSize = vector.size();\</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_SIZE_AND_RESIZE(last_size, vector) lastSize = vector.size();\</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_VECTOR_GET_SIZE_AND_RESIZE(vector) lastSize = vector.size();\</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Structs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>TGVertex</pre>
+        <pre class='prettyprint'>Window</pre>
     </summary>
     <!--COMMENT-->
-    <pre class="prettyprint">glm::vec3 position;
-glm::vec2 uv = { 0, 0</pre>
+    <pre class="prettyprint">
+void pollevents();
+
+int x = 0,
+y = 0,
+width = 0,
+height = 0;
+
+long middleX = 0, middleY = 0;
+
+bool close_request = false,
+decorated = true,
+cursor = true,
+consume_input = true,
+focused = true,
+minimized = false;
+
+VkSurfaceKHR surface;
+
+HWND __impl_window;
+HCURSOR __impl_cursor;</pre>
 </details>
 <h3>Enums</h3>
 <details>

@@ -22,7 +22,7 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/util/VectorUtil.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/vlib/VulkanPipeline.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
 <h3>Functions</h3>
 <details>
@@ -556,6 +556,12 @@
 <details>
     <summary>
         <pre class='prettyprint'>vector.resize(lastSize + 1);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>vkCmdPipelineBarrier(buf, srcst, dstst, 0, 0, nullptr, 0, nullptr, 1, &vlibImageMemoryBarrier);</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -1376,6 +1382,204 @@
     </summary>
     <!--COMMENT-->
 </details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCreateInfo vlibBufferCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCopy vlibBufferCopy;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceLocalMemoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceHostVisibleCoherentIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkCommandBufferAllocateInfo vlibCommandBufferAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkCommandBufferBeginInfo vlibCommandBufferBeginInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkClearValue vlibClearValues[2];</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorSetLayoutCreateInfo vlibDescriptorSetLayoutCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorSetAllocateInfo vlibAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolCreateInfo vlibDescriptorPoolCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolSize vlibDescriptorPoolSize;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkWriteDescriptorSet vlibDescriptorWrites;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineLayoutCreateInfo vlibLayoutInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferImageCopy vlibBufferImageCopy;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkImageCreateInfo vlibImageCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkImageViewCreateInfo vlibImageViewCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkImageMemoryBarrier vlibImageMemoryBarrier;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkImageBlit vlibImageBlit;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkSamplerCreateInfo vlibSamplerCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkViewport vlibViewport;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkRect2D vlibScissor;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineViewportStateCreateInfo vlibViewportState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkVertexInputBindingDescription vlibVertexBufferBinding;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineVertexInputStateCreateInfo vlibVertexInputState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineInputAssemblyStateCreateInfo vlibInputAssemblyState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineTessellationStateCreateInfo vlibTessellationState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineRasterizationStateCreateInfo vlibRasterizationState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineMultisampleStateCreateInfo vlibMultisampleState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineColorBlendAttachmentState vlibColorBlendAttachmentState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineColorBlendStateCreateInfo vlibColorBlendState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineDepthStencilStateCreateInfo vlibDepthStencilState;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkGraphicsPipelineCreateInfo vlibGraphicsPipelineCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Macros</h3>
 <details>
     <summary>
@@ -1722,6 +1926,30 @@
 <details>
     <summary>
         <pre class='prettyprint'>#define TG_VECTOR_GET_SIZE_AND_RESIZE(vector) lastSize = vector.size();\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ADD_IMAGE_MEMORY_BARRIER(buf, oldlay, newlay, img, srcm, dstm, srcst, dstst) \</pre>
     </summary>
     <!--COMMENT-->
 </details>

@@ -22,7 +22,7 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/util/VectorUtil.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/vlib/VulkanDescriptor.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
 <h3>Functions</h3>
 <details>
@@ -1376,6 +1376,90 @@
     </summary>
     <!--COMMENT-->
 </details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCreateInfo vlibBufferCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCopy vlibBufferCopy;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceLocalMemoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceHostVisibleCoherentIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkCommandBufferAllocateInfo vlibCommandBufferAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkCommandBufferBeginInfo vlibCommandBufferBeginInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkClearValue vlibClearValues[2];</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorSetLayoutCreateInfo vlibDescriptorSetLayoutCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorSetAllocateInfo vlibAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolCreateInfo vlibDescriptorPoolCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolSize vlibDescriptorPoolSize;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkWriteDescriptorSet vlibDescriptorWrites;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineLayoutCreateInfo vlibLayoutInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Macros</h3>
 <details>
     <summary>
@@ -1722,6 +1806,24 @@
 <details>
     <summary>
         <pre class='prettyprint'>#define TG_VECTOR_GET_SIZE_AND_RESIZE(vector) lastSize = vector.size();\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\</pre>
     </summary>
     <!--COMMENT-->
 </details>

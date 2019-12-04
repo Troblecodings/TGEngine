@@ -22,98 +22,208 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/gamecontent/camera/Camera.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>float fov = (float)P</pre>
+        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
-</pre>
+        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
-</pre>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void updateCamera(int width, int height)</pre>
+        <pre class='prettyprint'>void setTopDownCamera(TopDownCamera* camera);</pre>
     </summary>
-    Updates the active camera camera matrix and uploads it to the uniform buffer in the shader<br>
--> Also sets perspective with the given width and height<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void __impl_input_handle(glm::vec2 pos, glm::vec2 delta)</pre>
+        <pre class='prettyprint'>void updateCamera(int width, int height);</pre>
     </summary>
-    Internal method. You shouldn't use it ... I mean you can but why would you?<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void __impl_keyinput_handle(uint16_t chr, bool down)</pre>
+        <pre class='prettyprint'>void __impl_input_handle(glm::vec2 pos, glm::vec2 delta);</pre>
     </summary>
-    Internal method. You shouldn't use it ... I mean you can but why would you?<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void initCameras()</pre>
+        <pre class='prettyprint'>void __impl_keyinput_handle(uint16_t chr, bool down);</pre>
     </summary>
-    Initalizes the camera Uniformbuffer and etc.<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createCamera(Camera* camera)</pre>
+        <pre class='prettyprint'>void initCameras();</pre>
     </summary>
-    Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera<br>
-from StaticCamera.hpp for example.<br>
-<br>
--> mouse_input_handler will not be set<br>
--> key_input_handler will not be set<br>
-<br>
-
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createCamera(Camera* camera);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;Camera*&gt; cameras_on_scene; // Contains all cameras on the scene</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern size_t active_camera; // The index of the active camera</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern float multiplier; // defines the y mutliplier for the ui</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGERROR(err) std::cout &lt;&lt; "ERROR in " &lt;&lt; __FILE__ &lt;&lt; " in line " &lt;&lt; __LINE__ &lt;&lt; std::endl; exit(err);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DEPTH_FORMAT_NOT_SUPPORTED -1</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_SWAPCHAIN_NOT_SUPPORTED -2</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_INDEX_TYPE_NOT_SUPPORTED -3</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL(ptr, msg, error) if(!ptr) { std::cout &lt;&lt; msg &lt;&lt; std::endl; TGERROR(error) }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_MESH_NULL_IN_ACTOR -1001</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_FILE_NOT_FOUND -1002</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_NULLPTR -1003</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_EMPTY_STRING -1004</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_DBMESSAGER_NOT_VALID -1005</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL_DB(ptr, msg, error) if(!ptr) { std::cout &lt;&lt; msg &lt;&lt; std::endl; TGERROR(error) }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL_DB(ptr, msg, error)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GLM_ENABLE_EXPERIMENTAL</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>Camera</pre>
     </summary>
-    float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0<br>
-<br>
-float fov = (float)PI * 0.5f; // Field of view in radians<br>
-float nearClipPlain = 0.01f; // The nearest thing to the camera<br>
-float farClipPlain = 1000.0f; // The farest thing from the camera<br>
-<br>
-void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)<br>
-void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)<br>
-<br>
-glm::vec3 rotation{};<br>
-glm::vec3 translation{};<br>
-<br>
-glm::vec3 worldTranslation{};<br>
-glm::vec3 worldRotation{};<br>
-glm::vec3 worldScale{ 1, 1, 1};<br>
-<br>
-size_t camera_index;
+    <!--COMMENT-->
+    <pre class="prettyprint">float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
+
+float fov = (float)PI * 0.5f; // Field of view in radians
+float nearClipPlain = 0.01f; // The nearest thing to the camera
+float farClipPlain = 1000.0f; // The farest thing from the camera
+
+void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
+void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
+
+glm::vec3 rotation{};
+glm::vec3 translation{};
+
+glm::vec3 worldTranslation{};
+glm::vec3 worldRotation{};
+glm::vec3 worldScale{ 1, 1, 1};
+
+size_t camera_index;</pre>
 </details>
 
     </div>

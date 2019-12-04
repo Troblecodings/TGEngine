@@ -22,7 +22,7 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/pipeline/Device.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/pipeline/Pipeline.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
 <h3>Functions</h3>
 <details>
@@ -319,6 +319,72 @@
     </summary>
     <!--COMMENT-->
 </details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createSemaphores();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroySemaphores();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createFramebuffer();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyFrameBuffer();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createInstance();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyInstance();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void initPipelines();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Externs</h3>
 <details>
     <summary>
@@ -566,6 +632,54 @@
     </summary>
     <!--COMMENT-->
 </details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t image_index;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkFence fence;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;VkFramebuffer&gt; frame_buffer;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;VkImageView&gt; image_view;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkResult lastResult;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkInstance instance;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDebugUtilsMessengerEXT debugMessager;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipeline defaultPipeline;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Macros</h3>
 <details>
     <summary>
@@ -690,31 +804,16 @@
 <h3>Structs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>VertexBuffer</pre>
+        <pre class='prettyprint'>PipelineInputInfo</pre>
     </summary>
     <!--COMMENT-->
-    <pre class="prettyprint">uint32_t maximumVertexCount;
-VkBuffer vertex_buffer;
-VkDeviceMemory vertex_buffer_memory;
-StagingBuffer stag_buf;
-VkDeviceSize max_size;
-size_t pointCount;
-size_t offset;
-void* memory;
-
-void start();
-
-VertexBuffer* add(glm::vec2 vec);
-
-VertexBuffer* add(glm::vec3 vec);
-
-VertexBuffer* add(glm::vec4 vec);
-
-VertexBuffer* addAll(void* data, size_t size, size_t points);
-
-VertexBuffer* endVertex();
-
-void end();</pre>
+    <pre class="prettyprint">ShaderPipe      pipe;
+uint32_t        stride;
+uint32_t        width;
+uint32_t        height;
+VkCullModeFlags cullMode;
+VkPolygonMode   polygonMode;
+float           lineWidth;</pre>
 </details>
 <h3>Enums</h3>
 <details>
