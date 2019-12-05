@@ -22,100 +22,136 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/window/Window.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void pollevents()</pre>
+        <pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);</pre>
     </summary>
-    <br>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createWindow(Window* window);</pre>
+    </summary>
+    Creates a window with the constraints given
+by the read properties, therfore this is
+defined by the according xml file
+See Stdbase.hpp
+-> extern prop::Properties* properties;
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>GetWindowRect(hDesktop, &desktop)</pre>
+        <pre class='prettyprint'>void createWindowClass();</pre>
     </summary>
-    <br>
+    Creates the actual window
+Attention! Much platform code here!
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)</pre>
+        <pre class='prettyprint'>void destroyWindows();</pre>
     </summary>
-    <br>
+    Destroys all windows
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createWindow(Window* window)</pre>
+        <pre class='prettyprint'>void createWindowSurfaces();</pre>
     </summary>
-    Creates a window with the constraints given<br>
-by the read properties, therfore this is<br>
-defined by the according xml file<br>
-See Stdbase.hpp<br>
--> extern prop::Properties* properties;<br>
-<br>
+    Create surfaces for each created window
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createWindowClass()</pre>
+        <pre class='prettyprint'>void getMonitor();</pre>
     </summary>
-    Creates the actual window<br>
-Attention! Much platform code here!<br>
-<br>
+    Don't use
 
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern HMODULE sys_module;</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void destroyWindows()</pre>
+        <pre class='prettyprint'>extern std::vector&lt;HWND&gt; __impl_window_list;</pre>
     </summary>
-    Destroys all windows<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createWindowSurfaces()</pre>
+        <pre class='prettyprint'>extern unsigned char states;</pre>
     </summary>
-    Create surfaces for each created window<br>
-<br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void getMonitor()</pre>
+        <pre class='prettyprint'>extern uint32_t d_width, d_height;</pre>
     </summary>
-    Don't use<br>
-<br>
-
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;Window*&gt; windowList;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define _WIN_H_</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
+RECT desktop;\
+GetWindowRect(hDesktop, &desktop);\
+x = desktop.right;\
+y = desktop.bottom;</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>Window</pre>
     </summary>
-    <br>
-void pollevents();<br>
-<br>
-int x = 0,<br>
-y = 0,<br>
-width = 0,<br>
-height = 0;<br>
-<br>
-long middleX = 0, middleY = 0;<br>
-<br>
-bool close_request = false,<br>
-decorated = true,<br>
-cursor = true,<br>
-consume_input = true,<br>
-focused = true,<br>
-minimized = false;<br>
-<br>
-VkSurfaceKHR surface;<br>
-<br>
-HWND __impl_window;<br>
-HCURSOR __impl_cursor;
+    <!--COMMENT-->
+    <pre class="prettyprint">
+void pollevents();
+
+int x = 0,
+y = 0,
+width = 0,
+height = 0;
+
+long middleX = 0, middleY = 0;
+
+bool close_request = false,
+decorated = true,
+cursor = true,
+consume_input = true,
+focused = true,
+minimized = false;
+
+VkSurfaceKHR surface;
+
+HWND __impl_window;
+HCURSOR __impl_cursor;</pre>
 </details>
 
     </div>

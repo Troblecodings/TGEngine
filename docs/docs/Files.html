@@ -22,54 +22,72 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/io/Files.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void initFileSystem()</pre>
+        <pre class='prettyprint'>void initFileSystem();</pre>
     </summary>
-    Querys the current working directory and initalizes all other systems<br>
-<br>
-Use "current_working_dir" to get the cwd after querying.<br>
-(Is automatically called in startTGEngine())<br>
-<br>
+    Querys the current working directory and initalizes all other systems
+
+Use "current_working_dir" to get the cwd after querying.
+(Is automatically called in startTGEngine())
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>File open(char* name, char* mode)</pre>
+        <pre class='prettyprint'>File open(char* name, char* mode);</pre>
     </summary>
-    Opens the file<br>
-(In debug mode it checks if the open was successful)<br>
-<br>
+    Opens the file
+(In debug mode it checks if the open was successful)
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength)</pre>
+        <pre class='prettyprint'>File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);</pre>
     </summary>
-    Opens the file and gets the size of the file<br>
-(In debug mode it checks if the open was successful)<br>
-(the long* needs to be valid pointer, will be checked in debug mode)<br>
-<br>
+    Opens the file and gets the size of the file
+(In debug mode it checks if the open was successful)
+(the long* needs to be valid pointer, will be checked in debug mode)
 
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>uint8_t* readAll(char* name)</pre>
+        <pre class='prettyprint'>uint8_t* readAll(char* name);</pre>
     </summary>
-    Reads all bytes of a file<br>
-(In debug mode it checks if the open was successful)<br>
-<br>
+    Reads all bytes of a file
+(In debug mode it checks if the open was successful)
 
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern char current_working_dir[];</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GetCurrentDir _getcwd</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GetCurrentDir getcwd</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>ResourceDescriptor</pre>
     </summary>
-    uint64_t offset;<br>
-uint64_t size;
+    <!--COMMENT-->
+    <pre class="prettyprint">uint64_t offset;
+uint64_t size;</pre>
 </details>
 
     </div>

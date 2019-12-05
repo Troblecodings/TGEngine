@@ -22,12 +22,14 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/gamecontent/Actor.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize)</pre>
+        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);</pre>
     </summary>
+<<<<<<< HEAD
     This is struct holds all the information necessary<br>
 for an actor to be drawn<br>
 <br>
@@ -87,30 +89,67 @@ Loads the model from the disk<br>
 <strong>Unfinished</strong><br>
 <br>
 
+=======
+    <!--COMMENT-->
+>>>>>>> master
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize)</pre>
+        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);</pre>
     </summary>
+<<<<<<< HEAD
     Creates the actors by loading everything into intermedate<br>
 vectors before storing it into the command buffer asap<br>
 <br>
 
+=======
+    <!--COMMENT-->
+>>>>>>> master
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer)</pre>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
     </summary>
+<<<<<<< HEAD
     This is an internal method which loads evry actor<br>
 into the according command buffer<br>
 <br>
 
+=======
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+    </summary>
+    <!--COMMENT-->
+>>>>>>> master
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>ActorInputInfo</pre>
     </summary>
+<<<<<<< HEAD
     glm::mat4 localTransform;<br>
 uint32_t  indexCount;<br>
 uint32_t* pIndices;<br>
@@ -118,6 +157,15 @@ uint16_t  vertexCount;<br>
 uint8_t*  pVertices;<br>
 // TODO copy material<br>
 uint8_t   material;
+=======
+    <!--COMMENT-->
+    <pre class="prettyprint">glm::mat4 localTransform;
+uint32_t*  indices;
+uint8_t*  vertices;
+uint8_t   material;
+uint32_t  indexCount;
+uint16_t  vertexCount;</pre>
+>>>>>>> master
 </details>
 
     </div>

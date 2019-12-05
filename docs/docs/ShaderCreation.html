@@ -22,52 +22,39 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/ShaderCreation.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
-    <summary>
-        <pre class='prettyprint'>ShaderPipe() </pre>
-    </summary>
-    <br>
-
-</details>
+<h3>Functions</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>void precreation()</pre>
+        <pre class='prettyprint'>VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size);</pre>
     </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size)</pre>
-    </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>ShaderPipe</pre>
     </summary>
-    <br>
-unsigned int layoutIndex;<br>
-VkPipelineShaderStageCreateInfo* shader;<br>
-VkVertexInputAttributeDescription* inputs;<br>
-VkDescriptorSetLayoutBinding* layouts;<br>
-unsigned int shaderCount;<br>
-unsigned int inputCount;<br>
-unsigned int layoutCount;<br>
-<br>
-ShaderPipe() {}<br>
-ShaderPipe(VkPipelineShaderStageCreateInfo* shader,<br>
-const VkVertexInputAttributeDescription* inputs,<br>
-const VkDescriptorSetLayoutBinding* layouts,<br>
-const unsigned int shaderCount,<br>
-const unsigned int inputCount,<br>
-const unsigned int layoutCount);<br>
-<br>
-void precreation();
+    <!--COMMENT-->
+    <pre class="prettyprint">
+unsigned int layoutIndex;
+VkPipelineShaderStageCreateInfo* shader;
+VkVertexInputAttributeDescription* inputs;
+VkDescriptorSetLayoutBinding* layouts;
+unsigned int shaderCount;
+unsigned int inputCount;
+unsigned int layoutCount;
+
+ShaderPipe() {}
+ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
+const VkVertexInputAttributeDescription* inputs,
+const VkDescriptorSetLayoutBinding* layouts,
+const unsigned int shaderCount,
+const unsigned int inputCount,
+const unsigned int layoutCount);
+
+void precreation();</pre>
 </details>
 
     </div>

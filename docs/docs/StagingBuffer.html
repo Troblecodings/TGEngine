@@ -22,32 +22,39 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/buffer/StagingBuffer.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
+<h3>Functions</h3>
+<details>
     <summary>
-        <pre class='prettyprint'>void createStagingBuffer(StagingBuffer* staging_buffer)</pre>
+        <pre class='prettyprint'>void createStagingBuffer(StagingBuffer* staging_buffer);</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void destroyStagingBuffer()</pre>
+        <pre class='prettyprint'>void destroyStagingBuffer();</pre>
     </summary>
-    <br>
-
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;StagingBuffer*&gt; staging_buffer;</pre>
+    </summary>
+    <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
         <pre class='prettyprint'>StagingBuffer</pre>
     </summary>
-    VkDeviceSize size;<br>
-VkBuffer* destination;<br>
-<br>
-VkBuffer staging_buffer;<br>
-VkDeviceMemory staging_buffer_device_memory;
+    <!--COMMENT-->
+    <pre class="prettyprint">VkDeviceSize size;
+VkBuffer* destination;
+
+VkBuffer staging_buffer;
+VkDeviceMemory staging_buffer_device_memory;</pre>
 </details>
 
     </div>

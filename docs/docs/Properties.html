@@ -22,113 +22,30 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
+        <pre class="prettyprint">Path: TGEngine/io/Properties.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-        <h3>Functions</h3>
-        <details>
-    <summary>
-        <pre class='prettyprint'>char* getString(const char* name)</pre>
-    </summary>
-    Property storage -> only for tiny bits of data<br>
-/<br>
-class Properties {<br>
-public:<br>
-/*<br>
-Gets the value or returns 0, false or an empty string<br>
-<br>
-
-</details>
+<h3>Functions</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>bool getBoolean(const char* name)</pre>
+        <pre class='prettyprint'>void readProperties(char* path, Properties* prop);</pre>
     </summary>
-    <br>
+    Reads a Property File in XML-Style
+Example XML:
+<xml>
+<boolean name="testboolean" value="true"/>
+<string name="teststring" value="test"/>
+<int name="testint" value="117"/>
+<float name="testfloat" value="0.9"/>
+</xml>
 
 </details>
+<h3>Enums</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>float getFloat(const char* name)</pre>
+        <pre class='prettyprint'>TagType</pre>
     </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>int getInt(const char* name)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>char* getStringOrDefault(const char* name, char* def)</pre>
-    </summary>
-    Gets the value or returns the default in case it can't find the name<br>
-<br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>bool getBooleanOrDefault(const char* name, bool def)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>float getFloatOrDefault(const char* name, float def)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>int getIntOrDefault(const char* name, int def)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void addString(const char* name, char* value)</pre>
-    </summary>
-    Add values to the properties<br>
-<br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void addBoolean(const char* name, bool value)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void addFloat(const char* name, float value)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void addInt(const char* name, int value)</pre>
-    </summary>
-    <br>
-
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>void readProperties(char* path, Properties* prop)</pre>
-    </summary>
-    Reads a Property File in XML-Style<br>
-Example XML:<br>
-<xml><br>
-<boolean name="testboolean" value="true"/><br>
-<string name="teststring" value="test"/><br>
-<int name="testint" value="117"/><br>
-<float name="testfloat" value="0.9"/><br>
-</xml><br>
-
+    <!--COMMENT-->
+    <pre class="prettyprint">BOOLEAN, INT, FLOAT, STRING, NaN</pre>
 </details>
 
     </div>

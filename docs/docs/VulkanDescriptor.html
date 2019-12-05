@@ -22,26 +22,42 @@
         <a href="shadertool.html">Shader Tool</a>
     </div>
     <div class="container">
-        <pre class="prettyprint">Path: TGEngine/pipeline/Descriptors.hpp</pre>
+        <pre class="prettyprint">Path: TGEngine/vlib/VulkanDescriptor.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-<h3>Functions</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>void initDescriptors();</pre>
-    </summary>
-    This initialiazes the descriptor systems (Pool, Memory, Layouts ...)
-
-</details>
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkPipelineLayout pipelineLayout;</pre>
+        <pre class='prettyprint'>extern VkDescriptorSetLayoutCreateInfo vlibDescriptorSetLayoutCreateInfo;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkDescriptorSet mainDescriptorSet;</pre>
+        <pre class='prettyprint'>extern VkDescriptorSetAllocateInfo vlibAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolCreateInfo vlibDescriptorPoolCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDescriptorPoolSize vlibDescriptorPoolSize;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkWriteDescriptorSet vlibDescriptorWrites;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkPipelineLayoutCreateInfo vlibLayoutInfo;</pre>
     </summary>
     <!--COMMENT-->
 </details>
