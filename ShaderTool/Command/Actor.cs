@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ShaderTool.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +38,7 @@ namespace ShaderTool.Command {
             string path = Program.CWD + "\\" + actorName + "Actor.json";
 
             Material.Load();
-            bool success = Material.MATERIALS.TryGetValue(materialName, out MaterialData materialData);
+            bool success = Cache.MATERIALS.TryGetValue(materialName, out MaterialData materialData);
 
             if (!success)
                 return WRONG_PARAMS; // material was not found
@@ -47,7 +48,7 @@ namespace ShaderTool.Command {
 
             ActorData newActor = new ActorData {
                 name = actorName,
-                material = materialData.id
+                material = 0
             };
 
             JsonConvert.SerializeObject(newActor);

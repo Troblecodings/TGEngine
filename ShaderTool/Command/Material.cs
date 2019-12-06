@@ -9,9 +9,7 @@ using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
     class Material {
-
-        public static Dictionary<string, MaterialData> MATERIALS;
-        public static string actorPath = Program.CWD + "\\Materials.json";
+        public static string MaterialPath = Program.CWD + @"\Materials.json";
 
         public static int MaterialCommand(string[] args) {
             AsssertNoneNull(args);
@@ -38,24 +36,29 @@ namespace ShaderTool.Command {
 
         public static void Load() {
 
-            if (!File.Exists(actorPath)) {
-                File.Create(actorPath).Close();
+            if (!File.Exists(MaterialPath)) {
+                File.Create(MaterialPath).Close();
+                Cache.MATERIALS = new Dictionary<string, MaterialData>();
+                return;
+            } else if (Cache.MATERIALS == null) {
+                string fileContent = File.ReadAllText(MaterialPath);
+                if (fileContent == "" || fileContent == "{}") {
+                    Cache.MATERIALS = new Dictionary<string, MaterialData>();
+                    return;
+                } else {
+                    Dictionary<string, MaterialData> existingDict = JsonConvert.DeserializeObject<Dictionary<string, MaterialData>>(fileContent);
+                    Cache.MATERIALS = existingDict;
+                    return;
+                }
+
             }
-
-            string fileContent = File.ReadAllText(actorPath);
-            Dictionary<string, MaterialData> existingDict = JsonConvert.DeserializeObject<Dictionary<string, MaterialData>>(fileContent);
-
-            if (existingDict == null)
-                MATERIALS = new Dictionary<string, MaterialData>();
-            else
-                MATERIALS = existingDict;
 
         }
 
         public static int MaterialSave() {
-            string json = JsonConvert.SerializeObject(MATERIALS, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(Cache.MATERIALS, Formatting.Indented);
             Console.WriteLine(json);
-            File.WriteAllText(actorPath, json);
+            File.WriteAllText(MaterialPath, json);
             return SUCESS;
 
         }
@@ -63,21 +66,23 @@ namespace ShaderTool.Command {
         public static int MaterialAdd(string[] args) {
 
             AsssertValues(args, 1);
-            if (MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
+            if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
                 Console.WriteLine("Maximum limit of 256 textures reached, cannot add more");
                 return OVERFLOW;
             }
 
             string name = args[0];
 
-            if (MATERIALS.ContainsKey(name))
+            if (Cache.MATERIALS.ContainsKey(name)) {
+                Console.WriteLine("Material already exists");
                 return ALREADY_EXIST;
+            }
 
-            MaterialData newMaterial = new MaterialData {
-                id = (byte)MATERIALS.Count
-            };
+            MaterialData newMaterial = new MaterialData();
 
-            MATERIALS.Add(name, newMaterial);
+            Cache.MATERIALS.Add(name, newMaterial);
+
+            Console.WriteLine(JsonConvert.SerializeObject(Cache.MATERIALS, Formatting.Indented));
 
             return SUCESS;
 
@@ -86,8 +91,10 @@ namespace ShaderTool.Command {
         public static int MaterialRm(string[] args) {
 
             AsssertValues(args, 1);
-            if (!MATERIALS.Remove(args[0])) // name could not be found
+            if (!Cache.MATERIALS.Remove(args[0])) // name could not be found
                 return WRONG_PARAMS;
+
+            Console.WriteLine(JsonConvert.SerializeObject(Cache.MATERIALS, Formatting.Indented));
 
             return SUCESS;
 
@@ -95,11 +102,10 @@ namespace ShaderTool.Command {
 
         public static int MaterialList() {
 
-            Console.WriteLine("Count: " + MATERIALS.Count + "/256");
-            var enumerator = MATERIALS.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                Console.WriteLine(enumerator.Current);
-            }
+            Console.WriteLine("Count: " + Cache.MATERIALS.Count + "/256");
+            var enumerator = Cache.MATERIALS.GetEnumerator();
+            while (enumerator.MoveNext())
+                Console.WriteLine(enumerator.Current.Key);
             return SUCESS;
 
         }
@@ -121,7 +127,6 @@ namespace ShaderTool.Command {
     }
 
     class MaterialData {
-        public byte id;
         public float[] color;
         public uint diffuseTexture;
     }
