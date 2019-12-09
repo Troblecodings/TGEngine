@@ -7,6 +7,7 @@ namespace ShaderTool {
     class Program {
 
         public static string CWD = Environment.CurrentDirectory;
+        public static string ResourcesFolder = CWD + @"\Resources";
         public static bool console = false;
 
         public static int Execute(string id, string[] arg) {
@@ -23,8 +24,6 @@ namespace ShaderTool {
                     return Shader.ShaderCommand(arg);
                 case "texture":
                     return Texture.TextureCommand(arg);
-                case "map":
-                    return Map.MapCommand(arg);
                 case "actor":
                     return Actor.ActorCommand(arg);
                 case "material":
@@ -34,7 +33,7 @@ namespace ShaderTool {
                     return 0;
             }
 
-            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/map/actor/material/exit!");
+            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
             return WRONG_PARAMS;
         }
 
