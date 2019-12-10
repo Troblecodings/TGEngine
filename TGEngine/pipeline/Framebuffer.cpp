@@ -34,7 +34,11 @@ void createFramebuffer() {
 	imageViewCreateInfo.format = used_format.format;
 	// All channels are there identity therefore R = R, G = G, B = B, A = A => for color channel mapping
 	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
-	imageViewCreateInfo.subresourceRange;
+	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+	imageViewCreateInfo.subresourceRange.levelCount = 1;
+	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+	imageViewCreateInfo.subresourceRange.layerCount = 1;
 
 	for(size_t i = 0; i < imagecount; i++) {
 		imageViewCreateInfo.image = swapchain_images[i];

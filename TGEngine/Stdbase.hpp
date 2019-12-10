@@ -32,11 +32,8 @@ if(windowList[0]->minimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\
-} else {\
-HANDEL(result)\
-}
+} else CHECKFAIL
 
-USAGE_DEBUG
 #ifdef DEBUG
 #define OUT_LV_DEBUG(out) std::cout << "DEBUG: " << out << std::endl;
 #else

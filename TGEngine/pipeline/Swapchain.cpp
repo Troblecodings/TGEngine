@@ -64,6 +64,7 @@ void createColorResouce() {
 	imageCreateInfo.format = used_format.format;
 	imageCreateInfo.extent.width = windowList[0]->width;
 	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;
 	imageCreateInfo.samples = usedMSAAFlag;
@@ -73,7 +74,7 @@ void createColorResouce() {
 	imageCreateInfo.queueFamilyIndexCount = 0;
 	imageCreateInfo.pQueueFamilyIndices = nullptr;
 	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &depth_image);
+	lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &color_image);
 	CHECKFAIL;
 
 	VkMemoryRequirements requierments;
@@ -81,10 +82,10 @@ void createColorResouce() {
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &depth_image_memory);
+	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory);
 	CHECKFAIL;
 
-	lastResult = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
+	lastResult = vkBindImageMemory(device, color_image, color_image_memory, 0);
 	CHECKFAIL;
 
 	VkImageViewCreateInfo imageViewCreateInfo;
@@ -100,8 +101,7 @@ void createColorResouce() {
 	imageViewCreateInfo.subresourceRange.levelCount = 1;
 	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
-
-	lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &depth_image_view);
+	lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &color_image_view);
 	CHECKFAIL;
 }
 

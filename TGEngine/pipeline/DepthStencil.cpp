@@ -14,6 +14,7 @@ void createDepthTest() {
 	imageCreateInfo.format = used_depth_format;
 	imageCreateInfo.extent.width = windowList[0]->width;
 	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;
 	imageCreateInfo.samples = usedMSAAFlag;
