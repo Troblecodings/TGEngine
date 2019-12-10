@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/gamecontent/Actor.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Functions</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>ActorInputInfo</pre>
+    </summary>
+    <!--COMMENT-->
+    <pre class="prettyprint">glm::mat4 localTransform;
+uint32_t*  indices;
+uint8_t*  vertices;
+uint8_t   material;
+uint32_t  indexCount;
+uint16_t  vertexCount;</pre>
+</details>
+
+    </div>
+</body>
+</html>

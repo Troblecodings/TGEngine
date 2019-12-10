@@ -19,8 +19,7 @@ namespace tge {
 		 *     can be changed
 		 *	-----------------------------------------------------------
 		 */
-		SINCE(0, 0, 4)
-			class UITextureComponent : public UIDrawable {
+		class UITextureComponent : public UIDrawable {
 
 			private:
 				glm::vec4 color = glm::vec4(1.0f);

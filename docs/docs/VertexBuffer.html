@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/buffer/VertexBuffer.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Functions</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createVertexBuffer(VertexBuffer* buffer_storage);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyVertexBuffer(VertexBuffer* buffer_storage);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern size_t vertex_offset;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>VertexBuffer</pre>
+    </summary>
+    <!--COMMENT-->
+    <pre class="prettyprint">uint32_t maximumVertexCount;
+VkBuffer vertex_buffer;
+VkDeviceMemory vertex_buffer_memory;
+StagingBuffer stag_buf;
+VkDeviceSize max_size;
+size_t pointCount;
+size_t offset;
+void* memory;
+
+void start();
+
+VertexBuffer* add(glm::vec2 vec);
+
+VertexBuffer* add(glm::vec3 vec);
+
+VertexBuffer* add(glm::vec4 vec);
+
+VertexBuffer* addAll(void* data, size_t size, size_t points);
+
+VertexBuffer* endVertex();
+
+void end();</pre>
+</details>
+
+    </div>
+</body>
+</html>

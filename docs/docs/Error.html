@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/Error.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGERROR(err) std::cout &lt;&lt; "ERROR in " &lt;&lt; __FILE__ &lt;&lt; " in line " &lt;&lt; __LINE__ &lt;&lt; std::endl; exit(err);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DEPTH_FORMAT_NOT_SUPPORTED -1</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_SWAPCHAIN_NOT_SUPPORTED -2</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_INDEX_TYPE_NOT_SUPPORTED -3</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL(ptr, msg, error) if(!ptr) { std::cout &lt;&lt; msg &lt;&lt; std::endl; TGERROR(error) }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_MESH_NULL_IN_ACTOR -1001</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_FILE_NOT_FOUND -1002</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_NULLPTR -1003</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_EMPTY_STRING -1004</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_ERR_DB_DBMESSAGER_NOT_VALID -1005</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL_DB(ptr, msg, error) if(!ptr) { std::cout &lt;&lt; msg &lt;&lt; std::endl; TGERROR(error) }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define ASSERT_NONE_NULL_DB(ptr, msg, error)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+
+    </div>
+</body>
+</html>

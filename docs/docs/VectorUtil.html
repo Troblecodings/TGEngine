@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/util/VectorUtil.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Functions</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>vector.push_back(to_append);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>vector.resize(lastSize + 1);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>vector.resize(lastSize + 1);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern size_t lastSize;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_VECTOR_APPEND_LIST(vector, to_append, sz) lastSize = vector.size();\
+vector.resize(lastSize + sz);\
+memcpy(vector.data() + lastSize, to_append, sz * sizeof(*to_append));</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_VECTOR_APPEND(vector, to_append) TG_VECTOR_APPEND_LIST(vector, to_append, 1)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_VECTOR_APPEND_NORMAL(vector, to_append) lastSize = vector.size();\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_VECTOR_SIZE_AND_RESIZE(last_size, vector) lastSize = vector.size();\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_VECTOR_GET_SIZE_AND_RESIZE(vector) lastSize = vector.size();\</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+
+    </div>
+</body>
+</html>

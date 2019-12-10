@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/pipeline/CommandBuffer.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Functions</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>void createCommandBuffer();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void startSingleTimeCommand();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void endSingleTimeCommand();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void startupCommands();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void destroyCommandBuffer();</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkCommandPool command_pool;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkFence single_time_command_ready;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;VkCommandBuffer&gt; command_buffers;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkDeviceSize offsets;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern bool started;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define SINGELTIME_COMMAND_BUFFER command_buffers[imagecount]</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+
+    </div>
+</body>
+</html>

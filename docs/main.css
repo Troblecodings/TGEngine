@@ -6,6 +6,10 @@ html {
     background-color: black;
 }
 
+summary::-webkit-details-marker {
+    display: none;
+}
+
 .menu {
     text-align: center;
     box-sizing: border-box;

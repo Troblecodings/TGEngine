@@ -21,6 +21,7 @@ namespace tge::gmc {
 	extern std::vector<glm::mat4> localTranformIds;
 	extern std::vector<uint32_t> countData;
 	extern std::vector<uint32_t> offsetData;
+	extern std::vector<uint8_t>  materialIds;
 
 	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);
 

@@ -3,7 +3,6 @@
 #include "util/Annotations.hpp"
 
 USAGE_CODE
-SINCE(0, 0, 4)
 #define TGERROR(err) std::cout << "ERROR in " << __FILE__ << " in line " << __LINE__ << std::endl; exit(err);
 
 //Normal error codes

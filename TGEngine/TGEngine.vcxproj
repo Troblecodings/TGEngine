@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
     <ClInclude Include="gamecontent\camera\2DCamera.hpp" />
@@ -112,7 +111,6 @@
     <ClCompile Include="ui\UITextureComponent.cpp" />
     <ClCompile Include="ui\UIUpdatable.cpp" />
     <ClCompile Include="util\Debug.cpp" />
-    <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="util\TGVertex.cpp" />

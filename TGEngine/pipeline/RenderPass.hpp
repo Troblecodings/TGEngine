@@ -6,8 +6,6 @@
 
 extern VkRenderPass renderpass;
 
-SINCE(0, 0, 1)
 void createRenderpass();
 
-SINCE(0, 0, 1)
 void destroyRenderPass();

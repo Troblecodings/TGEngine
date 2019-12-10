@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/vlib/VulkanBuffer.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCreateInfo vlibBufferCreateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkBufferCopy vlibBufferCopy;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceLocalMemoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern uint32_t vlibDeviceHostVisibleCoherentIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+
+    </div>
+</body>
+</html>

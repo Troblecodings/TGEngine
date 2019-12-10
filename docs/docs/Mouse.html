@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+    <title>TGEngine Documentations</title>
+    <link rel="icon" href="../logo.png" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+    <script type="application/javascript"
+            src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+</head>
+<body>
+
+    <style>
+    summary {
+        display: block
+    }
+    </style>
+    <h1>Documentations</h1>
+
+    <div class="menu">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Documentations</a>
+        <a href="shadertool.html">Shader Tool</a>
+    </div>
+    <div class="container">
+        <pre class="prettyprint">Path: TGEngine/io/Mouse.hpp</pre>
+        <p>Click on a function or struct to reveal more information</p>
+<h3>Functions</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>void inputupdate(glm::vec2 pos, glm::vec2 delta);</pre>
+    </summary>
+    Internal mouse handling method
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void addListener(void(*mouse)(glm::vec2, glm::vec2));</pre>
+    </summary>
+    With this method you can add a Listener that is called everytime an input is detected
+
+</details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern glm::vec2 pos;</pre>
+    </summary>
+    These variables can be used to track the mouses position
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern glm::vec2 delta;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern bool FIRST_MOUSE_BUTTON;</pre>
+    </summary>
+    These variables can be used to check if the buttons are down;
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern bool SECOND_MOUSE_BUTTON;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern bool THIRED_MOUSE_BUTTON;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern std::vector&lt;void(*)(glm::vec2, glm::vec2)&gt; mouse_handler;</pre>
+    </summary>
+    Internal mouse handling list
+
+</details>
+
+    </div>
+</body>
+</html>

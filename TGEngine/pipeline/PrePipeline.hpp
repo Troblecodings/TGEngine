@@ -11,5 +11,4 @@ extern VkFormat used_depth_format;
 extern VkPresentModeKHR used_present_mode;
 extern VkSampleCountFlagBits usedMSAAFlag;
 
-SINCE(0, 0, 1)
 void prePipeline();
