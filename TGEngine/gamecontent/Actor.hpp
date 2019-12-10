@@ -11,10 +11,8 @@ namespace tge::gmc {
 	
 	/*
 	 * This is struct holds all the information necessary
-	 * for an actor to be drawn
+	 * for an actor to be drawn. This is used with createActor
 	 * 
-	 * use createActor to create the actors from this
-	 * struct(s)
 	 * <ul>
 	 * <li><strong class='atr'>localTransform</strong> is the local tranform that is calculated</li>
 	 * <li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>

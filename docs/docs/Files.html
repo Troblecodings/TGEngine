@@ -65,7 +65,9 @@ Use "current_working_dir" to get the cwd after querying.
     <summary>
         <pre class='prettyprint'>extern char current_working_dir[];</pre>
     </summary>
-    <!--COMMENT-->
+    This is the current working directory of the programm
+<strong>This needs to be queryed with initFileSystem()</strong>
+
 </details>
 <h3>Macros</h3>
 <details>
@@ -85,7 +87,15 @@ Use "current_working_dir" to get the cwd after querying.
     <summary>
         <pre class='prettyprint'>ResourceDescriptor</pre>
     </summary>
-    <!--COMMENT-->
+    This holds the offests and sizes of a resource
+in a resource file
+<ul>
+<li><strong class='atr'>offset</strong> is the offset in the file of the resource</li>
+<li><strong class='atr'>size</strong></li> is the size in byte of the resource</ul>
+<h4>Valid usage</h4>
+<li><strong class='atr'>offset</strong> must be in the range from 0 to the size of the file</li>
+<li><strong class='atr'>size</strong></li> must be in the range from 1 to the filesize - offset</ul>
+
     <pre class="prettyprint">uint64_t offset;
 uint64_t size;</pre>
 </details>

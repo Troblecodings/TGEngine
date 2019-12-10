@@ -5,11 +5,13 @@
 #include "../../pipeline/Device.hpp"
 #include "Memory.hpp"
 
+/*
+ * 
+ */
 struct StagingBuffer {
-	VkDeviceSize size;
-	VkBuffer* destination;
-
-	VkBuffer staging_buffer;
+	VkDeviceSize   size;
+	VkBuffer*      destination;
+	VkBuffer       staging_buffer;
 	VkDeviceMemory staging_buffer_device_memory;
 };
 
