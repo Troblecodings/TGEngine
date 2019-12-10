@@ -16,18 +16,18 @@ void prePipeline() {
 	OUT_LV_DEBUG("Max sampler " << deviceProperties.limits.maxPerStageDescriptorSamplers)
 
 	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		surface_format.resize(count);
 	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, surface_format.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		present_mode.resize(count);
 	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, present_mode.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		usedMSAAFlag = (VkSampleCountFlagBits)properties->getInt("msaa");
 

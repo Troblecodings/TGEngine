@@ -9,11 +9,6 @@ void createFramebuffer() {
 	frame_buffer.resize(imagecount);
 	image_view.resize(imagecount);
 
-	vlibImageViewCreateInfo.format = used_format.format;
-	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	vlibImageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-	vlibImageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-
 	VkFramebufferCreateInfo framebuffer_create_info = {
 		 VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 		 nullptr,
@@ -30,16 +25,27 @@ void createFramebuffer() {
 	views[0] = color_image_view;
 	views[1] = depth_image_view;
 
-	for(size_t i = 0; i < imagecount; i++) {
-		vlibImageViewCreateInfo.image = swapchain_images[i];
-		lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &image_view[i]);
-		HANDEL(lastResult)
+	VkImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	imageViewCreateInfo.pNext = nullptr;
+	imageViewCreateInfo.flags = 0;
+	imageViewCreateInfo.image = VK_NULL_HANDLE;
+	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	imageViewCreateInfo.format = used_format.format;
+	// All channels are there identity therefore R = R, G = G, B = B, A = A => for color channel mapping
+	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+	imageViewCreateInfo.subresourceRange;
 
-			views[2] = image_view[i];
+	for(size_t i = 0; i < imagecount; i++) {
+		imageViewCreateInfo.image = swapchain_images[i];
+		lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &image_view[i]);
+		CHECKFAIL;
+
+		views[2] = image_view[i];
 		framebuffer_create_info.pAttachments = views;
 
 		lastResult = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);
-		HANDEL(lastResult)
+		CHECKFAIL;
 	}
 }
 

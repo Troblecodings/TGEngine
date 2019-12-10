@@ -7,7 +7,7 @@ void createIndexBuffer(IndexBuffer* buffer) {
 	vlibBufferCreateInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	vlibBufferCreateInfo.size = sizeof(uint32_t) * buffer->maximumIndexCount;
 	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer->index_buffer);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		VkMemoryRequirements lastRequirements;
 		vkGetBufferMemoryRequirements(device, buffer->index_buffer, &lastRequirements);
@@ -15,10 +15,10 @@ void createIndexBuffer(IndexBuffer* buffer) {
 	buffer->max_size = (uint32_t)(vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size);
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
 	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &buffer->device_memory);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		lastResult = vkBindBufferMemory(device, buffer->index_buffer, buffer->device_memory, 0);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		buffer->stag_buf.destination = &buffer->index_buffer;
 	buffer->stag_buf.size = vlibBufferCreateInfo.size;

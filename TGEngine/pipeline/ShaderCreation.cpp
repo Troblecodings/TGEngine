@@ -11,7 +11,7 @@ VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShade
 		reinterpret_cast<const uint32_t*>(data)
 	};
 	lastResult = vkCreateShaderModule(device, &info, nullptr, &shader_module);
-	HANDEL(lastResult)
+	CHECKFAIL;
 		return {
 				VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 				nullptr,

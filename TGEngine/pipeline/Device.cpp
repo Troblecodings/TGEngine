@@ -14,10 +14,10 @@ void createDevice() {
 	//Query Physical Devices
 	uint32_t count;
 	lastResult = vkEnumeratePhysicalDevices(instance, &count, nullptr);
-	HANDEL(lastResult);
+	CHECKFAIL;;
 	VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
 	lastResult = vkEnumeratePhysicalDevices(instance, &count, physicalDevices);
-	HANDEL(lastResult);
+	CHECKFAIL;;
 
 	//Get best Physical Device
 	uint32_t points = 0;
@@ -72,10 +72,10 @@ void createDevice() {
 	std::vector<const char*> enabledLayer;
 	const char* layersEnable[0];
 	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 		std::vector<VkLayerProperties> usableLayers(count);
 	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, usableLayers.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 		for each(VkLayerProperties layer in usableLayers) {
 			for each(const char* name in layersEnable) {
 				if(strcmp(layer.layerName, name) == 0) {
@@ -97,10 +97,10 @@ void createDevice() {
 	//Validation for the device extensions
 	std::vector<const char*> enabledExtensions;
 	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 	std::vector<VkExtensionProperties> usableExtensions(count);
 	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, usableExtensions.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 		for each(VkExtensionProperties extension in usableExtensions) {
 			for each(const char* name in extensionsEnable) {
 				if(strcmp(extension.extensionName, name) == 0) {
@@ -124,14 +124,14 @@ void createDevice() {
 
 	deviceCreateInfo.pEnabledFeatures = &deviceFeaturesEnable;
 	lastResult = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 	//Get queue
 	vkGetDeviceQueue(device, queueIndex, 0, &queue);
 
 	VkBool32 isSupported = 1;
 	lastResult = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, windowList[0]->surface, &isSupported);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
 

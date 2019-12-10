@@ -1,5 +1,4 @@
 #include "Descriptors.hpp"
-#include "../vlib/VulkanDescriptor.hpp"
 
 VkPipelineLayout pipelineLayout;
 VkDescriptorSet mainDescriptorSet;

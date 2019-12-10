@@ -322,7 +322,7 @@ void createWindowSurfaces() {
 			var->__impl_window
 		};
 		lastResult = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface);
-		HANDEL(lastResult)
+		CHECKFAIL;
 #endif 
 	}
 }

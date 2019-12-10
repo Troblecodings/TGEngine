@@ -32,10 +32,10 @@ void createInstance() {
 	//Validation for the instance layers
 	std::vector<const char*> enabledLayerNames;
 	lastResult = vkEnumerateInstanceLayerProperties(&count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 		std::vector<VkLayerProperties> usableLayerNames(count);
 	lastResult = vkEnumerateInstanceLayerProperties(&count, usableLayerNames.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 		for each(VkLayerProperties layer in usableLayerNames) {
 			OUT_LV_DEBUG("Available " << layer.layerName)
 				for each(const char* name in layersToEnable) {
@@ -59,10 +59,10 @@ void createInstance() {
 	//Validation for the intance extensions
 	std::vector<const char*> enabledExtensionNames;
 	lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 		std::vector<VkExtensionProperties> usableExtensionNames(count);
 	lastResult = vkEnumerateInstanceExtensionProperties(nullptr, &count, usableExtensionNames.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 		for each(VkExtensionProperties extension in usableExtensionNames) {
 			OUT_LV_DEBUG("Available " << extension.extensionName)
 				for each(const char* name in extensionsToEnable) {
@@ -86,7 +86,7 @@ void createInstance() {
 		enabledExtensionNames.data()
 	};
 	lastResult = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		#ifdef DEBUG
 		/*
@@ -107,7 +107,7 @@ void createInstance() {
 			TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
 		}
 	lastResult = createDebugReportCallback(instance, &utilMessagerCreateInfo, nullptr, &debugMessager);
-	HANDEL(lastResult)
+	CHECKFAIL;
 		#endif
 }
 

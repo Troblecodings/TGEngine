@@ -100,7 +100,7 @@ void createRenderpass() {
 	};
 
 	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &renderpass);
-	HANDEL(lastResult);
+	CHECKFAIL;;
 }
 
 void destroyRenderPass() {

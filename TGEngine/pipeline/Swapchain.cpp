@@ -14,7 +14,7 @@ void createSwapchain() {
 	Window* win = windowList[0];
 
 	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		imagecount = math::u_min(math::u_max(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
@@ -44,43 +44,65 @@ void createSwapchain() {
 
 	lastResult = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
 	if(lastResult != VK_ERROR_INITIALIZATION_FAILED) {
-		HANDEL(lastResult)
+		CHECKFAIL;
 	}
 
 	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
 		swapchain_images.resize(imagecount);
 	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data());
-	HANDEL(lastResult)
+	CHECKFAIL;
 }
 
 void createColorResouce() {
-	vlibImageCreateInfo.extent.width = windowList[0]->width;
-	vlibImageCreateInfo.extent.height = windowList[0]->height;
-	vlibImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	vlibImageCreateInfo.format = used_format.format;
-	vlibImageCreateInfo.samples = usedMSAAFlag;
-	vlibImageCreateInfo.mipLevels = 1;
-	lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &color_image);
-	HANDEL(lastResult);
+	VkImageCreateInfo imageCreateInfo;
+	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageCreateInfo.pNext = nullptr;
+	imageCreateInfo.flags = 0;
+	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageCreateInfo.format = used_format.format;
+	imageCreateInfo.extent.width = windowList[0]->width;
+	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.mipLevels = 1;
+	imageCreateInfo.arrayLayers = 1;
+	imageCreateInfo.samples = usedMSAAFlag;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageCreateInfo.queueFamilyIndexCount = 0;
+	imageCreateInfo.pQueueFamilyIndices = nullptr;
+	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &depth_image);
+	CHECKFAIL;
 
 	VkMemoryRequirements requierments;
-	vkGetImageMemoryRequirements(device, color_image, &requierments);
+	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory);
-	HANDEL(lastResult);
+	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &depth_image_memory);
+	CHECKFAIL;
 
-	lastResult = vkBindImageMemory(device, color_image, color_image_memory, 0);
-	HANDEL(lastResult);
+	lastResult = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
+	CHECKFAIL;
 
-	vlibImageViewCreateInfo.format = used_format.format;
-	vlibImageViewCreateInfo.image = color_image;
-	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &color_image_view);
-	HANDEL(lastResult);
+	VkImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	imageViewCreateInfo.pNext = nullptr;
+	imageViewCreateInfo.flags = 0;
+	imageViewCreateInfo.image = color_image;
+	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	imageViewCreateInfo.format = used_format.format;
+	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+	imageViewCreateInfo.subresourceRange.levelCount = 1;
+	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+	imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+	lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &depth_image_view);
+	CHECKFAIL;
 }
 
 void destroyColorResouce() {
@@ -91,9 +113,9 @@ void destroyColorResouce() {
 
 void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	lastResult = vkDeviceWaitIdle(device);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
-		destroyFrameBuffer();
+	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	destroyRenderPass();
 	destroyColorResouce();
@@ -101,11 +123,11 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	destroySwapchain();
 
 	lastResult = vkDeviceWaitIdle(device);
-	HANDEL(lastResult)
+	CHECKFAIL;
 
-		lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities);
-	HANDEL(lastResult)
-		windowList[0]->width = surface_capabilities.currentExtent.width;
+	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities);
+	CHECKFAIL;
+	windowList[0]->width = surface_capabilities.currentExtent.width;
 	windowList[0]->height = surface_capabilities.currentExtent.height;
 
 	createColorResouce();

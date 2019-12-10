@@ -60,7 +60,6 @@
     <ClInclude Include="ui\UITextComponent.hpp" />
     <ClInclude Include="ui\UITextureComponent.hpp" />
     <ClInclude Include="ui\UIUpdatable.hpp" />
-    <ClInclude Include="util\Annotations.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Math.hpp" />
     <ClInclude Include="Stdbase.hpp" />
@@ -69,9 +68,6 @@
     <ClInclude Include="util\VectorUtil.hpp" />
     <ClInclude Include="vlib\VulkanBuffer.hpp" />
     <ClInclude Include="vlib\VulkanCommandBuffer.hpp" />
-    <ClInclude Include="vlib\VulkanDescriptor.hpp" />
-    <ClInclude Include="vlib\VulkanImage.hpp" />
-    <ClInclude Include="vlib\VulkanPipeline.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamecontent\Actor.cpp" />
@@ -123,9 +119,6 @@
     <ClCompile Include="util\VectorUtil.cpp" />
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
     <ClCompile Include="vlib\VulkanCommandBuffer.cpp" />
-    <ClCompile Include="vlib\VulkanDescriptor.cpp" />
-    <ClCompile Include="vlib\VulkanImage.cpp" />
-    <ClCompile Include="vlib\VulkanPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
