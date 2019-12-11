@@ -34,7 +34,7 @@ namespace tge::tex {
 	};
 
 	struct TextureInputInfo {
-		uint8_t*  data;
+		uint8_t* data;
 		int       x;
 		int       y;
 		int       comp;

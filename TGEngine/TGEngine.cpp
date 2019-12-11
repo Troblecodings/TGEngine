@@ -19,7 +19,7 @@ void initEngine() {
 
 	createWindowClass();
 	TG_VECTOR_GET_SIZE_AND_RESIZE(windowList)
-	createWindow(windowList[lastSize] = new Window);
+		createWindow(windowList[lastSize] = new Window);
 	createInstance();
 	createWindowSurfaces();
 	createDevice();
@@ -75,12 +75,12 @@ void startTGEngine() {
 
 	uint32_t counter = 0;
 
-	while(true) {
+	while (true) {
 		windowList[0]->pollevents();
-		if(windowList[0]->close_request) {
+		if (windowList[0]->close_request) {
 			break;
 		}
-		if(windowList[0]->minimized) {
+		if (windowList[0]->minimized) {
 			continue;
 		}
 		startdraw(&indexBuffer, &vertexBuffer);
@@ -88,7 +88,7 @@ void startTGEngine() {
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
 
-		if(delta >= (CLOCKS_PER_SEC / 60)) {
+		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
 			Input input = {};
@@ -112,7 +112,7 @@ void startTGEngine() {
 
 		// TESTING
 		if (counter > 5) {
-		//	exit(0);
+			//	exit(0);
 		}
 		counter++;
 	}

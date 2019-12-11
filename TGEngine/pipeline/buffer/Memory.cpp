@@ -16,8 +16,7 @@ namespace tge::buf {
 			bufferCreateInfo.queueFamilyIndexCount = 0;
 			bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
-			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &ubo[i].buffer);
-			CHECKFAIL;
+			CHECKFAIL(vkCreateBuffer(device, &bufferCreateInfo, nullptr, &ubo[i].buffer));
 
 			VkMemoryRequirements memoryRequirements;
 			vkGetBufferMemoryRequirements(device, ubo[i].buffer, &memoryRequirements);
@@ -27,11 +26,9 @@ namespace tge::buf {
 			memoryAllocateInfo.pNext = nullptr;
 			memoryAllocateInfo.allocationSize = memoryRequirements.size;
 			memoryAllocateInfo.memoryTypeIndex = uboInputInfo.memoryIndex;
-			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &ubo[i].memory);
-			CHECKFAIL;
+			CHECKFAIL(vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &ubo[i].memory));
 
-			lastResult = vkBindBufferMemory(device, ubo[i].buffer, ubo[i].memory, 0);
-			CHECKFAIL;
+			CHECKFAIL(vkBindBufferMemory(device, ubo[i].buffer, ubo[i].memory, 0));
 		}
 	}
 

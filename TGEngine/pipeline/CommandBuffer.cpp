@@ -11,7 +11,7 @@ bool started = true;
 void createCommandBuffer() {
 	command_buffers.resize(imagecount + 1);
 
-	if(!command_pool) {
+	if (!command_pool) {
 		VkCommandPoolCreateInfo commmand_pool_create_info = {
 			VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 			nullptr,
@@ -19,38 +19,31 @@ void createCommandBuffer() {
 			queueIndex
 		};
 
-		lastResult = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool));
 
 		vlibCommandBufferAllocateInfo.commandPool = command_pool;
 	}
 
 	vlibCommandBufferAllocateInfo.commandBufferCount = imagecount;
-	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, command_buffers.data());
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, command_buffers.data()));
 
 	vlibCommandBufferAllocateInfo.commandBufferCount = 1;
-	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER);
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER));;
 
 	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-	lastResult = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready));;
 }
 
 void startSingleTimeCommand() {
-	lastResult = vkResetFences(device, 1, &single_time_command_ready);
-	CHECKFAIL;
+	CHECKFAIL(vkResetFences(device, 1, &single_time_command_ready));
 
 	vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	vlibCommandBufferBeginInfo.pInheritanceInfo = nullptr;
-	lastResult = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlibCommandBufferBeginInfo);
-	CHECKFAIL;;
-}
+	CHECKFAIL(vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlibCommandBufferBeginInfo));
+	}
 
 void endSingleTimeCommand() {
-	lastResult = vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER);
-	CHECKFAIL;;
+	CHECKFAIL(vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER));
 
 	VkSubmitInfo submitInfo = {
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -64,17 +57,15 @@ void endSingleTimeCommand() {
 		nullptr,
 	};
 
-	lastResult = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
-	CHECKFAIL;
+	CHECKFAIL(vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready));
 
-	lastResult = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
-	CHECKFAIL;
+	CHECKFAIL(vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX));
 }
 
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each(StagingBuffer * buf in staging_buffer) {
+	for each (StagingBuffer * buf in staging_buffer) {
 		vlibBufferCopy.dstOffset = vlibBufferCopy.srcOffset = 0;
 		vlibBufferCopy.size = buf->size;
 		vkCmdCopyBuffer(
@@ -90,7 +81,7 @@ void startupCommands() {
 }
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	for(size_t i = 0; i < imagecount; i++) {
+	for (size_t i = 0; i < imagecount; i++) {
 		VkCommandBuffer buffer = command_buffers[i];
 
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
@@ -106,8 +97,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		vlibCommandBufferBeginInfo.pInheritanceInfo = &command_buffer_inheritance_info;
-		lastResult = vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo);
-		CHECKFAIL;;
+		CHECKFAIL(vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo));
 
 		VkRenderPassBeginInfo render_pass_begin_info = {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -137,14 +127,12 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdEndRenderPass(buffer);
 
-		lastResult = vkEndCommandBuffer(buffer);
-		CHECKFAIL;
+		CHECKFAIL(vkEndCommandBuffer(buffer));
 	}
 }
 
 void destroyCommandBuffer() {
-	lastResult = vkDeviceWaitIdle(device);
-	CHECKFAIL;
+	CHECKFAIL(vkDeviceWaitIdle(device));
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	vkDestroyCommandPool(device, command_pool, nullptr);
 	vkDestroyFence(device, single_time_command_ready, nullptr);

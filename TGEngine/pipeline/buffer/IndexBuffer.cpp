@@ -6,21 +6,18 @@ uint32_t index_offset = 0;
 void createIndexBuffer(IndexBuffer* buffer) {
 	vlibBufferCreateInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	vlibBufferCreateInfo.size = sizeof(uint32_t) * buffer->maximumIndexCount;
-	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer->index_buffer);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer->index_buffer));
 
-		VkMemoryRequirements lastRequirements;
-		vkGetBufferMemoryRequirements(device, buffer->index_buffer, &lastRequirements);
+	VkMemoryRequirements lastRequirements;
+	vkGetBufferMemoryRequirements(device, buffer->index_buffer, &lastRequirements);
 
 	buffer->max_size = (uint32_t)(vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size);
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &buffer->device_memory);
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &buffer->device_memory));
 
-		lastResult = vkBindBufferMemory(device, buffer->index_buffer, buffer->device_memory, 0);
-	CHECKFAIL;
+	CHECKFAIL(vkBindBufferMemory(device, buffer->index_buffer, buffer->device_memory, 0));
 
-		buffer->stag_buf.destination = &buffer->index_buffer;
+	buffer->stag_buf.destination = &buffer->index_buffer;
 	buffer->stag_buf.size = vlibBufferCreateInfo.size;
 	createStagingBuffer(&buffer->stag_buf);
 }

@@ -13,10 +13,9 @@ VkDeviceMemory color_image_memory;
 void createSwapchain() {
 	Window* win = windowList[0];
 
-	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities);
-	CHECKFAIL;
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities));
 
-		imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
+	imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
 	VkSwapchainCreateInfoKHR swapchain_create_info = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
@@ -42,17 +41,14 @@ void createSwapchain() {
 		swapchain
 	};
 
-	lastResult = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
-	if(lastResult != VK_ERROR_INITIALIZATION_FAILED) {
-		CHECKFAIL;
+	CHECKFAIL(vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain));
+	if (lastResult != VK_ERROR_INITIALIZATION_FAILED) {
 	}
 
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr);
-	CHECKFAIL;
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr));
 
-		swapchain_images.resize(imagecount);
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data());
-	CHECKFAIL;
+	swapchain_images.resize(imagecount);
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data()));
 }
 
 void createColorResouce() {
@@ -74,19 +70,16 @@ void createColorResouce() {
 	imageCreateInfo.queueFamilyIndexCount = 0;
 	imageCreateInfo.pQueueFamilyIndices = nullptr;
 	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &color_image);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &color_image));
 
 	VkMemoryRequirements requierments;
 	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory);
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory));
 
-	lastResult = vkBindImageMemory(device, color_image, color_image_memory, 0);
-	CHECKFAIL;
+	CHECKFAIL(vkBindImageMemory(device, color_image, color_image_memory, 0));
 
 	VkImageViewCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -101,8 +94,7 @@ void createColorResouce() {
 	imageViewCreateInfo.subresourceRange.levelCount = 1;
 	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
-	lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &color_image_view);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &color_image_view));
 }
 
 void destroyColorResouce() {
@@ -112,8 +104,7 @@ void destroyColorResouce() {
 }
 
 void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	lastResult = vkDeviceWaitIdle(device);
-	CHECKFAIL;
+	CHECKFAIL(vkDeviceWaitIdle(device));
 
 	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
@@ -122,11 +113,9 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	destroyDepthTest();
 	destroySwapchain();
 
-	lastResult = vkDeviceWaitIdle(device);
-	CHECKFAIL;
+	CHECKFAIL(vkDeviceWaitIdle(device));
 
-	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities);
-	CHECKFAIL;
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities));
 	windowList[0]->width = surface_capabilities.currentExtent.width;
 	windowList[0]->height = surface_capabilities.currentExtent.height;
 
@@ -134,9 +123,9 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	createDepthTest();
 	createRenderpass();
 	createSwapchain();
-	if(lastResult == VK_ERROR_INITIALIZATION_FAILED) {
+	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
 		OUT_LV_DEBUG("Windows break the swapchain!")
-			for each(VkImage var in swapchain_images) {
+			for each (VkImage var in swapchain_images) {
 				vkDestroyImage(device, var, nullptr);
 			}
 		swapchain = VK_NULL_HANDLE;

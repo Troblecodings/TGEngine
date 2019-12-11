@@ -23,8 +23,7 @@ void initDescriptors() {
 	descriptorPoolCreateInfo.pPoolSizes = sizes;
 
 	VkDescriptorPool descriptorPool;
-	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool));
 
 	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[3];
 	descriptorSetLayoutBinding[0].binding = 0;
@@ -35,7 +34,7 @@ void initDescriptors() {
 
 	descriptorSetLayoutBinding[1].binding = 1;
 	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-	descriptorSetLayoutBinding[1].descriptorCount =  1;
+	descriptorSetLayoutBinding[1].descriptorCount = 1;
 	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
@@ -53,8 +52,7 @@ void initDescriptors() {
 	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
 	VkDescriptorSetLayout descriptorSetLayout;
-	lastResult = vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout));
 
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -74,8 +72,7 @@ void initDescriptors() {
 	pipelineLayoutCreateInfo.pushConstantRangeCount = 2;
 	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
 
-	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
-	CHECKFAIL;
+	CHECKFAIL(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
 
 	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo;
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -83,7 +80,6 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
 	descriptorSetAllocateInfo.descriptorSetCount = 1; // TODO Change this to a modifable value ... in case we need more
 	descriptorSetAllocateInfo.pSetLayouts = &descriptorSetLayout;
-	
-	lastResult = vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet);
-	CHECKFAIL;
+
+	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet));
 }

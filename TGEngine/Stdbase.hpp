@@ -33,23 +33,22 @@ TGERROR(lastResult)\
 #define TGE_ASSERT(assertion, action) if(assertion) { action }
 
 #ifdef DEBUG
-/*
- * This is the same as assert but with only applys to DEBUG builds
- * if the build shouldn't contain the DEBUG flag it will
- * just break down to the statement given
- */
+ /*
+  * This is the same as assert but with only applys to DEBUG builds
+  * if the build shouldn't contain the DEBUG flag it will
+  * just break down to the statement given
+  */
 #define TGE_ASSERT_DB(statement, assertion, action)  TGE_ASSERT(statement assertion, action)
 #else
 #define TGE_ASSERT_DB(statement, assertion, action) statement
 #endif
 
-#define HANDEL_RECREATE(result)\
-if(result == VK_ERROR_OUT_OF_DATE_KHR){\
+#define TGE_CHECK_RECREATE else if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
 if(windowList[0]->minimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\
-} else CHECKFAIL
+}
 
 #ifdef DEBUG
 #define OUT_LV_DEBUG(out) std::cout << "DEBUG: " << out << std::endl;

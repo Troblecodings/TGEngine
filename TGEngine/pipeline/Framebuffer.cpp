@@ -40,21 +40,19 @@ void createFramebuffer() {
 	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
 
-	for(size_t i = 0; i < imagecount; i++) {
+	for (size_t i = 0; i < imagecount; i++) {
 		imageViewCreateInfo.image = swapchain_images[i];
-		lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &image_view[i]);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &image_view[i]));
 
 		views[2] = image_view[i];
 		framebuffer_create_info.pAttachments = views;
 
-		lastResult = vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]));
 	}
 }
 
 void destroyFrameBuffer() {
-	for(size_t i = 0; i < imagecount; i++) {
+	for (size_t i = 0; i < imagecount; i++) {
 		vkDestroyFramebuffer(device, frame_buffer[i], nullptr);
 		vkDestroyImageView(device, image_view[i], nullptr);
 	}

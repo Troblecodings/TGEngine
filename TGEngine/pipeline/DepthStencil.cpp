@@ -24,19 +24,16 @@ void createDepthTest() {
 	imageCreateInfo.queueFamilyIndexCount = 0;
 	imageCreateInfo.pQueueFamilyIndices = nullptr;
 	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &depth_image);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &depth_image));
 
 	VkMemoryRequirements requierments;
 	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &depth_image_memory);
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &depth_image_memory));
 
-	lastResult = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
-	CHECKFAIL;
+	CHECKFAIL(vkBindImageMemory(device, depth_image, depth_image_memory, 0));
 
 	VkImageViewCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -52,8 +49,7 @@ void createDepthTest() {
 	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
 
-	lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &depth_image_view);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &depth_image_view));
 }
 
 void destroyDepthTest() {

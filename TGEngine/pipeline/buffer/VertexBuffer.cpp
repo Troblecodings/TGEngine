@@ -7,21 +7,18 @@ size_t vertex_offset = 0;
 void createVertexBuffer(VertexBuffer* buffer_storage) {
 	vlibBufferCreateInfo.size = VERTEX_SIZE * buffer_storage->maximumVertexCount;
 	vlibBufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-	lastResult = vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer_storage->vertex_buffer);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateBuffer(device, &vlibBufferCreateInfo, nullptr, &buffer_storage->vertex_buffer));
 
-		VkMemoryRequirements lastRequirements;
-		vkGetBufferMemoryRequirements(device, buffer_storage->vertex_buffer, &lastRequirements);
+	VkMemoryRequirements lastRequirements;
+	vkGetBufferMemoryRequirements(device, buffer_storage->vertex_buffer, &lastRequirements);
 
 	buffer_storage->max_size = vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &buffer_storage->vertex_buffer_memory);
-	CHECKFAIL;
+	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &buffer_storage->vertex_buffer_memory));
 
-		lastResult = vkBindBufferMemory(device, buffer_storage->vertex_buffer, buffer_storage->vertex_buffer_memory, 0);
-	CHECKFAIL;
+	CHECKFAIL(vkBindBufferMemory(device, buffer_storage->vertex_buffer, buffer_storage->vertex_buffer_memory, 0));
 
-		buffer_storage->stag_buf.destination = &buffer_storage->vertex_buffer;
+	buffer_storage->stag_buf.destination = &buffer_storage->vertex_buffer;
 	buffer_storage->stag_buf.size = vlibBufferCreateInfo.size;
 	createStagingBuffer(&buffer_storage->stag_buf);
 }
@@ -42,13 +39,13 @@ VertexBuffer* VertexBuffer::add(glm::vec2 vec) {
 }
 
 VertexBuffer* VertexBuffer::add(glm::vec3 vec) {
-	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)&vec, sizeof(vec));
 	this->offset += sizeof(vec);
 	return this;
 }
 
 VertexBuffer* VertexBuffer::add(glm::vec4 vec) {
-	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)& vec, sizeof(vec));
+	memcpy((uint8_t*)this->memory + this->offset, (uint8_t*)&vec, sizeof(vec));
 	this->offset += sizeof(vec);
 	return this;
 }
