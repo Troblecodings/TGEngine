@@ -17,14 +17,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize,
 			sizeof(RAWINPUTHEADER));
+
 		LPBYTE lpb = new BYTE[dwSize];
 		if (lpb == NULL)
 			return 0;
 
-		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
-			sizeof(RAWINPUTHEADER)) != dwSize) {
-			OUT_LV_DEBUG("Odd size")
-		}
+		TGE_ASSERT_DB(GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)), != dwSize, std::cout << "Bad size\n";);
 
 		RAWINPUT* raw = (RAWINPUT*)lpb;
 
@@ -283,20 +281,8 @@ void createWindowClass() {
 		NULL
 	};
 
-#ifdef DEBUG
-	if (!
-#endif // DEBUG
-		RegisterClassEx(&wndclass)
-#ifndef DEBUG
-		;
-#endif
-#ifdef DEBUG
-		) {
-		MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif // DEBUG
 
+	TGE_ASSERT_DB(RegisterClassEx(&wndclass), == NULL, MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;);
 }
 
 void getMonitor() {
