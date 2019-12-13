@@ -16,14 +16,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	{
 		uint32_t dwSize = 0;
 
-		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize,
-			sizeof(RAWINPUTHEADER));
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
 
 		LPBYTE lpb = new BYTE[dwSize];
 		if (lpb == NULL)
 			return 0;
 
-		TGE_ASSERT_DB(GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)), != dwSize, std::cout << "Bad size\n";);
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 		RAWINPUT* raw = (RAWINPUT*)lpb;
 
@@ -202,13 +201,9 @@ void createWindow(Window* window) {
 	} else {
 		window->__impl_window = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, window->x, window->y, window->width, window->height, nullptr, nullptr, sys_module, nullptr);
 	}
-	ASSERT_NONE_NULL_DB(window->__impl_window, )
-#ifdef DEBUG
-	if (window->__impl_window == NULL) {
-		MessageBox(NULL, L"Window creation failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif // DEBUG
+	
+	TGE_ASSERT(!window->__impl_window, TGE_CRASH(L"Window creation failed, sorry!", -400));
+	
 	__impl_window_list.push_back(window->__impl_window);
 
 	ShowWindow(window->__impl_window, SW_SHOW);
@@ -240,15 +235,14 @@ void createWindow(Window* window) {
 	Rid[1].dwFlags = RIDEV_NOLEGACY;
 	Rid[1].hwndTarget = window->__impl_window;
 	if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE) {
-		// TODO Fall back to old for now crashing
-		TGERROR(-3276347823)
+		TGE_CRASH(L"Can not register raw input device!", -401)
 	}
 #endif
 }
 
 void createWindowClass() {
 
-	TGE_ASSERT_DB(GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module), GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module) == NULL, MessageBox(NULL, L"Can't get module, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;)
+	TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module), TGE_CRASH(L"Couldn't get window module handle!", -402));
 
 	WNDCLASSEX  wndclass = {
 		sizeof(WNDCLASSEX),
@@ -265,8 +259,7 @@ void createWindowClass() {
 		NULL
 	};
 
-
-	TGE_ASSERT_DB(RegisterClassEx(&wndclass), RegisterClassEx(&wndclass) == NULL, MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;);
+	TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH(L"Couldn't register window class!", -403));
 }
 
 void getMonitor() {}
