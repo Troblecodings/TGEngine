@@ -202,6 +202,7 @@ void createWindow(Window* window) {
 	} else {
 		window->__impl_window = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, window->x, window->y, window->width, window->height, nullptr, nullptr, sys_module, nullptr);
 	}
+	ASSERT_NONE_NULL_DB(window->__impl_window, )
 #ifdef DEBUG
 	if (window->__impl_window == NULL) {
 		MessageBox(NULL, L"Window creation failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
@@ -246,19 +247,9 @@ void createWindow(Window* window) {
 }
 
 void createWindowClass() {
-#ifdef DEBUG
-	if (!
-#endif // DEBUG
-		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module)
-#ifndef DEBUG
-		;
-#endif
-#ifdef DEBUG
-		) {
-		MessageBox(NULL, L"Can't get module, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif //DEBUG
+
+	TGE_ASSERT_DB(GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module), GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module) == NULL, MessageBox(NULL, L"Can't get module, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;)
+
 	WNDCLASSEX  wndclass = {
 		sizeof(WNDCLASSEX),
 		CS_ENABLE | CS_OWNDC | CS_HREDRAW,
@@ -275,7 +266,7 @@ void createWindowClass() {
 	};
 
 
-	TGE_ASSERT_DB(RegisterClassEx(&wndclass), == NULL, MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;);
+	TGE_ASSERT_DB(RegisterClassEx(&wndclass), RegisterClassEx(&wndclass) == NULL, MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK); return;);
 }
 
 void getMonitor() {}

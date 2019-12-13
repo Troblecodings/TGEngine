@@ -38,9 +38,11 @@ TGERROR(lastResult)\
   * if the build shouldn't contain the DEBUG flag it will
   * just break down to the statement given
   */
-#define TGE_ASSERT_DB(statement, assertion, action)  TGE_ASSERT(statement assertion, action)
+#define TGE_ASSERT_DB(statement, assertion, action)  TGE_ASSERT(assertion, action)
+#define TGE_ASSERT_NORMAL_DB(assertion, action)  TGE_ASSERT(assertion, action)
 #else
 #define TGE_ASSERT_DB(statement, assertion, action) statement
+#define TGE_ASSERT_DB(assertion, action)
 #endif
 
 #define TGE_CHECK_RECREATE else if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
