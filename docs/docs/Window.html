@@ -24,6 +24,29 @@
     <div class="container">
         <pre class="prettyprint">Path: TGEngine/pipeline/window/Window.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define _WIN_H_</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
+RECT desktop;\
+GetWindowRect(hDesktop, &desktop);\
+x = desktop.right;\
+y = desktop.bottom;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Functions</h3>
 <details>
     <summary>
@@ -71,6 +94,34 @@ Attention! Much platform code here!
     Don't use
 
 </details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>Window</pre>
+    </summary>
+    <!--COMMENT-->
+    <pre class="prettyprint">
+void pollevents();
+
+int x = 0,
+y = 0,
+width = 0,
+height = 0;
+
+long middleX = 0, middleY = 0;
+
+bool close_request = false,
+decorated = true,
+cursor = true,
+consume_input = true,
+focused = true,
+minimized = false;
+
+VkSurfaceKHR surface;
+
+HWND __impl_window;
+HCURSOR __impl_cursor;</pre>
+</details>
 <h3>Externs</h3>
 <details>
     <summary>
@@ -101,57 +152,6 @@ Attention! Much platform code here!
         <pre class='prettyprint'>extern std::vector&lt;Window*&gt; windowList;</pre>
     </summary>
     <!--COMMENT-->
-</details>
-<h3>Macros</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define _WIN_H_</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define GET_SIZE(x, y) const HWND hDesktop = GetDesktopWindow();\
-RECT desktop;\
-GetWindowRect(hDesktop, &desktop);\
-x = desktop.right;\
-y = desktop.bottom;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<h3>Structs</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>Window</pre>
-    </summary>
-    <!--COMMENT-->
-    <pre class="prettyprint">
-void pollevents();
-
-int x = 0,
-y = 0,
-width = 0,
-height = 0;
-
-long middleX = 0, middleY = 0;
-
-bool close_request = false,
-decorated = true,
-cursor = true,
-consume_input = true,
-focused = true,
-minimized = false;
-
-VkSurfaceKHR surface;
-
-HWND __impl_window;
-HCURSOR __impl_cursor;</pre>
 </details>
 
     </div>
