@@ -6,7 +6,7 @@ namespace tge {
 		std::vector<LightActor*> lights;
 		uint32_t lightCount = 0;
 
-		LightActor::LightActor(uint32_t intensity, glm::vec3 color, glm::vec3 pos) : intensity(glm::vec4(color, intensity)), pos(glm::vec4(pos, 1)){
+		LightActor::LightActor(uint32_t intensity, glm::vec3 color, glm::vec3 pos) : intensity(glm::vec4(color, intensity)), pos(glm::vec4(pos, 1)) {
 			this->id = lightCount++;
 		}
 

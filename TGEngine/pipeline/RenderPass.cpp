@@ -79,7 +79,7 @@ void createRenderpass() {
 		VK_SUBPASS_EXTERNAL,
 		VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
 		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-        0,
+		0,
 		0,
 		0
 	};
@@ -99,9 +99,8 @@ void createRenderpass() {
 		&subpass_dependency
 	};
 
-	lastResult = vkCreateRenderPass(device, &render_pass_create_info, nullptr, &renderpass);
-	HANDEL(lastResult);
-}
+	CHECKFAIL(vkCreateRenderPass(device, &render_pass_create_info, nullptr, &renderpass));
+	}
 
 void destroyRenderPass() {
 	vkDestroyRenderPass(device, renderpass, nullptr);

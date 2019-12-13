@@ -69,7 +69,7 @@ namespace tge::pip {
 		pipelineDepthStencilStateCreateInfo.stencilTestEnable = VK_FALSE;
 		pipelineDepthStencilStateCreateInfo.minDepthBounds = 0;
 		pipelineDepthStencilStateCreateInfo.maxDepthBounds = 1.0;
-		
+
 		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_REPLACE;
 		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_KEEP;
 		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_REPLACE;
@@ -162,8 +162,7 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].basePipelineIndex = 0;
 		}
 
-		lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, size, graphicsPipelineCreateInfo, nullptr, pipelines);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, size, graphicsPipelineCreateInfo, nullptr, pipelines));
 	}
 
 	void initPipelines() {
@@ -177,7 +176,7 @@ namespace tge::pip {
 		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pipelineInputInfo.lineWidth = 1;
-		
+
 		createPipelines(&pipelineInputInfo, 1, &defaultPipeline);
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../util/VectorUtil.hpp"
-#include "../util/Annotations.hpp"
+
 #include <glm/glm.hpp>
 
 namespace tg_io {

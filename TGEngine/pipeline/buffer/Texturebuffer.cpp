@@ -44,8 +44,7 @@ namespace tge::tex {
 			imageCreateInfo.pQueueFamilyIndices = nullptr;
 			imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-			lastResult = vkCreateImage(device, &imageCreateInfo, nullptr, &output[i].image);
-			CHECKFAIL;
+			CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &output[i].image));
 
 			VkMemoryRequirements requirements;
 			vkGetImageMemoryRequirements(device, output[i].image, &requirements);
@@ -56,11 +55,11 @@ namespace tge::tex {
 			memoryAllocateInfo.allocationSize = requirements.size;
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex; // Goofy
 
-			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &output[i].imagememory);
-			CHECKFAIL;
+			CHECKFAIL(vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &output[i].imagememory));
 
-			lastResult = vkBindImageMemory(device, output[i].image, output[i].imagememory, 0);
-			CHECKFAIL;
+
+			CHECKFAIL(vkBindImageMemory(device, output[i].image, output[i].imagememory, 0));
+
 
 			VkBufferCreateInfo bufferCreateInfo;
 			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -72,24 +71,22 @@ namespace tge::tex {
 			bufferCreateInfo.queueFamilyIndexCount = 0;
 			bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
-			lastResult = vkCreateBuffer(device, &bufferCreateInfo, nullptr, &bufferlist[i]);
-			CHECKFAIL;
+			CHECKFAIL(vkCreateBuffer(device, &bufferCreateInfo, nullptr, &bufferlist[i]));
+
 
 			vkGetBufferMemoryRequirements(device, bufferlist[i], &requirements);
 
 			memoryAllocateInfo.allocationSize = requirements.size;
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
 
-			lastResult = vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memorylist[i]);
-			CHECKFAIL;
+			CHECKFAIL(vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memorylist[i]));
 
-			lastResult = vkBindBufferMemory(device, bufferlist[i], memorylist[i], 0);
-			CHECKFAIL;
+
+			CHECKFAIL(vkBindBufferMemory(device, bufferlist[i], memorylist[i], 0));
 
 			void* memory;
 			uint32_t tmp_size = bufferCreateInfo.size;
-			lastResult = vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory);
-			CHECKFAIL;
+			CHECKFAIL(vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory));
 			memcpy(memory, tex.data, tmp_size);
 			vkUnmapMemory(device, memorylist[i]);
 			delete[] tex.data;
@@ -110,8 +107,8 @@ namespace tge::tex {
 				VK_REMAINING_ARRAY_LAYERS
 			}; // Look into the subresourcerange -> tide to miplevels and mipmaps
 
-			lastResult = vkCreateImageView(device, &imageViewCreateInfo, nullptr, &output[i].view);
-			CHECKFAIL;
+			CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &output[i].view));;
+
 
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imagedesc[i].imageView = output[i].view;
@@ -143,9 +140,18 @@ namespace tge::tex {
 		startSingleTimeCommand();
 		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, entrymemorybarriers);
 		for (uint32_t i = 0; i < size; i++) {
-			VkBufferImageCopy copy = vlibBufferImageCopy;
+			VkBufferImageCopy copy;
+			copy.bufferOffset = 0;
+			copy.bufferRowLength = 0;
+			copy.bufferImageHeight = 0;
+			copy.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			copy.imageSubresource.mipLevel = 0;
+			copy.imageSubresource.baseArrayLayer = 0;
+			copy.imageSubresource.layerCount = 1;
+			copy.imageOffset = { 0, 0, 0 };
 			copy.imageExtent.width = input[i].x;
 			copy.imageExtent.height = input[i].y;
+			copy.imageExtent.depth = 1;
 			vkCmdCopyBufferToImage(SINGELTIME_COMMAND_BUFFER, bufferlist[i], output[i].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 		}
 		vkCmdPipelineBarrier(SINGELTIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, exitmemorybarriers);
@@ -186,20 +192,18 @@ namespace tge::tex {
 	}
 
 	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded) {
-		for (uint32_t i = 0; i < size; i++)
-		{
+		for (uint32_t i = 0; i < size; i++) {
 			ResourceDescriptor desc = input[i];
 			if (ftell(file) != desc.offset)
 				fseek(file, desc.offset, SEEK_SET);
 			stbi_uc* resbuffer = new stbi_uc[desc.size];
 			fread(resbuffer, sizeof(char), desc.size, file);
-            loaded[i].data = stbi_load_from_memory(resbuffer, desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
+			loaded[i].data = stbi_load_from_memory(resbuffer, desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
 		}
 	}
 
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded) {
-		for (uint32_t i = 0; i < size; i++)
-		{
+		for (uint32_t i = 0; i < size; i++) {
 			ResourceDescriptor desc = input[i];
 			if (ftell(file) != desc.offset)
 				fseek(file, desc.offset, SEEK_SET);
@@ -232,13 +236,12 @@ namespace tge::tex {
 		samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
 
 		VkSampler sampler;
-		lastResult = vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler));
 
 		imageInfo.sampler = sampler;
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		imageInfo.imageView = VK_NULL_HANDLE;
-	
+
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;

@@ -33,16 +33,26 @@
         <h1 id="contribute">Want to contribute?</h1>
 
         <p>Everyone is welcome to help in development! I am thankful for every improvement, addition or fix.</p>
-        <p><em><strong>Please review the <a
-                       href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a>
-                    before contributing in any way to the repository!</strong></em></p>
-        <p>Additional information can be found <a
-               href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a></p>
+        <p>
+            <em>
+                <strong>
+                    Please review the <a href="https://github.com/MrTroble/TGEngine/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a>
+                    before contributing in any way to the repository!
+                </strong>
+            </em>
+        </p>
+        <p>
+            Additional information can be found <a href="https://github.com/MrTroble/TGEngine/blob/master/CONTRIBUTING.md">here</a>
+        </p>
 
         <h1 id="standards">Standards</h1>
         <p>Every pull request needs to meet certain standards.</p>
-        <p><em>Note: Most standards are not used yet by the engine itself at the current date. This is going to be
-                changed as soon as possible.</em></p>
+        <p>
+            <em>
+                Note: Most standards are not used yet by the engine itself at the current date. This is going to be
+                changed as soon as possible.
+            </em>
+        </p>
         <div id="subcontainer">
             <div class="submenu">
                 <a href="#general">General</a>
@@ -54,11 +64,11 @@
             </div>
         </div>
         <h2 id="general">
-        <ul>
-            <li>Everything should be put in namespaces</li>
-            <li>Do not use "set namespace", use tge::namespace instead</li>
-            <li>Do not use anything but vectors for dynamic lists</li>
-        </ul>
+            <ul>
+                <li>Everything should be put in namespaces</li>
+                <li>Do not use "set namespace", use tge::namespace instead</li>
+                <li>Do not use anything but vectors for dynamic lists</li>
+            </ul>
         </h2>
         <h2 id="includes">Includes, Headers</h2>
         <ul>
@@ -66,15 +76,18 @@
                 The first statement in a header file should be<br>
                 <pre class="prettyprint">#pragma once</pre>
                 <em>
-                    <p>Note: This might not be possible for your compiler due to the pragma preprocessor not being a
-                        standard</p>
+                    <p>
+                        Note: This might not be possible for your compiler due to the pragma preprocessor not being a
+                        standard
+                    </p>
                 </em>
             </li>
             <li>The second statements are the includes</li>
             <li>Subfolders should be separated by a slash <strong class="mark">(/)</strong></li>
             <li><strong class="mark">../</strong> is allowed and must be used if you use dependencies</li>
-            <li>Each dependency should be in the <strong class="mark">root</strong> folder or in the <strong
-                        class="mark">dependencies</strong> folder</li>
+            <li>
+                Each dependency should be in the <strong class="mark">root</strong> folder or in the <strong class="mark">dependencies</strong> folder
+            </li>
             <li>Each header must be part of a module</li>
         </ul>
         <h2 id="variables">Variables, Macros</h2>
