@@ -11,11 +11,11 @@ namespace tge {
 
 		struct Camera {
 			float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
-			
+
 			float fov = (float)PI * 0.5f; // Field of view in radians
 			float nearClipPlain = 0.01f; // The nearest thing to the camera
 			float farClipPlain = 1000.0f; // The farest thing from the camera
-			
+
 			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
@@ -24,7 +24,7 @@ namespace tge {
 
 			glm::vec3 worldTranslation{};
 			glm::vec3 worldRotation{};
-			glm::vec3 worldScale{ 1, 1, 1};
+			glm::vec3 worldScale{ 1, 1, 1 };
 
 			size_t camera_index;
 		};

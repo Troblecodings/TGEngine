@@ -12,7 +12,7 @@ namespace tge::gmc {
 	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize) {
 		for (uint32_t i = 0; i < pSize; i++) {
 			ResourceDescriptor descriptor = pResourceDescriptors[i];
-				
+
 			fseek(pFile, descriptor.offset, SEEK_SET);
 			uint8_t* buffer = new uint8_t[pSize];
 			fread(buffer, sizeof(uint8_t), descriptor.size, pFile);

@@ -8,7 +8,6 @@
 #include "buffer/IndexBuffer.hpp"
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
-#include "../vlib/VulkanImage.hpp"
 #include "buffer/StagingBuffer.hpp"
 #include "../vlib/VulkanCommandBuffer.hpp"
 #include "../gamecontent/Material.hpp"

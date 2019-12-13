@@ -135,9 +135,6 @@
     <ClInclude Include="Pipeline\Window\Window.hpp">
       <Filter>Headerdateien\pipeline\window</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Annotations.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Debug.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
     <ClInclude Include="pipeline\DepthStencil.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="vlib\VulkanImage.hpp">
-      <Filter>Headerdateien\vlib</Filter>
-    </ClInclude>
     <ClInclude Include="vlib\VulkanBuffer.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
@@ -176,12 +170,6 @@
     </ClInclude>
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="vlib\VulkanDescriptor.hpp">
-      <Filter>Headerdateien\vlib</Filter>
-    </ClInclude>
-    <ClInclude Include="vlib\VulkanPipeline.hpp">
-      <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
     <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
@@ -314,9 +302,6 @@
     <ClCompile Include="pipeline\DepthStencil.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="vlib\VulkanImage.cpp">
-      <Filter>Quelldateien\vlib</Filter>
-    </ClCompile>
     <ClCompile Include="vlib\VulkanBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
@@ -328,12 +313,6 @@
     </ClCompile>
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="vlib\VulkanDescriptor.cpp">
-      <Filter>Quelldateien\vlib</Filter>
-    </ClCompile>
-    <ClCompile Include="vlib\VulkanPipeline.cpp">
-      <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>

@@ -12,26 +12,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	Window* a_window = windowList[0];
 
 	switch (msg) {
-	case WM_INPUT: {
+	case WM_INPUT:
+	{
 		uint32_t dwSize = 0;
 
-		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize,
-			sizeof(RAWINPUTHEADER));
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+
 		LPBYTE lpb = new BYTE[dwSize];
 		if (lpb == NULL)
 			return 0;
 
-		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
-			sizeof(RAWINPUTHEADER)) != dwSize) {
-			OUT_LV_DEBUG("Odd size")
-		}
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 		RAWINPUT* raw = (RAWINPUT*)lpb;
 
-		if (raw->header.dwType == RIM_TYPEKEYBOARD)
-		{
-			switch (raw->data.keyboard.VKey)
-			{
+		if (raw->header.dwType == RIM_TYPEKEYBOARD) {
+			switch (raw->data.keyboard.VKey) {
 			case 'W':
 				if (raw->data.keyboard.Flags) states &= 0b00001110;
 				else states |= 1;
@@ -49,9 +45,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 				else states |= 8;
 				break;
 			}
-		}
-		else if (raw->header.dwType == RIM_TYPEMOUSE)
-		{
+		} else if (raw->header.dwType == RIM_TYPEMOUSE) {
 		}
 
 		//	tg_io::inputupdate({}, { input.data.mouse.lLastX, input.data.mouse.lLastY });
@@ -97,8 +91,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_SYSCOMMAND:
 		if (wParam == SC_MINIMIZE) {
 			a_window->minimized = true;
-		}
-		else if (wParam == SC_RESTORE) {
+		} else if (wParam == SC_RESTORE) {
 			a_window->minimized = false;
 		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -122,15 +115,13 @@ void createWindow(Window* window) {
 		window->height = d_height;
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
-	}
-	else if (properties->getBooleanOrDefault("center", true)) {
+	} else if (properties->getBooleanOrDefault("center", true)) {
 		GET_SIZE(d_width, d_height);
 		window->height = properties->getIntOrDefault("height", 400);
 		window->width = properties->getIntOrDefault("width", 400);
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
-	}
-	else {
+	} else {
 		window->height = properties->getIntOrDefault("height", 400);
 		window->width = properties->getIntOrDefault("width", 400);
 		window->x = properties->getInt("posx");
@@ -207,16 +198,12 @@ void createWindow(Window* window) {
 			style |= WS_SIZEBOX;
 		}
 		window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);
-	}
-	else {
+	} else {
 		window->__impl_window = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, window->x, window->y, window->width, window->height, nullptr, nullptr, sys_module, nullptr);
 	}
-#ifdef DEBUG
-	if (window->__impl_window == NULL) {
-		MessageBox(NULL, L"Window creation failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif // DEBUG
+	
+	TGE_ASSERT(!window->__impl_window, TGE_CRASH(L"Window creation failed, sorry!", -400));
+	
 	__impl_window_list.push_back(window->__impl_window);
 
 	ShowWindow(window->__impl_window, SW_SHOW);
@@ -248,26 +235,15 @@ void createWindow(Window* window) {
 	Rid[1].dwFlags = RIDEV_NOLEGACY;
 	Rid[1].hwndTarget = window->__impl_window;
 	if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE) {
-		// TODO Fall back to old for now crashing
-		TGERROR(-3276347823)
+		TGE_CRASH(L"Can not register raw input device!", -401)
 	}
 #endif
 }
 
 void createWindowClass() {
-#ifdef DEBUG
-	if (!
-#endif // DEBUG
-		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module)
-#ifndef DEBUG
-		;
-#endif
-#ifdef DEBUG
-		) {
-		MessageBox(NULL, L"Can't get module, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif //DEBUG
+
+	TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &sys_module), TGE_CRASH(L"Couldn't get window module handle!", -402));
+
 	WNDCLASSEX  wndclass = {
 		sizeof(WNDCLASSEX),
 		CS_ENABLE | CS_OWNDC | CS_HREDRAW,
@@ -283,24 +259,10 @@ void createWindowClass() {
 		NULL
 	};
 
-#ifdef DEBUG
-	if (!
-#endif // DEBUG
-		RegisterClassEx(&wndclass)
-#ifndef DEBUG
-		;
-#endif
-#ifdef DEBUG
-		) {
-		MessageBox(NULL, L"Registering window class failed, sorry!", L"ERROR!", MB_ICONERROR | MB_OK);
-		return;
-	}
-#endif // DEBUG
-
+	TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH(L"Couldn't register window class!", -403));
 }
 
-void getMonitor() {
-}
+void getMonitor() {}
 
 void destroyWindows() {
 	for each (Window * var in windowList) {
@@ -321,8 +283,7 @@ void createWindowSurfaces() {
 			sys_module,
 			var->__impl_window
 		};
-		lastResult = vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface);
-		HANDEL(lastResult)
+		CHECKFAIL(vkCreateWin32SurfaceKHR(instance, &surface_create_info, nullptr, &var->surface));
 #endif 
 	}
 }

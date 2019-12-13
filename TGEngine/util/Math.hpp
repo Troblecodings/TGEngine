@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Annotations.hpp"
 #include <cstdint>
 #include <glm/glm.hpp>
 

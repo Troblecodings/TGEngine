@@ -13,10 +13,9 @@ VkDeviceMemory color_image_memory;
 void createSwapchain() {
 	Window* win = windowList[0];
 
-	lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities);
-	HANDEL(lastResult)
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities));
 
-		imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
+	imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
 	VkSwapchainCreateInfoKHR swapchain_create_info = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
@@ -43,44 +42,62 @@ void createSwapchain() {
 	};
 
 	lastResult = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
-	if(lastResult != VK_ERROR_INITIALIZATION_FAILED) {
-		HANDEL(lastResult)
+	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
+		// TODO recover
+	} else {
+		CHECKFAIL(lastResult)
 	}
 
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr));
 
-		swapchain_images.resize(imagecount);
-	lastResult = vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data());
-	HANDEL(lastResult)
+	swapchain_images.resize(imagecount);
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchain_images.data()));
 }
 
 void createColorResouce() {
-	vlibImageCreateInfo.extent.width = windowList[0]->width;
-	vlibImageCreateInfo.extent.height = windowList[0]->height;
-	vlibImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	vlibImageCreateInfo.format = used_format.format;
-	vlibImageCreateInfo.samples = usedMSAAFlag;
-	vlibImageCreateInfo.mipLevels = 1;
-	lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &color_image);
-	HANDEL(lastResult);
+	VkImageCreateInfo imageCreateInfo;
+	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageCreateInfo.pNext = nullptr;
+	imageCreateInfo.flags = 0;
+	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageCreateInfo.format = used_format.format;
+	imageCreateInfo.extent.width = windowList[0]->width;
+	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.extent.depth = 1;
+	imageCreateInfo.mipLevels = 1;
+	imageCreateInfo.arrayLayers = 1;
+	imageCreateInfo.samples = usedMSAAFlag;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageCreateInfo.queueFamilyIndexCount = 0;
+	imageCreateInfo.pQueueFamilyIndices = nullptr;
+	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &color_image));
 
 	VkMemoryRequirements requierments;
-	vkGetImageMemoryRequirements(device, color_image, &requierments);
+	vkGetImageMemoryRequirements(device, depth_image, &requierments);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory);
-	HANDEL(lastResult);
+	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &color_image_memory));
 
-	lastResult = vkBindImageMemory(device, color_image, color_image_memory, 0);
-	HANDEL(lastResult);
+	CHECKFAIL(vkBindImageMemory(device, color_image, color_image_memory, 0));
 
-	vlibImageViewCreateInfo.format = used_format.format;
-	vlibImageViewCreateInfo.image = color_image;
-	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &color_image_view);
-	HANDEL(lastResult);
+	VkImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	imageViewCreateInfo.pNext = nullptr;
+	imageViewCreateInfo.flags = 0;
+	imageViewCreateInfo.image = color_image;
+	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	imageViewCreateInfo.format = used_format.format;
+	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+	imageViewCreateInfo.subresourceRange.levelCount = 1;
+	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+	imageViewCreateInfo.subresourceRange.layerCount = 1;
+	CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &color_image_view));
 }
 
 void destroyColorResouce() {
@@ -90,31 +107,28 @@ void destroyColorResouce() {
 }
 
 void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	lastResult = vkDeviceWaitIdle(device);
-	HANDEL(lastResult)
+	CHECKFAIL(vkDeviceWaitIdle(device));
 
-		destroyFrameBuffer();
+	destroyFrameBuffer();
 	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
 	destroyRenderPass();
 	destroyColorResouce();
 	destroyDepthTest();
 	destroySwapchain();
 
-	lastResult = vkDeviceWaitIdle(device);
-	HANDEL(lastResult)
+	CHECKFAIL(vkDeviceWaitIdle(device));
 
-		lastResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities);
-	HANDEL(lastResult)
-		windowList[0]->width = surface_capabilities.currentExtent.width;
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities));
+	windowList[0]->width = surface_capabilities.currentExtent.width;
 	windowList[0]->height = surface_capabilities.currentExtent.height;
 
 	createColorResouce();
 	createDepthTest();
 	createRenderpass();
 	createSwapchain();
-	if(lastResult == VK_ERROR_INITIALIZATION_FAILED) {
+	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
 		OUT_LV_DEBUG("Windows break the swapchain!")
-			for each(VkImage var in swapchain_images) {
+			for each (VkImage var in swapchain_images) {
 				vkDestroyImage(device, var, nullptr);
 			}
 		swapchain = VK_NULL_HANDLE;

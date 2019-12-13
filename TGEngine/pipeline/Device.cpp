@@ -13,20 +13,17 @@ void createDevice() {
 
 	//Query Physical Devices
 	uint32_t count;
-	lastResult = vkEnumeratePhysicalDevices(instance, &count, nullptr);
-	HANDEL(lastResult);
-	VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
-	lastResult = vkEnumeratePhysicalDevices(instance, &count, physicalDevices);
-	HANDEL(lastResult);
-
-	//Get best Physical Device
+	CHECKFAIL(vkEnumeratePhysicalDevices(instance, &count, nullptr));
+		VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
+	CHECKFAIL(vkEnumeratePhysicalDevices(instance, &count, physicalDevices));
+		//Get best Physical Device
 	uint32_t points = 0;
-	for(size_t i = 0; i < count; i++) {
+	for (size_t i = 0; i < count; i++) {
 		VkPhysicalDeviceProperties currentDeviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevices[i], &currentDeviceProperties);
 		// TODO reevalute this calculation ... or you life choices
 		uint32_t currentPoints = currentDeviceProperties.limits.maxImageDimension2D + (currentDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
-		if(currentPoints > points) {
+		if (currentPoints > points) {
 			points = currentPoints;
 			physicalDevice = physicalDevices[i];
 			deviceProperties = currentDeviceProperties;
@@ -39,8 +36,8 @@ void createDevice() {
 	std::vector<VkQueueFamilyProperties> queueFamailyProperties(count);
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, queueFamailyProperties.data());
 	count = 0;
-	for each(VkQueueFamilyProperties currentQueueFamily in queueFamailyProperties) {
-		if((currentQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
+	for each (VkQueueFamilyProperties currentQueueFamily in queueFamailyProperties) {
+		if ((currentQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
 			queueIndex = count;
 			queueFamily = currentQueueFamily;
 			break;
@@ -50,7 +47,7 @@ void createDevice() {
 
 	//Set Prioritis
 	std::vector<float> priorities(queueFamily.queueCount);
-	for(size_t i = 0; i < priorities.size(); i++) {
+	for (size_t i = 0; i < priorities.size(); i++) {
 		priorities[i] = 1;
 	}
 
@@ -71,20 +68,18 @@ void createDevice() {
 	//Validation for the device layers
 	std::vector<const char*> enabledLayer;
 	const char* layersEnable[0];
-	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, nullptr);
-	HANDEL(lastResult)
-		std::vector<VkLayerProperties> usableLayers(count);
-	lastResult = vkEnumerateDeviceLayerProperties(physicalDevice, &count, usableLayers.data());
-	HANDEL(lastResult)
-		for each(VkLayerProperties layer in usableLayers) {
-			for each(const char* name in layersEnable) {
-				if(strcmp(layer.layerName, name) == 0) {
-					enabledLayer.push_back(name);
-					OUT_LV_DEBUG(name)
+	CHECKFAIL(vkEnumerateDeviceLayerProperties(physicalDevice, &count, nullptr));
+	std::vector<VkLayerProperties> usableLayers(count);
+	CHECKFAIL(vkEnumerateDeviceLayerProperties(physicalDevice, &count, usableLayers.data()));
+	for each (VkLayerProperties layer in usableLayers) {
+		for each (const char* name in layersEnable) {
+			if (strcmp(layer.layerName, name) == 0) {
+				enabledLayer.push_back(name);
+				OUT_LV_DEBUG(name)
 					break;
-				}
 			}
 		}
+	}
 	usableLayers.clear();
 	deviceCreateInfo.enabledLayerCount = enabledLayer.maximumIndexCount();
 	deviceCreateInfo.ppEnabledLayerNames = enabledLayer.data();
@@ -96,20 +91,18 @@ void createDevice() {
 
 	//Validation for the device extensions
 	std::vector<const char*> enabledExtensions;
-	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, nullptr);
-	HANDEL(lastResult)
+	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, nullptr));
 	std::vector<VkExtensionProperties> usableExtensions(count);
-	lastResult = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, usableExtensions.data());
-	HANDEL(lastResult)
-		for each(VkExtensionProperties extension in usableExtensions) {
-			for each(const char* name in extensionsEnable) {
-				if(strcmp(extension.extensionName, name) == 0) {
-					enabledExtensions.push_back(name);
-					OUT_LV_DEBUG(name)
-						break;
-				}
+	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, usableExtensions.data()));
+	for each (VkExtensionProperties extension in usableExtensions) {
+		for each (const char* name in extensionsEnable) {
+			if (strcmp(extension.extensionName, name) == 0) {
+				enabledExtensions.push_back(name);
+				OUT_LV_DEBUG(name)
+					break;
 			}
 		}
+	}
 	usableExtensions.clear();
 	deviceCreateInfo.enabledExtensionCount = enabledExtensions.size();
 	deviceCreateInfo.ppEnabledExtensionNames = enabledExtensions.data();
@@ -123,17 +116,15 @@ void createDevice() {
 	deviceFeaturesEnable.depthClamp = deviceFeatures.depthClamp;
 
 	deviceCreateInfo.pEnabledFeatures = &deviceFeaturesEnable;
-	lastResult = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
-	HANDEL(lastResult)
+	CHECKFAIL(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
 
 	//Get queue
 	vkGetDeviceQueue(device, queueIndex, 0, &queue);
 
 	VkBool32 isSupported = 1;
-	lastResult = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, windowList[0]->surface, &isSupported);
-	HANDEL(lastResult)
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, windowList[0]->surface, &isSupported));
 
-		ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
+	ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
 
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
 

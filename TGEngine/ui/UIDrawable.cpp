@@ -3,14 +3,12 @@
 namespace tge {
 	namespace ui {
 
-		void UIDrawable::draw(IndexBuffer* index, VertexBuffer* vertex) {
-		}
+		void UIDrawable::draw(IndexBuffer* index, VertexBuffer* vertex) {}
 
-		void UIDrawable::init() {
-		}
+		void UIDrawable::init() {}
 
 		void UIDrawable::onAddTo(UIEntity* parent) {
-			if(this->parent)
+			if (this->parent)
 				this->parent->removeDrawable(this);
 			this->parent = parent;
 		}

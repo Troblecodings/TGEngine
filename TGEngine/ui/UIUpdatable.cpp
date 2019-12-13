@@ -4,7 +4,7 @@ namespace tge {
 	namespace ui {
 
 		void UIUpdatable::onAddTo(UIEntity* parent) {
-			if(this->parent)
+			if (this->parent)
 				this->parent->removeUpdatable(this);
 			this->parent = parent;
 		}
