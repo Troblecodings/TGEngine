@@ -41,8 +41,11 @@ void createSwapchain() {
 		swapchain
 	};
 
-	CHECKFAIL(vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain));
-	if (lastResult != VK_ERROR_INITIALIZATION_FAILED) {
+	lastResult = vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
+	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
+		// TODO recover
+	} else {
+		CHECKFAIL(lastResult)
 	}
 
 	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr));
