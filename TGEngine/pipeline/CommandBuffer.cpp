@@ -107,8 +107,8 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			{
 				0,
 				0,
-				(uint32_t)windowList[0]->width,
-				(uint32_t)windowList[0]->height
+                tge::win::mainWindowWidth,
+				tge::win::mainWindowHeight
 			},
 			2,
 			vlibClearValues

@@ -10,20 +10,15 @@ VkSampleCountFlagBits  usedMSAAFlag;
 
 void prePipeline() {
 	uint32_t count = 0;
-
-
-	OUT_LV_DEBUG("Max uniform " << deviceProperties.limits.maxPerStageDescriptorUniformBuffers)
-		OUT_LV_DEBUG("Max sampler " << deviceProperties.limits.maxPerStageDescriptorSamplers)
-
-		CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, nullptr));
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, tge::win::windowSurface, &count, nullptr));
 
 	surface_format.resize(count);
-	CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, surface_format.data()));
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, tge::win::windowSurface, &count, surface_format.data()));
 
-	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, nullptr));
+	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, tge::win::windowSurface, &count, nullptr));
 
 	present_mode.resize(count);
-	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, present_mode.data()));
+	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, tge::win::windowSurface, &count, present_mode.data()));
 
 	usedMSAAFlag = (VkSampleCountFlagBits)properties->getInt("msaa");
 

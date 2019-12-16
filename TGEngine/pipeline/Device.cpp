@@ -122,7 +122,7 @@ void createDevice() {
 	vkGetDeviceQueue(device, queueIndex, 0, &queue);
 
 	VkBool32 isSupported = 1;
-	CHECKFAIL(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, windowList[0]->surface, &isSupported));
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, tge::win::windowSurface, &isSupported));
 
 	ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
 
