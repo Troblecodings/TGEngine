@@ -111,9 +111,6 @@ namespace tge::win {
 
 	void createWindow() {
 		bool fullscreen = properties->getBoolean("fullscreen");
-		if (fullscreen) {
-
-		}
 		isDecoreted = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
 		isConsumingInput = properties->getBooleanOrDefault("consumesinput", false);
 
