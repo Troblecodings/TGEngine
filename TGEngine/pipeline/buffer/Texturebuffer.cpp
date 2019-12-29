@@ -6,14 +6,8 @@ namespace tge::tex {
 
 	TextureDefaults defaults;
 
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output) {
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* imagedesc) {
 		// TODO default format checks
-
-#ifdef DISABLE_TEXTURE_FILL
-		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[size];
-#else
-		VkDescriptorImageInfo* imagedesc = new VkDescriptorImageInfo[2048];
-#endif // DISABLE_TEXTURE_FILL
 
 		VkBuffer* bufferlist = new VkBuffer[size];
 		VkDeviceMemory* memorylist = new VkDeviceMemory[size];
@@ -171,19 +165,16 @@ namespace tge::tex {
 			imagedesc[i].sampler = VK_NULL_HANDLE;
 		}
 #endif // !DISABLE_TEXTURE_FILL
+	}
 
-
+	void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer) {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSet;
+		descwrite.dstSet = mainDescriptorSet[layer];
 		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
-#ifndef DISABLE_TEXTURE_FILL
-		descwrite.descriptorCount = 2048;
-#else
 		descwrite.descriptorCount = size;
-#endif
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
@@ -211,9 +202,8 @@ namespace tge::tex {
 		}
 	}
 
-	void createSampler(SamplerInputInfo loaded) {
+	void createSampler(SamplerInputInfo loaded, Sampler* sampler, SamplerBindingInfo* layer) {
 		// TODO Validation checks
-		VkDescriptorImageInfo imageInfo;
 
 		VkSamplerCreateInfo samplerCreateInfo;
 		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -235,22 +225,23 @@ namespace tge::tex {
 		samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
 		samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
 
-		VkSampler sampler;
-		CHECKFAIL(vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler));
+		CHECKFAIL(vkCreateSampler(device, &samplerCreateInfo, nullptr, sampler));
 
-		imageInfo.sampler = sampler;
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.imageView = VK_NULL_HANDLE;
+		layer->sampler = *sampler;
+		layer->imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		layer->imageView = VK_NULL_HANDLE;
+	}
 
+	void bindSampler(SamplerBindingInfo input, uint32_t layer) {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSet;
+		descwrite.dstSet = mainDescriptorSet[layer];
 		descwrite.dstBinding = 1;
 		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = 1;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-		descwrite.pImageInfo = &imageInfo;
+		descwrite.pImageInfo = &input;
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);

@@ -14,8 +14,8 @@ IndexBuffer indexBuffer;
 
 void initEngine() {
 	tge::nio::initFileSystem();
-	properties = new prop::Properties();
-	prop::readProperties("Properties.xml", properties);
+	tgeproperties = new prop::Properties();
+	prop::readProperties("Properties.xml", tgeproperties);
 
 	createWindowClass();
 	TG_VECTOR_GET_SIZE_AND_RESIZE(windowList)
@@ -39,6 +39,8 @@ void initEngine() {
 	initCameras();
 
 	initUniformBuffers();
+	glm::mat4 mat = glm::mat4(1);
+	fillUniformBuffer(TRANSFORM_BUFFER_2, &mat, sizeof(glm::mat4));
 
 	vertexBuffer.maximumVertexCount = 9000;
 	createVertexBuffer(&vertexBuffer);

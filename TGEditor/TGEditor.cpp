@@ -33,7 +33,11 @@ int main(int argc, char** args) {
 	samplerInputInfo.filterMagnification = VK_FILTER_NEAREST;
 	samplerInputInfo.filterMignification = VK_FILTER_NEAREST;
 
-	createSampler(samplerInputInfo);
+	Sampler sampler;
+	SamplerBindingInfo bindinginfo;
+	createSampler(samplerInputInfo, &sampler, &bindinginfo);
+	bindSampler(bindinginfo, 0);
+	bindSampler(bindinginfo, 1);
 
 	outtex[1].data = new uint8_t[4] { 255, 255, 255, 255};
 	outtex[1].x = 1;
@@ -41,7 +45,10 @@ int main(int argc, char** args) {
 	outtex[1].comp = 1;
 
 	Texture out[2];
-	createTextures(outtex, 2, out);
+	TextureBindingInfo textureBindingInfos[2048];
+	createTextures(outtex, 2, out, textureBindingInfos);
+	bindTextures(textureBindingInfos, 2048, 0);
+	bindTextures(textureBindingInfos, 2048, 1);
 
 	createdMaterials = new Material[1];
 	createdMaterials[0].color = glm::vec4(1);
@@ -50,20 +57,34 @@ int main(int argc, char** args) {
 	uint32_t actorIdx[] = { 0, 1, 2, 0, 2, 3};
 	float actorVertex[] = { -0.5, -0.5, 0, 0, 0.5, -0.5, 1, 0, 0.5, 0.5, 1, 1, -0.5, 0.5, 0, 1};
 
-	ActorInputInfo actorInputs;
-	actorInputs.localTransform = {
+	ActorInputInfo actorInputs[2];
+	actorInputs[0].pProperties.layer = 0;
+	actorInputs[0].pProperties.material = 0;
+	actorInputs[0].pProperties.localTransform = {
 		1, 0, 0, -1,
 		0, 1, 0, 1,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	actorInputs.indices = actorIdx;
-	actorInputs.vertices = (uint8_t*) actorVertex;
-	actorInputs.material = 0;
-	actorInputs.indexCount = 6;
-	actorInputs.vertexCount = 4;
+	actorInputs[0].indices = actorIdx;
+	actorInputs[0].vertices = (uint8_t*) actorVertex;
+	actorInputs[0].indexCount = 6;
+	actorInputs[0].vertexCount = 4;
 
-	createActor(&actorInputs, 1);
+	actorInputs[1].pProperties.layer = 1;
+	actorInputs[1].pProperties.material = 0;
+	actorInputs[1].pProperties.localTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+	actorInputs[1].indices = actorIdx;
+	actorInputs[1].vertices = nullptr;
+	actorInputs[1].indexCount = 6;
+	actorInputs[1].vertexCount = 0;
+
+	createActor(actorInputs, 2);
 
 	startTGEngine();
 	std::cout << "Clean exit! Bye :wave:!" << std::endl;

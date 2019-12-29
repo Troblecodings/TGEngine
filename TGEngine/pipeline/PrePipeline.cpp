@@ -25,7 +25,7 @@ void prePipeline() {
 	present_mode.resize(count);
 	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, present_mode.data()));
 
-	usedMSAAFlag = (VkSampleCountFlagBits)properties->getInt("msaa");
+	usedMSAAFlag = (VkSampleCountFlagBits)tgeproperties->getInt("msaa");
 
 	VkSampleCountFlags counts = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
 	if (!(counts & usedMSAAFlag)) {

@@ -119,11 +119,16 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet, 0, nullptr);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet[0], 0, nullptr);
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
 
-		tge::gmc::loadToCommandBuffer(buffer);
+		tge::gmc::loadToCommandBuffer(buffer, 0);
+
+		// Render for the UI and so on
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet[1], 0, nullptr);
+
+		tge::gmc::loadToCommandBuffer(buffer, 1);
 
 		vkCmdEndRenderPass(buffer);
 

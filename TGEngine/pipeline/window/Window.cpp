@@ -105,9 +105,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 void createWindow(Window* window) {
 	// IMPL getMonitor();
 
-	bool fullscreen = properties->getBoolean("fullscreen");
-	window->decorated = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
-	window->consume_input = !(window->cursor = properties->getBooleanOrDefault("cursor", true));
+	bool fullscreen = tgeproperties->getBoolean("fullscreen");
+	window->decorated = fullscreen ? false : tgeproperties->getBooleanOrDefault("decorated", true);
+	window->consume_input = !(window->cursor = tgeproperties->getBooleanOrDefault("cursor", true));
 
 	if (fullscreen) {
 		GET_SIZE(d_width, d_height);
@@ -115,17 +115,17 @@ void createWindow(Window* window) {
 		window->height = d_height;
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
-	} else if (properties->getBooleanOrDefault("center", true)) {
+	} else if (tgeproperties->getBooleanOrDefault("center", true)) {
 		GET_SIZE(d_width, d_height);
-		window->height = properties->getIntOrDefault("height", 400);
-		window->width = properties->getIntOrDefault("width", 400);
+		window->height = tgeproperties->getIntOrDefault("height", 400);
+		window->width = tgeproperties->getIntOrDefault("width", 400);
 		window->x = d_width / 2 - window->width / 2;
 		window->y = d_height / 2 - window->height / 2;
 	} else {
-		window->height = properties->getIntOrDefault("height", 400);
-		window->width = properties->getIntOrDefault("width", 400);
-		window->x = properties->getInt("posx");
-		window->y = properties->getInt("posy");
+		window->height = tgeproperties->getIntOrDefault("height", 400);
+		window->width = tgeproperties->getIntOrDefault("width", 400);
+		window->x = tgeproperties->getInt("posx");
+		window->y = tgeproperties->getInt("posy");
 	}
 
 #ifdef _WIN32 //Windows window creation
@@ -178,7 +178,7 @@ void createWindow(Window* window) {
 
 	if (window->decorated) {
 		//Char unicode conversation
-		const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
+		const char* ch = tgeproperties->getStringOrDefault("app_name", "TGEngine");
 		size_t conv = strlen(ch) + 1;
 		wchar_t* wc = new wchar_t[conv];
 		mbstowcs_s(&conv, wc, conv, ch, _TRUNCATE);
@@ -188,13 +188,13 @@ void createWindow(Window* window) {
 		if (!window->consume_input) {
 			style |= WS_SYSMENU;
 		}
-		if (properties->getBooleanOrDefault("minimizeable", true)) {
+		if (tgeproperties->getBooleanOrDefault("minimizeable", true)) {
 			style |= WS_MINIMIZEBOX;
 		}
-		if (properties->getBooleanOrDefault("maximizable", true)) {
+		if (tgeproperties->getBooleanOrDefault("maximizable", true)) {
 			style |= WS_MAXIMIZEBOX;
 		}
-		if (properties->getBooleanOrDefault("resizeable", true)) {
+		if (tgeproperties->getBooleanOrDefault("resizeable", true)) {
 			style |= WS_SIZEBOX;
 		}
 		window->__impl_window = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, window->x, window->y, window->width + 16, window->height + 39, nullptr, nullptr, sys_module, nullptr);

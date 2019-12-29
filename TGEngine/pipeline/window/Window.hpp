@@ -59,10 +59,10 @@ extern std::vector<Window*> windowList;
 
 /*
  * Creates a window with the constraints given
- * by the read properties, therfore this is
+ * by the read tgeproperties, therfore this is
  * defined by the according xml file
  * See Stdbase.hpp
- *   -> extern prop::Properties* properties;
+ *   -> extern prop::Properties* tgeproperties;
  */
 void createWindow(Window* window);
 
