@@ -12,8 +12,8 @@ void createDepthTest() {
 	imageCreateInfo.flags = 0;
 	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 	imageCreateInfo.format = used_depth_format;
-	imageCreateInfo.extent.width = windowList[0]->width;
-	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.extent.width = tge::win::mainWindowWidth;
+	imageCreateInfo.extent.height = tge::win::mainWindowHeight;
 	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;

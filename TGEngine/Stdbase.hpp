@@ -52,7 +52,7 @@ TGERROR(lastResult)\
 #endif
 
 #define TGE_CHECK_RECREATE else if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
-if(windowList[0]->minimized){\
+if(tge::win::isMinimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\

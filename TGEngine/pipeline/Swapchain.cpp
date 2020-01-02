@@ -11,9 +11,7 @@ VkImageView color_image_view;
 VkDeviceMemory color_image_memory;
 
 void createSwapchain() {
-	Window* win = windowList[0];
-
-	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, win->surface, &surface_capabilities));
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, tge::win::windowSurface, &surface_capabilities));
 
 	imagecount = TGE_MIN(TGE_MAX(imagecount, surface_capabilities.minImageCount), surface_capabilities.maxImageCount);
 
@@ -21,13 +19,13 @@ void createSwapchain() {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 		nullptr,
 		0,
-		win->surface,
+		tge::win::windowSurface,
 		imagecount,
 		used_format.format,
 		used_format.colorSpace,
 		{
-			(uint32_t)win->width,
-			(uint32_t)win->height
+			tge::win::mainWindowWidth,
+			tge::win::mainWindowHeight
 		},
 		1,
 		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -61,8 +59,9 @@ void createColorResouce() {
 	imageCreateInfo.flags = 0;
 	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 	imageCreateInfo.format = used_format.format;
-	imageCreateInfo.extent.width = windowList[0]->width;
-	imageCreateInfo.extent.height = windowList[0]->height;
+	imageCreateInfo.extent.width = tge::win::mainWindowWidth;
+	imageCreateInfo.extent.height = tge::win::mainWindowHeight;
+
 	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;
@@ -76,7 +75,7 @@ void createColorResouce() {
 	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &color_image));
 
 	VkMemoryRequirements requierments;
-	vkGetImageMemoryRequirements(device, depth_image, &requierments);
+	vkGetImageMemoryRequirements(device, color_image, &requierments);
 
 	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
 	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
@@ -118,9 +117,9 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 	CHECKFAIL(vkDeviceWaitIdle(device));
 
-	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, windowList[0]->surface, &surface_capabilities));
-	windowList[0]->width = surface_capabilities.currentExtent.width;
-	windowList[0]->height = surface_capabilities.currentExtent.height;
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, tge::win::windowSurface, &surface_capabilities));
+	tge::win::mainWindowWidth = surface_capabilities.currentExtent.width;
+	tge::win::mainWindowHeight = surface_capabilities.currentExtent.height;
 
 	createColorResouce();
 	createDepthTest();
@@ -137,8 +136,6 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	}
 	createFramebuffer();
 	createCommandBuffer();
-
-	tge::gmc::multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	tge::ui::ui_scene_entity.init();
 
