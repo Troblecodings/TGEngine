@@ -8,6 +8,7 @@ using namespace tge::tex;
 using namespace tge::gmc;
 using namespace tge::pip;
 using namespace tge::buf;
+using namespace tge::win;
 
 VertexBuffer vertexBuffer;
 IndexBuffer indexBuffer;
@@ -18,16 +19,13 @@ void initEngine() {
 	prop::readProperties("Properties.xml", tgeproperties);
 
 	createWindowClass();
-	TG_VECTOR_GET_SIZE_AND_RESIZE(windowList)
-		createWindow(windowList[lastSize] = new Window);
+	createWindow();
 	createInstance();
 	createWindowSurfaces();
 	createDevice();
 	prePipeline();
 	initShader();
 	initShaderPipes();
-
-	multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	createDepthTest();
 	createColorResouce();
@@ -78,11 +76,11 @@ void startTGEngine() {
 	uint32_t counter = 0;
 
 	while (true) {
-		windowList[0]->pollevents();
-		if (windowList[0]->close_request) {
+		pollEvents();
+		if (isCloseRequested) {
 			break;
 		}
-		if (windowList[0]->minimized) {
+		if (isMinimized) {
 			continue;
 		}
 		startdraw(&indexBuffer, &vertexBuffer);
