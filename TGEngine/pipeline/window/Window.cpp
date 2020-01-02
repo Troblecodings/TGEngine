@@ -10,8 +10,8 @@ namespace tge::win {
 	uint32_t mainWindowX = 0;
 	uint32_t mainWindowY = 0;
 
-	bool isDecoreted;
-	bool isFullscreeen;
+	bool isDecorated;
+	bool isFullscreen;
 	bool isConsumingInput;
 	bool isCloseRequested;
 	bool isFocused;
@@ -110,11 +110,11 @@ namespace tge::win {
 #endif
 
 	void createWindow() {
-		bool fullscreen = properties->getBoolean("fullscreen");
-		isDecoreted = fullscreen ? false : properties->getBooleanOrDefault("decorated", true);
+		isFullscreen = properties->getBoolean("fullscreen");
+		isDecorated = isFullscreen ? false : properties->getBooleanOrDefault("decorated", true);
 		isConsumingInput = properties->getBooleanOrDefault("consumesinput", false);
 
-		if (fullscreen) {
+		if (isFullscreen) {
 			const HWND hDesktop = GetDesktopWindow();
 			RECT desktop;
 			GetWindowRect(hDesktop, &desktop);
@@ -141,7 +141,7 @@ namespace tge::win {
 		RAWINPUTDEVICELIST* list = new RAWINPUTDEVICELIST[size];
 		GetRawInputDeviceList(list, &size, sizeof(RAWINPUTDEVICELIST));
 
-		if (isDecoreted) {
+		if (isDecorated) {
 			//Char unicode conversation
 			const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
 			size_t conv = strlen(ch) + 1;
