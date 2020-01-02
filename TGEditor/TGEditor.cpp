@@ -80,9 +80,9 @@ int main(int argc, char** args) {
 		0, 0, 0, 1
 	};
 	actorInputs[1].indices = actorIdx;
-	actorInputs[1].vertices = nullptr;
+	actorInputs[1].vertices = (uint8_t*) actorVertex;
 	actorInputs[1].indexCount = 6;
-	actorInputs[1].vertexCount = 0;
+	actorInputs[1].vertexCount = 6;
 
 	createActor(actorInputs, 2);
 

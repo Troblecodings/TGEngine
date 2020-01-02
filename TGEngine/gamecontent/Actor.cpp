@@ -7,6 +7,7 @@ namespace tge::gmc {
 	std::vector<ActorProperties> properties;
 	std::vector<uint32_t>  countData;
 	std::vector<uint32_t>  offsetData;
+	std::vector<uint32_t>  vertexOffsetData;
 
 	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize) {
 		for (uint32_t i = 0; i < pSize; i++) {
@@ -23,13 +24,16 @@ namespace tge::gmc {
 		properties.reserve(pSize);
 		countData.reserve(pSize);
 		offsetData.reserve(pSize);
+		vertexOffsetData.reserve(pSize);
+
 		for (size_t i = 0; i < pSize; i++) {
 			ActorInputInfo input = pInputInfo[i];
 			properties.push_back(input.pProperties);
 			countData.push_back(input.indexCount);
 			offsetData.push_back(indexBuffer.indexCount);
-			vertexBuffer.addAll(input.vertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
 			indexBuffer.addAll(input.indices, input.indexCount);
+			vertexOffsetData.push_back(vertexBuffer.pointCount);
+			vertexBuffer.addAll(input.vertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
 		}
 	}
 
@@ -43,7 +47,7 @@ namespace tge::gmc {
 
 			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, 20, &createdMaterials[prop.material]);
 
-			vkCmdDrawIndexed(buffer, countData[i], 1, 0, offsetData[i], 0);
+			vkCmdDrawIndexed(buffer, countData[i], 1, offsetData[i], vertexOffsetData[i], 0);
 		}
 
 	}

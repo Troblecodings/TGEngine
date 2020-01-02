@@ -26,6 +26,7 @@ namespace tge::gmc {
 	extern std::vector<ActorProperties> properties;
 	extern std::vector<uint32_t>  countData;
 	extern std::vector<uint32_t>  offsetData;
+	extern std::vector<uint32_t>  vertexOffsetData;
 
 	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);
 
