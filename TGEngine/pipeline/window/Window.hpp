@@ -21,7 +21,7 @@ namespace tge::win {
     extern uint32_t mainWindowX;
     extern uint32_t mainWindowY;
 
-    extern bool isDecoreted;
+    extern bool isDecorated;
     extern bool isFullscreeen;
     extern bool isConsumingInput;
     extern bool isCloseRequested;
