@@ -67,20 +67,20 @@ namespace tge::pip {
 		pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS;
 		pipelineDepthStencilStateCreateInfo.depthBoundsTestEnable = VK_FALSE;
 		pipelineDepthStencilStateCreateInfo.stencilTestEnable = VK_FALSE;
-		pipelineDepthStencilStateCreateInfo.minDepthBounds = 0;
+		pipelineDepthStencilStateCreateInfo.minDepthBounds = -1.0;
 		pipelineDepthStencilStateCreateInfo.maxDepthBounds = 1.0;
 
-		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_KEEP;
-		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_ZERO;
 		pipelineDepthStencilStateCreateInfo.front.compareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
 		pipelineDepthStencilStateCreateInfo.front.compareMask = 0;
 		pipelineDepthStencilStateCreateInfo.front.writeMask = 0;
 		pipelineDepthStencilStateCreateInfo.front.reference = 0;
 
-		pipelineDepthStencilStateCreateInfo.back.failOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.back.passOp = VK_STENCIL_OP_KEEP;
-		pipelineDepthStencilStateCreateInfo.back.depthFailOp = VK_STENCIL_OP_REPLACE;
+		pipelineDepthStencilStateCreateInfo.back.failOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.back.passOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.back.depthFailOp = VK_STENCIL_OP_ZERO;
 		pipelineDepthStencilStateCreateInfo.back.compareOp = VK_COMPARE_OP_LESS;
 		pipelineDepthStencilStateCreateInfo.back.compareMask = 0;
 		pipelineDepthStencilStateCreateInfo.back.writeMask = 0;
