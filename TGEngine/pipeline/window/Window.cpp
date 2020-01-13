@@ -110,9 +110,9 @@ namespace tge::win {
 #endif
 
 	void createWindow() {
-		isFullscreen = properties->getBoolean("fullscreen");
-		isDecorated = isFullscreen ? false : properties->getBooleanOrDefault("decorated", true);
-		isConsumingInput = properties->getBooleanOrDefault("consumesinput", false);
+		isFullscreen = tgeproperties->getBoolean("fullscreen");
+		isDecorated = isFullscreen ? false : tgeproperties->getBooleanOrDefault("decorated", true);
+		isConsumingInput = tgeproperties->getBooleanOrDefault("consumesinput", false);
 
 		if (isFullscreen) {
 			const HWND hDesktop = GetDesktopWindow();
@@ -120,19 +120,19 @@ namespace tge::win {
 			GetWindowRect(hDesktop, &desktop);
 			mainWindowHeight = desktop.bottom;
 			mainWindowWidth = desktop.right;
-		} else if (properties->getBooleanOrDefault("center", true)) {
+		} else if (tgeproperties->getBooleanOrDefault("center", true)) {
 			const HWND hDesktop = GetDesktopWindow();
 			RECT desktop;
 			GetWindowRect(hDesktop, &desktop);
-			mainWindowHeight = properties->getIntOrDefault("height", 400);
-			mainWindowWidth = properties->getIntOrDefault("width", 400);
+			mainWindowHeight = tgeproperties->getIntOrDefault("height", 400);
+			mainWindowWidth = tgeproperties->getIntOrDefault("width", 400);
 			mainWindowX = desktop.right / 2 - mainWindowWidth / 2;
 			mainWindowY = desktop.bottom / 2 - mainWindowHeight / 2;
 		} else {
-			mainWindowHeight = properties->getIntOrDefault("height", 400);
-			mainWindowWidth = properties->getIntOrDefault("width", 400);
-			mainWindowX = properties->getInt("posx");
-			mainWindowY = properties->getInt("posy");
+			mainWindowHeight = tgeproperties->getIntOrDefault("height", 400);
+			mainWindowWidth = tgeproperties->getIntOrDefault("width", 400);
+			mainWindowX = tgeproperties->getInt("posx");
+			mainWindowY = tgeproperties->getInt("posy");
 		}
 
 #ifdef _WIN32 //Windows window creation
@@ -143,7 +143,7 @@ namespace tge::win {
 
 		if (isDecorated) {
 			//Char unicode conversation
-			const char* ch = properties->getStringOrDefault("app_name", "TGEngine");
+			const char* ch = tgeproperties->getStringOrDefault("app_name", "TGEngine");
 			size_t conv = strlen(ch) + 1;
 			wchar_t* wc = new wchar_t[conv];
 			mbstowcs_s(&conv, wc, conv, ch, _TRUNCATE);
@@ -153,13 +153,13 @@ namespace tge::win {
 			if (!isConsumingInput) {
 				style |= WS_SYSMENU;
 			}
-			if (properties->getBooleanOrDefault("minimizeable", true)) {
+			if (tgeproperties->getBooleanOrDefault("minimizeable", true)) {
 				style |= WS_MINIMIZEBOX;
 			}
-			if (properties->getBooleanOrDefault("maximizable", true)) {
+			if (tgeproperties->getBooleanOrDefault("maximizable", true)) {
 				style |= WS_MAXIMIZEBOX;
 			}
-			if (properties->getBooleanOrDefault("resizeable", true)) {
+			if (tgeproperties->getBooleanOrDefault("resizeable", true)) {
 				style |= WS_SIZEBOX;
 			}
 			winHWND = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, win::mainWindowX, win::mainWindowY, win::mainWindowWidth + 16, win::mainWindowHeight + 39, nullptr, nullptr, systemModule, nullptr);

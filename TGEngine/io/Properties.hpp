@@ -37,7 +37,7 @@ namespace prop {
 		int getIntOrDefault(const char* name, int def);
 
 		/*
-		 * Add values to the properties
+		 * Add values to the tgeproperties
 		 */
 		void addString(const char* name, char* value);
 		void addBoolean(const char* name, bool value);
