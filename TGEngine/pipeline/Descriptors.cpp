@@ -1,18 +1,18 @@
 #include "Descriptors.hpp"
 
 VkPipelineLayout pipelineLayout;
-VkDescriptorSet mainDescriptorSet;
+VkDescriptorSet mainDescriptorSet[2];
 
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	sizes[0].descriptorCount = 1;
+	sizes[0].descriptorCount = 2;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-	sizes[1].descriptorCount = 1;
+	sizes[1].descriptorCount = 2;
 
 	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	sizes[2].descriptorCount = 2048;
+	sizes[2].descriptorCount = 4096;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -78,8 +78,8 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	descriptorSetAllocateInfo.pNext = nullptr;
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
-	descriptorSetAllocateInfo.descriptorSetCount = 1; // TODO Change this to a modifable value ... in case we need more
-	descriptorSetAllocateInfo.pSetLayouts = &descriptorSetLayout;
+	descriptorSetAllocateInfo.descriptorSetCount = 2;
+	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[2]{ descriptorSetLayout, descriptorSetLayout };
 
-	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet));
+	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSet));
 }

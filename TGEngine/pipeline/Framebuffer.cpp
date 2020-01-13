@@ -4,8 +4,6 @@ std::vector<VkFramebuffer> frame_buffer;
 std::vector<VkImageView> image_view;
 
 void createFramebuffer() {
-	Window* win = windowList[0];
-
 	frame_buffer.resize(imagecount);
 	image_view.resize(imagecount);
 
@@ -16,8 +14,8 @@ void createFramebuffer() {
 		 renderpass,
 		 3,
 		 VK_NULL_HANDLE,
-		 (uint32_t)win->width,
-		 (uint32_t)win->height,
+		 tge::win::mainWindowWidth,
+		 tge::win::mainWindowHeight,
 		 1
 	};
 
