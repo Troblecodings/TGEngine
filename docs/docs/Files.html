@@ -24,19 +24,6 @@
     <div class="container">
         <pre class="prettyprint">Path: TGEngine/io/Files.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-<h3>Macros</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define GetCurrentDir _getcwd</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define GetCurrentDir getcwd</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Functions</h3>
 <details>
     <summary>
@@ -73,6 +60,28 @@ Use "current_working_dir" to get the cwd after querying.
 (In debug mode it checks if the open was successful)
 
 </details>
+<h3>Externs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern char current_working_dir[];</pre>
+    </summary>
+    This is the current working directory of the programm
+<strong>This needs to be queryed with initFileSystem()</strong>
+
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GetCurrentDir _getcwd</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define GetCurrentDir getcwd</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
 <h3>Structs</h3>
 <details>
     <summary>
@@ -89,15 +98,6 @@ in a resource file
 
     <pre class="prettyprint">uint64_t offset;
 uint64_t size;</pre>
-</details>
-<h3>Externs</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern char current_working_dir[];</pre>
-    </summary>
-    This is the current working directory of the programm
-<strong>This needs to be queryed with initFileSystem()</strong>
-
 </details>
 
     </div>

@@ -24,29 +24,6 @@
     <div class="container">
         <pre class="prettyprint">Path: TGEngine/vlib/VulkanBuffer.hpp</pre>
         <p>Click on a function or struct to reveal more information</p>
-<h3>Macros</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\
-vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
-vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\
-vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
-vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
 <h3>Externs</h3>
 <details>
     <summary>
@@ -75,6 +52,29 @@ vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
 <details>
     <summary>
         <pre class='prettyprint'>extern uint32_t vlibDeviceHostVisibleCoherentIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<h3>Macros</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define FIND_INDEX(ind, prop) for (ind = 0; ind &lt; memoryProperties.memoryTypeCount; ind++) { if ((memoryProperties.memoryTypes[ind].propertyFlags & (prop)) == (prop)) break; }</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_BUFFER_REQUIREMENTS(buffer, memoryIndex) vkGetBufferMemoryRequirements(device, buffer, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define QUERRY_IMAGE_REQUIREMENTS(image, memoryIndex) vkGetImageMemoryRequirements(device, image, &lastRequirements);\
+vlibBufferMemoryAllocateInfo.allocationSize = lastRequirements.size;\
+vlibBufferMemoryAllocateInfo.memoryTypeIndex = memoryIndex;</pre>
     </summary>
     <!--COMMENT-->
 </details>

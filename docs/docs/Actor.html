@@ -44,53 +44,18 @@ vectors before storing it into the command buffer asap
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer, uint8_t pLayerId);</pre>
     </summary>
     This is an internal method which loads evry actor
 into the according command buffer
 
 </details>
-<h3>Structs</h3>
-<details>
-    <summary>
-        <pre class='prettyprint'>ActorInputInfo</pre>
-    </summary>
-    This is struct holds all the information necessary
-for an actor to be drawn. This is used with createActor
-
-<ul>
-<li><strong class='atr'>localTransform</strong> is the local tranform that is calculated</li>
-<li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>
-<li><strong class='atr'>pIndices</strong> is an array of indices</li>
-<li><strong class='atr'>vertexCount</strong> is the count of elements in pVertices</li>
-<li><strong class='atr'>pVertices</strong> is an array of vertices</li>
-<li><strong class='atr'>material</strong> is the id of the according material</li></ul>
-
-<h4>Valid usage</h4>
-<ul>
-<li><strong class='atr'>indexCount</strong> needs to be greater than zero</li>
-<li><strong class='atr'>pIndices</strong> must be a valid pointer</li>
-<li><strong class='atr'>pIndices</strong> array must be at least the size of indexCount</li>
-<li><strong class='atr'>vertexCount</strong> needs to be greater than zero</li>
-<li><strong class='atr'>pVertices</strong> must be a valid pointer</li>
-<li><strong class='atr'>pVertices</strong> array must be at least the size of vertexCount</li>
-<li><strong class='atr'>material</strong> must be in the range form 0 to 255</li>
-<li><strong class='atr'>material</strong> must be a valid index in the createdMaterials arrays</li></ul>
-
-    <pre class="prettyprint">glm::mat4 localTransform;
-uint32_t  indexCount;
-uint32_t* pIndices;
-uint16_t  vertexCount;
-uint8_t*  pVertices;
-// TODO copy material
-uint8_t   material;</pre>
-</details>
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;ActorProperties&gt; properties;</pre>
     </summary>
-    This holds the local tranforms of each actor
+    This holds the properties for each actor
 
 </details>
 <details>
@@ -110,10 +75,66 @@ uint8_t   material;</pre>
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt;  vertexOffsetData;</pre>
     </summary>
-    This holds the material ids for each actor
+    This holds the offset of the verticies
+(This is the offset for the indicies)
 
+</details>
+<h3>Structs</h3>
+<details>
+    <summary>
+        <pre class='prettyprint'>ActorProperties</pre>
+    </summary>
+    This is struct holds all the the properties that
+do not directly influence the mash it self
+
+<ul>
+<li><strong class='atr'>localTransform</strong> this is the local tranform of the actor that will be computed at runtime</li>
+<li><strong class='atr'>material</strong> is the index of the material used to draw this mesh</li>
+<li><strong class='atr'>layer</strong> this is the layer the actor is drawn on (0 for world or 1 for UI)</li></ul>
+
+<h4>Valid usage</h4>
+<ul>
+<li><strong class='atr'>localTransform</strong> must be a none zero matrix</li>
+<li><strong class='atr'>material</strong> must be a valid material id in the material list</li>
+<li><strong class='atr'>material</strong> must be accessable in the given layer</li>
+<li><strong class='atr'>layer</strong> must be a valid layer id</li></ul>
+
+    <pre class="prettyprint">glm::mat4 localTransform;
+uint8_t   material;
+uint8_t   layer;</pre>
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>ActorInputInfo</pre>
+    </summary>
+    This is struct holds all the information necessary
+for an actor to be drawn. This is used with createActor
+
+<ul>
+<li><strong class='atr'>pProperties</strong> describe the properties of this actor</li>
+<li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>
+<li><strong class='atr'>pIndices</strong> is an array of indices</li>
+<li><strong class='atr'>vertexCount</strong> is the count of elements in pVertices</li>
+<li><strong class='atr'>pVertices</strong> is an array of vertices</li>
+<li><strong class='atr'>material</strong> is the id of the according material</li></ul>
+
+<h4>Valid usage</h4>
+<ul>
+<li><strong class='atr'>pProperties</strong> must be implizit valid</li>
+<li><strong class='atr'>indexCount</strong> needs to be greater than zero</li>
+<li><strong class='atr'>pIndices</strong> must be a valid pointer</li>
+<li><strong class='atr'>pIndices</strong> array must be at least the size of indexCount</li>
+<li><strong class='atr'>vertexCount</strong> needs to be greater than zero</li>
+<li><strong class='atr'>pVertices</strong> must be a valid pointer</li>
+<li><strong class='atr'>pVertices</strong> array must be at least the size of vertexCount</li>
+
+    <pre class="prettyprint">ActorProperties pProperties;
+uint32_t  indexCount;
+uint32_t* pIndices;
+uint16_t  vertexCount;
+uint8_t*  pVertices;</pre>
 </details>
 
     </div>
