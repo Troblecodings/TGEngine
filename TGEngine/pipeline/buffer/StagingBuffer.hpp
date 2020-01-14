@@ -6,7 +6,10 @@
 #include "Memory.hpp"
 
 /*
- * 
+ * Holds information to create a staging buffer
+ * A stanging buffer is a transfer buffer
+ * It transferse data from a host visible memory
+ * onto device local memory
  */
 struct StagingBuffer {
 	VkDeviceSize   size;
