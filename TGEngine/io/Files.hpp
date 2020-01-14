@@ -23,8 +23,8 @@ namespace tge {
 
 		typedef FILE* File;
 
-		/* This is the current working directory of the programm
-		 * <strong>This needs to be queryed with initFileSystem()</strong>
+		/* Current working directory of the program
+		 * <strong>Needs to be queried with initFileSystem()</strong>
 		 */
 		extern char current_working_dir[];
 
