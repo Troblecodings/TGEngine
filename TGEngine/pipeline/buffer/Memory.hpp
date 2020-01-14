@@ -6,8 +6,8 @@
 namespace tge::buf {
 
 	/*
-	 * This holds the information about a buffer. This is used as an input to
-	 * the <strong class='atr'>createBuffers</strong>
+	 * Holds the information about a buffer. Used as an input for
+	 * <strong class='atr'>createBuffers</strong>
 	 * <ul>
 	 * <li><strong class='atr'>flags</strong> is the stage in which to use the buffer</li>
 	 * <li><strong class='atr'>size</strong> is the size of the buffers content</li>
