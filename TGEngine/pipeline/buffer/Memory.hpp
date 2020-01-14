@@ -28,7 +28,7 @@ namespace tge::buf {
 	};
 
 	/*
-	 * This is the output of the <strong class='atr'>createBuffers</strong>
+	 * Output of <strong class='atr'>createBuffers</strong>
 	 * <li><strong class='atr'>buffer</strong></li>
 	 * <li><strong class='atr'>memory</strong></li>
 	 */
