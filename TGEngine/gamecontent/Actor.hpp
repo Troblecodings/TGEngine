@@ -94,7 +94,7 @@ namespace tge::gmc {
 	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);
 
 	/*
-	 * This is an internal method which loads evry actor
+	 * Internal method which loads every actor
 	 * into the according command buffer
 	 */
 	void loadToCommandBuffer(VkCommandBuffer pBuffer, uint8_t pLayerId);
