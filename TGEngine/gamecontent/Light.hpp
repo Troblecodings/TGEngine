@@ -16,7 +16,7 @@ namespace tge {
 		 * Holds the information about lights
 		 *
 		 * <ul>
-		 * <li><strong class='atr'>pos</strong> is the position in the space</li>
+		 * <li><strong class='atr'>pos</strong> is the position in the coordinate system</li>
 		 * <li><strong class='atr'>intensity</strong> is the intensity of the light</li>
 		 * <li><strong class='atr'>id</strong> is the id in the light array</li></ul>
 		 * <strong>This API is deprecated!</strong>
