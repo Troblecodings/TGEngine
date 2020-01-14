@@ -8,7 +8,7 @@ namespace tge {
 	namespace gmc {
 
 		/*
-		 * This is the maximum count of lights used in the scene
+		 * Maximum count of lights used in the scene
 		 */
 		extern uint32_t lightCount;
 
