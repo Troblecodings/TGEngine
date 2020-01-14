@@ -14,18 +14,17 @@ namespace tge {
 		 */
 		void createFirstPersonCamera(Camera* camera);
 
-		/* This is an internal function which is executed on
-		 * Mouse input as defined by the Mouse.hpp
+		/* Internal function which is executed on
+		 * mouse input as defined by Mouse.hpp
 		 *
 		 * <strong>This API is deprecated!</strong>
 		 */
 		void __impl_mouseinputhandlerFPC(Camera* camera, glm::vec2 pos, glm::vec2 delta);
 
-		/* This is an internal function which is executed on
-         * Keyboard input as defined by the Keyboard.hpp
-         *
-         * <strong>This API is deprecated!</strong>
-         */
+		/* Internal function which is executed on
+                 * keyboard input as defined by Keyboard.hpp
+                 * <strong>This API is deprecated!</strong>
+                 */
 		void __impl_keyboard_handleFPC(Camera* camera, uint16_t chr, bool down);
 	}
 }
