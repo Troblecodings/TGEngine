@@ -8,8 +8,8 @@ namespace tge::gmc {
 	using namespace tge::nio;
 
 	/*
-	 * This holdes the materials for the render
-	 * this is equivalent to the according push constante
+	 * Holds the materials for the render,
+	 * equivalent to the according push constant
 	 */
 	struct Material {
 		glm::vec4 color;
@@ -22,8 +22,8 @@ namespace tge::gmc {
 	extern Material* createdMaterials;
 
 	/*
-	 * Loads the materials into the createdMaterials
-	 * array deined by this file
+	 * Loads all materials into the createdMaterials
+	 * that are defined in the given file
 	 */
 	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size);
 }
