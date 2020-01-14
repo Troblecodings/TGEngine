@@ -18,7 +18,7 @@ namespace tge {
 			float y2;
 		};
 
-		/* This is a function pointer to handel player inputs
+		/* This is a function pointer to handle player inputs
 		 */
 		extern void(*playercontroller)(Input*);
 	}

@@ -16,7 +16,7 @@ namespace tge::gmc {
 		uint32_t  diffuseTexture;
 	};
 
-	/* This holds all the materials for the push constant
+	/* Holds all the materials for the push constant
 	 * <em>Note: This needs to be initalized before a load call</em>
 	 */
 	extern Material* createdMaterials;

@@ -13,7 +13,7 @@ namespace tge {
 		extern uint32_t lightCount;
 
 		/*
-		 * This holds the lights information
+		 * Holds the information about lights
 		 *
 		 * <ul>
 		 * <li><strong class='atr'>pos</strong> is the position in the space</li>
@@ -34,7 +34,7 @@ namespace tge {
 			void updateLight();
 		};
 
-		/* This holds references to the light actors
+		/* Holds references to the light actors
 		 *
          * <strong>This API is deprecated!</strong>
 		 */

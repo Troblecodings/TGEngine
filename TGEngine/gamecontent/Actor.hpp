@@ -14,9 +14,9 @@ namespace tge::gmc {
 	 * do not directly influence the mash it self
      *
      * <ul>
-     * <li><strong class='atr'>localTransform</strong> this is the local tranform of the actor that will be computed at runtime</li>
+     * <li><strong class='atr'>localTransform</strong> is the local tranform of the actor that will be computed at runtime</li>
      * <li><strong class='atr'>material</strong> is the index of the material used to draw this mesh</li>
-     * <li><strong class='atr'>layer</strong> this is the layer the actor is drawn on (0 for world or 1 for UI)</li></ul>
+     * <li><strong class='atr'>layer</strong> is the layer the actor is drawn on (0 for world or 1 for UI)</li></ul>
      *
      * <h4>Valid usage</h4>
      * <ul>

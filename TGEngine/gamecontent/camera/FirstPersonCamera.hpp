@@ -7,7 +7,7 @@ namespace tge {
 	namespace gmc {
 
 		/*
-		 * This creates a first person camera with the according perspectiv
+		 * Creates a first person camera with the according perspective
 		 * and movement input handling
 		 * 
 		 * <strong>This API is deprecated!</strong>
