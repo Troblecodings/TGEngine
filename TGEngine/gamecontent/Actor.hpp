@@ -36,7 +36,7 @@ namespace tge::gmc {
      * for an actor to be drawn. This is used with createActor
      *
      * <ul>
-     * <li><strong class='atr'>pProperties</strong> describe the properties of this actor</li>
+     * <li><strong class='atr'>pProperties</strong> describes the properties of this actor</li>
      * <li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>
      * <li><strong class='atr'>pIndices</strong> is an array of indices</li>
      * <li><strong class='atr'>vertexCount</strong> is the count of elements in pVertices</li>
