@@ -31,9 +31,9 @@ namespace tge::gmc {
 		uint8_t   layer;
 	};
 
-	/*
-     * This is struct holds all the information necessary
-     * for an actor to be drawn. This is used with createActor
+    /*
+     * Holds all the information necessary
+     * for an actor to be drawn. Used with createActor.
      *
      * <ul>
      * <li><strong class='atr'>pProperties</strong> describes the properties of this actor</li>
@@ -45,7 +45,7 @@ namespace tge::gmc {
      *
      * <h4>Valid usage</h4>
      * <ul>
-	 * <li><strong class='atr'>pProperties</strong> must be implizit valid</li>
+     * <li><strong class='atr'>pProperties</strong> must be valid (see ActorProperties)</li>
      * <li><strong class='atr'>indexCount</strong> needs to be greater than zero</li>
      * <li><strong class='atr'>pIndices</strong> must be a valid pointer</li>
      * <li><strong class='atr'>pIndices</strong> array must be at least the size of indexCount</li>
@@ -62,34 +62,34 @@ namespace tge::gmc {
 	};
 
 	/*
-	 * This holds the properties for each actor
+	 * Holds the properties for each actor
 	 */
 	extern std::vector<ActorProperties> properties;
 	/*
-	 * This holds the count of indices of each actor
+	 * Holds the count of indices of each actor
 	 */
 	extern std::vector<uint32_t> countData;
 	/*
-     * This holds the index offset of each actor
+         * Holds the index offset of each actor
 	 * (Offset form the index buffers stating possition)
-     */
+         */
 	extern std::vector<uint32_t> offsetData;
 	/*
-	 * This holds the offset of the verticies
+	 * Holds the offset of the verticies
 	 * (This is the offset for the indicies)
 	 */
 	extern std::vector<uint32_t>  vertexOffsetData;
 
 	/*
-	 * Loads the model from the disk
+	 * Loads the model from the file system
 	 * 
 	 * <strong>Unfinished</strong>
 	 */
 	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);
 
 	/*
-	 * Creates the actors by loading everything into intermedate
-	 * vectors before storing it into the command buffer asap
+	 * Creates the actors by loading everything into intermediate
+	 * vectors, before storing it into the command buffer as soon as possible
 	 */
 	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);
 
