@@ -28,7 +28,7 @@ namespace tge {
 		 */
 		extern char current_working_dir[];
 
-		/* This holds the offsets and sizes of a resource
+		/* Holds the offsets and sizes of a resource
 		 * in a resource file
 		 * <ul>
 		 * <li><strong class='atr'>offset</strong> is the offset in the file of the resource</li>
