@@ -29,7 +29,7 @@
     <summary>
         <pre class='prettyprint'>void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);</pre>
     </summary>
-    Loads the model from the disk
+    Loads the model from the file system
 
 <strong>Unfinished</strong>
 
@@ -38,15 +38,15 @@
     <summary>
         <pre class='prettyprint'>void createActor(ActorInputInfo* pInputInfo, uint32_t pSize);</pre>
     </summary>
-    Creates the actors by loading everything into intermedate
-vectors before storing it into the command buffer asap
+    Creates the actors by loading everything into intermediate
+vectors, before storing it into the command buffer as soon as possible
 
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer, uint8_t pLayerId);</pre>
     </summary>
-    This is an internal method which loads evry actor
+    Internal method which loads every actor
 into the according command buffer
 
 </details>
@@ -55,21 +55,21 @@ into the according command buffer
     <summary>
         <pre class='prettyprint'>extern std::vector&lt;ActorProperties&gt; properties;</pre>
     </summary>
-    This holds the properties for each actor
+    Holds the properties for each actor
 
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
     </summary>
-    This holds the count of indices of each actor
+    Holds the count of indices of each actor
 
 </details>
 <details>
     <summary>
         <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
     </summary>
-    This holds the index offset of each actor
+    Holds the index offset of each actor
 (Offset form the index buffers stating possition)
 
 </details>
@@ -77,7 +77,7 @@ into the according command buffer
     <summary>
         <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt;  vertexOffsetData;</pre>
     </summary>
-    This holds the offset of the verticies
+    Holds the offset of the verticies
 (This is the offset for the indicies)
 
 </details>
@@ -90,13 +90,13 @@ into the according command buffer
 do not directly influence the mash it self
 
 <ul>
-<li><strong class='atr'>localTransform</strong> this is the local tranform of the actor that will be computed at runtime</li>
+<li><strong class='atr'>localTransform</strong> is the local tranform of the actor that will be computed at runtime</li>
 <li><strong class='atr'>material</strong> is the index of the material used to draw this mesh</li>
-<li><strong class='atr'>layer</strong> this is the layer the actor is drawn on (0 for world or 1 for UI)</li></ul>
+<li><strong class='atr'>layer</strong> is the layer the actor is drawn on (0 for world or 1 for UI)</li></ul>
 
 <h4>Valid usage</h4>
 <ul>
-<li><strong class='atr'>localTransform</strong> must be a none zero matrix</li>
+<li><strong class='atr'>localTransform</strong> must be a non-zero matrix</li>
 <li><strong class='atr'>material</strong> must be a valid material id in the material list</li>
 <li><strong class='atr'>material</strong> must be accessable in the given layer</li>
 <li><strong class='atr'>layer</strong> must be a valid layer id</li></ul>
@@ -109,11 +109,11 @@ uint8_t   layer;</pre>
     <summary>
         <pre class='prettyprint'>ActorInputInfo</pre>
     </summary>
-    This is struct holds all the information necessary
-for an actor to be drawn. This is used with createActor
+    Holds all the information necessary
+for an actor to be drawn. Used with createActor.
 
 <ul>
-<li><strong class='atr'>pProperties</strong> describe the properties of this actor</li>
+<li><strong class='atr'>pProperties</strong> describes the properties of this actor</li>
 <li><strong class='atr'>indexCount</strong> is the count of elements in pIndices</li>
 <li><strong class='atr'>pIndices</strong> is an array of indices</li>
 <li><strong class='atr'>vertexCount</strong> is the count of elements in pVertices</li>
@@ -122,7 +122,7 @@ for an actor to be drawn. This is used with createActor
 
 <h4>Valid usage</h4>
 <ul>
-<li><strong class='atr'>pProperties</strong> must be implizit valid</li>
+<li><strong class='atr'>pProperties</strong> must be valid (see ActorProperties)</li>
 <li><strong class='atr'>indexCount</strong> needs to be greater than zero</li>
 <li><strong class='atr'>pIndices</strong> must be a valid pointer</li>
 <li><strong class='atr'>pIndices</strong> array must be at least the size of indexCount</li>
