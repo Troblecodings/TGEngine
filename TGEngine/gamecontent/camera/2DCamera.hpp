@@ -7,7 +7,7 @@ namespace tge {
 	namespace gmc {
 
 		/* 
-		 * Holds the information needed to supply a topdown camera
+		 * Holds the information needed to supply a top-down camera
 		 */
 		struct TopDownCamera {
 			float positionx;
@@ -24,4 +24,3 @@ namespace tge {
 
 	}
 }
-

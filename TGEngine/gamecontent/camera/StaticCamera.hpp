@@ -6,8 +6,8 @@
 namespace tge {
 	namespace gmc {
 
-		/* This creates a static camera
-		 * but the rendered objects can be turned
+		/* Creates a static camera,
+		 * but the surrounding rendered objects can be rotated around the camera
 		 *
 		 * <strong>This API is deprecated!</strong>
 		 */

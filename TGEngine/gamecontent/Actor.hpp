@@ -20,7 +20,7 @@ namespace tge::gmc {
      *
      * <h4>Valid usage</h4>
      * <ul>
-     * <li><strong class='atr'>localTransform</strong> must be a none zero matrix</li>
+     * <li><strong class='atr'>localTransform</strong> must be a non-zero matrix</li>
      * <li><strong class='atr'>material</strong> must be a valid material id in the material list</li>
      * <li><strong class='atr'>material</strong> must be accessable in the given layer</li>
      * <li><strong class='atr'>layer</strong> must be a valid layer id</li></ul>

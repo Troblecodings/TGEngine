@@ -17,7 +17,7 @@ namespace tge::gmc {
 	};
 
 	/* Holds all the materials for the push constant
-	 * <em>Note: This needs to be initalized before a load call</em>
+	 * <em>Note: Needs to be initialized before a load call</em>
 	 */
 	extern Material* createdMaterials;
 
