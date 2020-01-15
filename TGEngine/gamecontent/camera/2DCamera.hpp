@@ -17,8 +17,8 @@ namespace tge {
 		};
 
 		/* 
-		 * Loads the top down matrix onto the device
-		 * this is used as basic tranform
+		 * Loads the top-down matrix onto the device,
+		 * used as basic transform
 		 */
 		void setTopDownCamera(TopDownCamera* camera);
 
