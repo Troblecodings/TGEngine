@@ -21,8 +21,8 @@ void createSwapchain() {
 		0,
 		tge::win::windowSurface,
 		imagecount,
-		used_format.format,
-		used_format.colorSpace,
+		usedSurfaceFormat.format,
+		usedSurfaceFormat.colorSpace,
 		{
 			tge::win::mainWindowWidth,
 			tge::win::mainWindowHeight
@@ -34,7 +34,7 @@ void createSwapchain() {
 		nullptr,
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-		used_present_mode,
+		usedPresentMode,
 		VK_TRUE,
 		swapchain
 	};
@@ -58,14 +58,14 @@ void createColorResouce() {
 	imageCreateInfo.pNext = nullptr;
 	imageCreateInfo.flags = 0;
 	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageCreateInfo.format = used_format.format;
+	imageCreateInfo.format = usedSurfaceFormat.format;
 	imageCreateInfo.extent.width = tge::win::mainWindowWidth;
 	imageCreateInfo.extent.height = tge::win::mainWindowHeight;
 
 	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;
-	imageCreateInfo.samples = usedMSAAFlag;
+	imageCreateInfo.samples = usedSampleFlag;
 	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -89,7 +89,7 @@ void createColorResouce() {
 	imageViewCreateInfo.flags = 0;
 	imageViewCreateInfo.image = color_image;
 	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-	imageViewCreateInfo.format = used_format.format;
+	imageViewCreateInfo.format = usedSurfaceFormat.format;
 	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
 	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;

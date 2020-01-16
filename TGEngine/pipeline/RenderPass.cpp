@@ -6,8 +6,8 @@ void createRenderpass() {
 	//Attachment for color images
 	VkAttachmentDescription attachment_description = {
 		0,
-		used_format.format,
-		usedMSAAFlag,
+		usedSurfaceFormat.format,
+		usedSampleFlag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -19,8 +19,8 @@ void createRenderpass() {
 	//Attachment for depth images
 	VkAttachmentDescription depth_attachment_description = {
 		0,
-		used_depth_format,
-		usedMSAAFlag,
+		usedDepthFormat,
+		usedSampleFlag,
 		VK_ATTACHMENT_LOAD_OP_CLEAR,
 		VK_ATTACHMENT_STORE_OP_STORE,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -32,7 +32,7 @@ void createRenderpass() {
 	//Resolve attachment -> For MSAA
 	VkAttachmentDescription resolve_description = {
 		0,
-		used_format.format,
+		usedSurfaceFormat.format,
 		VK_SAMPLE_COUNT_1_BIT,
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_STORE_OP_DONT_CARE,

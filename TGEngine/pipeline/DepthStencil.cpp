@@ -11,13 +11,13 @@ void createDepthTest() {
 	imageCreateInfo.pNext = nullptr;
 	imageCreateInfo.flags = 0;
 	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageCreateInfo.format = used_depth_format;
+	imageCreateInfo.format = usedDepthFormat;
 	imageCreateInfo.extent.width = tge::win::mainWindowWidth;
 	imageCreateInfo.extent.height = tge::win::mainWindowHeight;
 	imageCreateInfo.extent.depth = 1;
 	imageCreateInfo.mipLevels = 1;
 	imageCreateInfo.arrayLayers = 1;
-	imageCreateInfo.samples = usedMSAAFlag;
+	imageCreateInfo.samples = usedSampleFlag;
 	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 	imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -41,7 +41,7 @@ void createDepthTest() {
 	imageViewCreateInfo.flags = 0;
 	imageViewCreateInfo.image = depth_image;
 	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-	imageViewCreateInfo.format = used_depth_format;
+	imageViewCreateInfo.format = usedDepthFormat;
 	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
 	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;

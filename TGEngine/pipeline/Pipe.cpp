@@ -28,7 +28,7 @@ namespace tge::pip {
 		pipelineMultisampleStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		pipelineMultisampleStateCreateInfo.pNext = nullptr;
 		pipelineMultisampleStateCreateInfo.flags = 0;
-		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedMSAAFlag;
+		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedSampleFlag;
 		pipelineMultisampleStateCreateInfo.sampleShadingEnable = VK_FALSE;
 		pipelineMultisampleStateCreateInfo.minSampleShading = 1.0f;
 		pipelineMultisampleStateCreateInfo.pSampleMask = nullptr;
