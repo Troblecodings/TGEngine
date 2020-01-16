@@ -74,7 +74,7 @@ void startTGEngine() {
 	fillCommandBuffer(&indexBuffer, &vertexBuffer);
 
 	startupCommands();
-	createSemaphores();
+	createMutex();
 
 	clock_t last_time = clock();
 
@@ -122,7 +122,7 @@ void startTGEngine() {
 		counter++;
 	}
 
-	destroySemaphores();
+	destroyMutex();
 	destroyCommandBuffer();
 	destroyIndexBuffer(&indexBuffer);
 	destroyVertexBuffer(&vertexBuffer);

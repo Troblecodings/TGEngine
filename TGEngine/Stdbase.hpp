@@ -55,7 +55,7 @@ TGERROR(lastResult)\
 if(tge::win::isMinimized){\
 return;\
 }\
-recreateSwapchain(ibuffer, vbuffer);\
+recreateSwapchain();\
 }
 
 #ifdef DEBUG

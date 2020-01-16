@@ -1,21 +1,16 @@
 #pragma once
 
 #include "../Stdbase.hpp"
-#include "Device.hpp"
-#include "window/Window.hpp"
-#include "Swapchain.hpp"
-#include "CommandBuffer.hpp"
-#include "buffer/IndexBuffer.hpp"
 
-extern uint32_t image_index;
-extern VkFence fence;
+extern uint32_t imageIndex;
+extern VkFence drawFence;
 
-void startdraw(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
+void startdraw();
 
-void present(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
+void present();
 
-void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
+void submit();
 
-void createSemaphores();
+void createMutex();
 
-void destroySemaphores();
+void destroyMutex();

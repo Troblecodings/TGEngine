@@ -26,6 +26,6 @@ void endSingleTimeCommand();
 
 void startupCommands();
 
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer);
+void fillCommandBuffer();
 
 void destroyCommandBuffer();

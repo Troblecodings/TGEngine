@@ -105,7 +105,7 @@ void destroyColorResouce() {
 	vkDestroyImage(device, color_image, nullptr);
 }
 
-void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
+void recreateSwapchain() {
 	CHECKFAIL(vkDeviceWaitIdle(device));
 
 	destroyFrameBuffer();
@@ -131,7 +131,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 				vkDestroyImage(device, var, nullptr);
 			}
 		swapchain = VK_NULL_HANDLE;
-		recreateSwapchain(ibuffer, vbuffer);
+		recreateSwapchain();
 		return;
 	}
 	createFramebuffer();
@@ -139,7 +139,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 	tge::ui::ui_scene_entity.init();
 
-	fillCommandBuffer(ibuffer, vbuffer);
+	fillCommandBuffer();
 }
 
 void destroySwapchain() {

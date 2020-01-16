@@ -1,6 +1,7 @@
 #include "CommandBuffer.hpp"
 #include "../gamecontent/Actor.hpp"
 #include "window/Window.hpp"
+#include "../TGEngine.hpp"
 
 VkCommandPool commandPool;
 VkFence singelTimeCommandBufferFence;
@@ -84,7 +85,7 @@ void startupCommands() {
 	endSingleTimeCommand();
 }
 
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
+void fillCommandBuffer() {
 	for (size_t i = 0; i < imagecount; i++) {
 		VkCommandBuffer buffer = commandBuffer[i];
 
@@ -123,9 +124,9 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		vkCmdBeginRenderPass(buffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkDeviceSize offsets = 0;
-		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &vertexBuffer.vertex_buffer, &offsets);
 
-		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(buffer, indexBuffer.index_buffer, 0, VK_INDEX_TYPE_UINT32);
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet[0], 0, nullptr);
 

@@ -26,6 +26,6 @@ void createColorResouce();
 
 void destroyColorResouce();
 
-void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer);
+void recreateSwapchain();
 
 void destroySwapchain();
