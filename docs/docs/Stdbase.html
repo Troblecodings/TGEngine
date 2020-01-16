@@ -27,7 +27,7 @@
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern prop::Properties* properties;</pre>
+        <pre class='prettyprint'>extern prop::Properties* tgeproperties;</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -52,29 +52,66 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define CHECKFAIL HANDEL(lastResult)</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>#define HANDEL(result)\
-if (result != VK_SUCCESS) {\
-TGERROR(result)\
+        <pre class='prettyprint'>#define CHECKFAIL(statement) lastResult = statement;\
+if (lastResult != VK_SUCCESS) {\
+TGERROR(lastResult)\
 }</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>#define HANDEL_RECREATE(result)\
-if(result == VK_ERROR_OUT_OF_DATE_KHR){\
-if(windowList[0]-&gt;minimized){\
+        <pre class='prettyprint'>#define TGE_ASSERT(assertion, action) if(assertion) { action }</pre>
+    </summary>
+    This asserts a given value or statement and takes acction if the conditions are meet
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_CRASH(message, code) MessageBox(NULL, message, L"Error!", MB_ICONERROR | MB_OK); TGERROR(code);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_CRASH(message, code)  </pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_ASSERT_DB(statement, assertion, action)  TGE_ASSERT(assertion, action)</pre>
+    </summary>
+    This is the same as assert but with only applys to DEBUG builds
+if the build shouldn't contain the DEBUG flag it will
+just break down to the statement given
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_ASSERT_NORMAL_DB(assertion, action)  TGE_ASSERT(assertion, action)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_ASSERT_DB(statement, assertion, action) statement</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_ASSERT_NORMAL_DB(assertion, action)</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>#define TGE_CHECK_RECREATE else if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
+if(tge::win::isMinimized){\
 return;\
 }\
 recreateSwapchain(ibuffer, vbuffer);\
-} else {\
-HANDEL(result)\
 }</pre>
     </summary>
     <!--COMMENT-->

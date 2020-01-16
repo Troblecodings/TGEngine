@@ -31,9 +31,9 @@ namespace tge::gmc {
 			properties.push_back(input.pProperties);
 			countData.push_back(input.indexCount);
 			offsetData.push_back(indexBuffer.indexCount);
-			indexBuffer.addAll(input.indices, input.indexCount);
+			indexBuffer.addAll(input.pIndices, input.indexCount);
 			vertexOffsetData.push_back(vertexBuffer.pointCount);
-			vertexBuffer.addAll(input.vertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
+			vertexBuffer.addAll(input.pVertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
 		}
 	}
 

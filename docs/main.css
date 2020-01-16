@@ -9,7 +9,9 @@ html {
 summary::-webkit-details-marker {
     display: none;
 }
-
+.atr{
+    color: red;
+}
 .menu {
     text-align: center;
     box-sizing: border-box;
