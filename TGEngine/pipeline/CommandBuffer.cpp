@@ -25,7 +25,7 @@ void createCommandBuffer() {
 	commandBufferAllocateInfo.commandPool = commandPool;
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	commandBufferAllocateInfo.commandBufferCount = imagecount + 1;
-	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, commandBuffer));
+	CHECKFAIL(vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffer));
 
 	VkFenceCreateInfo fenceCreateInfo;
 	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -77,7 +77,7 @@ void startupCommands() {
 			buf->staging_buffer,
 			*buf->destination,
 			1,
-			&vlibBufferCopy
+			&bufferCopy
 		);
 	}
 
@@ -94,7 +94,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		commandBufferInheritanceInfo.renderPass = renderpass;
 		commandBufferInheritanceInfo.subpass = 0;
 		commandBufferInheritanceInfo.framebuffer = frameBuffer[i];
-		commandBufferInheritanceInfo.occlusionQueryEnable = VK_TRUE;
+		commandBufferInheritanceInfo.occlusionQueryEnable = VK_FALSE;
 		commandBufferInheritanceInfo.queryFlags = 0;
 		commandBufferInheritanceInfo.pipelineStatistics = 0;
 
@@ -103,33 +103,19 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		commandBufferBeginInfo.pNext = nullptr;
 		commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritanceInfo;
-		CHECKFAIL(vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo));
-
-		VkRenderPassBeginInfo renderPassBeginInfo = {
-			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			nullptr,
-			renderpass,
-			frameBuffer[i],
-			{
-				0,
-				0,
-                tge::win::mainWindowWidth,
-				tge::win::mainWindowHeight
-			},
-			2,
-			vlibClearValues
-		};
+		CHECKFAIL(vkBeginCommandBuffer(buffer, &commandBufferBeginInfo));
 
 		VkClearValue clearValues[2];
-		clearValues[0] = { 0, 0, 0, 1 };
+		clearValues[0] = { 1, 1, 1, 1 };
 		clearValues[1] = { 1.0f, 0 };
 
+		VkRenderPassBeginInfo renderPassBeginInfo;
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
 		renderPassBeginInfo.renderPass = renderpass;
-		renderPassBeginInfo.framebuffer = frameBuffer;
+		renderPassBeginInfo.framebuffer = frameBuffer[i];
 		renderPassBeginInfo.renderArea.offset.x = 0;
-		renderPassBeginInfo.renderArea.offset.x = 0;
+		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = tge::win::mainWindowWidth;
 		renderPassBeginInfo.renderArea.extent.height = tge::win::mainWindowHeight;
 		renderPassBeginInfo.clearValueCount = 2;
