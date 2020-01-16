@@ -105,7 +105,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritanceInfo;
 		CHECKFAIL(vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo));
 
-		VkRenderPassBeginInfo render_pass_begin_info = {
+		VkRenderPassBeginInfo renderPassBeginInfo = {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			nullptr,
 			renderpass,
@@ -119,7 +119,22 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			2,
 			vlibClearValues
 		};
-		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkClearValue clearValues[2];
+		clearValues[0] = { 0, 0, 0, 1 };
+		clearValues[1] = { 1.0f, 0 };
+
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.pNext = nullptr;
+		renderPassBeginInfo.renderPass = renderpass;
+		renderPassBeginInfo.framebuffer = frameBuffer;
+		renderPassBeginInfo.renderArea.offset.x = 0;
+		renderPassBeginInfo.renderArea.offset.x = 0;
+		renderPassBeginInfo.renderArea.extent.width = tge::win::mainWindowWidth;
+		renderPassBeginInfo.renderArea.extent.height = tge::win::mainWindowHeight;
+		renderPassBeginInfo.clearValueCount = 2;
+		renderPassBeginInfo.pClearValues = clearValues;
+		vkCmdBeginRenderPass(buffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkDeviceSize offsets = 0;
 		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
