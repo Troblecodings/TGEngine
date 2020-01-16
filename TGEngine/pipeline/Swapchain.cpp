@@ -109,7 +109,7 @@ void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	CHECKFAIL(vkDeviceWaitIdle(device));
 
 	destroyFrameBuffer();
-	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
+	vkFreeCommandBuffers(device, commandPool, (uint32_t)4, commandBuffer);
 	destroyRenderPass();
 	destroyColorResouce();
 	destroyDepthTest();

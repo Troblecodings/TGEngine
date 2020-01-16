@@ -28,7 +28,7 @@ void submit(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		nullptr,
 		nullptr,
 		1,
-		&command_buffers[image_index],
+		&commandBuffer[image_index],
 		0,
 		nullptr
 	};

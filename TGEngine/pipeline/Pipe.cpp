@@ -2,6 +2,7 @@
 #include "RenderPass.hpp"
 #include "Descriptors.hpp"
 #include "PrePipeline.hpp"
+#include "window/Window.hpp"
 
 namespace tge::pip {
 

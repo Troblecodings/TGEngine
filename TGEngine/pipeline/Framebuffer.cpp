@@ -1,23 +1,26 @@
 #include "Framebuffer.hpp"
+#include "window/Window.hpp"
+#include "RenderPass.hpp"
+#include "Swapchain.hpp"
+#include "PrePipeline.hpp"
 
-std::vector<VkFramebuffer> frame_buffer;
-std::vector<VkImageView> image_view;
+VkFramebuffer* frameBuffer;
+VkImageView* imageView;
 
 void createFramebuffer() {
-	frame_buffer.resize(imagecount);
-	image_view.resize(imagecount);
+	frameBuffer = new VkFramebuffer[imagecount];
+	imageView = new VkImageView[imagecount];
 
-	VkFramebufferCreateInfo framebuffer_create_info = {
-		 VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-		 nullptr,
-		 0,
-		 renderpass,
-		 3,
-		 VK_NULL_HANDLE,
-		 tge::win::mainWindowWidth,
-		 tge::win::mainWindowHeight,
-		 1
-	};
+	VkFramebufferCreateInfo framebufferCreateInfo;
+	framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	framebufferCreateInfo.pNext = nullptr;
+	framebufferCreateInfo.flags = 0;
+	framebufferCreateInfo.renderPass = renderpass;
+	framebufferCreateInfo.attachmentCount = 3;
+	framebufferCreateInfo.pAttachments = VK_NULL_HANDLE;
+	framebufferCreateInfo.width = tge::win::mainWindowWidth;
+	framebufferCreateInfo.height = tge::win::mainWindowHeight;
+	framebufferCreateInfo.layers = 1;
 
 	VkImageView views[3];
 	views[0] = color_image_view;
@@ -40,18 +43,18 @@ void createFramebuffer() {
 
 	for (size_t i = 0; i < imagecount; i++) {
 		imageViewCreateInfo.image = swapchain_images[i];
-		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &image_view[i]));
+		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &imageView[i]));
 
-		views[2] = image_view[i];
-		framebuffer_create_info.pAttachments = views;
+		views[2] = imageView[i];
+		framebufferCreateInfo.pAttachments = views;
 
-		CHECKFAIL(vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &frame_buffer[i]));
+		CHECKFAIL(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &frameBuffer[i]));
 	}
 }
 
 void destroyFrameBuffer() {
 	for (size_t i = 0; i < imagecount; i++) {
-		vkDestroyFramebuffer(device, frame_buffer[i], nullptr);
-		vkDestroyImageView(device, image_view[i], nullptr);
+		vkDestroyFramebuffer(device, frameBuffer[i], nullptr);
+		vkDestroyImageView(device, imageView[i], nullptr);
 	}
 }

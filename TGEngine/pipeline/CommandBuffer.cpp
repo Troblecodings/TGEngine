@@ -1,46 +1,50 @@
 #include "CommandBuffer.hpp"
 #include "../gamecontent/Actor.hpp"
-#include "../gamecontent/Actor.hpp"
+#include "window/Window.hpp"
 
-VkCommandPool command_pool;
-VkFence single_time_command_ready;
-std::vector<VkCommandBuffer> command_buffers;
+VkCommandPool commandPool;
+VkFence singelTimeCommandBufferFence;
+VkCommandBuffer* commandBuffer;
 VkDeviceSize offsets = 0;
-bool started = true;
 
 void createCommandBuffer() {
-	command_buffers.resize(imagecount + 1);
+	commandBuffer = new VkCommandBuffer[(uint64_t)imagecount + 1];
 
-	if (!command_pool) {
-		VkCommandPoolCreateInfo commmand_pool_create_info = {
-			VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-			nullptr,
-			VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			queueIndex
-		};
+	if (!commandPool) {
+		VkCommandPoolCreateInfo commmandPoolCreateInfo;
+		commmandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		commmandPoolCreateInfo.pNext = nullptr;
+		commmandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		commmandPoolCreateInfo.queueFamilyIndex = queueIndex;
 
-		CHECKFAIL(vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool));
+		CHECKFAIL(vkCreateCommandPool(device, &commmandPoolCreateInfo, nullptr, &commandPool));
 
-		vlibCommandBufferAllocateInfo.commandPool = command_pool;
+		vlibCommandBufferAllocateInfo.commandPool = commandPool;
 	}
 
 	vlibCommandBufferAllocateInfo.commandBufferCount = imagecount;
-	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, command_buffers.data()));
+	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, commandBuffer));
 
 	vlibCommandBufferAllocateInfo.commandBufferCount = 1;
-	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER));;
+	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER));
 
-	VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-	CHECKFAIL(vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready));;
+	VkFenceCreateInfo fenceCreateInfo;
+	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceCreateInfo.flags = 0;
+	fenceCreateInfo.pNext = nullptr;
+	CHECKFAIL(vkCreateFence(device, &fenceCreateInfo, nullptr, &singelTimeCommandBufferFence));
 }
 
 void startSingleTimeCommand() {
-	CHECKFAIL(vkResetFences(device, 1, &single_time_command_ready));
+	CHECKFAIL(vkResetFences(device, 1, &singelTimeCommandBufferFence));
 
-	vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-	vlibCommandBufferBeginInfo.pInheritanceInfo = nullptr;
-	CHECKFAIL(vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlibCommandBufferBeginInfo));
-	}
+	VkCommandBufferBeginInfo commandBufferBeginInfo;
+	commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	commandBufferBeginInfo.pNext = nullptr;
+	commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	commandBufferBeginInfo.pInheritanceInfo = nullptr;
+	CHECKFAIL(vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &commandBufferBeginInfo));
+}
 
 void endSingleTimeCommand() {
 	CHECKFAIL(vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER));
@@ -56,10 +60,19 @@ void endSingleTimeCommand() {
 		0,
 		nullptr,
 	};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.pNext = nullptr;
+	submitInfo.waitSemaphoreCount = 0;
+	submitInfo.pWaitSemaphores = VK_NULL_HANDLE;
+	submitInfo.pWaitDstStageMask = VK_NULL_HANDLE;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &SINGELTIME_COMMAND_BUFFER;
+	submitInfo.signalSemaphoreCount = 0;
+	submitInfo.pSignalSemaphores = nullptr;
 
-	CHECKFAIL(vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready));
+	CHECKFAIL(vkQueueSubmit(queue, 1, &submitInfo, singelTimeCommandBufferFence));
 
-	CHECKFAIL(vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX));
+	CHECKFAIL(vkWaitForFences(device, 1, &singelTimeCommandBufferFence, VK_TRUE, UINT64_MAX));
 }
 
 void startupCommands() {
@@ -82,14 +95,14 @@ void startupCommands() {
 
 void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	for (size_t i = 0; i < imagecount; i++) {
-		VkCommandBuffer buffer = command_buffers[i];
+		VkCommandBuffer buffer = commandBuffer[i];
 
 		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
 				nullptr,
 				renderpass,
 				0,
-				frame_buffer[i],
+				frameBuffer[i],
 				VK_FALSE,
 				0,
 				0
@@ -103,7 +116,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			nullptr,
 			renderpass,
-			frame_buffer[i],
+			frameBuffer[i],
 			{
 				0,
 				0,
@@ -138,7 +151,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 
 void destroyCommandBuffer() {
 	CHECKFAIL(vkDeviceWaitIdle(device));
-	vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
-	vkDestroyCommandPool(device, command_pool, nullptr);
-	vkDestroyFence(device, single_time_command_ready, nullptr);
+	vkFreeCommandBuffers(device, commandPool, 4, commandBuffer);
+	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyFence(device, singelTimeCommandBufferFence, nullptr);
 }
