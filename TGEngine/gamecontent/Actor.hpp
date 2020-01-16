@@ -75,8 +75,8 @@ namespace tge::gmc {
          */
 	extern std::vector<uint32_t> offsetData;
 	/*
-	 * Holds the offset of the verticies
-	 * (This is the offset for the indicies)
+	 * Holds the offset of the vertices
+	 * (This is the offset for the indices)
 	 */
 	extern std::vector<uint32_t>  vertexOffsetData;
 
