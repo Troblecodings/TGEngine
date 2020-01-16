@@ -14,11 +14,16 @@
 #include "../ui/UIEntity.hpp"
 
 extern VkSwapchainKHR swapchain;
-extern std::vector<VkImage> swapchain_images;
-extern VkSurfaceCapabilitiesKHR surface_capabilities;
-extern VkImage color_image;
-extern VkImageView color_image_view;
-extern VkDeviceMemory color_image_memory;
+extern VkImage* swapchainImages;
+/*
+ * Contains the supported image usage falgs
+ * The min and max image count as well as
+ * min and max extend
+ */
+extern VkSurfaceCapabilitiesKHR surfaceCapabilities;
+extern VkImage colorImage;
+extern VkImageView colorImageView;
+extern VkDeviceMemory colorImageMemory;
 
 void createSwapchain();
 

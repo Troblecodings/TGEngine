@@ -23,7 +23,7 @@ void createFramebuffer() {
 	framebufferCreateInfo.layers = 1;
 
 	VkImageView views[3];
-	views[0] = color_image_view;
+	views[0] = colorImageView;
 	views[1] = depth_image_view;
 
 	VkImageViewCreateInfo imageViewCreateInfo;
@@ -42,7 +42,7 @@ void createFramebuffer() {
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
 
 	for (size_t i = 0; i < imagecount; i++) {
-		imageViewCreateInfo.image = swapchain_images[i];
+		imageViewCreateInfo.image = swapchainImages[i];
 		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &imageView[i]));
 
 		views[2] = imageView[i];
