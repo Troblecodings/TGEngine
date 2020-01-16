@@ -5,7 +5,6 @@
 VkCommandPool commandPool;
 VkFence singelTimeCommandBufferFence;
 VkCommandBuffer* commandBuffer;
-VkDeviceSize offsets = 0;
 
 void createCommandBuffer() {
 	commandBuffer = new VkCommandBuffer[(uint64_t)imagecount + 1];
@@ -18,15 +17,15 @@ void createCommandBuffer() {
 		commmandPoolCreateInfo.queueFamilyIndex = queueIndex;
 
 		CHECKFAIL(vkCreateCommandPool(device, &commmandPoolCreateInfo, nullptr, &commandPool));
-
-		vlibCommandBufferAllocateInfo.commandPool = commandPool;
 	}
 
-	vlibCommandBufferAllocateInfo.commandBufferCount = imagecount;
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo;
+	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	commandBufferAllocateInfo.pNext = nullptr;
+	commandBufferAllocateInfo.commandPool = commandPool;
+	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	commandBufferAllocateInfo.commandBufferCount = imagecount + 1;
 	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, commandBuffer));
-
-	vlibCommandBufferAllocateInfo.commandBufferCount = 1;
-	CHECKFAIL(vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER));
 
 	VkFenceCreateInfo fenceCreateInfo;
 	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -49,17 +48,7 @@ void startSingleTimeCommand() {
 void endSingleTimeCommand() {
 	CHECKFAIL(vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER));
 
-	VkSubmitInfo submitInfo = {
-		VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		nullptr,
-		0,
-		nullptr,
-		nullptr,
-		1,
-		&SINGELTIME_COMMAND_BUFFER,
-		0,
-		nullptr,
-	};
+	VkSubmitInfo submitInfo;
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.pNext = nullptr;
 	submitInfo.waitSemaphoreCount = 0;
@@ -78,9 +67,11 @@ void endSingleTimeCommand() {
 void startupCommands() {
 	startSingleTimeCommand();
 
-	for each (StagingBuffer * buf in staging_buffer) {
-		vlibBufferCopy.dstOffset = vlibBufferCopy.srcOffset = 0;
-		vlibBufferCopy.size = buf->size;
+	VkBufferCopy bufferCopy;
+	bufferCopy.srcOffset = 0;
+	bufferCopy.dstOffset = 0;
+	for each (StagingBuffer* buf in staging_buffer) {
+		bufferCopy.size = buf->size;
 		vkCmdCopyBuffer(
 			SINGELTIME_COMMAND_BUFFER,
 			buf->staging_buffer,
@@ -97,19 +88,21 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 	for (size_t i = 0; i < imagecount; i++) {
 		VkCommandBuffer buffer = commandBuffer[i];
 
-		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
-			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-				nullptr,
-				renderpass,
-				0,
-				frameBuffer[i],
-				VK_FALSE,
-				0,
-				0
-		};
+		VkCommandBufferInheritanceInfo commandBufferInheritanceInfo;
+		commandBufferInheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+		commandBufferInheritanceInfo.pNext = nullptr;
+		commandBufferInheritanceInfo.renderPass = renderpass;
+		commandBufferInheritanceInfo.subpass = 0;
+		commandBufferInheritanceInfo.framebuffer = frameBuffer[i];
+		commandBufferInheritanceInfo.occlusionQueryEnable = VK_TRUE;
+		commandBufferInheritanceInfo.queryFlags = 0;
+		commandBufferInheritanceInfo.pipelineStatistics = 0;
 
-		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		vlibCommandBufferBeginInfo.pInheritanceInfo = &command_buffer_inheritance_info;
+		VkCommandBufferBeginInfo commandBufferBeginInfo;
+		commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		commandBufferBeginInfo.pNext = nullptr;
+		commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritanceInfo;
 		CHECKFAIL(vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo));
 
 		VkRenderPassBeginInfo render_pass_begin_info = {
@@ -128,6 +121,7 @@ void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
 		};
 		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
+		VkDeviceSize offsets = 0;
 		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
 
 		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);

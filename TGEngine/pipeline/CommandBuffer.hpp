@@ -17,7 +17,6 @@
 extern VkCommandPool commandPool;
 extern VkFence singelTimeCommandBufferFence;
 extern VkCommandBuffer* commandBuffer;
-extern VkDeviceSize offsets;
 
 void createCommandBuffer();
 
