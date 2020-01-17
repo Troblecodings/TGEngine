@@ -66,8 +66,8 @@ int main(int argc, char** args) {
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	actorInputs[0].indices = actorIdx;
-	actorInputs[0].vertices = (uint8_t*) actorVertex;
+	actorInputs[0].pIndices = actorIdx;
+	actorInputs[0].pVertices = (uint8_t*) actorVertex;
 	actorInputs[0].indexCount = 6;
 	actorInputs[0].vertexCount = 4;
 
@@ -79,8 +79,8 @@ int main(int argc, char** args) {
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	actorInputs[1].indices = actorIdx;
-	actorInputs[1].vertices = (uint8_t*) actorVertex;
+	actorInputs[1].pIndices = actorIdx;
+	actorInputs[1].pVertices = (uint8_t*) actorVertex;
 	actorInputs[1].indexCount = 6;
 	actorInputs[1].vertexCount = 6;
 
