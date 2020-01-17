@@ -13,6 +13,9 @@
 namespace tge {
 	namespace fnt {
 
+		/*
+		 * <strong>This API is deprecated!</strong>
+		 */
 		class Font {
 
 		private:
