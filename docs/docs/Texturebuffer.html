@@ -33,7 +33,13 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createSampler(SamplerInputInfo input);</pre>
+        <pre class='prettyprint'>void createSampler(SamplerInputInfo input, Sampler* sampler, SamplerBindingInfo* bindinginfo);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void bindSampler(SamplerBindingInfo input, uint32_t layer);</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -45,7 +51,13 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);</pre>
+        <pre class='prettyprint'>void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* bindinginfo);</pre>
+    </summary>
+    <!--COMMENT-->
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer);</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -104,7 +116,7 @@ VkDeviceMemory imagememory;</pre>
         <pre class='prettyprint'>TextureInputInfo</pre>
     </summary>
     <!--COMMENT-->
-    <pre class="prettyprint">uint8_t*  data;
+    <pre class="prettyprint">uint8_t* data;
 int       x;
 int       y;
 int       comp;</pre>

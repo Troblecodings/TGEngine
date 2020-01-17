@@ -51,7 +51,7 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer);</pre>
+        <pre class='prettyprint'>void fillCommandBuffer();</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -64,38 +64,26 @@
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkCommandPool command_pool;</pre>
+        <pre class='prettyprint'>extern VkCommandPool commandPool;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkFence single_time_command_ready;</pre>
+        <pre class='prettyprint'>extern VkFence singelTimeCommandBufferFence;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;VkCommandBuffer&gt; command_buffers;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern VkDeviceSize offsets;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern bool started;</pre>
+        <pre class='prettyprint'>extern VkCommandBuffer* commandBuffer;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <h3>Macros</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>#define SINGELTIME_COMMAND_BUFFER command_buffers[imagecount]</pre>
+        <pre class='prettyprint'>#define SINGELTIME_COMMAND_BUFFER commandBuffer[imagecount]</pre>
     </summary>
     <!--COMMENT-->
 </details>

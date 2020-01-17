@@ -45,7 +45,7 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void recreateSwapchain(IndexBuffer* ibuffer, VertexBuffer* vbuffer);</pre>
+        <pre class='prettyprint'>void recreateSwapchain();</pre>
     </summary>
     <!--COMMENT-->
 </details>
@@ -64,31 +64,34 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;VkImage&gt; swapchain_images;</pre>
+        <pre class='prettyprint'>extern VkImage* swapchainImages;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkSurfaceCapabilitiesKHR surface_capabilities;</pre>
+        <pre class='prettyprint'>extern VkSurfaceCapabilitiesKHR surfaceCapabilities;</pre>
+    </summary>
+    Contains the supported image usage falgs
+The min and max image count as well as
+min and max extend
+
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>extern VkImage colorImage;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkImage color_image;</pre>
+        <pre class='prettyprint'>extern VkImageView colorImageView;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern VkImageView color_image_view;</pre>
-    </summary>
-    <!--COMMENT-->
-</details>
-<details>
-    <summary>
-        <pre class='prettyprint'>extern VkDeviceMemory color_image_memory;</pre>
+        <pre class='prettyprint'>extern VkDeviceMemory colorImageMemory;</pre>
     </summary>
     <!--COMMENT-->
 </details>

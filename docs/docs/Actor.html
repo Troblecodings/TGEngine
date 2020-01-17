@@ -39,47 +39,55 @@
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer);</pre>
+        <pre class='prettyprint'>void loadToCommandBuffer(VkCommandBuffer pBuffer, uint8_t pLayerId);</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <h3>Externs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;glm::mat4&gt; localTranformIds;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;ActorProperties&gt; properties;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; countData;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt;  countData;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt; offsetData;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt;  offsetData;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <details>
     <summary>
-        <pre class='prettyprint'>extern std::vector&lt;uint8_t&gt;  materialIds;</pre>
+        <pre class='prettyprint'>extern std::vector&lt;uint32_t&gt;  vertexOffsetData;</pre>
     </summary>
     <!--COMMENT-->
 </details>
 <h3>Structs</h3>
 <details>
     <summary>
-        <pre class='prettyprint'>ActorInputInfo</pre>
+        <pre class='prettyprint'>ActorProperties</pre>
     </summary>
     <!--COMMENT-->
     <pre class="prettyprint">glm::mat4 localTransform;
-uint32_t*  indices;
-uint8_t*  vertices;
 uint8_t   material;
+uint8_t   layer;</pre>
+</details>
+<details>
+    <summary>
+        <pre class='prettyprint'>ActorInputInfo</pre>
+    </summary>
+    <!--COMMENT-->
+    <pre class="prettyprint">ActorProperties pProperties;
 uint32_t  indexCount;
-uint16_t  vertexCount;</pre>
+uint32_t* indices;
+uint16_t  vertexCount;
+uint8_t*  vertices;</pre>
 </details>
 
     </div>

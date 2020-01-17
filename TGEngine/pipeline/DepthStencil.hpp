@@ -4,9 +4,9 @@
 #include "PrePipeline.hpp"
 #include "../vlib/VulkanBuffer.hpp"
 
-extern VkImage depth_image;
-extern VkImageView depth_image_view;
-extern VkDeviceMemory depth_image_memory;
+extern VkImage depthImage;
+extern VkImageView depthImageView;
+extern VkDeviceMemory depthImageMemory;
 
 void createDepthTest();
 

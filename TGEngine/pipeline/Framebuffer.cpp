@@ -24,7 +24,7 @@ void createFramebuffer() {
 
 	VkImageView views[3];
 	views[0] = colorImageView;
-	views[1] = depth_image_view;
+	views[1] = depthImageView;
 
 	VkImageViewCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

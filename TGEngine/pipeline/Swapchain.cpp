@@ -75,9 +75,12 @@ void createColorResouce() {
 	VkMemoryRequirements requierments;
 	vkGetImageMemoryRequirements(device, colorImage, &requierments);
 
-	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
-	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	CHECKFAIL(vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &colorImageMemory));
+	VkMemoryAllocateInfo memoryAllocationInfo;
+	memoryAllocationInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	memoryAllocationInfo.pNext = nullptr;
+	memoryAllocationInfo.allocationSize = requierments.size;
+	memoryAllocationInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
+	CHECKFAIL(vkAllocateMemory(device, &memoryAllocationInfo, nullptr, &colorImageMemory));
 
 	CHECKFAIL(vkBindImageMemory(device, colorImage, colorImageMemory, 0));
 
