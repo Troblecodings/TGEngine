@@ -6,15 +6,14 @@ VkDebugUtilsMessengerEXT debugMessager;
 
 void createInstance() {
 
-	VkApplicationInfo app_info = {
-		VK_STRUCTURE_TYPE_APPLICATION_INFO,
-		nullptr,
-		tgeproperties->getStringOrDefault("app_name", "TGEngine"),
-		(uint32_t)tgeproperties->getInt("version"),
-		"TGEngine",
-		TGE_VERSION,
-		VK_API_VERSION_1_1
-	};
+	VkApplicationInfo applicationInfo;
+	applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	applicationInfo.pNext = nullptr;
+	applicationInfo.pApplicationName = tgeproperties->getStringOrDefault("app_name", "TGEngine");
+	applicationInfo.applicationVersion = (uint32_t)tgeproperties->getInt("version");
+	applicationInfo.pEngineName = "TGEngine";
+	applicationInfo.engineVersion = TGE_VERSION;
+	applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
 	// Layer list
 	const char* layersToEnable[] = {
@@ -28,21 +27,23 @@ void createInstance() {
 		"VK_LAYER_AMD_switchable_graphics"
 	};
 
-	uint32_t count;
 	//Validation for the instance layers
+	uint32_t layerCount = 0;
 	std::vector<const char*> enabledLayerNames;
-	CHECKFAIL(vkEnumerateInstanceLayerProperties(&count, nullptr));
-	std::vector<VkLayerProperties> usableLayerNames(count);
-	CHECKFAIL(vkEnumerateInstanceLayerProperties(&count, usableLayerNames.data()));
-	for each (VkLayerProperties layer in usableLayerNames) {
-		OUT_LV_DEBUG("Available " << layer.layerName)
-			for each (const char* name in layersToEnable) {
-				if (strcmp(layer.layerName, name) == 0) {
-					enabledLayerNames.push_back(name);
-					OUT_LV_DEBUG("Activate Layer: " << name)
-						break;
-				}
+	CHECKFAIL(vkEnumerateInstanceLayerProperties(&layerCount, nullptr));
+	enabledLayerNames.reserve(layerCount);
+	VkLayerProperties* layerProperties = new VkLayerProperties[layerCount];
+	CHECKFAIL(vkEnumerateInstanceLayerProperties(&layerCount, layerProperties));
+	for (uint32_t i = 0; i < layerCount; i++) {
+		VkLayerProperties layer = layerProperties[i];
+		OUT_LV_DEBUG("Available " << layer.layerName);
+		for each (const char* name in layersToEnable) {
+			if (strcmp(layer.layerName, name) == 0) {
+				enabledLayerNames.push_back(name);
+				OUT_LV_DEBUG("Activate Layer: " << name);
+				break;
 			}
+		}
 	}
 
 	// Extension list
@@ -55,32 +56,35 @@ void createInstance() {
 	};
 
 	//Validation for the intance extensions
+	uint32_t extensionCount = 0;
 	std::vector<const char*> enabledExtensionNames;
-	CHECKFAIL(vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr));
-	std::vector<VkExtensionProperties> usableExtensionNames(count);
-	CHECKFAIL(vkEnumerateInstanceExtensionProperties(nullptr, &count, usableExtensionNames.data()));
-	for each (VkExtensionProperties extension in usableExtensionNames) {
-		OUT_LV_DEBUG("Available " << extension.extensionName)
-			for each (const char* name in extensionsToEnable) {
-				if (strcmp(extension.extensionName, name) == 0) {
-					enabledExtensionNames.push_back(name);
-					OUT_LV_DEBUG("Active " << name)
-						break;
-				}
+	CHECKFAIL(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr));
+	enabledExtensionNames.reserve(extensionCount);
+	VkExtensionProperties* usableExtensionNames = new VkExtensionProperties[extensionCount];
+	CHECKFAIL(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, usableExtensionNames));
+	for (uint32_t i = 0; i < extensionCount; i++) {
+		VkExtensionProperties extension = usableExtensionNames[i];
+		OUT_LV_DEBUG("Available " << extension.extensionName);
+		for each (const char* name in extensionsToEnable) {
+			if (strcmp(extension.extensionName, name) == 0) {
+				enabledExtensionNames.push_back(name);
+				OUT_LV_DEBUG("Active " << name);
+				break;
 			}
+		}
+
 	}
 
 	//Create Instance
-	VkInstanceCreateInfo instanceCreateInfo = {
-		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-		nullptr,
-		0,
-		&app_info,
-		(uint32_t)enabledLayerNames.size(),
-		enabledLayerNames.data(),
-		(uint32_t)enabledExtensionNames.size(),
-		enabledExtensionNames.data()
-	};
+	VkInstanceCreateInfo instanceCreateInfo;
+	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	instanceCreateInfo.pNext = nullptr;
+	instanceCreateInfo.flags = 0;
+	instanceCreateInfo.pApplicationInfo = &applicationInfo;
+	instanceCreateInfo.enabledLayerCount = (uint32_t)enabledLayerNames.size();
+	instanceCreateInfo.ppEnabledLayerNames = enabledLayerNames.data();
+	instanceCreateInfo.enabledExtensionCount = (uint32_t)enabledExtensionNames.size();
+	instanceCreateInfo.ppEnabledExtensionNames = enabledExtensionNames.data();
 	CHECKFAIL(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
 
 #ifdef DEBUG
@@ -97,10 +101,10 @@ void createInstance() {
 	utilMessagerCreateInfo.pNext = 0;
 
 	PFN_vkCreateDebugUtilsMessengerEXT createDebugReportCallback = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	OUT_LV_DEBUG(createDebugReportCallback)
-		if (!createDebugReportCallback) {
-			TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
-		}
+	OUT_LV_DEBUG(createDebugReportCallback);
+	if (!createDebugReportCallback) {
+		TGERROR(TG_ERR_DB_DBMESSAGER_NOT_VALID)
+	}
 	CHECKFAIL(createDebugReportCallback(instance, &utilMessagerCreateInfo, nullptr, &debugMessager));
 #endif
 }
