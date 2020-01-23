@@ -16,7 +16,7 @@
 extern VkSwapchainKHR swapchain;
 extern VkImage* swapchainImages;
 /*
- * Contains the supported image usage falgs
+ * Contains the supported image usage flags
  * The min and max image count as well as
  * min and max extend
  */
