@@ -2,7 +2,7 @@
 
 #include "../Stdbase.hpp"
 
-extern VkFramebuffer* frameBuffer;
+extern VkFramebuffer* framenBuffer;
 extern VkImageView* imageView;
 
 void createFramebuffer();

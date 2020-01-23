@@ -4,23 +4,23 @@
 #include "Swapchain.hpp"
 #include "PrePipeline.hpp"
 
-VkFramebuffer* frameBuffer;
+VkFramebuffer* framenBuffer;
 VkImageView* imageView;
 
 void createFramebuffer() {
-	frameBuffer = new VkFramebuffer[imagecount];
+	framenBuffer = new VkFramebuffer[imagecount];
 	imageView = new VkImageView[imagecount];
 
-	VkFramebufferCreateInfo framebufferCreateInfo;
-	framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-	framebufferCreateInfo.pNext = nullptr;
-	framebufferCreateInfo.flags = 0;
-	framebufferCreateInfo.renderPass = renderpass;
-	framebufferCreateInfo.attachmentCount = 3;
-	framebufferCreateInfo.pAttachments = VK_NULL_HANDLE;
-	framebufferCreateInfo.width = tge::win::mainWindowWidth;
-	framebufferCreateInfo.height = tge::win::mainWindowHeight;
-	framebufferCreateInfo.layers = 1;
+	VkFramebufferCreateInfo frameBufferCreateInfo;
+	frameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	frameBufferCreateInfo.pNext = nullptr;
+	frameBufferCreateInfo.flags = 0;
+	frameBufferCreateInfo.renderPass = renderpass;
+	frameBufferCreateInfo.attachmentCount = 3;
+	frameBufferCreateInfo.pAttachments = VK_NULL_HANDLE;
+	frameBufferCreateInfo.width = tge::win::mainWindowWidth;
+	frameBufferCreateInfo.height = tge::win::mainWindowHeight;
+	frameBufferCreateInfo.layers = 1;
 
 	VkImageView views[3];
 	views[0] = colorImageView;
@@ -46,15 +46,15 @@ void createFramebuffer() {
 		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &imageView[i]));
 
 		views[2] = imageView[i];
-		framebufferCreateInfo.pAttachments = views;
+		frameBufferCreateInfo.pAttachments = views;
 
-		CHECKFAIL(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &frameBuffer[i]));
+		CHECKFAIL(vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &framenBuffer[i]));
 	}
 }
 
 void destroyFrameBuffer() {
 	for (size_t i = 0; i < imagecount; i++) {
-		vkDestroyFramebuffer(device, frameBuffer[i], nullptr);
+		vkDestroyFramebuffer(device, framenBuffer[i], nullptr);
 		vkDestroyImageView(device, imageView[i], nullptr);
 	}
 }

@@ -94,7 +94,7 @@ void fillCommandBuffer() {
 		commandBufferInheritanceInfo.pNext = nullptr;
 		commandBufferInheritanceInfo.renderPass = renderpass;
 		commandBufferInheritanceInfo.subpass = 0;
-		commandBufferInheritanceInfo.framebuffer = frameBuffer[i];
+		commandBufferInheritanceInfo.framebuffer = framenBuffer[i];
 		commandBufferInheritanceInfo.occlusionQueryEnable = VK_FALSE;
 		commandBufferInheritanceInfo.queryFlags = 0;
 		commandBufferInheritanceInfo.pipelineStatistics = 0;
@@ -114,7 +114,7 @@ void fillCommandBuffer() {
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
 		renderPassBeginInfo.renderPass = renderpass;
-		renderPassBeginInfo.framebuffer = frameBuffer[i];
+		renderPassBeginInfo.framebuffer = framenBuffer[i];
 		renderPassBeginInfo.renderArea.offset.x = 0;
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = tge::win::mainWindowWidth;
