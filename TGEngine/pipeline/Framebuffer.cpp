@@ -33,7 +33,7 @@ void createFramebuffer() {
 	imageViewCreateInfo.image = VK_NULL_HANDLE;
 	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 	imageViewCreateInfo.format = usedSurfaceFormat.format;
-	// All channels are there identity therefore R = R, G = G, B = B, A = A => for color channel mapping
+	// All channels are their identity, therefore R = R, G = G, B = B, A = A => for color channel mapping
 	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
 	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
