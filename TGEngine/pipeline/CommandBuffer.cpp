@@ -8,7 +8,7 @@ VkFence singelTimeCommandBufferFence;
 VkCommandBuffer* commandBuffer;
 
 void createCommandBuffer() {
-	commandBuffer = new VkCommandBuffer[(uint64_t)imagecount + 1];
+	commandBuffer = new VkCommandBuffer[(uint64_t)imageCount + 1];
 
 	if (!commandPool) {
 		VkCommandPoolCreateInfo commmandPoolCreateInfo;
@@ -25,7 +25,7 @@ void createCommandBuffer() {
 	commandBufferAllocateInfo.pNext = nullptr;
 	commandBufferAllocateInfo.commandPool = commandPool;
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	commandBufferAllocateInfo.commandBufferCount = imagecount + 1;
+	commandBufferAllocateInfo.commandBufferCount = imageCount + 1;
 	CHECKFAIL(vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffer));
 
 	VkFenceCreateInfo fenceCreateInfo;
@@ -43,11 +43,11 @@ void startSingleTimeCommand() {
 	commandBufferBeginInfo.pNext = nullptr;
 	commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 	commandBufferBeginInfo.pInheritanceInfo = nullptr;
-	CHECKFAIL(vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &commandBufferBeginInfo));
+	CHECKFAIL(vkBeginCommandBuffer(SINGLE_TIME_COMMAND_BUFFER, &commandBufferBeginInfo));
 }
 
 void endSingleTimeCommand() {
-	CHECKFAIL(vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER));
+	CHECKFAIL(vkEndCommandBuffer(SINGLE_TIME_COMMAND_BUFFER));
 
 	VkSubmitInfo submitInfo;
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -56,7 +56,7 @@ void endSingleTimeCommand() {
 	submitInfo.pWaitSemaphores = VK_NULL_HANDLE;
 	submitInfo.pWaitDstStageMask = VK_NULL_HANDLE;
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &SINGELTIME_COMMAND_BUFFER;
+	submitInfo.pCommandBuffers = &SINGLE_TIME_COMMAND_BUFFER;
 	submitInfo.signalSemaphoreCount = 0;
 	submitInfo.pSignalSemaphores = nullptr;
 
@@ -74,7 +74,7 @@ void startupCommands() {
 	for each (StagingBuffer* buf in staging_buffer) {
 		bufferCopy.size = buf->size;
 		vkCmdCopyBuffer(
-			SINGELTIME_COMMAND_BUFFER,
+			SINGLE_TIME_COMMAND_BUFFER,
 			buf->staging_buffer,
 			*buf->destination,
 			1,
@@ -86,15 +86,15 @@ void startupCommands() {
 }
 
 void fillCommandBuffer() {
-	for (size_t i = 0; i < imagecount; i++) {
+	for (size_t i = 0; i < imageCount; i++) {
 		VkCommandBuffer buffer = commandBuffer[i];
 
 		VkCommandBufferInheritanceInfo commandBufferInheritanceInfo;
 		commandBufferInheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 		commandBufferInheritanceInfo.pNext = nullptr;
-		commandBufferInheritanceInfo.renderPass = renderpass;
+		commandBufferInheritanceInfo.renderPass = renderPass;
 		commandBufferInheritanceInfo.subpass = 0;
-		commandBufferInheritanceInfo.framebuffer = framenBuffer[i];
+		commandBufferInheritanceInfo.framebuffer = frameBuffer[i];
 		commandBufferInheritanceInfo.occlusionQueryEnable = VK_FALSE;
 		commandBufferInheritanceInfo.queryFlags = 0;
 		commandBufferInheritanceInfo.pipelineStatistics = 0;
@@ -113,8 +113,8 @@ void fillCommandBuffer() {
 		VkRenderPassBeginInfo renderPassBeginInfo;
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
-		renderPassBeginInfo.renderPass = renderpass;
-		renderPassBeginInfo.framebuffer = framenBuffer[i];
+		renderPassBeginInfo.renderPass = renderPass;
+		renderPassBeginInfo.framebuffer = frameBuffer[i];
 		renderPassBeginInfo.renderArea.offset.x = 0;
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = tge::win::mainWindowWidth;

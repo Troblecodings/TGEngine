@@ -12,7 +12,7 @@
 #include "../vlib/VulkanCommandBuffer.hpp"
 #include "../gamecontent/Material.hpp"
 
-#define SINGELTIME_COMMAND_BUFFER commandBuffer[imagecount]
+#define SINGLE_TIME_COMMAND_BUFFER commandBuffer[imageCount]
 
 extern VkCommandPool commandPool;
 extern VkFence singleTimeCommandBufferFence;

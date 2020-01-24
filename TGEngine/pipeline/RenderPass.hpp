@@ -4,7 +4,7 @@
 #include "PrePipeline.hpp"
 #include "Swapchain.hpp"
 
-extern VkRenderPass renderpass;
+extern VkRenderPass renderPass;
 
 void createRenderpass();
 

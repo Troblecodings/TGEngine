@@ -13,14 +13,14 @@ VkDeviceMemory colorImageMemory;
 void createSwapchain() {
 	CHECKFAIL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, tge::win::windowSurface, &surfaceCapabilities));
 
-	imagecount = TGE_MIN(TGE_MAX(imagecount, surfaceCapabilities.minImageCount), surfaceCapabilities.maxImageCount);
+	imageCount = TGE_MIN(TGE_MAX(imageCount, surfaceCapabilities.minImageCount), surfaceCapabilities.maxImageCount);
 
 	VkSwapchainCreateInfoKHR swapchainCreateInfo;
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchainCreateInfo.pNext = nullptr;
 	swapchainCreateInfo.flags = 0;
 	swapchainCreateInfo.surface = tge::win::windowSurface;
-	swapchainCreateInfo.minImageCount = imagecount;
+	swapchainCreateInfo.minImageCount = imageCount;
 	swapchainCreateInfo.imageFormat = usedSurfaceFormat.format;
 	swapchainCreateInfo.imageColorSpace = usedSurfaceFormat.colorSpace;
 	swapchainCreateInfo.imageExtent.width = tge::win::mainWindowWidth;
@@ -44,10 +44,10 @@ void createSwapchain() {
 		CHECKFAIL(lastResult)
 	}
 
-	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, nullptr));
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imageCount, nullptr));
 	
-	swapchainImages = new VkImage[imagecount];
-	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imagecount, swapchainImages));
+	swapchainImages = new VkImage[imageCount];
+	CHECKFAIL(vkGetSwapchainImagesKHR(device, swapchain, &imageCount, swapchainImages));
 }
 
 void createColorResouce() {
@@ -72,13 +72,13 @@ void createColorResouce() {
 	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &colorImage));
 
-	VkMemoryRequirements requierments;
-	vkGetImageMemoryRequirements(device, colorImage, &requierments);
+	VkMemoryRequirements requirements;
+	vkGetImageMemoryRequirements(device, colorImage, &requirements);
 
 	VkMemoryAllocateInfo memoryAllocationInfo;
 	memoryAllocationInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	memoryAllocationInfo.pNext = nullptr;
-	memoryAllocationInfo.allocationSize = requierments.size;
+	memoryAllocationInfo.allocationSize = requirements.size;
 	memoryAllocationInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
 	CHECKFAIL(vkAllocateMemory(device, &memoryAllocationInfo, nullptr, &colorImageMemory));
 
@@ -127,7 +127,7 @@ void recreateSwapchain() {
 	createRenderpass();
 	createSwapchain();
 	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
-		for (uint32_t i = 0; i < imagecount; i++) {
+		for (uint32_t i = 0; i < imageCount; i++) {
 			vkDestroyImage(device, swapchainImages[i], nullptr);
 		}
 		swapchain = VK_NULL_HANDLE;

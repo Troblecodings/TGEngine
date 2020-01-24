@@ -1,6 +1,6 @@
 #include "RenderPass.hpp"
 
-VkRenderPass renderpass;
+VkRenderPass renderPass;
 
 void createRenderpass() {
 	//Attachment for color images
@@ -86,9 +86,9 @@ void createRenderpass() {
 	renderPassCreateInfo.dependencyCount = 1;
 	renderPassCreateInfo.pDependencies = &subpassDependency;
 
-	CHECKFAIL(vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderpass));
+	CHECKFAIL(vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass));
 }
 
 void destroyRenderPass() {
-	vkDestroyRenderPass(device, renderpass, nullptr);
+	vkDestroyRenderPass(device, renderPass, nullptr);
 }

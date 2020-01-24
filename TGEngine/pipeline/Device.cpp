@@ -22,7 +22,7 @@ void createDevice() {
 	for (size_t i = 0; i < count; i++) {
 		VkPhysicalDeviceProperties currentDeviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevices[i], &currentDeviceProperties);
-		//TODO reevalute this calculation ... or you life choices
+		//TODO reevalute this calculation ... or your life choices
 		uint32_t currentPoints = currentDeviceProperties.limits.maxImageDimension2D + (currentDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
 		if (currentPoints > points) {
 			points = currentPoints;

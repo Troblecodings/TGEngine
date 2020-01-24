@@ -157,7 +157,7 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].pColorBlendState = &pipelineColorBlendStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pDynamicState = nullptr;
 			graphicsPipelineCreateInfo[i].layout = pipelineLayout;
-			graphicsPipelineCreateInfo[i].renderPass = renderpass;
+			graphicsPipelineCreateInfo[i].renderPass = renderPass;
 			graphicsPipelineCreateInfo[i].subpass = 0;
 			graphicsPipelineCreateInfo[i].basePipelineHandle = VK_NULL_HANDLE;
 			graphicsPipelineCreateInfo[i].basePipelineIndex = 0;

@@ -18,7 +18,7 @@ extern VkImage* swapchainImages;
 /*
  * Contains the supported image usage flags,
  * the min and max image count, as well as
- * min and max extend
+ * min and max extent
  */
 extern VkSurfaceCapabilitiesKHR surfaceCapabilities;
 extern VkImage colorImage;

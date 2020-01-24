@@ -4,18 +4,18 @@
 #include "Swapchain.hpp"
 #include "PrePipeline.hpp"
 
-VkFramebuffer* framenBuffer;
+VkFramebuffer* frameBuffer;
 VkImageView* imageView;
 
 void createFramebuffer() {
-	framenBuffer = new VkFramebuffer[imagecount];
-	imageView = new VkImageView[imagecount];
+	frameBuffer = new VkFramebuffer[imageCount];
+	imageView = new VkImageView[imageCount];
 
 	VkFramebufferCreateInfo frameBufferCreateInfo;
 	frameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	frameBufferCreateInfo.pNext = nullptr;
 	frameBufferCreateInfo.flags = 0;
-	frameBufferCreateInfo.renderPass = renderpass;
+	frameBufferCreateInfo.renderPass = renderPass;
 	frameBufferCreateInfo.attachmentCount = 3;
 	frameBufferCreateInfo.pAttachments = VK_NULL_HANDLE;
 	frameBufferCreateInfo.width = tge::win::mainWindowWidth;
@@ -41,20 +41,20 @@ void createFramebuffer() {
 	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 	imageViewCreateInfo.subresourceRange.layerCount = 1;
 
-	for (size_t i = 0; i < imagecount; i++) {
+	for (size_t i = 0; i < imageCount; i++) {
 		imageViewCreateInfo.image = swapchainImages[i];
 		CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &imageView[i]));
 
 		views[2] = imageView[i];
 		frameBufferCreateInfo.pAttachments = views;
 
-		CHECKFAIL(vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &framenBuffer[i]));
+		CHECKFAIL(vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &frameBuffer[i]));
 	}
 }
 
 void destroyFrameBuffer() {
-	for (size_t i = 0; i < imagecount; i++) {
-		vkDestroyFramebuffer(device, framenBuffer[i], nullptr);
+	for (size_t i = 0; i < imageCount; i++) {
+		vkDestroyFramebuffer(device, frameBuffer[i], nullptr);
 		vkDestroyImageView(device, imageView[i], nullptr);
 	}
 }
