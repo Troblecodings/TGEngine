@@ -15,7 +15,7 @@
 #define SINGELTIME_COMMAND_BUFFER commandBuffer[imagecount]
 
 extern VkCommandPool commandPool;
-extern VkFence singelTimeCommandBufferFence;
+extern VkFence singleTimeCommandBufferFence;
 extern VkCommandBuffer* commandBuffer;
 
 void createCommandBuffer();
