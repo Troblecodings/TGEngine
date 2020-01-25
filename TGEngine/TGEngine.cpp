@@ -71,10 +71,10 @@ void startTGEngine() {
 	vertexBuffer.end();
 	indexBuffer.end();
 
-	fillCommandBuffer(&indexBuffer, &vertexBuffer);
+	fillCommandBuffer();
 
 	startupCommands();
-	createSemaphores();
+	createMutex();
 
 	clock_t last_time = clock();
 
@@ -88,7 +88,7 @@ void startTGEngine() {
 		if (isMinimized) {
 			continue;
 		}
-		startdraw(&indexBuffer, &vertexBuffer);
+		startdraw();
 
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
@@ -112,8 +112,8 @@ void startTGEngine() {
 			playercontroller(&input);
 		}
 
-		submit(&indexBuffer, &vertexBuffer);
-		present(&indexBuffer, &vertexBuffer);
+		submit();
+		present();
 
 		// TESTING
 		if (counter > 5) {
@@ -122,7 +122,7 @@ void startTGEngine() {
 		counter++;
 	}
 
-	destroySemaphores();
+	destroyMutex();
 	destroyCommandBuffer();
 	destroyIndexBuffer(&indexBuffer);
 	destroyVertexBuffer(&vertexBuffer);

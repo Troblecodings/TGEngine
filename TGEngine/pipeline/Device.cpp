@@ -14,14 +14,15 @@ void createDevice() {
 	//Query Physical Devices
 	uint32_t count;
 	CHECKFAIL(vkEnumeratePhysicalDevices(instance, &count, nullptr));
-		VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
+	VkPhysicalDevice* physicalDevices = new VkPhysicalDevice[count];
 	CHECKFAIL(vkEnumeratePhysicalDevices(instance, &count, physicalDevices));
-		//Get best Physical Device
+	
+	//Get best Physical Device
 	uint32_t points = 0;
 	for (size_t i = 0; i < count; i++) {
 		VkPhysicalDeviceProperties currentDeviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevices[i], &currentDeviceProperties);
-		// TODO reevalute this calculation ... or you life choices
+		//TODO reevalute this calculation ... or your life choices
 		uint32_t currentPoints = currentDeviceProperties.limits.maxImageDimension2D + (currentDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0);
 		if (currentPoints > points) {
 			points = currentPoints;
@@ -29,7 +30,6 @@ void createDevice() {
 			deviceProperties = currentDeviceProperties;
 		}
 	}
-	delete[] physicalDevices;
 
 	//Query Queues
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, nullptr);
@@ -46,67 +46,42 @@ void createDevice() {
 	}
 
 	//Set Prioritis
-	std::vector<float> priorities(queueFamily.queueCount);
-	for (size_t i = 0; i < priorities.size(); i++) {
+	float* priorities = new float[queueFamily.queueCount];
+	for (size_t i = 0; i < queueFamily.queueCount; i++) {
 		priorities[i] = 1;
 	}
 
-	VkDeviceQueueCreateInfo deviceQueueCreateInfo = {
-		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-		nullptr,
-		0,
-		queueIndex,
-		queueFamily.queueCount,
-		priorities.data(),
-	};
+	VkDeviceQueueCreateInfo deviceQueueCreateInfo;
+	deviceQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	deviceQueueCreateInfo.pNext = nullptr;
+	deviceQueueCreateInfo.flags = 0;
+	deviceQueueCreateInfo.queueFamilyIndex = queueIndex;
+	deviceQueueCreateInfo.queueCount = queueFamily.queueCount;
+	deviceQueueCreateInfo.pQueuePriorities = priorities;
 
 	//Make Device
-	VkDeviceCreateInfo deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
-	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
-	deviceCreateInfo.queueCreateInfoCount = 1;
-#if 0
-	//Validation for the device layers
-	std::vector<const char*> enabledLayer;
-	const char* layersEnable[0];
-	CHECKFAIL(vkEnumerateDeviceLayerProperties(physicalDevice, &count, nullptr));
-	std::vector<VkLayerProperties> usableLayers(count);
-	CHECKFAIL(vkEnumerateDeviceLayerProperties(physicalDevice, &count, usableLayers.data()));
-	for each (VkLayerProperties layer in usableLayers) {
-		for each (const char* name in layersEnable) {
-			if (strcmp(layer.layerName, name) == 0) {
-				enabledLayer.push_back(name);
-				OUT_LV_DEBUG(name)
-					break;
-			}
-		}
-	}
-	usableLayers.clear();
-	deviceCreateInfo.enabledLayerCount = enabledLayer.maximumIndexCount();
-	deviceCreateInfo.ppEnabledLayerNames = enabledLayer.data();
-#endif // Disable device layer
-
-#if 1
 	const char* extensionsEnable[1];
 	extensionsEnable[0] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
 	//Validation for the device extensions
-	std::vector<const char*> enabledExtensions;
-	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, nullptr));
-	std::vector<VkExtensionProperties> usableExtensions(count);
-	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &count, usableExtensions.data()));
-	for each (VkExtensionProperties extension in usableExtensions) {
+	uint32_t extensionCount = 0;
+	std::vector<const char*> enabledExtensionNames;
+	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
+	enabledExtensionNames.reserve(extensionCount);
+	VkExtensionProperties* usableExtensionNames = new VkExtensionProperties[extensionCount];
+	CHECKFAIL(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, usableExtensionNames));
+	for (uint32_t i = 0; i < extensionCount; i++) {
+		VkExtensionProperties extension = usableExtensionNames[i];
+		OUT_LV_DEBUG("Available " << extension.extensionName);
 		for each (const char* name in extensionsEnable) {
 			if (strcmp(extension.extensionName, name) == 0) {
-				enabledExtensions.push_back(name);
-				OUT_LV_DEBUG(name)
-					break;
+				enabledExtensionNames.push_back(name);
+				OUT_LV_DEBUG("Active " << name);
+				break;
 			}
 		}
+
 	}
-	usableExtensions.clear();
-	deviceCreateInfo.enabledExtensionCount = enabledExtensions.size();
-	deviceCreateInfo.ppEnabledExtensionNames = enabledExtensions.data();
-#endif // Enabled extensions
 
 	VkPhysicalDeviceFeatures deviceFeatures;
 	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
@@ -115,6 +90,16 @@ void createDevice() {
 	deviceFeaturesEnable.samplerAnisotropy = deviceFeatures.samplerAnisotropy;
 	deviceFeaturesEnable.depthClamp = deviceFeatures.depthClamp;
 
+	VkDeviceCreateInfo deviceCreateInfo;
+	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	deviceCreateInfo.pNext = nullptr;
+	deviceCreateInfo.flags = 0;
+	deviceCreateInfo.queueCreateInfoCount = 1;
+	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
+	deviceCreateInfo.enabledLayerCount = 0;
+	deviceCreateInfo.ppEnabledLayerNames = nullptr;
+	deviceCreateInfo.enabledExtensionCount = enabledExtensionNames.size();
+	deviceCreateInfo.ppEnabledExtensionNames = enabledExtensionNames.data();
 	deviceCreateInfo.pEnabledFeatures = &deviceFeaturesEnable;
 	CHECKFAIL(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
 
@@ -124,12 +109,12 @@ void createDevice() {
 	VkBool32 isSupported = 1;
 	CHECKFAIL(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueIndex, tge::win::windowSurface, &isSupported));
 
-	ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED)
+	ASSERT_NONE_NULL(isSupported, "Swapchain not Supported with surface", TG_ERR_SWAPCHAIN_NOT_SUPPORTED);
 
-		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
 
-	FIND_INDEX(vlibDeviceLocalMemoryIndex, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
-		FIND_INDEX(vlibDeviceHostVisibleCoherentIndex, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+	FIND_INDEX(vlibDeviceLocalMemoryIndex, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	FIND_INDEX(vlibDeviceHostVisibleCoherentIndex, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
 void destroyDevice() {

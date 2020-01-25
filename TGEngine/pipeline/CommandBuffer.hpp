@@ -12,13 +12,11 @@
 #include "../vlib/VulkanCommandBuffer.hpp"
 #include "../gamecontent/Material.hpp"
 
-#define SINGELTIME_COMMAND_BUFFER command_buffers[imagecount]
+#define SINGLE_TIME_COMMAND_BUFFER commandBuffer[imageCount]
 
-extern VkCommandPool command_pool;
-extern VkFence single_time_command_ready;
-extern std::vector<VkCommandBuffer> command_buffers;
-extern VkDeviceSize offsets;
-extern bool started;
+extern VkCommandPool commandPool;
+extern VkFence singleTimeCommandBufferFence;
+extern VkCommandBuffer* commandBuffer;
 
 void createCommandBuffer();
 
@@ -28,6 +26,6 @@ void endSingleTimeCommand();
 
 void startupCommands();
 
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* buffer);
+void fillCommandBuffer();
 
 void destroyCommandBuffer();

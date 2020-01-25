@@ -184,8 +184,8 @@ def deleteDocs(path):
 regularExpression = initRegex()
 reCleanComment = re.compile(r"^[* ]+", re.MULTILINE)
 
-docsFolder = "docs/docs/"
-templatesFolder = "docs/templates/"
+docsFolder = "Documentations/docs/"
+templatesFolder = "Documentations/templates/"
 
 # the templates use placeholders in form of html comments for the name/details of each function/struct etc.
 htmlTemplate = readFile(templatesFolder + "template.html")

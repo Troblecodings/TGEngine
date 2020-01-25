@@ -18,7 +18,7 @@
 #include "Error.hpp"
 
 extern prop::Properties* tgeproperties;
-extern uint32_t imagecount;
+extern uint32_t imageCount;
 
 #define TGE_VERSION VK_MAKE_VERSION(0, 0, 5)
 
@@ -55,7 +55,7 @@ TGERROR(lastResult)\
 if(tge::win::isMinimized){\
 return;\
 }\
-recreateSwapchain(ibuffer, vbuffer);\
+recreateSwapchain();\
 }
 
 #ifdef DEBUG

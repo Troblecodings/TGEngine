@@ -2,6 +2,7 @@
 #include "RenderPass.hpp"
 #include "Descriptors.hpp"
 #include "PrePipeline.hpp"
+#include "window/Window.hpp"
 
 namespace tge::pip {
 
@@ -28,7 +29,7 @@ namespace tge::pip {
 		pipelineMultisampleStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		pipelineMultisampleStateCreateInfo.pNext = nullptr;
 		pipelineMultisampleStateCreateInfo.flags = 0;
-		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedMSAAFlag;
+		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedSampleFlag;
 		pipelineMultisampleStateCreateInfo.sampleShadingEnable = VK_FALSE;
 		pipelineMultisampleStateCreateInfo.minSampleShading = 1.0f;
 		pipelineMultisampleStateCreateInfo.pSampleMask = nullptr;
@@ -156,7 +157,7 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].pColorBlendState = &pipelineColorBlendStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pDynamicState = nullptr;
 			graphicsPipelineCreateInfo[i].layout = pipelineLayout;
-			graphicsPipelineCreateInfo[i].renderPass = renderpass;
+			graphicsPipelineCreateInfo[i].renderPass = renderPass;
 			graphicsPipelineCreateInfo[i].subpass = 0;
 			graphicsPipelineCreateInfo[i].basePipelineHandle = VK_NULL_HANDLE;
 			graphicsPipelineCreateInfo[i].basePipelineIndex = 0;
