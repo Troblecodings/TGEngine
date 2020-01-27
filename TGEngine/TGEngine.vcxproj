@@ -121,8 +121,6 @@
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
     <ClCompile Include="resources\ShaderData.cpp" />
-    <None Include="..\setup.py" />
-    <None Include="..\README.md" />
     <CustomBuild Include="resources\FragmentColorOnly.glsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
