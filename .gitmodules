@@ -1,0 +1,11 @@
+[submodule "stb"]
+	path = stb
+	url = https://github.com/nothings/stb
+
+[submodule "draco"]
+	path = draco
+	url = https://github.com/google/draco
+
+[submodule "tinygltf"]
+	path = tinygltf
+	url = https://github.com/syoyo/tinygltf

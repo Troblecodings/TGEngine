@@ -12,9 +12,10 @@ import platform
 
 osn = platform.system()
 if osn == "linux":
-    def clear(): os.system("cls")
-else:
     def clear(): os.system("clear")
+else:
+    def clear(): os.system("cls")
+
 
 vulkan = os.getenv("VULKAN_SDK")
 dependencies_file = None
@@ -56,21 +57,11 @@ def callback(cob, size, total):
     print(str(round(((cob * size) / total) * 100, 1)) + "%", end="\r")
 
 
-gitdeps = { "nothings/stb", "syoyo/tinygltf", "google/draco"}
-
-
-def getstb():
-    global gitdeps
-    for pth in gitdeps:
-        folder = pth.split("/")[1]
-        if os.path.exists(folder) and len(os.listdir(folder)) > 0:
-            print("Updating " + folder)
-            p = subprocess.Popen(["git", "pull"], cwd=folder)
-            p.wait()
-        else:
-            print("Cloning " + folder)
-            p = subprocess.Popen(["git", "clone", "https://github.com/" + pth])
-            p.wait()
+def updateSubmodules():
+    p = subprocess.Popen(["git", "submodule", "init"], cwd=os.getcwd())
+    p.wait()
+    p = subprocess.Popen(["git", "submodule", "update"], cwd=os.getcwd())
+    p.wait()
 
 def trigger(id):
     global msg
@@ -86,7 +77,7 @@ def trigger(id):
             if not os.path.exists("dependencies"):
                 os.mkdir("dependencies")
             print("Thanks to David Quenzer for giving me access to his cloud storage!")
-            getstb()
+            updateSubmodules()
             print("Checking version!")
             version = ""
             if os.path.exists("dependencies/dependencie_version.txt"):
@@ -120,7 +111,7 @@ def trigger(id):
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
             print("Generating draco build files")
-            getstb()
+            updateSubmodules()
             if os.path.exists("draco_build"):
                 shutil.rmtree("draco_build")
             os.mkdir("draco_build")
@@ -169,7 +160,7 @@ def trigger(id):
             clear()
             return
         elif id == 6:
-            getstb()
+            updateSubmodules()
             msg = "Finished!"
             clear()
             return
@@ -204,7 +195,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.5      ")
+    print("       DEPENDENCIES 2.6      ")
     print("=============================")
     print("")
     if msg is not None:
