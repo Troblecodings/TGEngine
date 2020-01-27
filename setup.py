@@ -58,9 +58,7 @@ def callback(cob, size, total):
 
 
 def updateSubmodules():
-    p = subprocess.Popen(["git", "submodule", "init"], cwd=os.getcwd())
-    p.wait()
-    p = subprocess.Popen(["git", "submodule", "update"], cwd=os.getcwd())
+    p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"], cwd=os.getcwd())
     p.wait()
 
 def trigger(id):

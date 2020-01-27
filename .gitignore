@@ -295,6 +295,3 @@ dependencies/deps.zip
 /TGEngine/resources/Resources.json
 /TGEngine/resources/Resources.tgr
 *.spv
-/draco
-/tinygltf
-/stb
