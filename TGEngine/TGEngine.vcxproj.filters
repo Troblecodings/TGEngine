@@ -73,7 +73,7 @@
     <Filter Include="Quelldateien\gamecontent\camera">
       <UniqueIdentifier>{e7daef0f-44a6-4e9f-96a8-bd3b05d60387}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
+    <Filter Include="shader">
       <UniqueIdentifier>{3bb9f22a-8f9f-4665-9bdb-e01084d34ec6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -367,46 +367,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="..\setup.py">
-      <Filter>resources</Filter>
+    <None Include="resources\FragmentTopDown.glsl">
+      <Filter>shader</Filter>
     </None>
     <None Include="resources\FragmentTextured2D.glsl">
-      <Filter>resources</Filter>
+      <Filter>shader</Filter>
     </None>
     <None Include="resources\VertexTextured2D.glsl">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\FragmentTopDown.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="resources\FragmentColorOnly.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentTextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentUIColor.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentUITextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTexturedMovable.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexUI.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTopDown.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
