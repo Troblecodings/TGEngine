@@ -110,15 +110,15 @@ namespace tge::pip {
 
 			viewport[i].x = 0;
 			viewport[i].y = 0;
-			viewport[i].width = in.width;
-			viewport[i].height = in.height;
+			viewport[i].width = (float)in.width;
+			viewport[i].height = (float)in.height;
 			viewport[i].minDepth = 0;
 			viewport[i].maxDepth = 1.0;
 
 			sicossor[i].offset.x = 0;
 			sicossor[i].offset.y = 0;
-			sicossor[i].extent.width = viewport->width;
-			sicossor[i].extent.height = viewport->height;
+			sicossor[i].extent.width = in.width;
+			sicossor[i].extent.height = in.height;
 
 			pipelineViewportStateCreateInfo[i].sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 			pipelineViewportStateCreateInfo[i].pNext = nullptr;

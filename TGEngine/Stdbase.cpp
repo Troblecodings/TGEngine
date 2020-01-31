@@ -1,4 +1,4 @@
 #include "Stdbase.hpp"
 
-prop::Properties* tgeproperties;
+tge::pro::Properties tgeproperties;
 uint32_t imageCount = 3;

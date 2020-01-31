@@ -79,7 +79,7 @@ namespace tge::tex {
 			CHECKFAIL(vkBindBufferMemory(device, bufferlist[i], memorylist[i], 0));
 
 			void* memory;
-			uint32_t tmp_size = bufferCreateInfo.size;
+			uint32_t tmp_size = (uint32_t)bufferCreateInfo.size;
 			CHECKFAIL(vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory));
 			memcpy(memory, tex.data, tmp_size);
 			vkUnmapMemory(device, memorylist[i]);
@@ -186,10 +186,10 @@ namespace tge::tex {
 		for (uint32_t i = 0; i < size; i++) {
 			ResourceDescriptor desc = input[i];
 			if (ftell(file) != desc.offset)
-				fseek(file, desc.offset, SEEK_SET);
+				fseek(file, (long)desc.offset, SEEK_SET);
 			stbi_uc* resbuffer = new stbi_uc[desc.size];
 			fread(resbuffer, sizeof(char), desc.size, file);
-			loaded[i].data = stbi_load_from_memory(resbuffer, desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
+			loaded[i].data = stbi_load_from_memory(resbuffer, (int)desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
 		}
 	}
 
@@ -197,7 +197,7 @@ namespace tge::tex {
 		for (uint32_t i = 0; i < size; i++) {
 			ResourceDescriptor desc = input[i];
 			if (ftell(file) != desc.offset)
-				fseek(file, desc.offset, SEEK_SET);
+				fseek(file, (long)desc.offset, SEEK_SET);
 			fread(&loaded[i], sizeof(char), desc.size, file);
 		}
 	}

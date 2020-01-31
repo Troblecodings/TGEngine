@@ -1,14 +1,15 @@
 #include "Properties.hpp"
 
-namespace prop {
+namespace tge::pro {
 
 	using namespace std;
 	using namespace tge::nio;
 
-	void readProperties(char* path, Properties* prop) {
+	Properties readProperties(char* path) {
+		Properties rtProperties;
 		File file = open(path, "rb");
 
-		if (!file) return;
+		if (!file) return rtProperties;
 
 		TagType tagtype = NaN;
 
@@ -30,13 +31,13 @@ namespace prop {
 			} else if (c_char == '>' || c_char == '/') {
 				if (tagtype != NaN) {
 					switch (tagtype) {
-					case BOOLEAN: prop->addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
+					case BOOLEAN: rtProperties.addBoolean(namebuf, strcmp(valuebuf, "true") == 0);
 						break;
-					case INT: prop->addInt(namebuf, stoi(valuebuf));
+					case INT: rtProperties.addInt(namebuf, stoi(valuebuf));
 						break;
-					case FLOAT: prop->addFloat(namebuf, stof(valuebuf));
+					case FLOAT: rtProperties.addFloat(namebuf, stof(valuebuf));
 						break;
-					case STRING: prop->addString(namebuf, valuebuf);
+					case STRING: rtProperties.addString(namebuf, valuebuf);
 						break;
 					}
 					tagtype = NaN;
@@ -96,33 +97,34 @@ namespace prop {
 				buffer += c_char;
 			}
 		}
+		return rtProperties;
 	}
 
 	char* Properties::getStringOrDefault(const char* name, char* def) {
-		auto it = this->strings.find(name);
-		if (it != this->strings.end())
-			return it->second;
+		for (size_t i = 0; i < this->stringNames.size(); i++)
+			if (strcmp(this->stringNames[i], name))
+				return this->strings[i];
 		return def;
 	}
 
 	bool Properties::getBooleanOrDefault(const char* name, bool def) {
-		auto it = this->bools.find(name);
-		if (it != this->bools.end())
-			return it->second;
+		for (size_t i = 0; i < this->boolNames.size(); i++)
+			if (strcmp(this->boolNames[i], name))
+				return this->bools[i];
 		return def;
 	}
 
 	float Properties::getFloatOrDefault(const char* name, float def) {
-		auto it = this->floats.find(name);
-		if (it != this->floats.end())
-			return it->second;
+		for (size_t i = 0; i < this->floatNames.size(); i++)
+			if (strcmp(this->floatNames[i], name))
+				return this->floats[i];
 		return def;
 	}
 
 	int Properties::getIntOrDefault(const char* name, int def) {
-		auto it = this->ints.find(name);
-		if (it != this->ints.end())
-			return it->second;
+		for (size_t i = 0; i < this->intNames.size(); i++)
+			if (strcmp(this->intNames[i], name))
+				return this->ints[i];
 		return def;
 	}
 
@@ -143,18 +145,22 @@ namespace prop {
 	}
 
 	void Properties::addString(const char* name, char* value) {
-		this->strings[name] = value;
+		this->stringNames.push_back(name);
+		this->strings.push_back(value);
 	}
 
 	void Properties::addBoolean(const char* name, bool value) {
-		this->bools[name] = value;
+		this->boolNames.push_back(name);
+		this->bools.push_back(value);
 	}
 
 	void Properties::addFloat(const char* name, float value) {
-		this->floats[name] = value;
+		this->floatNames.push_back(name);
+		this->floats.push_back(value);
 	}
 
 	void Properties::addInt(const char* name, int value) {
-		this->ints[name] = value;
+		this->intNames.push_back(name);
+		this->ints.push_back(value);
 	}
 }

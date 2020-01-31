@@ -13,7 +13,7 @@ namespace tge::gmc {
 		for (uint32_t i = 0; i < pSize; i++) {
 			ResourceDescriptor descriptor = pResourceDescriptors[i];
 
-			fseek(pFile, descriptor.offset, SEEK_SET);
+			fseek(pFile, (long)descriptor.offset, SEEK_SET);
 			uint8_t* buffer = new uint8_t[pSize];
 			fread(buffer, sizeof(uint8_t), descriptor.size, pFile);
 			// TODO Deserilize
@@ -32,7 +32,7 @@ namespace tge::gmc {
 			countData.push_back(input.indexCount);
 			offsetData.push_back(indexBuffer.indexCount);
 			indexBuffer.addAll(input.pIndices, input.indexCount);
-			vertexOffsetData.push_back(vertexBuffer.pointCount);
+			vertexOffsetData.push_back((uint32_t)vertexBuffer.pointCount);
 			vertexBuffer.addAll(input.pVertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
 		}
 	}

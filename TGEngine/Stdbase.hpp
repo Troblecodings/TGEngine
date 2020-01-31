@@ -17,7 +17,7 @@
 #include "util/TGVertex.hpp"
 #include "Error.hpp"
 
-extern prop::Properties* tgeproperties;
+extern tge::pro::Properties tgeproperties;
 extern uint32_t imageCount;
 
 #define TGE_VERSION VK_MAKE_VERSION(0, 0, 5)

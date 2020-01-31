@@ -19,7 +19,7 @@ void prePipeline() {
 	VkPresentModeKHR* presentModeKHRs = new VkPresentModeKHR[surfacePresentModeCount];
 	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, tge::win::windowSurface, &surfacePresentModeCount, presentModeKHRs));
 
-	usedSampleFlag = (VkSampleCountFlagBits)tgeproperties->getInt("msaa");
+	usedSampleFlag = (VkSampleCountFlagBits)tgeproperties.getInt("msaa");
 
 	VkSampleCountFlags sampleCountFlag = TGE_MIN(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
 	if (!(sampleCountFlag & usedSampleFlag)) {
