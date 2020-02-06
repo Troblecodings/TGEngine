@@ -1,71 +1,61 @@
 #include "PrePipeline.hpp"
 #include "window/Window.hpp"
 
-std::vector<VkSurfaceFormatKHR> surface_format;
-std::vector<VkPresentModeKHR> present_mode;
-VkSurfaceFormatKHR used_format;
-VkFormat used_depth_format = VK_FORMAT_UNDEFINED;
-VkPresentModeKHR used_present_mode;
-VkSampleCountFlagBits  usedMSAAFlag;
+VkSurfaceFormatKHR usedSurfaceFormat;
+VkFormat usedDepthFormat = VK_FORMAT_UNDEFINED;
+VkPresentModeKHR usedPresentMode;
+VkSampleCountFlagBits  usedSampleFlag;
 
 void prePipeline() {
-	uint32_t count = 0;
+	uint32_t surfaceFormatCount = 0;
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, tge::win::windowSurface, &surfaceFormatCount, nullptr));
 
-	
-	OUT_LV_DEBUG("Max uniform " << deviceProperties.limits.maxPerStageDescriptorUniformBuffers)
-	OUT_LV_DEBUG("Max sampler " << deviceProperties.limits.maxPerStageDescriptorSamplers)
+	VkSurfaceFormatKHR* surfaceFormatKHRs = new VkSurfaceFormatKHR[surfaceFormatCount];
+	CHECKFAIL(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, tge::win::windowSurface, &surfaceFormatCount, surfaceFormatKHRs));
 
-	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
-	HANDEL(lastResult)
+	uint32_t surfacePresentModeCount = 0;
+	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, tge::win::windowSurface, &surfacePresentModeCount, nullptr));
 
-		surface_format.resize(count);
-	lastResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, windowList[0]->surface, &count, surface_format.data());
-	HANDEL(lastResult)
+	VkPresentModeKHR* presentModeKHRs = new VkPresentModeKHR[surfacePresentModeCount];
+	CHECKFAIL(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, tge::win::windowSurface, &surfacePresentModeCount, presentModeKHRs));
 
-		lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, nullptr);
-	HANDEL(lastResult)
+	usedSampleFlag = (VkSampleCountFlagBits)tgeproperties->getInt("msaa");
 
-		present_mode.resize(count);
-	lastResult = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, windowList[0]->surface, &count, present_mode.data());
-	HANDEL(lastResult)
-
-		usedMSAAFlag = (VkSampleCountFlagBits)properties->getInt("msaa");
-
-	VkSampleCountFlags counts = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
-	if(!(counts & usedMSAAFlag)) {
-		if(counts & VK_SAMPLE_COUNT_2_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_2_BIT; }
-		if(counts & VK_SAMPLE_COUNT_4_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_4_BIT; }
-		if(counts & VK_SAMPLE_COUNT_8_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_8_BIT; }
-		if(counts & VK_SAMPLE_COUNT_16_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_16_BIT; }
-		if(counts & VK_SAMPLE_COUNT_32_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_32_BIT; }
-		if(counts & VK_SAMPLE_COUNT_64_BIT) { usedMSAAFlag = VK_SAMPLE_COUNT_64_BIT; }
+	VkSampleCountFlags sampleCountFlag = TGE_MIN(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
+	if (!(sampleCountFlag & usedSampleFlag)) {
+		if (sampleCountFlag & VK_SAMPLE_COUNT_64_BIT) usedSampleFlag = VK_SAMPLE_COUNT_64_BIT;
+		else if (sampleCountFlag & VK_SAMPLE_COUNT_32_BIT) usedSampleFlag = VK_SAMPLE_COUNT_32_BIT;
+		else if (sampleCountFlag & VK_SAMPLE_COUNT_16_BIT) usedSampleFlag = VK_SAMPLE_COUNT_16_BIT;
+		else if (sampleCountFlag & VK_SAMPLE_COUNT_8_BIT) usedSampleFlag = VK_SAMPLE_COUNT_8_BIT;
+		else if (sampleCountFlag & VK_SAMPLE_COUNT_4_BIT) usedSampleFlag = VK_SAMPLE_COUNT_4_BIT;
+		else if (sampleCountFlag & VK_SAMPLE_COUNT_2_BIT) usedSampleFlag = VK_SAMPLE_COUNT_2_BIT;
 	}
 
-	used_format = surface_format[0];
-	for(VkSurfaceFormatKHR c_surface_formats : surface_format) {
-		if(c_surface_formats.format == VK_FORMAT_B8G8R8A8_UNORM) {
-			used_format = c_surface_formats;
+	usedSurfaceFormat = surfaceFormatKHRs[0];
+	for (uint32_t i = 0; i < surfaceFormatCount; i++) {
+		if (surfaceFormatKHRs[i].format == VK_FORMAT_B8G8R8A8_UNORM) {
+			usedSurfaceFormat = surfaceFormatKHRs[i];
 			break;
 		}
 	}
 
-	for(VkFormat format : { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}) {
+	for (VkFormat format : { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}) {
 		VkFormatProperties prop;
 		vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &prop);
-		if((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-			used_depth_format = format;
+		if ((prop.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+			usedDepthFormat = format;
 			break;
 		}
 	}
 
-	if(used_depth_format == VK_FORMAT_UNDEFINED) {
+	if (usedDepthFormat == VK_FORMAT_UNDEFINED) {
 		TGERROR(TG_ERR_DEPTH_FORMAT_NOT_SUPPORTED)
 	}
 
-	used_present_mode = present_mode[0];
-	for(VkPresentModeKHR c_present_mode : present_mode) {
-		if(c_present_mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-			used_present_mode = c_present_mode;
+	usedPresentMode = presentModeKHRs[0];
+	for (uint32_t i = 0; i < surfacePresentModeCount; i++) {
+		if (presentModeKHRs[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
+			usedPresentMode = presentModeKHRs[i];
 			break;
 		}
 	}

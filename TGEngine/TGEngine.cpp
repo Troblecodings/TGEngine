@@ -8,26 +8,24 @@ using namespace tge::tex;
 using namespace tge::gmc;
 using namespace tge::pip;
 using namespace tge::buf;
+using namespace tge::win;
 
 VertexBuffer vertexBuffer;
 IndexBuffer indexBuffer;
 
 void initEngine() {
 	tge::nio::initFileSystem();
-	properties = new prop::Properties();
-	prop::readProperties("Properties.xml", properties);
+	tgeproperties = new prop::Properties();
+	prop::readProperties("Properties.xml", tgeproperties);
 
 	createWindowClass();
-	TG_VECTOR_GET_SIZE_AND_RESIZE(windowList)
-	createWindow(windowList[lastSize] = new Window);
+	createWindow();
 	createInstance();
 	createWindowSurfaces();
 	createDevice();
 	prePipeline();
 	initShader();
 	initShaderPipes();
-
-	multiplier = (windowList[0]->height / (float)windowList[0]->width);
 
 	createDepthTest();
 	createColorResouce();
@@ -39,6 +37,13 @@ void initEngine() {
 	initCameras();
 
 	initUniformBuffers();
+	glm::mat4 mat = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 0.1, 0,
+		0, 0, 0, 1
+	};
+	fillUniformBuffer(TRANSFORM_BUFFER_2, &mat, sizeof(glm::mat4));
 
 	vertexBuffer.maximumVertexCount = 9000;
 	createVertexBuffer(&vertexBuffer);
@@ -66,29 +71,29 @@ void startTGEngine() {
 	vertexBuffer.end();
 	indexBuffer.end();
 
-	fillCommandBuffer(&indexBuffer, &vertexBuffer);
+	fillCommandBuffer();
 
 	startupCommands();
-	createSemaphores();
+	createMutex();
 
 	clock_t last_time = clock();
 
 	uint32_t counter = 0;
 
-	while(true) {
-		windowList[0]->pollevents();
-		if(windowList[0]->close_request) {
+	while (true) {
+		pollEvents();
+		if (isCloseRequested) {
 			break;
 		}
-		if(windowList[0]->minimized) {
+		if (isMinimized) {
 			continue;
 		}
-		startdraw(&indexBuffer, &vertexBuffer);
+		startdraw();
 
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
 
-		if(delta >= (CLOCKS_PER_SEC / 60)) {
+		if (delta >= (CLOCKS_PER_SEC / 60)) {
 			last_time = current_time;
 
 			Input input = {};
@@ -107,17 +112,17 @@ void startTGEngine() {
 			playercontroller(&input);
 		}
 
-		submit(&indexBuffer, &vertexBuffer);
-		present(&indexBuffer, &vertexBuffer);
+		submit();
+		present();
 
 		// TESTING
 		if (counter > 5) {
-		//	exit(0);
+			//	exit(0);
 		}
 		counter++;
 	}
 
-	destroySemaphores();
+	destroyMutex();
 	destroyCommandBuffer();
 	destroyIndexBuffer(&indexBuffer);
 	destroyVertexBuffer(&vertexBuffer);

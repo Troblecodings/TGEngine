@@ -4,6 +4,6 @@ namespace tge {
 	namespace gmc {
 
 		void(*playercontroller)(Input*);
-	
+
 	}
 }

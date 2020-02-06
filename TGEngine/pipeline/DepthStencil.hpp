@@ -3,14 +3,11 @@
 #include "../Stdbase.hpp"
 #include "PrePipeline.hpp"
 #include "../vlib/VulkanBuffer.hpp"
-#include "../vlib/VulkanImage.hpp"
 
-extern VkImage depth_image;
-extern VkImageView depth_image_view;
-extern VkDeviceMemory depth_image_memory;
+extern VkImage depthImage;
+extern VkImageView depthImageView;
+extern VkDeviceMemory depthImageMemory;
 
-SINCE(0, 0, 4)
 void createDepthTest();
 
-SINCE(0, 0, 4)
 void destroyDepthTest();

@@ -1,19 +1,18 @@
 #include "Descriptors.hpp"
-#include "../vlib/VulkanDescriptor.hpp"
 
 VkPipelineLayout pipelineLayout;
-VkDescriptorSet mainDescriptorSet;
+VkDescriptorSet mainDescriptorSet[2];
 
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	sizes[0].descriptorCount = 1;
+	sizes[0].descriptorCount = 2;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-	sizes[1].descriptorCount = 1;
+	sizes[1].descriptorCount = 2;
 
 	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	sizes[2].descriptorCount = 2048;
+	sizes[2].descriptorCount = 4096;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -24,8 +23,7 @@ void initDescriptors() {
 	descriptorPoolCreateInfo.pPoolSizes = sizes;
 
 	VkDescriptorPool descriptorPool;
-	lastResult = vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool));
 
 	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[3];
 	descriptorSetLayoutBinding[0].binding = 0;
@@ -36,7 +34,7 @@ void initDescriptors() {
 
 	descriptorSetLayoutBinding[1].binding = 1;
 	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-	descriptorSetLayoutBinding[1].descriptorCount =  1;
+	descriptorSetLayoutBinding[1].descriptorCount = 1;
 	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
 
@@ -54,8 +52,7 @@ void initDescriptors() {
 	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
 
 	VkDescriptorSetLayout descriptorSetLayout;
-	lastResult = vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
-	CHECKFAIL;
+	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout));
 
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -75,16 +72,14 @@ void initDescriptors() {
 	pipelineLayoutCreateInfo.pushConstantRangeCount = 2;
 	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
 
-	lastResult = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
-	CHECKFAIL;
+	CHECKFAIL(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
 
 	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo;
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	descriptorSetAllocateInfo.pNext = nullptr;
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
-	descriptorSetAllocateInfo.descriptorSetCount = 1; // TODO Change this to a modifable value ... in case we need more
-	descriptorSetAllocateInfo.pSetLayouts = &descriptorSetLayout;
-	
-	lastResult = vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &mainDescriptorSet);
-	CHECKFAIL;
+	descriptorSetAllocateInfo.descriptorSetCount = 2;
+	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[2]{ descriptorSetLayout, descriptorSetLayout };
+
+	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSet));
 }

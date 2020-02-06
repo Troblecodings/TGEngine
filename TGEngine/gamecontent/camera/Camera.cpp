@@ -19,7 +19,7 @@ namespace tge {
 
 		void createCamera(Camera* camera) {
 			TG_VECTOR_APPEND_NORMAL(cameras_on_scene, camera)
-			active_camera = camera->camera_index = lastSize;
+				active_camera = camera->camera_index = lastSize;
 		}
 
 		void updateCamera(int width, int height) {
@@ -32,14 +32,14 @@ namespace tge {
 
 		void __impl_input_handle(glm::vec2 pos, glm::vec2 delta) {
 			Camera* cam = cameras_on_scene[active_camera];
-			if(cam->mouse_input_handler) {
+			if (cam->mouse_input_handler) {
 				cam->mouse_input_handler(cam, pos, delta);
 			}
 		}
 
 		void __impl_keyinput_handle(uint16_t chr, bool down) {
 			Camera* cam = cameras_on_scene[active_camera];
-			if(cam->key_input_handler) {
+			if (cam->key_input_handler) {
 				cam->key_input_handler(cam, chr, down);
 			}
 		}

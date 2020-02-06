@@ -13,33 +13,32 @@
 namespace tge {
 	namespace fnt {
 
-		SINCE(0, 0, 4)
-			class Font {
+		/*
+		 * <strong>This API is deprecated!</strong>
+		 */
+		class Font {
 
-			private:
-				uint32_t height = 20;
-				stbtt_bakedchar cdata[256];
-				uint32_t materialIndex = -1;
+		private:
+			uint32_t height = 20;
+			stbtt_bakedchar cdata[256];
+			uint32_t materialIndex = -1;
 
-			public:
-				/*
-				* Initializes all values (besides default constructor)
-				* Adds new font to the cache and adds the generated texture +  it's material (UI)
-				*/
-				Font(char* path) : Font(path, 30) {}
-				Font(char* path, uint32_t height);
+		public:
+			/*
+			* Initializes all values (besides default constructor)
+			* Adds new font to the cache and adds the generated texture +  it's material (UI)
+			*/
+			Font(char* path) : Font(path, 30) {}
+			Font(char* path, uint32_t height);
 
-				/*
-				* Draws a string to the screen (UI only)
-				*/
-				SINCE(0, 0, 3)
-					void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color);
+			/*
+			* Draws a string to the screen (UI only)
+			*/
+			void drawString(glm::vec2 pos, char* string, VertexBuffer* buffer, IndexBuffer* ibuffer, glm::vec4 color);
 
-				SINCE(0, 0, 4)
-					uint32_t getMaterialIndex();
+			uint32_t getMaterialIndex();
 
-				SINCE(0, 0, 4)
-					glm::vec2 getExtent(char* chr);
+			glm::vec2 getExtent(char* chr);
 		};
 	}
 }

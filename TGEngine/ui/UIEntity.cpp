@@ -40,39 +40,39 @@ namespace tge {
 		}
 
 		void UIEntity::draw(IndexBuffer* index, VertexBuffer* vertex) {
-			for each(UIDrawable * comp in this->drawComponents) {
+			for each (UIDrawable * comp in this->drawComponents) {
 				ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
-					if(comp->isEnabled())
+					if (comp->isEnabled())
 						comp->draw(index, vertex);
 			}
-			for each(UIEntity * entity in this->children) {
+			for each (UIEntity * entity in this->children) {
 				ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
-					if(entity->isEnabled() && entity->isVisible())
+					if (entity->isEnabled() && entity->isVisible())
 						entity->draw(index, vertex);
 			}
 		}
 
 		void UIEntity::update() {
-			for each(UIUpdatable * comp in this->updateComponents) {
+			for each (UIUpdatable * comp in this->updateComponents) {
 				ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
-					if(comp->isEnabled())
+					if (comp->isEnabled())
 						comp->update();
 			}
-			for each(UIEntity * entity in this->children) {
+			for each (UIEntity * entity in this->children) {
 				ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
-					if(entity->isEnabled())
+					if (entity->isEnabled())
 						entity->update();
 			}
 		}
 
 		void UIEntity::init() {
-			if(parent == nullptr)
+			if (parent == nullptr)
 				this->__update();
-			for each(UIDrawable * comp in this->drawComponents) {
+			for each (UIDrawable * comp in this->drawComponents) {
 				ASSERT_NONE_NULL_DB(comp, "UIComponent null", TG_ERR_DB_NULLPTR)
 					comp->init();
 			}
-			for each(UIEntity * entity in this->children) {
+			for each (UIEntity * entity in this->children) {
 				ASSERT_NONE_NULL_DB(entity, "UIEntity null", TG_ERR_DB_NULLPTR)
 					entity->init();
 			}
@@ -81,35 +81,35 @@ namespace tge {
 		void UIEntity::onAddTo(UIEntity* parent) {
 			this->parent = parent;
 
-			switch(this->anchor) {
-				case TOP_LEFT:
-					break;
-				case TOP_CENTER:
-					this->localPosition.x = this->parent->extent.x / 2;
-					break;
-				case TOP_RIGHT:
-					this->localPosition.x = this->parent->extent.x;
-					break;
-				case CENTER_LEFT:
-					this->localPosition.y = (this->parent->extent.y / 2);
-					break;
-				case CENTER:
-					this->localPosition.x = this->parent->extent.x / 2;
-					this->localPosition.y = (this->parent->extent.y / 2);
-					break;
-				case CENTER_RIGHT:
-					this->localPosition = (this->parent->extent / glm::vec2(1, 2));
-					break;
-				case BOTTOM_LEFT:
-					this->localPosition.y = this->parent->extent.y;
-					break;
-				case BOTTOM_CENTER:
-					this->localPosition.x = this->parent->extent.x / 2;
-					this->localPosition.y = this->parent->extent.y;
-					break;
-				case BOTTOM_RIGHT:
-					this->localPosition = this->parent->extent;
-					break;
+			switch (this->anchor) {
+			case TOP_LEFT:
+				break;
+			case TOP_CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				break;
+			case TOP_RIGHT:
+				this->localPosition.x = this->parent->extent.x;
+				break;
+			case CENTER_LEFT:
+				this->localPosition.y = (this->parent->extent.y / 2);
+				break;
+			case CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				this->localPosition.y = (this->parent->extent.y / 2);
+				break;
+			case CENTER_RIGHT:
+				this->localPosition = (this->parent->extent / glm::vec2(1, 2));
+				break;
+			case BOTTOM_LEFT:
+				this->localPosition.y = this->parent->extent.y;
+				break;
+			case BOTTOM_CENTER:
+				this->localPosition.x = this->parent->extent.x / 2;
+				this->localPosition.y = this->parent->extent.y;
+				break;
+			case BOTTOM_RIGHT:
+				this->localPosition = this->parent->extent;
+				break;
 			}
 
 			this->__update();
@@ -172,38 +172,38 @@ namespace tge {
 		}
 
 		void UIEntity::setOffset(Anchor anchor) {
-			switch(this->anchor) {
-				case TOP_LEFT:
-					break;
-				case TOP_CENTER:
-					this->setOffset(glm::vec2(this->extent.x / 2, 0));
-					break;
-				case TOP_RIGHT:
-					this->setOffset(glm::vec2(this->extent.x, 0));
-					break;
-				case CENTER_LEFT:
-					this->setOffset(glm::vec2(0, this->extent.y / 2));
-					break;
-				case CENTER:
-					this->setOffset(glm::vec2(this->extent / 2.0f));
-					break;
-				case CENTER_RIGHT:
-					this->setOffset(glm::vec2(this->extent.x, this->extent.y / 2));
-					break;
-				case BOTTOM_LEFT:
-					this->setOffset(glm::vec2(0, this->extent.y));
-					break;
-				case BOTTOM_CENTER:
-					this->setOffset(glm::vec2(this->extent.x / 2, this->extent.y));
-					break;
-				case BOTTOM_RIGHT:
-					this->setOffset(glm::vec2(this->extent.x, this->extent.y));
-					break;
+			switch (this->anchor) {
+			case TOP_LEFT:
+				break;
+			case TOP_CENTER:
+				this->setOffset(glm::vec2(this->extent.x / 2, 0));
+				break;
+			case TOP_RIGHT:
+				this->setOffset(glm::vec2(this->extent.x, 0));
+				break;
+			case CENTER_LEFT:
+				this->setOffset(glm::vec2(0, this->extent.y / 2));
+				break;
+			case CENTER:
+				this->setOffset(glm::vec2(this->extent / 2.0f));
+				break;
+			case CENTER_RIGHT:
+				this->setOffset(glm::vec2(this->extent.x, this->extent.y / 2));
+				break;
+			case BOTTOM_LEFT:
+				this->setOffset(glm::vec2(0, this->extent.y));
+				break;
+			case BOTTOM_CENTER:
+				this->setOffset(glm::vec2(this->extent.x / 2, this->extent.y));
+				break;
+			case BOTTOM_RIGHT:
+				this->setOffset(glm::vec2(this->extent.x, this->extent.y));
+				break;
 			}
 		}
 
 		glm::vec2 UIEntity::__getPosition() {
-			if(this->parent == nullptr)
+			if (this->parent == nullptr)
 				return this->localPosition - this->__getOffset();
 			return this->parent->__getPosition() + this->localPosition - this->__getOffset();
 		}
@@ -216,7 +216,7 @@ namespace tge {
 			this->cachedPosition = this->__getPosition() * glm::vec2(2, 2) - glm::vec2(1.0f);
 			this->cachedExtent = this->extent * glm::vec2(2 * tge::gmc::multiplier, 2);
 
-			for each(UIEntity * entity in this->children) {
+			for each (UIEntity * entity in this->children) {
 				entity->__update();
 			}
 		}

@@ -14,7 +14,7 @@ namespace tg_io {
 	void inputupdate(glm::vec2 pos, glm::vec2 delta) {
 		tg_io::pos = pos;
 		tg_io::delta = delta;
-		for each(void(*ptr)(glm::vec2, glm::vec2) in mouse_handler) {
+		for each (void(*ptr)(glm::vec2, glm::vec2) in mouse_handler) {
 			ptr(pos, delta);
 		}
 	}

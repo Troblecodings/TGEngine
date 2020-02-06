@@ -19,17 +19,16 @@ namespace tge {
 		 *     can be changed
 		 *	-----------------------------------------------------------
 		 */
-		SINCE(0, 0, 4)
-			class UITextureComponent : public UIDrawable {
+		class UITextureComponent : public UIDrawable {
 
-			private:
-				glm::vec4 color = glm::vec4(1.0f);
-				uint32_t materialIndex = -1;
-				uint32_t offsetIndex = -1;
+		private:
+			glm::vec4 color = glm::vec4(1.0f);
+			uint32_t materialIndex = -1;
+			uint32_t offsetIndex = -1;
 
-			protected:
-				virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
-				virtual void init() override;
+		protected:
+			virtual void draw(IndexBuffer* index, VertexBuffer* vertex) override;
+			virtual void init() override;
 		};
 
 	}

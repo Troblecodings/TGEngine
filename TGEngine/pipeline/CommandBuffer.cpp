@@ -1,158 +1,153 @@
 #include "CommandBuffer.hpp"
 #include "../gamecontent/Actor.hpp"
-#include "../gamecontent/Actor.hpp"
+#include "window/Window.hpp"
+#include "../TGEngine.hpp"
 
-VkCommandPool command_pool;
-VkFence single_time_command_ready;
-std::vector<VkCommandBuffer> command_buffers;
-VkDeviceSize offsets = 0;
-bool started = true;
+VkCommandPool commandPool;
+VkFence singelTimeCommandBufferFence;
+VkCommandBuffer* commandBuffer;
 
 void createCommandBuffer() {
-	command_buffers.resize(imagecount + 1);
+	commandBuffer = new VkCommandBuffer[(uint64_t)imageCount + 1];
 
-	if(!command_pool) {
-		VkCommandPoolCreateInfo commmand_pool_create_info = {
-			VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-			nullptr,
-			VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			queueIndex
-		};
+	if (!commandPool) {
+		VkCommandPoolCreateInfo commmandPoolCreateInfo;
+		commmandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		commmandPoolCreateInfo.pNext = nullptr;
+		commmandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		commmandPoolCreateInfo.queueFamilyIndex = queueIndex;
 
-		lastResult = vkCreateCommandPool(device, &commmand_pool_create_info, nullptr, &command_pool);
-		HANDEL(lastResult)
-
-			vlibCommandBufferAllocateInfo.commandPool = command_pool;
+		CHECKFAIL(vkCreateCommandPool(device, &commmandPoolCreateInfo, nullptr, &commandPool));
 	}
 
-	vlibCommandBufferAllocateInfo.commandBufferCount = imagecount;
-	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, command_buffers.data());
-	HANDEL(lastResult)
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo;
+	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	commandBufferAllocateInfo.pNext = nullptr;
+	commandBufferAllocateInfo.commandPool = commandPool;
+	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	commandBufferAllocateInfo.commandBufferCount = imageCount + 1;
+	CHECKFAIL(vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffer));
 
-		vlibCommandBufferAllocateInfo.commandBufferCount = 1;
-	lastResult = vkAllocateCommandBuffers(device, &vlibCommandBufferAllocateInfo, &SINGELTIME_COMMAND_BUFFER);
-	HANDEL(lastResult)
-
-		VkFenceCreateInfo fence_create_info = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-	lastResult = vkCreateFence(device, &fence_create_info, nullptr, &single_time_command_ready);
-	HANDEL(lastResult)
+	VkFenceCreateInfo fenceCreateInfo;
+	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceCreateInfo.flags = 0;
+	fenceCreateInfo.pNext = nullptr;
+	CHECKFAIL(vkCreateFence(device, &fenceCreateInfo, nullptr, &singelTimeCommandBufferFence));
 }
 
 void startSingleTimeCommand() {
-	lastResult = vkResetFences(device, 1, &single_time_command_ready);
-	HANDEL(lastResult)
+	CHECKFAIL(vkResetFences(device, 1, &singelTimeCommandBufferFence));
 
-		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-	vlibCommandBufferBeginInfo.pInheritanceInfo = nullptr;
-	lastResult = vkBeginCommandBuffer(SINGELTIME_COMMAND_BUFFER, &vlibCommandBufferBeginInfo);
-	HANDEL(lastResult);
+	VkCommandBufferBeginInfo commandBufferBeginInfo;
+	commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	commandBufferBeginInfo.pNext = nullptr;
+	commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	commandBufferBeginInfo.pInheritanceInfo = nullptr;
+	CHECKFAIL(vkBeginCommandBuffer(SINGLE_TIME_COMMAND_BUFFER, &commandBufferBeginInfo));
 }
 
 void endSingleTimeCommand() {
-	lastResult = vkEndCommandBuffer(SINGELTIME_COMMAND_BUFFER);
-	HANDEL(lastResult);
+	CHECKFAIL(vkEndCommandBuffer(SINGLE_TIME_COMMAND_BUFFER));
 
-	VkSubmitInfo submitInfo = {
-		VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		nullptr,
-		0,
-		nullptr,
-		nullptr,
-		1,
-		&SINGELTIME_COMMAND_BUFFER,
-		0,
-		nullptr,
-	};
+	VkSubmitInfo submitInfo;
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.pNext = nullptr;
+	submitInfo.waitSemaphoreCount = 0;
+	submitInfo.pWaitSemaphores = VK_NULL_HANDLE;
+	submitInfo.pWaitDstStageMask = VK_NULL_HANDLE;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &SINGLE_TIME_COMMAND_BUFFER;
+	submitInfo.signalSemaphoreCount = 0;
+	submitInfo.pSignalSemaphores = nullptr;
 
-	lastResult = vkQueueSubmit(queue, 1, &submitInfo, single_time_command_ready);
-	HANDEL(lastResult)
+	CHECKFAIL(vkQueueSubmit(queue, 1, &submitInfo, singelTimeCommandBufferFence));
 
-		lastResult = vkWaitForFences(device, 1, &single_time_command_ready, VK_TRUE, UINT64_MAX);
-	HANDEL(lastResult)
+	CHECKFAIL(vkWaitForFences(device, 1, &singelTimeCommandBufferFence, VK_TRUE, UINT64_MAX));
 }
 
 void startupCommands() {
 	startSingleTimeCommand();
 
-	vlibImageMemoryBarrier.subresourceRange.levelCount = 1;
-	vlibImageMemoryBarrier.subresourceRange.baseMipLevel = 0;
-	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, color_image, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-
-		vlibImageMemoryBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	ADD_IMAGE_MEMORY_BARRIER(SINGELTIME_COMMAND_BUFFER, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, depth_image, 0, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
-
-		for each(StagingBuffer * buf in staging_buffer) {
-			vlibBufferCopy.dstOffset = vlibBufferCopy.srcOffset = 0;
-			vlibBufferCopy.size = buf->size;
-			vkCmdCopyBuffer(
-				SINGELTIME_COMMAND_BUFFER,
-				buf->staging_buffer,
-				*buf->destination,
-				1,
-				&vlibBufferCopy
-			);
-		}
+	VkBufferCopy bufferCopy;
+	bufferCopy.srcOffset = 0;
+	bufferCopy.dstOffset = 0;
+	for each (StagingBuffer* buf in staging_buffer) {
+		bufferCopy.size = buf->size;
+		vkCmdCopyBuffer(
+			SINGLE_TIME_COMMAND_BUFFER,
+			buf->staging_buffer,
+			*buf->destination,
+			1,
+			&bufferCopy
+		);
+	}
 
 	endSingleTimeCommand();
 }
 
-void fillCommandBuffer(IndexBuffer* ibuffer, VertexBuffer* vbuffer) {
-	for(size_t i = 0; i < imagecount; i++) {
-		VkCommandBuffer buffer = command_buffers[i];
+void fillCommandBuffer() {
+	for (size_t i = 0; i < imageCount; i++) {
+		VkCommandBuffer buffer = commandBuffer[i];
 
-		VkCommandBufferInheritanceInfo command_buffer_inheritance_info = {
-			VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-				nullptr,
-				renderpass,
-				0,
-				frame_buffer[i],
-				VK_FALSE,
-				0,
-				0
-		};
+		VkCommandBufferInheritanceInfo commandBufferInheritanceInfo;
+		commandBufferInheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+		commandBufferInheritanceInfo.pNext = nullptr;
+		commandBufferInheritanceInfo.renderPass = renderPass;
+		commandBufferInheritanceInfo.subpass = 0;
+		commandBufferInheritanceInfo.framebuffer = frameBuffer[i];
+		commandBufferInheritanceInfo.occlusionQueryEnable = VK_FALSE;
+		commandBufferInheritanceInfo.queryFlags = 0;
+		commandBufferInheritanceInfo.pipelineStatistics = 0;
 
-		vlibCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		vlibCommandBufferBeginInfo.pInheritanceInfo = &command_buffer_inheritance_info;
-		lastResult = vkBeginCommandBuffer(buffer, &vlibCommandBufferBeginInfo);
-		HANDEL(lastResult);
+		VkCommandBufferBeginInfo commandBufferBeginInfo;
+		commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		commandBufferBeginInfo.pNext = nullptr;
+		commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		commandBufferBeginInfo.pInheritanceInfo = &commandBufferInheritanceInfo;
+		CHECKFAIL(vkBeginCommandBuffer(buffer, &commandBufferBeginInfo));
 
-		VkRenderPassBeginInfo render_pass_begin_info = {
-			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			nullptr,
-			renderpass,
-			frame_buffer[i],
-			{
-				0,
-				0,
-				(uint32_t)windowList[0]->width,
-				(uint32_t)windowList[0]->height
-			},
-			2,
-			vlibClearValues
-		};
-		vkCmdBeginRenderPass(buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+		VkClearValue clearValues[2];
+		clearValues[0] = { 1, 1, 1, 1 };
+		clearValues[1] = { 1.0f, 0 };
 
-		vkCmdBindVertexBuffers(buffer, 0, 1, &vbuffer->vertex_buffer, &offsets);
+		VkRenderPassBeginInfo renderPassBeginInfo;
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.pNext = nullptr;
+		renderPassBeginInfo.renderPass = renderPass;
+		renderPassBeginInfo.framebuffer = frameBuffer[i];
+		renderPassBeginInfo.renderArea.offset.x = 0;
+		renderPassBeginInfo.renderArea.offset.y = 0;
+		renderPassBeginInfo.renderArea.extent.width = tge::win::mainWindowWidth;
+		renderPassBeginInfo.renderArea.extent.height = tge::win::mainWindowHeight;
+		renderPassBeginInfo.clearValueCount = 2;
+		renderPassBeginInfo.pClearValues = clearValues;
+		vkCmdBeginRenderPass(buffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		vkCmdBindIndexBuffer(buffer, ibuffer->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+		VkDeviceSize offsets = 0;
+		vkCmdBindVertexBuffers(buffer, 0, 1, &vertexBuffer.vertex_buffer, &offsets);
 
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet, 0, nullptr);
+		vkCmdBindIndexBuffer(buffer, indexBuffer.index_buffer, 0, VK_INDEX_TYPE_UINT32);
+
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet[0], 0, nullptr);
 
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
 
-		tge::gmc::loadToCommandBuffer(buffer);
+		tge::gmc::loadToCommandBuffer(buffer, 0);
+
+		// Render for the UI and so on
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &mainDescriptorSet[1], 0, nullptr);
+
+		tge::gmc::loadToCommandBuffer(buffer, 1);
 
 		vkCmdEndRenderPass(buffer);
 
-		lastResult = vkEndCommandBuffer(buffer);
-		HANDEL(lastResult)
+		CHECKFAIL(vkEndCommandBuffer(buffer));
 	}
 }
 
 void destroyCommandBuffer() {
-	lastResult = vkDeviceWaitIdle(device);
-	HANDEL(lastResult)
-		vkFreeCommandBuffers(device, command_pool, (uint32_t)command_buffers.size(), command_buffers.data());
-	vkDestroyCommandPool(device, command_pool, nullptr);
-	vkDestroyFence(device, single_time_command_ready, nullptr);
+	CHECKFAIL(vkDeviceWaitIdle(device));
+	vkFreeCommandBuffers(device, commandPool, 4, commandBuffer);
+	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyFence(device, singelTimeCommandBufferFence, nullptr);
 }

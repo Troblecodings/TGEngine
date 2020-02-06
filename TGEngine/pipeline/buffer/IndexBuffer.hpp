@@ -12,22 +12,17 @@ struct IndexBuffer {
 	StagingBuffer stag_buf;
 	void* memory;
 
-	SINCE(0, 0, 2)
-		void addIndex(uint32_t index);
+	void addIndex(uint32_t index);
 
-	SINCE(0, 0, 4)
-		void start();
+	void start();
 
 	void addAll(void* data, size_t points);
 
-	SINCE(0, 0, 4)
-		void end();
+	void end();
 };
 
 extern uint32_t index_offset;
 
-SINCE(0, 0, 2)
 void createIndexBuffer(IndexBuffer* buffer);
 
-SINCE(0, 0, 2)
 void destroyIndexBuffer(IndexBuffer* buffer);

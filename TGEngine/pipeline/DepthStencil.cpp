@@ -1,40 +1,62 @@
 #include "DepthStencil.hpp"
 #include "window/Window.hpp"
 
-VkImage depth_image;
-VkImageView depth_image_view;
-VkDeviceMemory depth_image_memory;
+VkImage depthImage;
+VkImageView depthImageView;
+VkDeviceMemory depthImageMemory;
 
 void createDepthTest() {
-	vlibImageCreateInfo.extent.width = windowList[0]->width;
-	vlibImageCreateInfo.extent.height = windowList[0]->height;
-	vlibImageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-	vlibImageCreateInfo.format = used_depth_format;
-	vlibImageCreateInfo.samples = usedMSAAFlag;
-	vlibImageCreateInfo.mipLevels = 1;
-	lastResult = vkCreateImage(device, &vlibImageCreateInfo, nullptr, &depth_image);
-	HANDEL(lastResult);
+	VkImageCreateInfo imageCreateInfo;
+	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageCreateInfo.pNext = nullptr;
+	imageCreateInfo.flags = 0;
+	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageCreateInfo.format = usedDepthFormat;
+	imageCreateInfo.extent.width = tge::win::mainWindowWidth;
+	imageCreateInfo.extent.height = tge::win::mainWindowHeight;
+	imageCreateInfo.extent.depth = 1;
+	imageCreateInfo.mipLevels = 1;
+	imageCreateInfo.arrayLayers = 1;
+	imageCreateInfo.samples = usedSampleFlag;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageCreateInfo.queueFamilyIndexCount = 0;
+	imageCreateInfo.pQueueFamilyIndices = nullptr;
+	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	CHECKFAIL(vkCreateImage(device, &imageCreateInfo, nullptr, &depthImage));
 
 	VkMemoryRequirements requierments;
-	vkGetImageMemoryRequirements(device, depth_image, &requierments);
+	vkGetImageMemoryRequirements(device, depthImage, &requierments);
 
-	vlibBufferMemoryAllocateInfo.allocationSize = requierments.size;
-	vlibBufferMemoryAllocateInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
-	lastResult = vkAllocateMemory(device, &vlibBufferMemoryAllocateInfo, nullptr, &depth_image_memory);
-	HANDEL(lastResult);
+	VkMemoryAllocateInfo memoryAllocationInfo;
+	memoryAllocationInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	memoryAllocationInfo.pNext = nullptr;
+	memoryAllocationInfo.allocationSize = requierments.size;
+	memoryAllocationInfo.memoryTypeIndex = vlibDeviceLocalMemoryIndex;
+	CHECKFAIL(vkAllocateMemory(device, &memoryAllocationInfo, nullptr, &depthImageMemory));
 
-	lastResult = vkBindImageMemory(device, depth_image, depth_image_memory, 0);
-	HANDEL(lastResult);
+	CHECKFAIL(vkBindImageMemory(device, depthImage, depthImageMemory, 0));
 
-	vlibImageViewCreateInfo.format = used_depth_format;
-	vlibImageViewCreateInfo.image = depth_image;
-	vlibImageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	lastResult = vkCreateImageView(device, &vlibImageViewCreateInfo, nullptr, &depth_image_view);
-	HANDEL(lastResult);
+	VkImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	imageViewCreateInfo.pNext = nullptr;
+	imageViewCreateInfo.flags = 0;
+	imageViewCreateInfo.image = depthImage;
+	imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	imageViewCreateInfo.format = usedDepthFormat;
+	imageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+	imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+	imageViewCreateInfo.subresourceRange.levelCount = 1;
+	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+	imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+	CHECKFAIL(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &depthImageView));
 }
 
 void destroyDepthTest() {
-	vkDestroyImageView(device, depth_image_view, nullptr);
-	vkFreeMemory(device, depth_image_memory, nullptr);
-	vkDestroyImage(device, depth_image, nullptr);
+	vkDestroyImageView(device, depthImageView, nullptr);
+	vkFreeMemory(device, depthImageMemory, nullptr);
+	vkDestroyImage(device, depthImage, nullptr);
 }

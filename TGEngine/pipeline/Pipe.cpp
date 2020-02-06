@@ -2,6 +2,7 @@
 #include "RenderPass.hpp"
 #include "Descriptors.hpp"
 #include "PrePipeline.hpp"
+#include "window/Window.hpp"
 
 namespace tge::pip {
 
@@ -28,7 +29,7 @@ namespace tge::pip {
 		pipelineMultisampleStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		pipelineMultisampleStateCreateInfo.pNext = nullptr;
 		pipelineMultisampleStateCreateInfo.flags = 0;
-		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedMSAAFlag;
+		pipelineMultisampleStateCreateInfo.rasterizationSamples = usedSampleFlag;
 		pipelineMultisampleStateCreateInfo.sampleShadingEnable = VK_FALSE;
 		pipelineMultisampleStateCreateInfo.minSampleShading = 1.0f;
 		pipelineMultisampleStateCreateInfo.pSampleMask = nullptr;
@@ -64,24 +65,24 @@ namespace tge::pip {
 		pipelineDepthStencilStateCreateInfo.flags = 0;
 		pipelineDepthStencilStateCreateInfo.depthTestEnable = VK_TRUE;
 		pipelineDepthStencilStateCreateInfo.depthWriteEnable = VK_TRUE;
-		pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS;
+		pipelineDepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
 		pipelineDepthStencilStateCreateInfo.depthBoundsTestEnable = VK_FALSE;
 		pipelineDepthStencilStateCreateInfo.stencilTestEnable = VK_FALSE;
-		pipelineDepthStencilStateCreateInfo.minDepthBounds = 0;
+		pipelineDepthStencilStateCreateInfo.minDepthBounds = -1.0;
 		pipelineDepthStencilStateCreateInfo.maxDepthBounds = 1.0;
-		
-		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_KEEP;
-		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.front.compareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+
+		pipelineDepthStencilStateCreateInfo.front.failOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.front.passOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.front.depthFailOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.front.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
 		pipelineDepthStencilStateCreateInfo.front.compareMask = 0;
 		pipelineDepthStencilStateCreateInfo.front.writeMask = 0;
 		pipelineDepthStencilStateCreateInfo.front.reference = 0;
 
-		pipelineDepthStencilStateCreateInfo.back.failOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.back.passOp = VK_STENCIL_OP_KEEP;
-		pipelineDepthStencilStateCreateInfo.back.depthFailOp = VK_STENCIL_OP_REPLACE;
-		pipelineDepthStencilStateCreateInfo.back.compareOp = VK_COMPARE_OP_LESS;
+		pipelineDepthStencilStateCreateInfo.back.failOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.back.passOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.back.depthFailOp = VK_STENCIL_OP_ZERO;
+		pipelineDepthStencilStateCreateInfo.back.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
 		pipelineDepthStencilStateCreateInfo.back.compareMask = 0;
 		pipelineDepthStencilStateCreateInfo.back.writeMask = 0;
 		pipelineDepthStencilStateCreateInfo.back.reference = 0;
@@ -136,7 +137,7 @@ namespace tge::pip {
 			pipelineRasterizationStateCreateInfo[i].cullMode = in.cullMode;
 			pipelineRasterizationStateCreateInfo[i].frontFace = VK_FRONT_FACE_CLOCKWISE;
 			pipelineRasterizationStateCreateInfo[i].depthBiasEnable = VK_FALSE;
-			pipelineRasterizationStateCreateInfo[i].depthBiasConstantFactor = 1;
+			pipelineRasterizationStateCreateInfo[i].depthBiasConstantFactor = 0;
 			pipelineRasterizationStateCreateInfo[i].depthBiasClamp = 0;
 			pipelineRasterizationStateCreateInfo[i].depthBiasSlopeFactor = 1;
 			pipelineRasterizationStateCreateInfo[i].lineWidth = in.lineWidth;
@@ -156,14 +157,13 @@ namespace tge::pip {
 			graphicsPipelineCreateInfo[i].pColorBlendState = &pipelineColorBlendStateCreateInfo;
 			graphicsPipelineCreateInfo[i].pDynamicState = nullptr;
 			graphicsPipelineCreateInfo[i].layout = pipelineLayout;
-			graphicsPipelineCreateInfo[i].renderPass = renderpass;
+			graphicsPipelineCreateInfo[i].renderPass = renderPass;
 			graphicsPipelineCreateInfo[i].subpass = 0;
 			graphicsPipelineCreateInfo[i].basePipelineHandle = VK_NULL_HANDLE;
 			graphicsPipelineCreateInfo[i].basePipelineIndex = 0;
 		}
 
-		lastResult = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, size, graphicsPipelineCreateInfo, nullptr, pipelines);
-		CHECKFAIL;
+		CHECKFAIL(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, size, graphicsPipelineCreateInfo, nullptr, pipelines));
 	}
 
 	void initPipelines() {
@@ -172,12 +172,12 @@ namespace tge::pip {
 		PipelineInputInfo pipelineInputInfo;
 		pipelineInputInfo.pipe = TopDownPipe;
 		pipelineInputInfo.stride = sizeof(glm::vec4);
-		pipelineInputInfo.width = windowList[0]->width;
-		pipelineInputInfo.height = windowList[0]->height;
+		pipelineInputInfo.width = win::mainWindowWidth;
+		pipelineInputInfo.height = win::mainWindowHeight;
 		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pipelineInputInfo.lineWidth = 1;
-		
+
 		createPipelines(&pipelineInputInfo, 1, &defaultPipeline);
 	}
 }

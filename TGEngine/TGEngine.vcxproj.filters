@@ -58,9 +58,6 @@
     <Filter Include="Headerdateien\gamecontent">
       <UniqueIdentifier>{65f27615-334a-409f-b0e0-f02448dc33a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="docs">
-      <UniqueIdentifier>{1439cb04-66f8-4e9a-8b9c-6b9ca3ad36a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Quelldateien\ui">
       <UniqueIdentifier>{ee8d2418-0cdb-426d-93ec-e760d39155a5}</UniqueIdentifier>
     </Filter>
@@ -76,14 +73,11 @@
     <Filter Include="Quelldateien\gamecontent\camera">
       <UniqueIdentifier>{e7daef0f-44a6-4e9f-96a8-bd3b05d60387}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
+    <Filter Include="shader">
       <UniqueIdentifier>{3bb9f22a-8f9f-4665-9bdb-e01084d34ec6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="TGEngine.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -138,9 +132,6 @@
     <ClInclude Include="Pipeline\Window\Window.hpp">
       <Filter>Headerdateien\pipeline\window</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Annotations.hpp">
-      <Filter>Headerdateien\util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Debug.hpp">
       <Filter>Headerdateien\util</Filter>
     </ClInclude>
@@ -165,9 +156,6 @@
     <ClInclude Include="pipeline\DepthStencil.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="vlib\VulkanImage.hpp">
-      <Filter>Headerdateien\vlib</Filter>
-    </ClInclude>
     <ClInclude Include="vlib\VulkanBuffer.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
@@ -179,12 +167,6 @@
     </ClInclude>
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="vlib\VulkanDescriptor.hpp">
-      <Filter>Headerdateien\vlib</Filter>
-    </ClInclude>
-    <ClInclude Include="vlib\VulkanPipeline.hpp">
-      <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
     <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
@@ -249,9 +231,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Util\Debug.cpp">
-      <Filter>Quelldateien\util</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Math.cpp">
       <Filter>Quelldateien\util</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\CommandBuffer.cpp">
@@ -320,9 +299,6 @@
     <ClCompile Include="pipeline\DepthStencil.cpp">
       <Filter>Quelldateien\pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="vlib\VulkanImage.cpp">
-      <Filter>Quelldateien\vlib</Filter>
-    </ClCompile>
     <ClCompile Include="vlib\VulkanBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
@@ -334,12 +310,6 @@
     </ClCompile>
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="vlib\VulkanDescriptor.cpp">
-      <Filter>Quelldateien\vlib</Filter>
-    </ClCompile>
-    <ClCompile Include="vlib\VulkanPipeline.cpp">
-      <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
@@ -397,69 +367,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="..\docs\_config.yml">
-      <Filter>docs</Filter>
-    </None>
-    <None Include="..\docs\index.html">
-      <Filter>docs</Filter>
-    </None>
-    <None Include="..\docs\docs.html">
-      <Filter>docs</Filter>
-    </None>
-    <None Include="..\setup.py">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="..\docs\main.css">
-      <Filter>docs</Filter>
-    </None>
-    <None Include="..\docs\contribution.html">
-      <Filter>docs</Filter>
-    </None>
-    <None Include="..\docs\docsShaderTool.html">
-      <Filter>docs</Filter>
+    <None Include="resources\FragmentTopDown.glsl">
+      <Filter>shader</Filter>
     </None>
     <None Include="resources\FragmentTextured2D.glsl">
-      <Filter>resources</Filter>
+      <Filter>shader</Filter>
     </None>
     <None Include="resources\VertexTextured2D.glsl">
-      <Filter>resources</Filter>
+      <Filter>shader</Filter>
     </None>
-    <None Include="resources\FragmentTopDown.glsl">
-      <Filter>Shader</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\docs\logo.png">
-      <Filter>docs</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="resources\FragmentColorOnly.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentTextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentUIColor.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\FragmentUITextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTextured.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTexturedMovable.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexUI.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
     <CustomBuild Include="resources\VertexTopDown.glsl">
-      <Filter>Shader</Filter>
+      <Filter>shader</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

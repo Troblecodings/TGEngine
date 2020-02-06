@@ -7,25 +7,24 @@ namespace tge {
 		/*
 		 * 	Component class that holds the actual draw and update calls
 		 */
-		SINCE(0, 0, 4)
-			class UIUpdatable {
+		class UIUpdatable {
 
-			protected:
-				UIEntity* parent = nullptr;
+		protected:
+			UIEntity* parent = nullptr;
 
-			private:
-				bool enabled = true;
+		private:
+			bool enabled = true;
 
-			public:
-				UIUpdatable() {}
+		public:
+			UIUpdatable() {}
 
-				virtual void update(); // default implementation, needs override
+			virtual void update(); // default implementation, needs override
 
-				void onAddTo(UIEntity* parent);
-				void onRemoveFrom(UIEntity* parent);
+			void onAddTo(UIEntity* parent);
+			void onRemoveFrom(UIEntity* parent);
 
-				bool isEnabled();
-				void setEnabled(bool enabled);
+			bool isEnabled();
+			void setEnabled(bool enabled);
 		};
 
 

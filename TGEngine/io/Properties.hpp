@@ -2,7 +2,6 @@
 
 #include <map>
 #include <string>
-#include "../util/Annotations.hpp"
 #include "../Error.hpp"
 #include "Files.hpp"
 #include <stdio.h>
@@ -12,50 +11,45 @@ namespace prop {
 
 	using namespace std;
 
-	SINCE(0, 0, 1)
-		enum TagType {
+	enum TagType {
 		BOOLEAN, INT, FLOAT, STRING, NaN
 	};
 
 	/*
 	 * Property storage -> only for tiny bits of data
 	 */
-	SINCE(0, 0, 1)
-		class Properties {
-		public:
-			/*
-			 * Gets the value or returns 0. false or an empty string
-			 */
-			SINCE(0, 0, 3)
-				char* getString(const char* name);
-			bool getBoolean(const char* name);
-			float getFloat(const char* name);
-			int getInt(const char* name);
+	class Properties {
+	public:
+		/*
+		 * Gets the value or returns 0, false or an empty string
+		 */
+		char* getString(const char* name);
+		bool getBoolean(const char* name);
+		float getFloat(const char* name);
+		int getInt(const char* name);
 
-			/*
-			 * Gets the value or returns the default if it shouldn't find the name
-			 */
-			SINCE(0, 0, 4)
-				char* getStringOrDefault(const char* name, char* def);
-			bool getBooleanOrDefault(const char* name, bool def);
-			float getFloatOrDefault(const char* name, float def);
-			int getIntOrDefault(const char* name, int def);
+		/*
+		 * Gets the value or returns the default in case it can't find the name
+		 */
+		char* getStringOrDefault(const char* name, char* def);
+		bool getBooleanOrDefault(const char* name, bool def);
+		float getFloatOrDefault(const char* name, float def);
+		int getIntOrDefault(const char* name, int def);
 
-			/*
-			 * Add values to the properties
-			 */
-			SINCE(0, 0, 4)
-				void addString(const char* name, char* value);
-			void addBoolean(const char* name, bool value);
-			void addFloat(const char* name, float value);
-			void addInt(const char* name, int value);
+		/*
+		 * Add values to the tgeproperties
+		 */
+		void addString(const char* name, char* value);
+		void addBoolean(const char* name, bool value);
+		void addFloat(const char* name, float value);
+		void addInt(const char* name, int value);
 
-		private:
-			//name vectors
-			map<std::string, char*> strings;
-			map<std::string, bool> bools;
-			map<std::string, int> ints;
-			map<std::string, float> floats;
+	private:
+		//name vectors
+		map<std::string, char*> strings;
+		map<std::string, bool> bools;
+		map<std::string, int> ints;
+		map<std::string, float> floats;
 	};
 
 	/*
@@ -68,6 +62,5 @@ namespace prop {
 	*    <float name="testfloat" value="0.9"/>
 	*  </xml>
 	*/
-	SINCE(0, 0, 1)
-		void readProperties(char* path, Properties* prop);
+	void readProperties(char* path, Properties* prop);
 }

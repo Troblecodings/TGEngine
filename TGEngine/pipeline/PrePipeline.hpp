@@ -4,12 +4,9 @@
 #include "Device.hpp"
 #include <algorithm>
 
-extern std::vector<VkSurfaceFormatKHR> surface_format;
-extern std::vector<VkPresentModeKHR> present_mode;
-extern VkSurfaceFormatKHR used_format;
-extern VkFormat used_depth_format;
-extern VkPresentModeKHR used_present_mode;
-extern VkSampleCountFlagBits usedMSAAFlag;
+extern VkSurfaceFormatKHR usedSurfaceFormat;
+extern VkFormat usedDepthFormat;
+extern VkPresentModeKHR usedPresentMode;
+extern VkSampleCountFlagBits usedSampleFlag;
 
-SINCE(0, 0, 1)
 void prePipeline();

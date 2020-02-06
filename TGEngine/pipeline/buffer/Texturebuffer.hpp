@@ -34,18 +34,25 @@ namespace tge::tex {
 	};
 
 	struct TextureInputInfo {
-		uint8_t*  data;
+		uint8_t* data;
 		int       x;
 		int       y;
 		int       comp;
 	};
 
+	typedef VkDescriptorImageInfo SamplerBindingInfo;
+	typedef VkDescriptorImageInfo TextureBindingInfo;
+	typedef VkSampler Sampler;
+
 	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);
 
-	void createSampler(SamplerInputInfo input);
+	void createSampler(SamplerInputInfo input, Sampler* sampler, SamplerBindingInfo* bindinginfo);
+
+	void bindSampler(SamplerBindingInfo input, uint32_t layer);
 
 	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded);
 
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* bindinginfo);
 
+	void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer);
 }

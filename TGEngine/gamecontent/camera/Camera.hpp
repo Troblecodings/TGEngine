@@ -11,11 +11,11 @@ namespace tge {
 
 		struct Camera {
 			float speed = 0.01f; // Speed of the camera movement - Usually less then 1 and greater then 0
-			
+
 			float fov = (float)PI * 0.5f; // Field of view in radians
 			float nearClipPlain = 0.01f; // The nearest thing to the camera
 			float farClipPlain = 1000.0f; // The farest thing from the camera
-			
+
 			void (*mouse_input_handler)(Camera* camera, glm::vec2, glm::vec2) = NULL; // A handle for the camera (How should it handle mouse movement?)
 			void(*key_input_handler)(Camera* camera, uint16_t chr, bool down) = NULL; // A handle for the camera (How should it handle key input?)
 
@@ -24,7 +24,7 @@ namespace tge {
 
 			glm::vec3 worldTranslation{};
 			glm::vec3 worldRotation{};
-			glm::vec3 worldScale{ 1, 1, 1};
+			glm::vec3 worldScale{ 1, 1, 1 };
 
 			size_t camera_index;
 		};
@@ -37,28 +37,22 @@ namespace tge {
 		 * Updates the active camera camera matrix and uploads it to the uniform buffer in the shader
 		 *   -> Also sets perspective with the given width and height
 		 */
-		SINCE(0, 0, 2)
-			void updateCamera(int width, int height);
+		void updateCamera(int width, int height);
 
 		/*
 		 * Internal method. You shouldn't use it ... I mean you can but why would you?
 		 */
-		INTERNAL
-			SINCE(0, 0, 4)
-			void __impl_input_handle(glm::vec2 pos, glm::vec2 delta);
+		void __impl_input_handle(glm::vec2 pos, glm::vec2 delta);
 
 		/*
 		 * Internal method. You shouldn't use it ... I mean you can but why would you?
 		 */
-		INTERNAL
-			SINCE(0, 0, 4)
-			void __impl_keyinput_handle(uint16_t chr, bool down);
+		void __impl_keyinput_handle(uint16_t chr, bool down);
 
 		/*
 		 * Initalizes the camera Uniformbuffer and etc.
 		 */
-		SINCE(0, 0, 4)
-			void initCameras();
+		void initCameras();
 
 		/*
 		 * Creates a camera. This method is not "Internal" but it is still not the way it is meant to be done. Consider using createStaticCamera
@@ -67,8 +61,7 @@ namespace tge {
 		 *   -> mouse_input_handler will not be set
 		 *   -> key_input_handler will not be set
 		 */
-		SINCE(0, 0, 2)
-			void createCamera(Camera* camera);
+		void createCamera(Camera* camera);
 
 	}
 }

@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
     <ClInclude Include="gamecontent\camera\2DCamera.hpp" />
@@ -60,7 +59,6 @@
     <ClInclude Include="ui\UITextComponent.hpp" />
     <ClInclude Include="ui\UITextureComponent.hpp" />
     <ClInclude Include="ui\UIUpdatable.hpp" />
-    <ClInclude Include="util\Annotations.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Math.hpp" />
     <ClInclude Include="Stdbase.hpp" />
@@ -69,9 +67,6 @@
     <ClInclude Include="util\VectorUtil.hpp" />
     <ClInclude Include="vlib\VulkanBuffer.hpp" />
     <ClInclude Include="vlib\VulkanCommandBuffer.hpp" />
-    <ClInclude Include="vlib\VulkanDescriptor.hpp" />
-    <ClInclude Include="vlib\VulkanImage.hpp" />
-    <ClInclude Include="vlib\VulkanPipeline.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamecontent\Actor.cpp" />
@@ -116,28 +111,16 @@
     <ClCompile Include="ui\UITextureComponent.cpp" />
     <ClCompile Include="ui\UIUpdatable.cpp" />
     <ClCompile Include="util\Debug.cpp" />
-    <ClCompile Include="util\Math.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
     <ClCompile Include="util\TGVertex.cpp" />
     <ClCompile Include="util\VectorUtil.cpp" />
     <ClCompile Include="vlib\VulkanBuffer.cpp" />
     <ClCompile Include="vlib\VulkanCommandBuffer.cpp" />
-    <ClCompile Include="vlib\VulkanDescriptor.cpp" />
-    <ClCompile Include="vlib\VulkanImage.cpp" />
-    <ClCompile Include="vlib\VulkanPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources\ShaderData.hpp" />
     <ClCompile Include="resources\ShaderData.cpp" />
-    <None Include="..\docs\contribution.html" />
-    <None Include="..\docs\docs.html" />
-    <None Include="..\docs\docsShaderTool.html" />
-    <None Include="..\docs\index.html" />
-    <None Include="..\docs\main.css" />
-    <None Include="..\docs\_config.yml" />
-    <None Include="..\setup.py" />
-    <None Include="..\README.md" />
     <CustomBuild Include="resources\FragmentColorOnly.glsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
@@ -198,9 +181,6 @@
     <None Include="resources\FragmentTextured2D.glsl" />
     <None Include="resources\FragmentTopDown.glsl" />
     <None Include="resources\VertexTextured2D.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\docs\logo.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
