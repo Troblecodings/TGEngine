@@ -20,9 +20,8 @@ namespace ShaderTool.Command {
         public static int MaterialCommand(string[] args) {
             AsssertNoneNull(args);
             Load(); // load the file once for efficiency, use the save command to save all changes
+
             switch (args[0]) {
-                case "save":
-                    return MaterialSave();
                 case "add":
                     return MaterialAdd(GetParams(args));
                 case "rm":
@@ -64,12 +63,10 @@ namespace ShaderTool.Command {
 
         }
 
-        public static int MaterialSave() {
+        public static void Save() {
             string json = JsonConvert.SerializeObject(Cache.MATERIALS, Formatting.Indented);
-            Console.WriteLine(json);
             File.WriteAllText(MaterialPath, json);
             Console.WriteLine("Saved materials!");
-            return SUCCESS;
         }
 
         public static int MaterialAdd(string[] args) {
@@ -95,8 +92,9 @@ namespace ShaderTool.Command {
             MaterialData newMaterial = new MaterialData();
             Cache.MATERIALS.Add(name, newMaterial);
             Console.WriteLine("Added new material {0}, don't forget to use \"material save\"", name);
-            return SUCCESS;
 
+            Save();
+            return SUCCESS;
         }
 
         public static int MaterialRm(string[] args) {
@@ -107,6 +105,7 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
+            Save();
             Console.WriteLine("Material {0} was successfully removed", args[0]);
             return SUCCESS;
 
