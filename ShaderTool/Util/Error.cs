@@ -1,6 +1,6 @@
 ﻿namespace ShaderTool {
     class Error {
-        public const int SUCESS = 0;
+        public const int SUCCESS = 0;
         public const int NOT_ENOUGH_PARAMS = -1;
         public const int WRONG_PARAMS = -2;
         public const int ALREADY_EXIST = -3;

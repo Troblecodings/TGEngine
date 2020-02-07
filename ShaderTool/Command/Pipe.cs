@@ -51,7 +51,7 @@ namespace ShaderTool.Command {
                     Pipe.Descriptors = (Descriptor[])GetDescriptors(Pipe.ShaderNames).Clone();
 
                     File.WriteAllText(Path, JsonConvert.SerializeObject(Pipe, Formatting.Indented));
-                    return SUCESS;
+                    return SUCCESS;
                 }
                 Console.WriteLine("Shader doesn't exist!");
                 return SHADER_DOESNT_EXIST;
@@ -78,7 +78,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine();
                 Array.ForEach(Pipe.Descriptors, Desc => Console.WriteLine(Desc.Binding + ": flag=" + Desc.flag + ", type=" + Desc.Type));
                 Console.WriteLine();
-                return SUCESS;
+                return SUCCESS;
             }
             Console.WriteLine("Pipe doesn't exist! " + Path);
             return SHADER_DOESNT_EXIST;
@@ -124,7 +124,7 @@ namespace ShaderTool.Command {
             File.Create(FileName).Close();
             string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs, descriptors), Formatting.Indented);
             File.WriteAllText(FileName, str);
-            return SUCESS;
+            return SUCCESS;
         }
 
         private static Input[] GetInputs(string Path) {
@@ -186,7 +186,7 @@ namespace ShaderTool.Command {
         // List pipes
         public static int PipeList() {
             Array.ForEach(Directory.GetFiles(Program.CWD, "*Pipe.json"), pth => Console.WriteLine(pth.Replace(Program.CWD + "\\", "").Replace("Pipe.json", "")));
-            return SUCESS;
+            return SUCCESS;
         }
 
         // Delete pipeline
@@ -194,7 +194,7 @@ namespace ShaderTool.Command {
             AsssertNoneNull(args);
             string Name = args[0];
             File.Delete(Program.CWD + "\\" + Name + "Pipe.json");
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int PipeMake() {
@@ -238,7 +238,7 @@ namespace ShaderTool.Command {
             SourceWriter.WriteLine("}");
             SourceWriter.Close();
             HeaderWriter.Close();
-            return SUCESS;
+            return SUCCESS;
         }
 
     }
