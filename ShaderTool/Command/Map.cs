@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
-using Newtonsoft.Json;
 
 namespace ShaderTool.Command {
 

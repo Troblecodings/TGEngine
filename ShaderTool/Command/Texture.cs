@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Newtonsoft.Json;
+using ShaderTool.Util;
+using System;
+using System.IO;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
-using Newtonsoft.Json;
-using System.IO;
-using ShaderTool.Util;
 
-namespace ShaderTool.Command
-{
+namespace ShaderTool.Command {
     class Texture
     {
 
