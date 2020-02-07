@@ -62,7 +62,7 @@ namespace ShaderTool.Command {
             Console.WriteLine(json);
             File.WriteAllText(MaterialPath, json);
             Console.WriteLine("Saved materials!");
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int MaterialAdd(string[] args) {
@@ -88,7 +88,7 @@ namespace ShaderTool.Command {
             MaterialData newMaterial = new MaterialData();
             Cache.MATERIALS.Add(name, newMaterial);
             Console.WriteLine("Added new material {0}, don't forget to use \"material save\"", name);
-            return SUCESS;
+            return SUCCESS;
 
         }
 
@@ -101,7 +101,7 @@ namespace ShaderTool.Command {
             }
 
             Console.WriteLine("Material {0} was successfully removed", args[0]);
-            return SUCESS;
+            return SUCCESS;
 
         }
 
@@ -116,7 +116,7 @@ namespace ShaderTool.Command {
                 }
             }
 
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int MaterialMake() {

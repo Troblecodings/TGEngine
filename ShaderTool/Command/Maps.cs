@@ -32,7 +32,7 @@ namespace ShaderTool.Command
             Stream resourceStream = File.OpenWrite(resourceFile);
             resourceStream.Write(BitConverter.GetBytes(TGR_VERSION));
 
-            return Error.SUCESS;
+            return Error.SUCCESS;
         }
 
     }

@@ -32,12 +32,12 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             Compile(args[0]);
             Make();
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int ShaderList() {
             Array.ForEach(Directory.GetFiles(Program.CWD, "*.glsl"), path => Console.WriteLine(path.Replace(Program.CWD + "\\", "")));
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static void CheckShader() {
@@ -54,12 +54,12 @@ namespace ShaderTool.Command {
             string[] files = Directory.GetFiles(Program.CWD, "*.glsl");
             foreach (string path in files) {
                 int i = Compile(path);
-                if (i != SUCESS) {
+                if (i != SUCCESS) {
                     return i;
                 }
             }
             Make();
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static void Make()
@@ -122,7 +122,7 @@ namespace ShaderTool.Command {
             pr.WaitForExit();
             if (Error)
                 return COMPILER_ERROR;
-            return SUCESS;
+            return SUCCESS;
         }
 
         private static void Pr_OutputDataReceived(object sender, DataReceivedEventArgs e) {
