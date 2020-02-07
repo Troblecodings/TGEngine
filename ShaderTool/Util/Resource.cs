@@ -19,5 +19,6 @@ namespace ShaderTool.Util
     class Cache
     {
         public static Resource PRELOAD = null;
+        public static Dictionary<string, Command.MaterialData> MATERIALS = null;
     }
 }

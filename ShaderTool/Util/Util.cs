@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using static ShaderTool.Error;
 
 namespace ShaderTool.Util {
@@ -28,8 +29,21 @@ namespace ShaderTool.Util {
         public static void AsssertValues(string[] args, int minlen) {
             if (args == null || args.Length < minlen) {
                 Console.WriteLine("Not enough arguments!");
-                if(!Program.console)
+                if (!Program.console)
                     Environment.Exit(NOT_ENOUGH_PARAMS);
+            }
+        }
+
+        public static bool AssertName(string name) {
+            Regex nonAlphaNumericCharacters = new Regex(@"\W");
+            if (name.Length < 2) {
+                Console.WriteLine("Name has to be at least two (2) characters!");
+                return false;
+            } else if (nonAlphaNumericCharacters.IsMatch(name)) {
+                Console.WriteLine("Name can only contain alphanumeric characters!");
+                return false;
+            } else {
+                return true;
             }
         }
     }
