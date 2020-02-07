@@ -7,7 +7,14 @@ using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
+
+    class MaterialData {
+        public float[] color;
+        public uint diffuseTexture;
+    }
+
     class Material {
+
         public static string MaterialPath = Program.ResourcesFolder + @"\Materials.json";
 
         public static int MaterialCommand(string[] args) {
@@ -129,8 +136,4 @@ namespace ShaderTool.Command {
 
     }
 
-    class MaterialData {
-        public float[] color;
-        public uint diffuseTexture;
-    }
 }
