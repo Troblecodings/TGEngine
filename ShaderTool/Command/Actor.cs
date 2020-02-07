@@ -19,7 +19,8 @@ namespace ShaderTool.Command {
                 case "add":
                     return ActorAdd(GetParams(args)); // param 1: name, param 2: material
                 case "rm":
-                    return 0;
+                case "remove":
+                    return ActorRm(GetParams(args));
                 case "make":
                     return 0;
                 case "list":
@@ -33,8 +34,8 @@ namespace ShaderTool.Command {
         public static int ActorAdd(string[] args) {
             AsssertValues(args, 2); // has to be two params, one for name and one for material
 
-            if (!Directory.Exists(Material.ResourcesFolder)) {
-                Directory.CreateDirectory(Material.ResourcesFolder);
+            if (!Directory.Exists(Program.ResourcesFolder)) {
+                Directory.CreateDirectory(Program.ResourcesFolder);
             }
 
             string actorName = args[0];
@@ -44,7 +45,7 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            string path = Material.ResourcesFolder + @"\" + actorName + @"_Actor.json";
+            string path = Program.ResourcesFolder + @"\" + actorName + @"_Actor.json";
 
             Material.Load();
 
@@ -67,11 +68,11 @@ namespace ShaderTool.Command {
             return SUCESS;
         }
 
-        public static int actorRm(string[] args) {
+        public static int ActorRm(string[] args) {
             AsssertValues(args, 1);
 
             string actorName = args[0];
-            string filePath = Material.ResourcesFolder + @"\" + actorName + "_Actor.json";
+            string filePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
 
             if (!File.Exists(filePath)) {
                 Console.WriteLine("Actor {0} was not found", actorName);
@@ -85,7 +86,7 @@ namespace ShaderTool.Command {
 
         public static int ActorList() {
 
-            string[] fileList = Directory.GetFiles(Material.ResourcesFolder);
+            string[] fileList = Directory.GetFiles(Program.ResourcesFolder);
             List<string> filteredList = new List<string>();
 
             if (fileList.Length == 0) {
@@ -113,7 +114,7 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorMake() {
-            // TODO actormake
+            // TODO
             Console.WriteLine("Not implemented yet.");
             return 0;
         }

@@ -120,7 +120,9 @@ namespace ShaderTool.Command {
         }
 
         public static int MaterialMake() {
-            // TODO actormake
+
+            // TODO
+
             Console.WriteLine("Not implemented yet.");
             return 0;
         }
