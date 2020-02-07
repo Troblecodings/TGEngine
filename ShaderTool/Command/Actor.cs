@@ -65,7 +65,7 @@ namespace ShaderTool.Command {
 
             File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Formatting.Indented));
             Console.WriteLine("Added new actor {0}", actorName);
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int ActorRm(string[] args) {
@@ -80,7 +80,7 @@ namespace ShaderTool.Command {
             } else {
                 File.Delete(filePath);
                 Console.WriteLine("Actor {0} was deleted", actorName);
-                return SUCESS;
+                return SUCCESS;
             }
         }
 
@@ -110,7 +110,7 @@ namespace ShaderTool.Command {
                 
             }
 
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int ActorMake() {

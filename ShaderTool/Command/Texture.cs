@@ -80,7 +80,7 @@ namespace ShaderTool.Command
                 Cache.PRELOAD.texturs.Add(filename, texture);
             }
             Flush();
-            return SUCESS;
+            return SUCCESS;
         }
 
         public static int Add(string[] args)
