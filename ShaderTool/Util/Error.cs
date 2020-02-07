@@ -8,5 +8,6 @@
         public const int VERTEX_INPUT_ERR = -5;
         public const int SHADER_DOESNT_EXIST = -6;
         public const int COMPILER_ERROR = -7;
+        public const int OVERFLOW = -8;
     }
 }
