@@ -15,8 +15,9 @@ IndexBuffer indexBuffer;
 
 void initEngine() {
 	tge::nio::initFileSystem();
-	tgeproperties = new prop::Properties();
-	prop::readProperties("Properties.xml", tgeproperties);
+#ifndef TGE_NO_PROPERTY_FILE
+	tgeproperties = tge::pro::readProperties("Properties.xml");
+#endif // !TGE_NO_PROPERTY_FILE
 
 	createWindowClass();
 	createWindow();
@@ -98,16 +99,16 @@ void startTGEngine() {
 
 			Input input = {};
 			if (1 & states) {
-				input.y1 = 0.01;
+				input.y1 = 0.01f;
 			}
 			if (2 & states) {
-				input.y1 = -0.01;
+				input.y1 = -0.01f;
 			}
 			if (4 & states) {
-				input.x1 = 0.01;
+				input.x1 = 0.01f;
 			}
 			if (8 & states) {
-				input.x1 = -0.01;
+				input.x1 = -0.01f;
 			}
 			playercontroller(&input);
 		}

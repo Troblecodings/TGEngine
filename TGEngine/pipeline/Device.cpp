@@ -98,7 +98,7 @@ void createDevice() {
 	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
 	deviceCreateInfo.enabledLayerCount = 0;
 	deviceCreateInfo.ppEnabledLayerNames = nullptr;
-	deviceCreateInfo.enabledExtensionCount = enabledExtensionNames.size();
+	deviceCreateInfo.enabledExtensionCount = (uint32_t)enabledExtensionNames.size();
 	deviceCreateInfo.ppEnabledExtensionNames = enabledExtensionNames.data();
 	deviceCreateInfo.pEnabledFeatures = &deviceFeaturesEnable;
 	CHECKFAIL(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));

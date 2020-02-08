@@ -9,8 +9,8 @@ void createInstance() {
 	VkApplicationInfo applicationInfo;
 	applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	applicationInfo.pNext = nullptr;
-	applicationInfo.pApplicationName = tgeproperties->getStringOrDefault("app_name", "TGEngine");
-	applicationInfo.applicationVersion = (uint32_t)tgeproperties->getInt("version");
+	applicationInfo.pApplicationName = tgeproperties.getStringOrDefault("app_name", "TGEngine");
+	applicationInfo.applicationVersion = (uint32_t)tgeproperties.getInt("version");
 	applicationInfo.pEngineName = "TGEngine";
 	applicationInfo.engineVersion = TGE_VERSION;
 	applicationInfo.apiVersion = VK_API_VERSION_1_0;
