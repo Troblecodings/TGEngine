@@ -39,7 +39,7 @@ void IndexBuffer::addIndex(uint32_t index) {
 
 void IndexBuffer::addAll(void* data, size_t points) {
 	memcpy((uint32_t*)this->memory + this->indexCount, data, points * sizeof(uint32_t));
-	this->indexCount += points;
+	this->indexCount += (uint32_t)points;
 }
 
 

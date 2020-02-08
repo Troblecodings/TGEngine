@@ -30,24 +30,6 @@ namespace tge {
 			pos.y /= 0.002f;
 			pos.x /= gmc::multiplier * 0.002f;
 			while (*text) {
-				stbtt_aligned_quad quad;
-				//stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *text, &pos.x, &pos.y, &quad, 0);
-				uint32_t idcount = (uint32_t)buffer->pointCount;
-				quad.x0 *= gmc::multiplier * 0.002f;
-				quad.x1 *= gmc::multiplier * 0.002f;
-				quad.y0 *= 0.002f;
-				quad.y1 *= 0.002f;
-				buffer->add({ quad.x0, quad.y0 })->add({ quad.s0, quad.t0 })->add(color)->endVertex();
-				buffer->add({ quad.x1, quad.y0 })->add({ quad.s1, quad.t0 })->add(color)->endVertex();
-				buffer->add({ quad.x1, quad.y1 })->add({ quad.s1, quad.t1 })->add(color)->endVertex();
-				buffer->add({ quad.x0, quad.y1 })->add({ quad.s0, quad.t1 })->add(color)->endVertex();
-
-				ibuffer->addIndex(idcount);
-				ibuffer->addIndex(idcount + 1);
-				ibuffer->addIndex(idcount + 2);
-				ibuffer->addIndex(idcount);
-				ibuffer->addIndex(idcount + 2);
-				ibuffer->addIndex(idcount + 3);
 				text++;
 			}
 		}
@@ -59,7 +41,7 @@ namespace tge {
 		glm::vec2 Font::getExtent(char* chr) {
 			glm::vec2 pos = glm::vec2(0, 0);
 			while (*chr) {
-				stbtt_aligned_quad quad;
+				//stbtt_aligned_quad quad;
 				//stbtt_GetBakedQuad(this->cdata, this->texture->getWidth(), this->texture->getHeight(), *chr, &pos.x, &pos.y, &quad, 0);
 				chr++;
 			}

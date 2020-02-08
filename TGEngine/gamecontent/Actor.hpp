@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <iostream>
 #include "../Error.hpp"
 #include "../util/VectorUtil.hpp"

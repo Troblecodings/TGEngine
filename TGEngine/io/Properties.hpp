@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include <iostream>
 
-namespace prop {
-
-	using namespace std;
+namespace tge::pro {
 
 	enum TagType {
 		BOOLEAN, INT, FLOAT, STRING, NaN
@@ -18,23 +16,33 @@ namespace prop {
 	/*
 	 * Property storage -> only for tiny bits of data
 	 */
-	class Properties {
-	public:
+	struct Properties {
+		//name vectors
+		std::vector<char*> strings;
+		std::vector<bool>  bools;
+		std::vector<int>   ints;
+		std::vector<float> floats;
+
+		std::vector<const char*> stringNames;
+		std::vector<const char*> boolNames;
+		std::vector<const char*> intNames;
+		std::vector<const char*> floatNames;
+
 		/*
 		 * Gets the value or returns 0, false or an empty string
 		 */
 		char* getString(const char* name);
-		bool getBoolean(const char* name);
+		bool  getBoolean(const char* name);
 		float getFloat(const char* name);
-		int getInt(const char* name);
+		int   getInt(const char* name);
 
 		/*
 		 * Gets the value or returns the default in case it can't find the name
 		 */
 		char* getStringOrDefault(const char* name, char* def);
-		bool getBooleanOrDefault(const char* name, bool def);
+		bool  getBooleanOrDefault(const char* name, bool def);
 		float getFloatOrDefault(const char* name, float def);
-		int getIntOrDefault(const char* name, int def);
+		int   getIntOrDefault(const char* name, int def);
 
 		/*
 		 * Add values to the tgeproperties
@@ -43,13 +51,6 @@ namespace prop {
 		void addBoolean(const char* name, bool value);
 		void addFloat(const char* name, float value);
 		void addInt(const char* name, int value);
-
-	private:
-		//name vectors
-		map<std::string, char*> strings;
-		map<std::string, bool> bools;
-		map<std::string, int> ints;
-		map<std::string, float> floats;
 	};
 
 	/*
@@ -62,5 +63,5 @@ namespace prop {
 	*    <float name="testfloat" value="0.9"/>
 	*  </xml>
 	*/
-	void readProperties(char* path, Properties* prop);
+	Properties readProperties(char* path);
 }
