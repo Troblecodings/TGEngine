@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace ShaderTool.Util
-{
-  
+namespace ShaderTool.Util {
+
     class TextureDesc
     {
         public long offset = 0;
