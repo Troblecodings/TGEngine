@@ -78,7 +78,6 @@ namespace ShaderTool.Command {
             }
 
             map.materialNames = newMaterialNames.ToArray();
-            Console.WriteLine("Updated material names");
         }
 
         public static void AddActors(MapData map, string[] actorsToAdd) {
