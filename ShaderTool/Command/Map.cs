@@ -185,7 +185,7 @@ namespace ShaderTool.Command {
             List<string> filteredList = new List<string>();
 
             if (fileList.Length == 0) {
-                Console.WriteLine("No actors added yet.");
+                Console.WriteLine("No content added yet.");
             } else {
                 foreach (string filePath in fileList) {
                     if (Path.GetFileName(filePath).EndsWith(".json")
