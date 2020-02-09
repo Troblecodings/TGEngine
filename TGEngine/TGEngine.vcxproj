@@ -33,6 +33,7 @@
     <ClInclude Include="io\Font.hpp" />
     <ClInclude Include="io\Mouse.hpp" />
     <ClInclude Include="io\Properties.hpp" />
+    <ClInclude Include="io\Resource.hpp" />
     <ClInclude Include="pipeline\buffer\StagingBuffer.hpp" />
     <ClInclude Include="pipeline\CommandBuffer.hpp" />
     <ClInclude Include="pipeline\DepthStencil.hpp" />
@@ -82,6 +83,7 @@
     <ClCompile Include="io\Font.cpp" />
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="io\Properties.cpp" />
+    <ClCompile Include="io\Resource.cpp" />
     <ClCompile Include="pipeline\buffer\StagingBuffer.cpp" />
     <ClCompile Include="pipeline\CommandBuffer.cpp" />
     <ClCompile Include="pipeline\DepthStencil.cpp" />

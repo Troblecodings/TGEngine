@@ -225,6 +225,9 @@
     <ClInclude Include="Error.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="io\Resource.hpp">
+      <Filter>Headerdateien\io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -364,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="gamecontent\PlayerController.cpp">
       <Filter>Quelldateien\gamecontent</Filter>
+    </ClCompile>
+    <ClCompile Include="io\Resource.cpp">
+      <Filter>Quelldateien\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
