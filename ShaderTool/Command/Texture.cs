@@ -29,7 +29,7 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
         }
 
-        private static void Load()
+        public static void Load()
         {
             string path = Program.CWD + "/Resources.json";
             if (Cache.PRELOAD == null) {

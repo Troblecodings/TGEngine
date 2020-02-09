@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ShaderTool.Util;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
@@ -11,7 +12,7 @@ namespace ShaderTool.Command {
     class MapData {
         public string[] actorNames;
         public string[] materialNames;
-        public string[] textures;
+        public string[] textureNames;
     }
 
     class Map {
@@ -63,6 +64,7 @@ namespace ShaderTool.Command {
         public static void UpdateMaterials(MapData map) {
 
             List<string> newMaterialNames = new List<string>();
+            List<string> newTextureNames = new List<string>();
 
             foreach (string actorName in map.actorNames) {
 
@@ -75,9 +77,19 @@ namespace ShaderTool.Command {
                     newMaterialNames.Add(materialName);
                 }
 
+                Material.Load();
+                uint textureID = Cache.MATERIALS[materialName].diffuseTexture;
+
+                Texture.Load();
+                string textureName = Cache.PRELOAD.texturs.Keys.ToArray()[textureID];
+                if (!newTextureNames.Contains(textureName) && textureName != null)
+                {
+                    newTextureNames.Add(textureName);
+                }
             }
 
             map.materialNames = newMaterialNames.ToArray();
+            map.textureNames = newTextureNames.ToArray();
         }
 
         public static void AddActors(MapData map, string[] actorsToAdd) {
