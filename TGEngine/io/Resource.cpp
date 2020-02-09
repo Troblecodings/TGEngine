@@ -1,7 +1,5 @@
 #include "Resource.hpp"
-#include "../pipeline/buffer/Texturebuffer.hpp"
 #include "../io/Files.hpp"
-#include "../gamecontent/Material.hpp"
 #include "../gamecontent/Actor.hpp"
 
 using namespace tge::nio;
@@ -14,12 +12,12 @@ Map loadResourceFile(char* name) {
 	uint32_t header = 0;
 	fread(&header, sizeof(uint32_t), 1, file);
 
+	Map map;
+
 	if (header != TGR_VERSION_1) {
 		OUT_LV_DEBUG("Header does not match with the parser version!")
-		return;
+		return map;
 	}
-
-	Map map;
 
 	if (feof(file) != 0) {
 		OUT_LV_DEBUG("File corrupted!")
@@ -78,12 +76,12 @@ Map loadResourceFile(char* name) {
 		ActorInputInfo actorInfo;
 		fread(&actorInfo, sizeof(ActorInputInfo), 1, file);
 
-		actorInfo.pIndices = new uint32_t[actorInfo.indexCount];
+		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
 		fread(&actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
 		uint32_t len = blocklength - (sizeof(ActorInputInfo) + sizeof(uint32_t) * actorInfo.indexCount);
 
-		actorInfo.pVertices = new uint8_t[len];
+		actorInfo.pVertices = new uint8_t[len]; // Object lifetime?
 		fread(actorInfo.pVertices, sizeof(uint8_t), len, file);
 
 		actors.push_back(actorInfo);
