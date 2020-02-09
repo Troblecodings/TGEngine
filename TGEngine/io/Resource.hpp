@@ -4,4 +4,9 @@
 
 #define TGR_VERSION_1 1
 
-void loadResourceFile(char* name);
+struct Map {
+	Texture* textures;
+	Material* materials;
+};
+
+Map loadResourceFile(char* name);
