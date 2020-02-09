@@ -26,6 +26,8 @@ namespace ShaderTool {
                     return Texture.TextureCommand(arg);
                 case "actor":
                     return Actor.ActorCommand(arg);
+                case "map":
+                    return Map.MapCommand(arg);
                 case "material":
                     return Material.MaterialCommand(arg);
                 case "exit":
