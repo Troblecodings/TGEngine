@@ -194,7 +194,7 @@ namespace ShaderTool.Command {
                 string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tex";
                 if (!File.Exists(textureFilePath))
                 {
-                    Console.WriteLine("{0} is not a texture.", mapTextureName);
+                    Console.WriteLine("{0} is not a texture.", mapTextureName[i]);
                     return WRONG_PARAMS;
                 }
                 byte[] textureData = File.ReadAllBytes(textureFilePath);
