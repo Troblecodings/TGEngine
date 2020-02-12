@@ -189,7 +189,7 @@ namespace ShaderTool.Command {
             // TODO
             MapData mapData = Load(mapName);
             string[] mapTextureName = mapData.textureNames;
-            for (int i = 0; mapTextureName.Length < 0; i--)
+            for (int i = 0; i < mapTextureName.Length; i++)
             {
                 string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tex";
                 if (!File.Exists(textureFilePath))
