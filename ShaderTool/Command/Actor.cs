@@ -16,7 +16,8 @@ namespace ShaderTool.Command {
         public float[] vertices;
         public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
         public uint indexCount;
-        public ushort vertexCount;
+        public uint vertexCount;
+        public byte layerId;
     }
 
     class Actor {
@@ -30,8 +31,6 @@ namespace ShaderTool.Command {
                 case "rm":
                 case "remove":
                     return ActorRm(GetParams(args));
-                case "make":
-                    return 0;
                 case "list":
                     return ActorList();
             }
@@ -121,13 +120,6 @@ namespace ShaderTool.Command {
 
             return SUCCESS;
         }
-
-        public static int ActorMake() {
-            // TODO
-            Console.WriteLine("Not implemented yet.");
-            return 0;
-        }
-
     }
 
 }
