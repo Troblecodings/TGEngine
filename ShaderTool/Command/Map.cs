@@ -223,7 +223,7 @@ namespace ShaderTool.Command {
 
                 Material.Load();
 
-                // Find the material ID form the material name
+                // Find the material ID from the material name
                 string[] materialNames = Cache.MATERIALS.Keys.ToArray();
                 byte id;
                 for (id = 0; id < Cache.MATERIALS.Keys.Count; id++)
