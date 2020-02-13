@@ -82,8 +82,7 @@ namespace ShaderTool.Command {
 
                 Texture.Load();
                 string textureName = Cache.PRELOAD.texturs.Keys.ToArray()[textureID];
-                if (!newTextureNames.Contains(textureName) && textureName != null)
-                {
+                if (!newTextureNames.Contains(textureName) && textureName != null) {
                     newTextureNames.Add(textureName);
                 }
             }
@@ -188,11 +187,9 @@ namespace ShaderTool.Command {
 
             MapData mapData = Load(mapName);
             string[] mapTextureName = mapData.textureNames;
-            for (int i = 0; i < mapTextureName.Length; i++)
-            {
+            for (int i = 0; i < mapTextureName.Length; i++) {
                 string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tex";
-                if (!File.Exists(textureFilePath))
-                {
+                if (!File.Exists(textureFilePath)) {
                     Console.WriteLine("{0} is not a texture.", mapTextureName[i]);
                     return WRONG_PARAMS;
                 }
@@ -202,21 +199,17 @@ namespace ShaderTool.Command {
             }
 
             // Write the data names into the ressource file
-            foreach(string actorName in mapData.actorNames)
-            {
+            foreach (string actorName in mapData.actorNames) {
                 string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
-                if(!File.Exists(actorFilePath))
-                {
+                if (!File.Exists(actorFilePath)) {
                     Console.WriteLine("{0} is not a valid actor!", actorName);
                     return WRONG_PARAMS;
                 }
 
                 ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
                 // Write the local transform as a 4x4 matrix matrix into the file
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int y = 0; y < 4; y++)
-                    {
+                for (int i = 0; i < 4; i++) {
+                    for (int y = 0; y < 4; y++) {
                         resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[i][y]));
                     }
                 }
@@ -226,8 +219,7 @@ namespace ShaderTool.Command {
                 // Find the material ID from the material name
                 string[] materialNames = Cache.MATERIALS.Keys.ToArray();
                 byte id;
-                for (id = 0; id < Cache.MATERIALS.Keys.Count; id++)
-                {
+                for (id = 0; id < Cache.MATERIALS.Keys.Count; id++) {
                     if (materialNames[id] == actorData.materialName)
                         break;
                 }

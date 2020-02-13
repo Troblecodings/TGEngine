@@ -134,14 +134,16 @@ namespace ShaderTool.Command {
 
             Regex rx = new Regex("[^0-9]");
             // Processing inputs
-            Array.ForEach(InputLines, line => {
+            Array.ForEach(InputLines, line =>
+            {
                 uint Id = 0;
                 string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
                 if (!UInt32.TryParse(Strid, out Id)) {
                     Console.WriteLine("Vertex input id not found");
                     Environment.Exit(VERTEX_INPUT_ERR);
                 }
-                Inputs[Id] = new Input {
+                Inputs[Id] = new Input
+                {
                     Id = Id
                 };
 
@@ -165,14 +167,16 @@ namespace ShaderTool.Command {
 
                 Regex rx = new Regex("[^0-9]");
                 // Processing desciptors
-                Array.ForEach(DesciptorLines, line => {
+                Array.ForEach(DesciptorLines, line =>
+                {
                     uint Id = 0;
                     string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
                     if (!UInt32.TryParse(Strid, out Id)) {
                         Console.WriteLine("Descriptor id not found!");
                         Environment.Exit(VERTEX_INPUT_ERR);
                     }
-                    Descriptor desc = new Descriptor {
+                    Descriptor desc = new Descriptor
+                    {
                         Binding = Id,
                         Type = VulkanLookups.GetTypeFromLine(line),
                         flag = VulkanLookups.GetFlagBitsAfterName(path)

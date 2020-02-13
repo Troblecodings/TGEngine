@@ -66,7 +66,8 @@ namespace ShaderTool.Command {
                 File.Create(path).Close();
             }
 
-            ActorData newActor = new ActorData {
+            ActorData newActor = new ActorData
+            {
                 name = actorName,
                 materialName = materialName
             };
@@ -101,7 +102,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine("No actors added yet.");
             } else {
                 Regex regexFileName = new Regex(@"\\(\w+)_Actor\.json");
-                
+
                 foreach (string filePath in fileList) {
                     if (regexFileName.IsMatch(filePath)) {
                         string actorName = regexFileName.Match(filePath).Groups[1].Value;
@@ -115,7 +116,7 @@ namespace ShaderTool.Command {
                     Console.WriteLine("Count: {0}", filteredList.Count);
                     filteredList.ForEach(name => Console.WriteLine(" - " + name));
                 }
-                
+
             }
 
             return SUCCESS;
