@@ -201,6 +201,9 @@ namespace ShaderTool.Command {
                 resourceStream.Write(textureData);
             }
 
+            Material.Load();
+            string[] materialNames = Cache.MATERIALS.Keys.ToArray();
+
             // Write the data names into the ressource file
             foreach (string actorName in mapData.actorNames) {
                 string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
@@ -217,10 +220,7 @@ namespace ShaderTool.Command {
                     }
                 }
 
-                Material.Load();
-
                 // Find the material ID from the material name
-                string[] materialNames = Cache.MATERIALS.Keys.ToArray();
                 byte id;
                 for (id = 0; id < Cache.MATERIALS.Keys.Count; id++) {
                     if (materialNames[id] == actorData.materialName)
@@ -253,7 +253,17 @@ namespace ShaderTool.Command {
                     resourceStream.Write(BitConverter.GetBytes(vertex));
             }
 
-            // Todo Material @Jimmy
+            // Material.Load() was already called before so there's no need to call it again
+
+            foreach (string materialName in mapData.materialNames) {
+
+                // Material not found
+                if (!Cache.MATERIALS.ContainsKey(materialName)) {
+                    Console.WriteLine("Material {0} was not found!", materialName);
+                    return WRONG_PARAMS;
+                }
+
+            }
 
 
             return SUCCESS;
