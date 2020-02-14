@@ -230,7 +230,7 @@ namespace ShaderTool.Command {
                 // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
                 resourceStream.WriteByte(actorData.layerId);
 
-                // Write the index cound so that we now how much indicies are in the actor
+                // Write the index cound so that we know how much indicies are in the actor
                 resourceStream.Write(BitConverter.GetBytes(actorData.indexCount));
                 // Write 0 because we don't want to supply the pointer -> Nullpointer
                 // reserved for further use
