@@ -6,15 +6,12 @@ using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
-    class Texture
-    {
+    class Texture {
 
-        public static int TextureCommand(string[] args)
-        {
+        public static int TextureCommand(string[] args) {
             AsssertNoneNull(args);
 
-            switch (args[0])
-            {
+            switch (args[0]) {
                 case "add":
                     return Add(GetParams(args));
                 case "rm":
@@ -29,8 +26,7 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
         }
 
-        public static void Load()
-        {
+        public static void Load() {
             string path = Program.CWD + "/Resources.json";
             if (Cache.PRELOAD == null) {
                 if (File.Exists(path))
@@ -40,25 +36,20 @@ namespace ShaderTool.Command {
             }
         }
 
-        private static void Flush()
-        {
+        private static void Flush() {
             File.WriteAllText(Program.CWD + "/Resources.json", JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
         }
 
-        public static int Make()
-        {
-            
+        public static int Make() {
+
             return 0;
         }
 
-        public static int Import(string[] args)
-        {
+        public static int Import(string[] args) {
             AsssertValues(args, 1);
-            foreach (string vr in args)
-            {
+            foreach (string vr in args) {
                 Console.WriteLine("Importing: " + vr);
-                if (!File.Exists(vr))
-                {
+                if (!File.Exists(vr)) {
                     Console.WriteLine("File " + vr + " could not be found!");
                     return WRONG_PARAMS;
                 }
@@ -80,8 +71,7 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        public static int Add(string[] args)
-        {
+        public static int Add(string[] args) {
             AsssertValues(args, 1);
             Load();
             if (Cache.PRELOAD.texturs.ContainsKey(args[0]))
@@ -91,8 +81,7 @@ namespace ShaderTool.Command {
             return 0;
         }
 
-        public static int Rm(string[] args)
-        {
+        public static int Rm(string[] args) {
             AsssertValues(args, 1);
             Load();
             if (!Cache.PRELOAD.texturs.Remove(args[0]))
@@ -101,12 +90,10 @@ namespace ShaderTool.Command {
             return 0;
         }
 
-        public static int List()
-        {
+        public static int List() {
             Load();
             var enumerator = Cache.PRELOAD.texturs.Keys.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
+            while (enumerator.MoveNext()) {
                 Console.WriteLine(enumerator.Current);
             }
             return 0;

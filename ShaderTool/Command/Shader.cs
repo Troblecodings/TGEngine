@@ -26,8 +26,7 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
         }
 
-        public static int ShaderCompile(string[] args)
-        {
+        public static int ShaderCompile(string[] args) {
             if (args.Length != 1)
                 return WRONG_PARAMS;
             Compile(args[0]);
@@ -62,8 +61,7 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        public static void Make()
-        {
+        public static void Make() {
             string[] files = Directory.GetFiles(Program.CWD, "*.spv");
 
             string dataHpp = Program.CWD + "\\ShaderData.hpp";
@@ -79,8 +77,7 @@ namespace ShaderTool.Command {
 
             shaderDataCPP.WriteLine("#include \"ShaderData.hpp\"\r\n");
             shaderDataHPP.WriteLine("#pragma once\r\n#include \"../pipeline/ShaderCreation.hpp\"\r\nvoid initShader();\r\n");
-            foreach (string path in files)
-            {
+            foreach (string path in files) {
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
                 shaderDataHPP.WriteLine("extern unsigned char " + name + "Module[];\r\nextern VkPipelineShaderStageCreateInfo " + name + ";");
                 shaderDataCPP.Write("VkPipelineShaderStageCreateInfo " + name + ";\r\nunsigned char " + name + "Module[] = { ");
@@ -91,8 +88,7 @@ namespace ShaderTool.Command {
                 shaderDataCPP.Flush();
             }
             shaderDataCPP.WriteLine("\r\nvoid initShader() {");
-            foreach (string path in files)
-            {
+            foreach (string path in files) {
                 FileInfo fileInfo = new FileInfo(path);
                 long length = fileInfo.Length;
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
@@ -110,7 +106,7 @@ namespace ShaderTool.Command {
             Error = false;
             Process pr = new Process();
             pr.StartInfo.FileName = Path + "Bin\\glslangValidator.exe";
-            pr.StartInfo.Arguments = "-V -o " + path.Replace(".glsl", "") + ".spv -S " + (path.Contains("Vertex") ? "vert":"frag") + " " + path;
+            pr.StartInfo.Arguments = "-V -o " + path.Replace(".glsl", "") + ".spv -S " + (path.Contains("Vertex") ? "vert" : "frag") + " " + path;
             pr.StartInfo.UseShellExecute = false;
             pr.StartInfo.RedirectStandardOutput = true;
             pr.StartInfo.RedirectStandardError = true;
