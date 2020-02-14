@@ -207,7 +207,7 @@ namespace ShaderTool.Command {
                 }
 
                 ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
-                // Write the local transform as a 4x4 matrix matrix into the file
+                // Write the local transform as a 4x4 matrix into the file
                 for (int i = 0; i < 4; i++) {
                     for (int y = 0; y < 4; y++) {
                         resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[i][y]));
