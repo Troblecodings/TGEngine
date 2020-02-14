@@ -27,13 +27,11 @@ namespace ShaderTool.Command {
                 case "rm":
                 case "remove":
                     return MaterialRm(GetParams(args));
-                case "make":
-                    return MaterialMake();
                 case "list":
                     return MaterialList();
             }
 
-            Console.WriteLine("Wrong parameters! Must be save/add/rm/make/list!");
+            Console.WriteLine("Wrong parameters! Must be save/add/rm/list!");
             return WRONG_PARAMS;
 
         }
@@ -123,14 +121,6 @@ namespace ShaderTool.Command {
             }
 
             return SUCCESS;
-        }
-
-        public static int MaterialMake() {
-
-            // TODO
-
-            Console.WriteLine("Not implemented yet.");
-            return 0;
         }
 
     }
