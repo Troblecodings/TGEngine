@@ -82,8 +82,7 @@ namespace ShaderTool.Command {
 
                 Texture.Load();
                 string textureName = Cache.PRELOAD.texturs.Keys.ToArray()[textureID];
-                if (!newTextureNames.Contains(textureName) && textureName != null)
-                {
+                if (!newTextureNames.Contains(textureName) && textureName != null) {
                     newTextureNames.Add(textureName);
                 }
             }
@@ -189,14 +188,15 @@ namespace ShaderTool.Command {
             // TODO
             MapData mapData = Load(mapName);
             string[] mapTextureName = mapData.textureNames;
-            for (int i = 0; i < mapTextureName.Length; i++)
-            {
-                string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tex";
-                if (!File.Exists(textureFilePath))
-                {
+            for (int i = 0; i < mapTextureName.Length; i++) {
+
+                string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tgx";
+
+                if (!File.Exists(textureFilePath)) {
                     Console.WriteLine("{0} is not a texture.", mapTextureName[i]);
                     return WRONG_PARAMS;
                 }
+
                 byte[] textureData = File.ReadAllBytes(textureFilePath);
                 resourceStream.Write(BitConverter.GetBytes(textureData.Length));
                 resourceStream.Write(textureData);
