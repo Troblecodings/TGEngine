@@ -191,7 +191,6 @@ namespace ShaderTool.Command {
 
             Material.Load();
 
-
             int textureWriteStatus = AddTexturesToResource(resourceStream, mapData);
             if (textureWriteStatus != SUCCESS)
                 return textureWriteStatus;
@@ -289,63 +288,10 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
-
-            string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
-            // Write the data names into the ressource file
-            foreach (string actorName in mapData.actorNames) {
-                string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
-                if (!File.Exists(actorFilePath)) {
-                    Console.WriteLine("{0} is not a valid actor!", actorName);
-                    return WRONG_PARAMS;
-                }
-
-                ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
-                // Write the local transform as a 4x4 matrix into the file
-                for (int i = 0; i < 4; i++) {
-                    for (int y = 0; y < 4; y++) {
-                        resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[i][y]));
-                    }
-                }
-
-                // Find the material ID from the material name
-                byte id;
-                for (id = 0; id < Cache.MATERIALS.Keys.Count; id++) {
-                    if (allMaterialNames[id] == actorData.materialName)
-                        break;
-                }
-
-                // Just take the last material if none was supplied
-                // We don't want to have to much error handling
-                resourceStream.WriteByte(id);
-                // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
-                resourceStream.WriteByte(actorData.layerId);
-
-                // Write the index cound so that we know how much indicies are in the actor
-                resourceStream.Write(BitConverter.GetBytes(actorData.indexCount));
-                // Write 0 because we don't want to supply the pointer -> Nullpointer
-                // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0l));
-                // Write the amount of vertexpoints into the file
-                resourceStream.Write(BitConverter.GetBytes(actorData.vertexCount));
-                // Write 0 because we don't want to supply the pointer -> Nullpointer
-                // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0l));
-
-                // Write all indicies to file
-                foreach (int index in actorData.indices)
-                    resourceStream.Write(BitConverter.GetBytes(index));
-
-                // Write all vertecies to the file
-                foreach (float vertex in actorData.vertices)
-                    resourceStream.Write(BitConverter.GetBytes(vertex));
-            }
-
-            return SUCCESS;
-        }
-
         private static int AddTexturesToResource(Stream resourceStream, MapData mapData) {
+
             string[] mapTextureName = mapData.textureNames;
+
             for (int i = 0; i < mapTextureName.Length; i++) {
 
                 string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tgx";
@@ -358,12 +304,77 @@ namespace ShaderTool.Command {
                 byte[] textureData = File.ReadAllBytes(textureFilePath);
                 resourceStream.Write(BitConverter.GetBytes(textureData.Length));
                 resourceStream.Write(textureData);
+
             }
 
             return SUCCESS;
         }
 
+        private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
+
+            string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
+
+            // Write the data names into the resource file
+            foreach (string actorName in mapData.actorNames) {
+
+                string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
+
+                if (!File.Exists(actorFilePath)) {
+                    Console.WriteLine("{0} is not a valid actor!", actorName);
+                    return WRONG_PARAMS;
+                }
+
+                ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
+
+                // Write the local transform as a 4x4 matrix into the file
+                for (int i = 0; i < 4; i++)
+                    for (int y = 0; y < 4; y++)
+                        resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[i][y]));
+
+                // Find the material ID from the material name
+                byte id;
+
+                for (id = 0; id < Cache.MATERIALS.Keys.Count; id++)
+                    if (allMaterialNames[id] == actorData.materialName)
+                        break;
+
+                // Just take the last material in case none was supplied
+                // We can avoid excessive error handling that way
+                resourceStream.WriteByte(id);
+
+                // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
+                resourceStream.WriteByte(actorData.layerId);
+
+                // Write the index count so that we know how many indices are in the actor
+                resourceStream.Write(BitConverter.GetBytes(actorData.indexCount));
+
+                // Write 0, because we don't want to supply the pointer -> Nullpointer
+                // reserved for further use
+                resourceStream.Write(BitConverter.GetBytes(0l));
+
+                // Write the amount of vertex points into the file
+                resourceStream.Write(BitConverter.GetBytes(actorData.vertexCount));
+
+                // Write 0, because we don't want to supply the pointer -> Nullpointer
+                // reserved for further use
+                resourceStream.Write(BitConverter.GetBytes(0l));
+
+                // Write all indices to file
+                foreach (int index in actorData.indices)
+                    resourceStream.Write(BitConverter.GetBytes(index));
+
+                // Write all vertices to the file
+                foreach (float vertex in actorData.vertices)
+                    resourceStream.Write(BitConverter.GetBytes(vertex));
+
+            }
+
+            return SUCCESS;
+
+        }
+
         private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
+
             foreach (string materialName in mapData.materialNames) {
 
                 // Material not found
@@ -386,8 +397,8 @@ namespace ShaderTool.Command {
 
             }
 
-
             return SUCCESS;
+
         }
 
     }
