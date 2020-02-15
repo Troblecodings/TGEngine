@@ -292,14 +292,15 @@ namespace ShaderTool.Command {
 
         private static int AddTexturesToResource(Stream resourceStream, MapData mapData) {
 
-            string[] mapTextureName = mapData.textureNames;
+            string[] mapTextureNames = mapData.textureNames;
 
-            for (int i = 0; i < mapTextureName.Length; i++) {
+            // Using a for-loop with index would break if no textures are added to the map (mapData.textureNames == null)
+            foreach (string mapTextureName in mapTextureNames) {
 
-                string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName[i] + ".tgx";
+                string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName + ".tgx";
 
                 if (!File.Exists(textureFilePath)) {
-                    Console.WriteLine("{0} is not a texture.", mapTextureName[i]);
+                    Console.WriteLine("{0} is not a texture.", mapTextureName);
                     return WRONG_PARAMS;
                 }
 
