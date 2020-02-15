@@ -203,6 +203,8 @@ namespace ShaderTool.Command {
             if (materialWriteStatus != SUCCESS)
                 return materialWriteStatus;
 
+            // TODO: Further testing
+
             return SUCCESS;
         }
 
