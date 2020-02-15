@@ -174,8 +174,10 @@ namespace ShaderTool.Command {
             AsssertNoneNull(args);
 
             string mapName = args[0];
+            string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
             string resourceFilePath = Program.ResourcesFolder + "\\" + mapName + ".tgr";
-            if (!File.Exists(resourceFilePath)) {
+
+            if (!File.Exists(mapFilePath)) {
                 Console.WriteLine("{0} is not a map.", mapName);
                 return WRONG_PARAMS;
             }
@@ -188,13 +190,13 @@ namespace ShaderTool.Command {
             MapData mapData = Load(mapName);
 
             Material.Load();
-            string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
+
 
             int textureWriteStatus = AddTexturesToResource(resourceStream, mapData);
             if (textureWriteStatus != SUCCESS)
                 return textureWriteStatus;
 
-            int actorWriteStatus = AddActorsToResource(resourceStream, mapData, allMaterialNames);
+            int actorWriteStatus = AddActorsToResource(resourceStream, mapData);
             if (actorWriteStatus != SUCCESS)
                 return actorWriteStatus;
 
@@ -204,34 +206,6 @@ namespace ShaderTool.Command {
 
             return SUCCESS;
         }
-
-        private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
-            foreach (string materialName in mapData.materialNames) {
-
-                // Material not found
-                if (!Cache.MATERIALS.ContainsKey(materialName)
-                  || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
-
-                    Console.WriteLine("Material {0} was not found!", materialName);
-                    return WRONG_PARAMS;
-
-                }
-
-                MaterialData materialData = Cache.MATERIALS[materialName];
-
-                // Write color to file, provided as an R,G,B,A float array
-                foreach (float value in materialData.color)
-                    resourceStream.Write(BitConverter.GetBytes(value));
-
-                // Write diffuse texture to file
-                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
-
-            }
-
-
-            return SUCCESS;
-        }
-
 
         public static int MapList() {
             string[] fileList = Directory.GetFiles(Program.ResourcesFolder);
@@ -315,7 +289,9 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        private static int AddActorsToResource(Stream resourceStream, MapData mapData, string[] materialNames) {
+        private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
+
+            string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
             // Write the data names into the ressource file
             foreach (string actorName in mapData.actorNames) {
                 string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
@@ -335,7 +311,7 @@ namespace ShaderTool.Command {
                 // Find the material ID from the material name
                 byte id;
                 for (id = 0; id < Cache.MATERIALS.Keys.Count; id++) {
-                    if (materialNames[id] == actorData.materialName)
+                    if (allMaterialNames[id] == actorData.materialName)
                         break;
                 }
 
@@ -383,6 +359,33 @@ namespace ShaderTool.Command {
                 resourceStream.Write(BitConverter.GetBytes(textureData.Length));
                 resourceStream.Write(textureData);
             }
+
+            return SUCCESS;
+        }
+
+        private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
+            foreach (string materialName in mapData.materialNames) {
+
+                // Material not found
+                if (!Cache.MATERIALS.ContainsKey(materialName)
+                  || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
+
+                    Console.WriteLine("Material {0} was not found!", materialName);
+                    return WRONG_PARAMS;
+
+                }
+
+                MaterialData materialData = Cache.MATERIALS[materialName];
+
+                // Write color to file, provided as an R,G,B,A float array
+                foreach (float value in materialData.color)
+                    resourceStream.Write(BitConverter.GetBytes(value));
+
+                // Write diffuse texture to file
+                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
+
+            }
+
 
             return SUCCESS;
         }
