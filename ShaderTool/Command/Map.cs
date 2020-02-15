@@ -258,10 +258,22 @@ namespace ShaderTool.Command {
             foreach (string materialName in mapData.materialNames) {
 
                 // Material not found
-                if (!Cache.MATERIALS.ContainsKey(materialName)) {
+                if (!Cache.MATERIALS.ContainsKey(materialName)
+                  || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
+
                     Console.WriteLine("Material {0} was not found!", materialName);
                     return WRONG_PARAMS;
+
                 }
+
+                MaterialData materialData = Cache.MATERIALS[materialName];
+
+                // Write color to file, provided as an R,G,B,A float array
+                foreach (float value in materialData.color)
+                    resourceStream.Write(BitConverter.GetBytes(value));
+
+                // Write diffuse texture to file
+                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
 
             }
 
