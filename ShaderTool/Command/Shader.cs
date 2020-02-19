@@ -35,14 +35,14 @@ namespace ShaderTool.Command {
         }
 
         public static int ShaderList() {
-            Array.ForEach(Directory.GetFiles(Program.CWD, "*.glsl"), path => Console.WriteLine(path.Replace(Program.CWD + "\\", "")));
+            Array.ForEach(Directory.GetFiles(Program.CWD, "*.glsl"), path => Console.WriteLine(path.Replace(Program.CWD + System.IO.Path.DirectorySeparatorChar, "")));
             return SUCCESS;
         }
 
         public static void CheckShader() {
             string vulkanPath = Environment.GetEnvironmentVariable("VULKAN_SDK");
             if (Directory.Exists(vulkanPath)) {
-                Path = vulkanPath + "\\";
+                Path = vulkanPath + System.IO.Path.DirectorySeparatorChar;
             } else {
                 Console.WriteLine("Vulkan path not found was " + vulkanPath);
                 Environment.Exit(WRONG_PARAMS);
@@ -64,8 +64,8 @@ namespace ShaderTool.Command {
         public static void Make() {
             string[] files = Directory.GetFiles(Program.CWD, "*.spv");
 
-            string dataHpp = Program.CWD + "\\ShaderData.hpp";
-            string dataCpp = Program.CWD + "\\ShaderData.cpp";
+            string dataHpp = System.IO.Path.Combine(Program.CWD, "ShaderData.hpp");
+            string dataCpp = System.IO.Path.Combine(Program.CWD, "ShaderData.cpp");
 
             File.Delete(dataHpp);
             File.Delete(dataCpp);

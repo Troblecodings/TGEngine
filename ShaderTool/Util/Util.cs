@@ -20,6 +20,7 @@ namespace ShaderTool.Util {
         public static void AsssertNoneNull(string[] args) {
             if (args == null) {
                 Console.WriteLine("Not enough arguments!");
+                // TODO: Change error handling, so the console isn't exited
                 if (!Program.console)
                     Environment.Exit(NOT_ENOUGH_PARAMS);
             }
@@ -29,6 +30,7 @@ namespace ShaderTool.Util {
         public static void AsssertValues(string[] args, int minlen) {
             if (args == null || args.Length < minlen) {
                 Console.WriteLine("Not enough arguments!");
+                // TODO: Change error handling, so the console isn't exited
                 if (!Program.console)
                     Environment.Exit(NOT_ENOUGH_PARAMS);
             }
