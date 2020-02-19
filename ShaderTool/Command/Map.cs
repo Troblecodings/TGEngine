@@ -177,6 +177,9 @@ namespace ShaderTool.Command {
             string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
             string resourceFilePath = Program.ResourcesFolder + "\\" + mapName + ".tgr";
 
+            // .tgr file format documentation:
+            // https://troblecodings.com/fileformat.html
+
             if (!File.Exists(mapFilePath)) {
                 Console.WriteLine("{0} is not a map.", mapName);
                 return WRONG_PARAMS;
@@ -203,7 +206,7 @@ namespace ShaderTool.Command {
             if (actorWriteStatus != SUCCESS)
                 return actorWriteStatus;
 
-            // TODO: Further testing
+            resourceStream.Close();
 
             return SUCCESS;
         }
@@ -294,7 +297,9 @@ namespace ShaderTool.Command {
 
             string[] mapTextureNames = mapData.textureNames;
 
-            // Using a for-loop with index would break if no textures are added to the map (mapData.textureNames == null)
+            if (mapTextureNames == null)
+                return SUCCESS;
+
             foreach (string mapTextureName in mapTextureNames) {
 
                 string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName + ".tgx";
@@ -329,8 +334,12 @@ namespace ShaderTool.Command {
                 MaterialData materialData = Cache.MATERIALS[materialName];
 
                 // Write color to file, provided as an R,G,B,A float array
-                foreach (float value in materialData.color)
-                    resourceStream.Write(BitConverter.GetBytes(value));
+                if (materialData.color == null)
+                    for (int i = 0; i < 4; i++)
+                        resourceStream.Write(BitConverter.GetBytes(0f));
+                else
+                    foreach (float value in materialData.color)
+                        resourceStream.Write(BitConverter.GetBytes(value));
 
                 // Write diffuse texture to file
                 resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
@@ -360,7 +369,7 @@ namespace ShaderTool.Command {
                 // Write the local transform as a 4x4 matrix into the file
                 for (int i = 0; i < 4; i++)
                     for (int y = 0; y < 4; y++)
-                        resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[i][y]));
+                        resourceStream.Write(BitConverter.GetBytes(actorData.localTransform == null ? 0f : actorData.localTransform[i][y]));
 
                 // Find the material ID from the material name
                 byte id;
@@ -391,12 +400,14 @@ namespace ShaderTool.Command {
                 resourceStream.Write(BitConverter.GetBytes(0l));
 
                 // Write all indices to file
-                foreach (int index in actorData.indices)
-                    resourceStream.Write(BitConverter.GetBytes(index));
+                if (actorData.indexCount != 0) // Not sure how to handle this?
+                    foreach (int index in actorData.indices)
+                        resourceStream.Write(BitConverter.GetBytes(index));
 
                 // Write all vertices to the file
-                foreach (float vertex in actorData.vertices)
-                    resourceStream.Write(BitConverter.GetBytes(vertex));
+                if (actorData.vertexCount != 0) // Not sure how to handle this?
+                    foreach (float vertex in actorData.vertices)
+                        resourceStream.Write(BitConverter.GetBytes(vertex));
 
             }
 
