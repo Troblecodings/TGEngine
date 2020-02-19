@@ -53,7 +53,7 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            string path = Program.ResourcesFolder + @"\" + actorName + @"_Actor.json";
+            string path = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
             Material.Load();
 
@@ -66,8 +66,7 @@ namespace ShaderTool.Command {
                 File.Create(path).Close();
             }
 
-            ActorData newActor = new ActorData
-            {
+            ActorData newActor = new ActorData {
                 name = actorName,
                 materialName = materialName
             };
@@ -81,7 +80,7 @@ namespace ShaderTool.Command {
             AsssertValues(args, 1);
 
             string actorName = args[0];
-            string filePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
+            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
             if (!File.Exists(filePath)) {
                 Console.WriteLine("Actor {0} was not found", actorName);

@@ -68,7 +68,7 @@ namespace ShaderTool.Command {
 
             foreach (string actorName in map.actorNames) {
 
-                string actorPath = Program.ResourcesFolder + @"\" + actorName + @"_Actor.json";
+                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
                 string actorFileContent = File.ReadAllText(actorPath);
                 ActorData actor = JsonConvert.DeserializeObject<ActorData>(actorFileContent);
                 string materialName = actor.materialName;
@@ -103,7 +103,7 @@ namespace ShaderTool.Command {
             List<string> actorNames = map.actorNames.ToList();
 
             foreach (string actorName in actorsToAdd) {
-                string actorPath = Program.ResourcesFolder + @"\" + actorName + @"_Actor.json";
+                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
                 if (!File.Exists(actorPath)) {
                     Console.WriteLine("Actor {0} not found, skipping", actorName);

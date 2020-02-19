@@ -15,7 +15,7 @@ namespace ShaderTool.Command {
 
     class Material {
 
-        public static string MaterialPath = Program.ResourcesFolder + @"\Materials.json";
+        public static string MaterialPath = Path.Combine(Program.ResourcesFolder, @"Materials.json");
 
         public static int MaterialCommand(string[] args) {
             AsssertNoneNull(args);

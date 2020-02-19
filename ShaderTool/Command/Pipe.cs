@@ -37,7 +37,7 @@ namespace ShaderTool.Command {
         // Updates inputs
         public static int PipeUpdate(string[] args) {
             AsssertNoneNull(args);
-            string Path = Program.CWD + "\\" + args[0] + "Pipe.json";
+            string Path = System.IO.Path.Combine(Program.CWD, args[0] + "Pipe.json");
             if (File.Exists(Path)) {
                 // Getting old Pipe
                 string Text = File.ReadAllText(Path);
@@ -62,7 +62,7 @@ namespace ShaderTool.Command {
 
         public static int PipeShow(string[] args) {
             AsssertNoneNull(args);
-            string Path = Program.CWD + "\\" + args[0] + "Pipe.json";
+            string Path = System.IO.Path.Combine(Program.CWD, args[0] + "Pipe.json");
             if (File.Exists(Path)) {
                 string Text = File.ReadAllText(Path);
                 ShaderPipe Pipe = JsonConvert.DeserializeObject<ShaderPipe>(Text);
@@ -92,7 +92,7 @@ namespace ShaderTool.Command {
             string Name = args[0];
             string[] Shader = GetParams(args);
 
-            string FileName = Program.CWD + "\\" + Name + "Pipe.json";
+            string FileName = Path.Combine(Program.CWD, Name + "Pipe.json");
 
             // Check if pipe already exists
             if (File.Exists(FileName)) {
@@ -101,7 +101,7 @@ namespace ShaderTool.Command {
             }
 
             foreach (string FileN in Shader) {
-                if (!File.Exists(Program.CWD + "\\" + FileN + ".glsl")) {
+                if (!File.Exists(Path.Combine(Program.CWD, FileN + ".glsl"))) {
                     Console.WriteLine(FileN + " doesn't exist!");
                     return SHADER_DOESNT_EXIST;
                 }
@@ -129,21 +129,19 @@ namespace ShaderTool.Command {
 
         private static Input[] GetInputs(string Path) {
             // Getting lines with input
-            string[] InputLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + Path + ".glsl"), line => line.Contains(" in ") && line.Contains("layout"));
+            string[] InputLines = Array.FindAll(File.ReadAllLines(System.IO.Path.Combine(Program.CWD, Path + ".glsl")), line => line.Contains(" in ") && line.Contains("layout"));
             Input[] Inputs = new Input[InputLines.Length];
 
             Regex rx = new Regex("[^0-9]");
             // Processing inputs
-            Array.ForEach(InputLines, line =>
-            {
+            Array.ForEach(InputLines, line => {
                 uint Id = 0;
                 string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
                 if (!UInt32.TryParse(Strid, out Id)) {
                     Console.WriteLine("Vertex input id not found");
                     Environment.Exit(VERTEX_INPUT_ERR);
                 }
-                Inputs[Id] = new Input
-                {
+                Inputs[Id] = new Input {
                     Id = Id
                 };
 
@@ -163,20 +161,18 @@ namespace ShaderTool.Command {
 
             foreach (string path in Paths) {
                 // Getting lines with descriptors
-                string[] DesciptorLines = Array.FindAll(File.ReadAllLines(Program.CWD + "\\" + path + ".glsl"), line => line.Contains("binding") && line.Contains("layout"));
+                string[] DesciptorLines = Array.FindAll(File.ReadAllLines(Path.Combine(Program.CWD, path + ".glsl")), line => line.Contains("binding") && line.Contains("layout"));
 
                 Regex rx = new Regex("[^0-9]");
                 // Processing desciptors
-                Array.ForEach(DesciptorLines, line =>
-                {
+                Array.ForEach(DesciptorLines, line => {
                     uint Id = 0;
                     string Strid = rx.Replace(line.Split("layout")[1].Split(")")[0], "");
                     if (!UInt32.TryParse(Strid, out Id)) {
                         Console.WriteLine("Descriptor id not found!");
                         Environment.Exit(VERTEX_INPUT_ERR);
                     }
-                    Descriptor desc = new Descriptor
-                    {
+                    Descriptor desc = new Descriptor {
                         Binding = Id,
                         Type = VulkanLookups.GetTypeFromLine(line),
                         flag = VulkanLookups.GetFlagBitsAfterName(path)
@@ -189,7 +185,7 @@ namespace ShaderTool.Command {
 
         // List pipes
         public static int PipeList() {
-            Array.ForEach(Directory.GetFiles(Program.CWD, "*Pipe.json"), pth => Console.WriteLine(pth.Replace(Program.CWD + "\\", "").Replace("Pipe.json", "")));
+            Array.ForEach(Directory.GetFiles(Program.CWD, "*Pipe.json"), pth => Console.WriteLine(pth.Replace(Program.CWD + Path.DirectorySeparatorChar, "").Replace("Pipe.json", "")));
             return SUCCESS;
         }
 
@@ -197,14 +193,14 @@ namespace ShaderTool.Command {
         public static int PipeDelete(string[] args) {
             AsssertNoneNull(args);
             string Name = args[0];
-            File.Delete(Program.CWD + "\\" + Name + "Pipe.json");
+            File.Delete(Path.Combine(Program.CWD, Name + "Pipe.json"));
             return SUCCESS;
         }
 
         public static int PipeMake() {
             // Get path
-            string HeaderFileName = Program.CWD + "\\ShaderPipes.hpp";
-            string SourceFileName = Program.CWD + "\\ShaderPipes.cpp";
+            string HeaderFileName = Path.Combine(Program.CWD, "ShaderPipes.hpp");
+            string SourceFileName = Path.Combine(Program.CWD, "ShaderPipes.cpp");
 
             // Recreate files
             StreamWriter HeaderWriter = File.CreateText(HeaderFileName);
