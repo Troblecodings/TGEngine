@@ -195,13 +195,13 @@ namespace ShaderTool.Command {
             if (textureWriteStatus != SUCCESS)
                 return textureWriteStatus;
 
-            int actorWriteStatus = AddActorsToResource(resourceStream, mapData);
-            if (actorWriteStatus != SUCCESS)
-                return actorWriteStatus;
-
             int materialWriteStatus = AddMaterialsToResource(resourceStream, mapData);
             if (materialWriteStatus != SUCCESS)
                 return materialWriteStatus;
+
+            int actorWriteStatus = AddActorsToResource(resourceStream, mapData);
+            if (actorWriteStatus != SUCCESS)
+                return actorWriteStatus;
 
             // TODO: Further testing
 
@@ -313,6 +313,34 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
+        private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
+
+            foreach (string materialName in mapData.materialNames) {
+
+                // Material not found
+                if (!Cache.MATERIALS.ContainsKey(materialName)
+                  || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
+
+                    Console.WriteLine("Material {0} was not found!", materialName);
+                    return WRONG_PARAMS;
+
+                }
+
+                MaterialData materialData = Cache.MATERIALS[materialName];
+
+                // Write color to file, provided as an R,G,B,A float array
+                foreach (float value in materialData.color)
+                    resourceStream.Write(BitConverter.GetBytes(value));
+
+                // Write diffuse texture to file
+                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
+
+            }
+
+            return SUCCESS;
+
+        }
+
         private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
 
             string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
@@ -369,34 +397,6 @@ namespace ShaderTool.Command {
                 // Write all vertices to the file
                 foreach (float vertex in actorData.vertices)
                     resourceStream.Write(BitConverter.GetBytes(vertex));
-
-            }
-
-            return SUCCESS;
-
-        }
-
-        private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
-
-            foreach (string materialName in mapData.materialNames) {
-
-                // Material not found
-                if (!Cache.MATERIALS.ContainsKey(materialName)
-                  || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
-
-                    Console.WriteLine("Material {0} was not found!", materialName);
-                    return WRONG_PARAMS;
-
-                }
-
-                MaterialData materialData = Cache.MATERIALS[materialName];
-
-                // Write color to file, provided as an R,G,B,A float array
-                foreach (float value in materialData.color)
-                    resourceStream.Write(BitConverter.GetBytes(value));
-
-                // Write diffuse texture to file
-                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
 
             }
 
