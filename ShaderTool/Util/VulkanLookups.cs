@@ -56,8 +56,7 @@
     // Licensed under Apache 2.0
     // Removed some of the Formats and range definition
 
-    enum VkSamplerAddressMode
-    {
+    enum VkSamplerAddressMode {
         VK_SAMPLER_ADDRESS_MODE_REPEAT = 0,
         VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT = 1,
         VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE = 2,
@@ -65,8 +64,7 @@
         VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE = 4,
     }
 
-    enum VkFilter
-    {
+    enum VkFilter {
         VK_FILTER_NEAREST = 0,
         VK_FILTER_LINEAR = 1,
         VK_FILTER_CUBIC_IMG = 1000015000,

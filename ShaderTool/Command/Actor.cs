@@ -16,7 +16,8 @@ namespace ShaderTool.Command {
         public float[] vertices;
         public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
         public uint indexCount;
-        public ushort vertexCount;
+        public uint vertexCount;
+        public byte layerId;
     }
 
     class Actor {
@@ -30,8 +31,6 @@ namespace ShaderTool.Command {
                 case "rm":
                 case "remove":
                     return ActorRm(GetParams(args));
-                case "make":
-                    return 0;
                 case "list":
                     return ActorList();
             }
@@ -54,7 +53,7 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            string path = Program.ResourcesFolder + @"\" + actorName + @"_Actor.json";
+            string path = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
             Material.Load();
 
@@ -81,7 +80,7 @@ namespace ShaderTool.Command {
             AsssertValues(args, 1);
 
             string actorName = args[0];
-            string filePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
+            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
             if (!File.Exists(filePath)) {
                 Console.WriteLine("Actor {0} was not found", actorName);
@@ -102,7 +101,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine("No actors added yet.");
             } else {
                 Regex regexFileName = new Regex(@"\\(\w+)_Actor\.json");
-                
+
                 foreach (string filePath in fileList) {
                     if (regexFileName.IsMatch(filePath)) {
                         string actorName = regexFileName.Match(filePath).Groups[1].Value;
@@ -116,18 +115,11 @@ namespace ShaderTool.Command {
                     Console.WriteLine("Count: {0}", filteredList.Count);
                     filteredList.ForEach(name => Console.WriteLine(" - " + name));
                 }
-                
+
             }
 
             return SUCCESS;
         }
-
-        public static int ActorMake() {
-            // TODO
-            Console.WriteLine("Not implemented yet.");
-            return 0;
-        }
-
     }
 
 }

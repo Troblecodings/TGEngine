@@ -2,19 +2,16 @@
 
 namespace ShaderTool.Util {
 
-    class TextureDesc
-    {
+    class TextureDesc {
         public long offset = 0;
         public long size = 0;
     }
 
-    class Resource
-    {
+    class Resource {
         public Dictionary<string, TextureDesc> texturs = new Dictionary<string, TextureDesc>();
     }
 
-    class Cache
-    {
+    class Cache {
         public static Resource PRELOAD = null;
         public static Dictionary<string, Command.MaterialData> MATERIALS = null;
     }

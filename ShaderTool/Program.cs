@@ -1,5 +1,6 @@
 ﻿using ShaderTool.Command;
 using System;
+using System.IO;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
@@ -7,7 +8,7 @@ namespace ShaderTool {
     class Program {
 
         public static string CWD = Environment.CurrentDirectory;
-        public static string ResourcesFolder = CWD + @"\Resources";
+        public static string ResourcesFolder = Path.Combine(CWD, "Resources");
         public static bool console = false;
 
         public static int Execute(string id, string[] arg) {
