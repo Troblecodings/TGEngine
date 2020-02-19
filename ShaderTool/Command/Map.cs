@@ -315,6 +315,8 @@ namespace ShaderTool.Command {
 
             }
 
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+
             return SUCCESS;
         }
 
@@ -327,16 +329,19 @@ namespace ShaderTool.Command {
                   || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
 
                     Console.WriteLine("Material {0} was not found!", materialName);
-                    return WRONG_PARAMS;
+                    continue;
 
                 }
+
+                // Write size of this block in bytes to file
+                resourceStream.Write(BitConverter.GetBytes(Material.MATERIAL_SIZE));
 
                 MaterialData materialData = Cache.MATERIALS[materialName];
 
                 // Write color to file, provided as an R,G,B,A float array
                 if (materialData.color == null)
                     for (int i = 0; i < 4; i++)
-                        resourceStream.Write(BitConverter.GetBytes(0f));
+                        resourceStream.Write(BitConverter.GetBytes(1f));
                 else
                     foreach (float value in materialData.color)
                         resourceStream.Write(BitConverter.GetBytes(value));
@@ -345,6 +350,8 @@ namespace ShaderTool.Command {
                 resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
 
             }
+
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
 
             return SUCCESS;
 
@@ -361,10 +368,15 @@ namespace ShaderTool.Command {
 
                 if (!File.Exists(actorFilePath)) {
                     Console.WriteLine("{0} is not a valid actor!", actorName);
-                    return WRONG_PARAMS;
+                    continue;
                 }
 
                 ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
+
+                // Write size of this block in bytes to file
+                // 2 + 2 * (4 + 8) = 26
+                uint actorDataSize = 26 + (actorData.indexCount + actorData.vertexCount) * 4;
+                resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
                 // Write the local transform as a 4x4 matrix into the file
                 for (int i = 0; i < 4; i++)
@@ -409,7 +421,10 @@ namespace ShaderTool.Command {
                     foreach (float vertex in actorData.vertices)
                         resourceStream.Write(BitConverter.GetBytes(vertex));
 
+
             }
+
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
 
             return SUCCESS;
 
