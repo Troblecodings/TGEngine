@@ -51,7 +51,7 @@ namespace ShaderTool.Command {
                 string[] exnamesplit = vr.Replace("\\", "/").Split("/");
                 string filename = exnamesplit[exnamesplit.Length - 1].Split(".")[0];
                 Load();
-                if (Cache.PRELOAD.texturs.ContainsKey(filename))
+                if (Cache.PRELOAD.textures.ContainsKey(filename))
                     return ALREADY_EXIST;
                 byte[] tex = File.ReadAllBytes(vr);
                 FileStream stream = File.Open(Path.Combine(Program.CWD, "Resources.json"), FileMode.Append);
@@ -60,7 +60,7 @@ namespace ShaderTool.Command {
                 texture.size = tex.Length;
                 stream.Write(tex, 0, tex.Length);
                 stream.Close();
-                Cache.PRELOAD.texturs.Add(filename, texture);
+                Cache.PRELOAD.textures.Add(filename, texture);
             }
             Flush();
             return SUCCESS;
@@ -69,9 +69,9 @@ namespace ShaderTool.Command {
         public static int Add(string[] args) {
             AsssertValues(args, 1);
             Load();
-            if (Cache.PRELOAD.texturs.ContainsKey(args[0]))
+            if (Cache.PRELOAD.textures.ContainsKey(args[0]))
                 return ALREADY_EXIST;
-            Cache.PRELOAD.texturs.Add(args[0], new TextureDesc());
+            Cache.PRELOAD.textures.Add(args[0], new TextureDesc());
             Flush();
             return 0;
         }
@@ -79,7 +79,7 @@ namespace ShaderTool.Command {
         public static int Rm(string[] args) {
             AsssertValues(args, 1);
             Load();
-            if (!Cache.PRELOAD.texturs.Remove(args[0]))
+            if (!Cache.PRELOAD.textures.Remove(args[0]))
                 return WRONG_PARAMS;
             Flush();
             return 0;
@@ -87,7 +87,7 @@ namespace ShaderTool.Command {
 
         public static int List() {
             Load();
-            var enumerator = Cache.PRELOAD.texturs.Keys.GetEnumerator();
+            var enumerator = Cache.PRELOAD.textures.Keys.GetEnumerator();
             while (enumerator.MoveNext()) {
                 Console.WriteLine(enumerator.Current);
             }

@@ -8,7 +8,7 @@ namespace ShaderTool.Util {
     }
 
     class Resource {
-        public Dictionary<string, TextureDesc> texturs = new Dictionary<string, TextureDesc>();
+        public Dictionary<string, TextureDesc> textures = new Dictionary<string, TextureDesc>();
     }
 
     class Cache {
