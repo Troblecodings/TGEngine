@@ -8,6 +8,9 @@ using static ShaderTool.Util.Util;
 namespace ShaderTool.Command {
     class Texture {
 
+        public static string TexturePath = Path.Combine(Program.ResourcesFolder, @"Textures");
+        public static string TextureResourceFilePath = Path.Combine(Program.ResourcesFolder, @"Textures.json");
+
         public static int TextureCommand(string[] args) {
             AsssertNoneNull(args);
 
@@ -25,17 +28,16 @@ namespace ShaderTool.Command {
         }
 
         public static void Load() {
-            string path = Path.Combine(Program.CWD, "Resources.json");
             if (Cache.PRELOAD == null) {
-                if (File.Exists(path))
-                    Cache.PRELOAD = JsonConvert.DeserializeObject<Resource>(File.ReadAllText(path));
+                if (File.Exists(TextureResourceFilePath))
+                    Cache.PRELOAD = JsonConvert.DeserializeObject<Resource>(File.ReadAllText(TextureResourceFilePath));
                 else
                     Cache.PRELOAD = new Resource();
             }
         }
 
         private static void Flush() {
-            File.WriteAllText(Path.Combine(Program.CWD, "Resources.json"), JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
+            File.WriteAllText(TextureResourceFilePath, JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
         }
 
         public static int Add(string[] args) {
@@ -52,7 +54,7 @@ namespace ShaderTool.Command {
                 if (Cache.PRELOAD.textures.ContainsKey(filename))
                     return ALREADY_EXIST;
                 byte[] tex = File.ReadAllBytes(vr);
-                FileStream stream = File.Open(Path.Combine(Program.CWD, "Resources.json"), FileMode.Append);
+                FileStream stream = File.Open(TextureResourceFilePath, FileMode.Append);
                 TextureDesc texture = new TextureDesc();
                 texture.offset = stream.Position;
                 texture.size = tex.Length;
