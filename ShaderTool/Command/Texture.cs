@@ -40,11 +40,6 @@ namespace ShaderTool.Command {
             File.WriteAllText(Path.Combine(Program.CWD, "Resources.json"), JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
         }
 
-        public static int Make() {
-
-            return 0;
-        }
-
         public static int Import(string[] args) {
             AsssertValues(args, 1);
             foreach (string vr in args) {
