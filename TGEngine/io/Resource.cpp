@@ -6,7 +6,7 @@ using namespace tge::nio;
 using namespace tge::tex;
 using namespace tge::gmc;
 
-Map loadResourceFile(char* name) {
+Map loadResourceFile(const char* name) {
 	File file = open(name, "r");
 
 	uint32_t header = 0;
