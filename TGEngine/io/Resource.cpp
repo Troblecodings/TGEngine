@@ -6,28 +6,20 @@ using namespace tge::nio;
 using namespace tge::tex;
 using namespace tge::gmc;
 
-Map loadResourceFile(const char* name) {
+void loadResourceFile(const char* name, Map* map) {
 	File file = open(name, "r");
 
 	uint32_t header = 0;
 	fread(&header, sizeof(uint32_t), 1, file);
 
-	Map map;
-
 	if (header != TGR_VERSION_1) {
 		OUT_LV_DEBUG("Header does not match with the parser version!")
-		return map;
-	}
-
-	if (feof(file) != 0) {
-		OUT_LV_DEBUG("File corrupted!")
-		return map;
+		return;
 	}
 
 	uint32_t blocklength = 0;
 
-	std::vector<TextureInputInfo> textureInfos;
-	textureInfos.reserve(2048);
+	map->textures.reserve(2048);
 
 	fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -38,22 +30,17 @@ Map loadResourceFile(const char* name) {
 
 		TextureInputInfo inputInfo;
 		inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
-		textureInfos.push_back(inputInfo);
+		map->textures.push_back(inputInfo);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	TextureBindingInfo bindingInfo[2048];
-	map.textures = new Texture[textureInfos.size()];
-	createTextures(textureInfos.data(), (uint32_t)textureInfos.size(), map.textures, bindingInfo);
-
 	if (feof(file) != 0)
-		return map;
+		return;
 
 	blocklength = 0;
 
-	std::vector<Material> materials;
-	materials.reserve(2048);
+	map->materials.reserve(256);
 
 	fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -62,17 +49,16 @@ Map loadResourceFile(const char* name) {
 		Material material;
 		fread(&material, sizeof(Material), 1, file);
 
-		materials.push_back(material);
+		map->materials.push_back(material);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
 	if (feof(file) != 0)
-		return map;
+		return;
 
 	// Start to read the actor
-	std::vector<ActorInputInfo> actors;
-	actors.reserve(2048);
+	map->actors.reserve(2048);
 
 	// Read the block size of the following content
 	fread(&blocklength, sizeof(uint32_t), 1, file);
@@ -83,6 +69,12 @@ Map loadResourceFile(const char* name) {
 		// Reads the actor properties and so on
 		ActorInputInfo actorInfo;
 		fread(&actorInfo, sizeof(ActorInputInfo), 1, file);
+
+
+		/*
+		 * It would make sense to use staging buffer in this case to add the indicies 
+		 * directly to the Graphics card
+		 */
 
 		// Reads the indicies from the file
 		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
@@ -100,13 +92,13 @@ Map loadResourceFile(const char* name) {
 		// which is returned ... this hover is only a local variable
 		// Needs research
 
-		actors.push_back(actorInfo);
+		map->actors.push_back(actorInfo);
 
 		// Read the next block size
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	createActor(actors.data(), (uint32_t)actors.size());
+	createActor(map->actors.data(), (uint32_t)map->actors.size());
 
-	return map;
+	return;
 }

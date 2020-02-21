@@ -7,8 +7,9 @@
 #define TGR_VERSION_1 1
 
 struct Map {
-	tge::tex::Texture* textures;
-	tge::gmc::Material* materials;
+	std::vector<TextureInputInfo> textures;
+	std::vector<Material> materials;
+	std::vector<ActorInputInfo> actors;
 };
 
-Map loadResourceFile(char* name);
+void loadResourceFile(const char* name, Map* map);
