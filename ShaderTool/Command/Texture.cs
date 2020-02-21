@@ -16,8 +16,6 @@ namespace ShaderTool.Command {
                     return Add(GetParams(args));
                 case "rm":
                     return Rm(GetParams(args));
-                case "import":
-                    return Import(GetParams(args));
                 case "list":
                     return List();
             }
@@ -40,7 +38,7 @@ namespace ShaderTool.Command {
             File.WriteAllText(Path.Combine(Program.CWD, "Resources.json"), JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
         }
 
-        public static int Import(string[] args) {
+        public static int Add(string[] args) {
             AsssertValues(args, 1);
             foreach (string vr in args) {
                 Console.WriteLine("Importing: " + vr);
@@ -66,16 +64,6 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        public static int Add(string[] args) {
-            AsssertValues(args, 1);
-            Load();
-            if (Cache.PRELOAD.textures.ContainsKey(args[0]))
-                return ALREADY_EXIST;
-            Cache.PRELOAD.textures.Add(args[0], new TextureDesc());
-            Flush();
-            return 0;
-        }
-
         public static int Rm(string[] args) {
             AsssertValues(args, 1);
             Load();
@@ -94,4 +82,5 @@ namespace ShaderTool.Command {
             return 0;
         }
     }
+
 }
