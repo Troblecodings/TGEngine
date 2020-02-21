@@ -49,12 +49,12 @@ namespace ShaderTool {
                     Console.Write(">>> ");
                     args = Console.ReadLine().Split(" ");
                     args = GetParamas(args);
-                    AsssertValues(args, 1);
+                    AssertValues(args, 1);
                     int rcode = Execute(args[0], GetParams(args));
                     Console.WriteLine("Exite code " + rcode);
                 }
             }
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
             return Execute(args[0], GetParams(args));
         }
 

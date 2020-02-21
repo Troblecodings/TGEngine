@@ -39,7 +39,7 @@ namespace ShaderTool.Command {
         }
 
         public static int Add(string[] args) {
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
             foreach (string vr in args) {
                 Console.WriteLine("Importing: " + vr);
                 if (!File.Exists(vr)) {
@@ -65,7 +65,7 @@ namespace ShaderTool.Command {
         }
 
         public static int Rm(string[] args) {
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
             Load();
             if (!Cache.PRELOAD.textures.Remove(args[0]))
                 return WRONG_PARAMS;

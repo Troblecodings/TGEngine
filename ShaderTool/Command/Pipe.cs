@@ -87,7 +87,7 @@ namespace ShaderTool.Command {
         // Create pipe
         public static int PipeCreate(string[] args) {
             AsssertNoneNull(args);
-            AsssertValues(args, 2);
+            AssertValues(args, 2);
 
             string Name = args[0];
             string[] Shader = GetParams(args);

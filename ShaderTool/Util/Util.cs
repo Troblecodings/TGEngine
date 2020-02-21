@@ -27,7 +27,7 @@ namespace ShaderTool.Util {
         }
 
         // Checks if the array is bigger as a given size
-        public static void AsssertValues(string[] args, int minlen) {
+        public static void AssertValues(string[] args, int minlen) {
             if (args == null || args.Length < minlen) {
                 Console.WriteLine("Not enough arguments!");
                 // TODO: Change error handling, so the console isn't exited

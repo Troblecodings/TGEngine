@@ -92,7 +92,7 @@ namespace ShaderTool.Command {
         }
 
         public static void AddActors(MapData map, string[] actorsToAdd) {
-            AsssertValues(actorsToAdd, 1);
+            AssertValues(actorsToAdd, 1);
 
             if (map.actorNames == null)
                 map.actorNames = new string[0];
@@ -125,7 +125,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MapAdd(string[] args) {
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
 
             if (!Directory.Exists(Program.ResourcesFolder)) {
                 Directory.CreateDirectory(Program.ResourcesFolder);
@@ -155,7 +155,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MapRm(string[] args) {
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
 
             string mapName = args[0];
             string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
@@ -239,7 +239,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MapAddActor(string[] args) {
-            AsssertValues(args, 2);
+            AssertValues(args, 2);
 
             string mapName = args[0];
             string[] actorsToAdd = GetParams(args);
@@ -258,7 +258,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MapRmActor(string[] args) {
-            AsssertValues(args, 2);
+            AssertValues(args, 2);
 
             string mapName = args[0];
             string[] actorsToRemove = GetParams(args);
