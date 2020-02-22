@@ -50,18 +50,19 @@ namespace ShaderTool.Command {
             foreach (string texturePath in texturePaths) {
 
                 if (!File.Exists(texturePath)) {
-                    Console.WriteLine("Texture {0} could not be found, skipping", texturePath);
+                    Console.WriteLine("Texture '{0}' could not be found, skipping", texturePath);
                     continue;
                 }
 
-                string fileName = Path.GetFileNameWithoutExtension(texturePath) + ".tgx";
+                string fileName = Path.GetFileNameWithoutExtension(texturePath);
 
                 if (GetExistingTextureNames().Contains(fileName)) {
-                    Console.WriteLine("Texture {0} already exists, skipping", texturePath);
+                    Console.WriteLine("Texture '{0}' already exists, skipping", fileName);
                     continue;
                 }
 
-                File.Copy(texturePath, Path.Combine(Program.ResourcesFolder, fileName));
+                File.Copy(texturePath, Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
+                Console.WriteLine("Texture '{0}' was successfully added!", fileName);
 
             }
 
@@ -76,13 +77,13 @@ namespace ShaderTool.Command {
             string fileName = string.Join(" ", args);
 
             if (!GetExistingTextureNames().Contains(fileName)) {
-                Console.WriteLine("Texture {0} was not found!", fileName);
+                Console.WriteLine("Texture '{0}' was not found!", fileName);
                 return WRONG_PARAMS;
             } else {
                 File.Delete(Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
             }
 
-            Console.WriteLine("Texture {0} was successfully removed!", fileName);
+            Console.WriteLine("Texture '{0}' was successfully removed!", fileName);
             return SUCCESS;
 
         }

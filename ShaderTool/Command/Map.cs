@@ -104,17 +104,17 @@ namespace ShaderTool.Command {
                 string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
                 if (!File.Exists(actorPath)) {
-                    Console.WriteLine("Actor {0} not found, skipping", actorName);
+                    Console.WriteLine("Actor '{0}' not found, skipping", actorName);
                     continue;
                 }
 
                 if (actorNames.Contains(actorName)) {
-                    Console.WriteLine("Actor {0} already added, skipping", actorName);
+                    Console.WriteLine("Actor '{0}' already added, skipping", actorName);
                     continue;
                 }
 
                 actorNames.Add(actorName);
-                Console.WriteLine("Added Actor {0}", actorName);
+                Console.WriteLine("Added Actor '{0}'", actorName);
 
             }
 
@@ -145,7 +145,7 @@ namespace ShaderTool.Command {
                 AddActors(newMap, actors);
 
             Save(mapName, newMap);
-            Console.WriteLine("Added new map {0}", mapName);
+            Console.WriteLine("Added new map '{0}'", mapName);
             return SUCCESS;
         }
 
@@ -156,11 +156,11 @@ namespace ShaderTool.Command {
             string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
 
             if (!File.Exists(mapFilePath)) {
-                Console.WriteLine("Map {0} was not found", mapName);
+                Console.WriteLine("Map '{0}' was not found", mapName);
                 return WRONG_PARAMS;
             } else {
                 File.Delete(mapFilePath);
-                Console.WriteLine("Map {0} was deleted", mapName);
+                Console.WriteLine("Map '{0}' was deleted", mapName);
                 return SUCCESS;
             }
         }
@@ -176,7 +176,7 @@ namespace ShaderTool.Command {
             // https://troblecodings.com/fileformat.html
 
             if (!File.Exists(mapFilePath)) {
-                Console.WriteLine("{0} is not a map.", mapName);
+                Console.WriteLine("'{0}' is not a map.", mapName);
                 return WRONG_PARAMS;
             }
 
@@ -242,7 +242,7 @@ namespace ShaderTool.Command {
             MapData map = Load(mapName);
 
             if (map == null) {
-                Console.WriteLine("Map {0} not found", mapName);
+                Console.WriteLine("Map '{0}' not found", mapName);
                 return WRONG_PARAMS;
             }
 
@@ -263,7 +263,7 @@ namespace ShaderTool.Command {
             List<string> actorNames = map.actorNames.ToList();
 
             if (map == null) {
-                Console.WriteLine("Map {0} not found", mapName);
+                Console.WriteLine("Map '{0}' not found", mapName);
                 return WRONG_PARAMS;
             }
 
@@ -273,9 +273,9 @@ namespace ShaderTool.Command {
                 if (actorNames.Contains(actorName)) {
                     actorNames.Remove(actorName);
                     changed = true;
-                    Console.WriteLine("Removed actor {0} from map {1}", actorName, mapName);
+                    Console.WriteLine("Removed actor '{0}' from map '{1}'", actorName, mapName);
                 } else {
-                    Console.WriteLine("Map {0} does not contain actor {1}, skipping", mapName, actorName);
+                    Console.WriteLine("Map '{0}' does not contain actor '{1}', skipping", mapName, actorName);
                 }
             }
 
@@ -300,7 +300,7 @@ namespace ShaderTool.Command {
                 string textureFilePath = Path.Combine(Program.ResourcesFolder, mapTextureName + ".tgx");
 
                 if (!File.Exists(textureFilePath)) {
-                    Console.WriteLine("{0} is not a texture.", mapTextureName);
+                    Console.WriteLine("'{0}' is not a texture.", mapTextureName);
                     return WRONG_PARAMS;
                 }
 
@@ -323,7 +323,7 @@ namespace ShaderTool.Command {
                 if (!Cache.MATERIALS.ContainsKey(materialName)
                   || Cache.MATERIALS[materialName] == null) { // Not sure if this null check is even necessary, but better safe than sorry
 
-                    Console.WriteLine("Material {0} was not found!", materialName);
+                    Console.WriteLine("Material '{0}' was not found!", materialName);
                     continue;
 
                 }
@@ -374,7 +374,7 @@ namespace ShaderTool.Command {
                 string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
 
                 if (!File.Exists(actorFilePath)) {
-                    Console.WriteLine("{0} is not a valid actor!", actorName);
+                    Console.WriteLine("'{0}' is not a valid actor!", actorName);
                     continue;
                 }
 
