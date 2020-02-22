@@ -19,8 +19,11 @@ namespace ShaderTool.Command {
         public const uint MATERIAL_SIZE = 20; // Color is 4 * 4 bytes, diffuse texture ID is 4 bytes which equals 20 bytes
 
         public static int MaterialCommand(string[] args) {
-            AsssertNoneNull(args);
-            Load(); // load the file once for efficiency, use the save command to save all changes
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
+            Load();
 
             switch (args[0]) {
                 case "add":
@@ -70,7 +73,8 @@ namespace ShaderTool.Command {
 
         public static int MaterialAdd(string[] args) {
 
-            AssertValues(args, 1);
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
                 Console.WriteLine("Maximum limit of 256 textures reached, cannot add more");
@@ -79,9 +83,8 @@ namespace ShaderTool.Command {
 
             string name = args[0];
 
-            if (!AssertName(name)) {
+            if (!AssertName(name))
                 return WRONG_PARAMS;
-            }
 
             if (Cache.MATERIALS.ContainsKey(name)) {
                 Console.WriteLine("Material {0} already exists!", name);
@@ -98,7 +101,9 @@ namespace ShaderTool.Command {
 
         public static int MaterialRm(string[] args) {
 
-            AssertValues(args, 1);
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
             if (!Cache.MATERIALS.Remove(args[0])) { // name could not be found
                 Console.WriteLine("Material was not found");
                 return WRONG_PARAMS;

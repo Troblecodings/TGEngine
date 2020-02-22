@@ -9,7 +9,7 @@ namespace ShaderTool {
 
         public static string CWD = Environment.CurrentDirectory;
         public static string ResourcesFolder = Path.Combine(CWD, "Resources");
-        public static bool console = false;
+        public static bool IsInConsoleMode = false;
 
         public static int Execute(string id, string[] arg) {
             switch (id) {
@@ -36,7 +36,7 @@ namespace ShaderTool {
                     return 0;
             }
 
-            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
+            System.Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
             return WRONG_PARAMS;
         }
 
@@ -46,18 +46,28 @@ namespace ShaderTool {
                 Directory.CreateDirectory(ResourcesFolder);
 
             args = GetParamas(args);
+
             if (args.Length < 1) {
-                console = true;
+                IsInConsoleMode = true;
+
                 while (true) {
                     Console.Write(">>> ");
+
                     args = Console.ReadLine().Split(" ");
                     args = GetParamas(args);
-                    AssertValues(args, 1);
-                    int rcode = Execute(args[0], GetParams(args));
-                    Console.WriteLine("Exite code " + rcode);
+
+                    if (!AssertValues(args))
+                        return NOT_ENOUGH_PARAMS;
+
+                    int returnCode = Execute(args[0], GetParams(args));
+                    if (returnCode != SUCCESS)
+                        Console.WriteLine("Exit code " + returnCode);                    
                 }
             }
-            AssertValues(args, 1);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+            
             return Execute(args[0], GetParams(args));
         }
 

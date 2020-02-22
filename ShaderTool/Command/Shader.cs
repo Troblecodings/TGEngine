@@ -12,7 +12,10 @@ namespace ShaderTool.Command {
         private static bool Error = false;
 
         public static int ShaderCommand(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
             CheckShader();
             switch (args[0]) {
                 case "make":

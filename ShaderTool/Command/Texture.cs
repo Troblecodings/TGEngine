@@ -11,7 +11,9 @@ namespace ShaderTool.Command {
     class Texture {
 
         public static int TextureCommand(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             switch (args[0]) {
                 case "add":
@@ -29,7 +31,8 @@ namespace ShaderTool.Command {
 
         public static int TextureAdd(string[] args) {
 
-            AssertValues(args, 1);
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             // All paths are required to be put in double quotes as paths with spaces in them would break
             string input = string.Join(' ', args);
@@ -71,7 +74,8 @@ namespace ShaderTool.Command {
 
         public static int TextureRm(string[] args) {
 
-            AssertValues(args, 1);
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             // If the file name contains a space then it's being taken care of with this
             string fileName = string.Join(" ", args);
