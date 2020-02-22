@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ShaderTool.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static ShaderTool.Error;
@@ -54,11 +55,7 @@ namespace ShaderTool.Command {
 
                 string fileName = Path.GetFileNameWithoutExtension(texturePath) + ".tgx";
 
-                string[] existingFileNames = Directory.GetFiles(Program.ResourcesFolder)
-                                                      .Select(path => Path.GetFileName(path))
-                                                      .ToArray();
-
-                if (existingFileNames.Contains(fileName)) {
+                if (GetExistingTextureNames().Contains(fileName)) {
                     Console.WriteLine("Texture {0} already exists, skipping", texturePath);
                     continue;
                 }
@@ -76,11 +73,8 @@ namespace ShaderTool.Command {
 
             // If the file name contains a space then it's being taken care of with this
             string fileName = string.Join(" ", args) + ".tgx";
-            string[] existingFileNames = Directory.GetFiles(Program.ResourcesFolder)
-                                                  .Select(path => Path.GetFileName(path))
-                                                  .ToArray();
 
-            if (!existingFileNames.Contains(fileName)) {
+            if (!GetExistingTextureNames().Contains(fileName)) {
                 Console.WriteLine("Texture {0} was not found!", fileName);
                 return WRONG_PARAMS;
             } else {
@@ -93,11 +87,7 @@ namespace ShaderTool.Command {
         }
 
         public static int TextureList() {
-            string[] textures = Directory.GetFiles(Program.ResourcesFolder)
-                                         .Where(file => file.EndsWith(".tgx"))
-                                         .Select(path => Path.GetFileName(path))
-                                         .ToArray();
-
+            string[] textures = GetExistingTextureNames();
             Console.WriteLine("Count: {0} textures", textures.Length);
 
             foreach (string texture in textures)
@@ -105,6 +95,17 @@ namespace ShaderTool.Command {
 
             return 0;
         }
+
+        public static string[] GetExistingTextureNames() {
+
+            string[] textures = Directory.GetFiles(Program.ResourcesFolder)
+                             .Where(file => file.EndsWith(".tgx"))
+                             .Select(path => Path.GetFileNameWithoutExtension(path))
+                             .ToArray();
+
+            return textures;
+        }
+
     }
 
 }

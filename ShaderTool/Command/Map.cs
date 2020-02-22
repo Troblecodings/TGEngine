@@ -52,6 +52,7 @@ namespace ShaderTool.Command {
 
             string fileContent = File.ReadAllText(resourceFilePath);
             MapData map = JsonConvert.DeserializeObject<MapData>(fileContent);
+            UpdateMaterials(map);
 
             return map;
         }
@@ -73,18 +74,15 @@ namespace ShaderTool.Command {
                 ActorData actor = JsonConvert.DeserializeObject<ActorData>(actorFileContent);
                 string materialName = actor.materialName;
 
-                if (!newMaterialNames.Contains(materialName) && materialName != null) {
+                if (!newMaterialNames.Contains(materialName) && materialName != null)
                     newMaterialNames.Add(materialName);
-                }
 
                 Material.Load();
-                uint textureID = Cache.MATERIALS[materialName].diffuseTexture;
 
-                //Texture.Load();
-                string textureName = Cache.PRELOAD.textures.Keys.ToArray()[textureID];
-                if (!newTextureNames.Contains(textureName) && textureName != null) {
-                    newTextureNames.Add(textureName);
-                }
+                string diffuseTexture = Cache.MATERIALS[materialName].diffuseTexture;
+                if (!newTextureNames.Contains(diffuseTexture) && diffuseTexture != null)
+                    newTextureNames.Add(diffuseTexture);
+
             }
 
             map.materialNames = newMaterialNames.ToArray();
@@ -127,21 +125,18 @@ namespace ShaderTool.Command {
         public static int MapAdd(string[] args) {
             AssertValues(args, 1);
 
-            if (!Directory.Exists(Program.ResourcesFolder)) {
+            if (!Directory.Exists(Program.ResourcesFolder))
                 Directory.CreateDirectory(Program.ResourcesFolder);
-            }
 
             string mapName = args[0];
             string[] actors = GetParams(args);
             string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
 
-            if (!AssertName(mapName)) {
+            if (!AssertName(mapName))
                 return WRONG_PARAMS;
-            }
 
-            if (!File.Exists(mapFilePath)) {
+            if (!File.Exists(mapFilePath))
                 File.Create(mapFilePath).Close();
-            }
 
             MapData newMap = new MapData();
 
@@ -346,13 +341,25 @@ namespace ShaderTool.Command {
                     foreach (float value in materialData.color)
                         resourceStream.Write(BitConverter.GetBytes(value));
 
+                // Refresh texture cache
+                Cache.TEXTURES = Texture.GetExistingTextureNames();
+
+                // Find index from texture name
+                string texture = materialData.diffuseTexture;
+
+                uint textureIndex = 0;
+
+                if (texture == null)
+                    Console.WriteLine("No texture provided, using default");
+                else
+                    textureIndex = (uint)Cache.TEXTURES.ToList().IndexOf(texture);
+
                 // Write diffuse texture to file
-                resourceStream.Write(BitConverter.GetBytes(materialData.diffuseTexture));
+                resourceStream.Write(BitConverter.GetBytes(textureIndex));
 
             }
 
             resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
-
             return SUCCESS;
 
         }

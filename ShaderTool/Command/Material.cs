@@ -10,7 +10,7 @@ namespace ShaderTool.Command {
 
     class MaterialData {
         public float[] color;
-        public uint diffuseTexture;
+        public string diffuseTexture;
     }
 
     class Material {
