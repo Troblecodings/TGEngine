@@ -102,7 +102,7 @@ namespace ShaderTool.Command {
         }
 
         private static int Compile(string path) {
-            LastShader = path.Replace(Program.CWD + "\\", "").Replace(".glsl", "");
+            LastShader = System.IO.Path.GetFileNameWithoutExtension(path);
             Error = false;
             Process pr = new Process();
             pr.StartInfo.FileName = Path + "Bin\\glslangValidator.exe";

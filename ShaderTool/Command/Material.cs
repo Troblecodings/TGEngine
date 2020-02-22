@@ -10,7 +10,7 @@ namespace ShaderTool.Command {
 
     class MaterialData {
         public float[] color;
-        public uint diffuseTexture;
+        public string diffuseTexture;
     }
 
     class Material {
@@ -70,7 +70,7 @@ namespace ShaderTool.Command {
 
         public static int MaterialAdd(string[] args) {
 
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
 
             if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
                 Console.WriteLine("Maximum limit of 256 textures reached, cannot add more");
@@ -90,7 +90,7 @@ namespace ShaderTool.Command {
 
             MaterialData newMaterial = new MaterialData();
             Cache.MATERIALS.Add(name, newMaterial);
-            Console.WriteLine("Added new material {0}, don't forget to use \"material save\"", name);
+            Console.WriteLine("Added new material '{0}'!", name);
 
             Save();
             return SUCCESS;
@@ -98,7 +98,7 @@ namespace ShaderTool.Command {
 
         public static int MaterialRm(string[] args) {
 
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
             if (!Cache.MATERIALS.Remove(args[0])) { // name could not be found
                 Console.WriteLine("Material was not found");
                 return WRONG_PARAMS;

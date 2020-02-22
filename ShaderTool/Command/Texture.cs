@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using ShaderTool.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
@@ -13,90 +15,103 @@ namespace ShaderTool.Command {
 
             switch (args[0]) {
                 case "add":
-                    return Add(GetParams(args));
+                    return TextureAdd(GetParams(args));
                 case "rm":
-                    return Rm(GetParams(args));
-                case "import":
-                    return Import(GetParams(args));
+                case "remove":
+                    return TextureRm(GetParams(args));
                 case "list":
-                    return List();
+                    return TextureList();
             }
 
             Console.WriteLine("Wrong params! Possible: add/rm/list/import");
             return WRONG_PARAMS;
         }
 
-        public static void Load() {
-            string path = Path.Combine(Program.CWD, "Resources.json");
-            if (Cache.PRELOAD == null) {
-                if (File.Exists(path))
-                    Cache.PRELOAD = JsonConvert.DeserializeObject<Resource>(File.ReadAllText(path));
-                else
-                    Cache.PRELOAD = new Resource();
+        public static int TextureAdd(string[] args) {
+
+            AssertValues(args, 1);
+
+            // All paths are required to be put in double quotes as paths with spaces in them would break
+            string input = string.Join(' ', args);
+
+            if (!input.Contains('"')) { // Allow a single path without spaces
+                Console.WriteLine("Paths could not be read! (did you forget to wrap the paths in quotes?)");
+                return WRONG_PARAMS;
             }
-        }
 
-        private static void Flush() {
-            File.WriteAllText(Path.Combine(Program.CWD, "Resources.json"), JsonConvert.SerializeObject(Cache.PRELOAD, Formatting.Indented));
-        }
+            string[] texturePaths = input.Replace(@"\", @"/")
+                                         .Split('"')
+                                         .Where(path => !string.IsNullOrWhiteSpace(path))
+                                         .ToArray();
 
-        public static int Make() {
+            if (!Directory.Exists(Program.ResourcesFolder))
+                Directory.CreateDirectory(Program.ResourcesFolder);
 
-            return 0;
-        }
+            foreach (string texturePath in texturePaths) {
 
-        public static int Import(string[] args) {
-            AsssertValues(args, 1);
-            foreach (string vr in args) {
-                Console.WriteLine("Importing: " + vr);
-                if (!File.Exists(vr)) {
-                    Console.WriteLine("File " + vr + " could not be found!");
-                    return WRONG_PARAMS;
+                if (!File.Exists(texturePath)) {
+                    Console.WriteLine("Texture '{0}' could not be found, skipping", texturePath);
+                    continue;
                 }
-                string[] exnamesplit = vr.Replace("\\", "/").Split("/");
-                string filename = exnamesplit[exnamesplit.Length - 1].Split(".")[0];
-                Load();
-                if (Cache.PRELOAD.texturs.ContainsKey(filename))
-                    return ALREADY_EXIST;
-                byte[] tex = File.ReadAllBytes(vr);
-                FileStream stream = File.Open(Path.Combine(Program.CWD, "Resources.json"), FileMode.Append);
-                TextureDesc texture = new TextureDesc();
-                texture.offset = stream.Position;
-                texture.size = tex.Length;
-                stream.Write(tex, 0, tex.Length);
-                stream.Close();
-                Cache.PRELOAD.texturs.Add(filename, texture);
+
+                string fileName = Path.GetFileNameWithoutExtension(texturePath);
+
+                if (GetExistingTextureNames().Contains(fileName)) {
+                    Console.WriteLine("Texture '{0}' already exists, skipping", fileName);
+                    continue;
+                }
+
+                File.Copy(texturePath, Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
+                Console.WriteLine("Texture '{0}' was successfully added!", fileName);
+
             }
-            Flush();
+
             return SUCCESS;
         }
 
-        public static int Add(string[] args) {
-            AsssertValues(args, 1);
-            Load();
-            if (Cache.PRELOAD.texturs.ContainsKey(args[0]))
-                return ALREADY_EXIST;
-            Cache.PRELOAD.texturs.Add(args[0], new TextureDesc());
-            Flush();
-            return 0;
-        }
+        public static int TextureRm(string[] args) {
 
-        public static int Rm(string[] args) {
-            AsssertValues(args, 1);
-            Load();
-            if (!Cache.PRELOAD.texturs.Remove(args[0]))
+            AssertValues(args, 1);
+
+            // If the file name contains a space then it's being taken care of with this
+            string fileName = string.Join(" ", args);
+
+            if (!GetExistingTextureNames().Contains(fileName)) {
+                Console.WriteLine("Texture '{0}' was not found!", fileName);
                 return WRONG_PARAMS;
-            Flush();
+            } else {
+                File.Delete(Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
+            }
+
+            Console.WriteLine("Texture '{0}' was successfully removed!", fileName);
+            return SUCCESS;
+
+        }
+
+        public static int TextureList() {
+            string[] textures = GetExistingTextureNames();
+            Console.WriteLine("Count: {0} textures", textures.Length);
+
+            if (textures.Length == 0)
+                Console.WriteLine("No textures added, use 'texture add \"<path>\"' to add a new texture");
+            else
+                foreach (string texture in textures)
+                    Console.WriteLine("- {0}", texture);
+
             return 0;
         }
 
-        public static int List() {
-            Load();
-            var enumerator = Cache.PRELOAD.texturs.Keys.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                Console.WriteLine(enumerator.Current);
-            }
-            return 0;
+        public static string[] GetExistingTextureNames() {
+
+            string[] textures = Directory.GetFiles(Program.ResourcesFolder)
+                                         .Where(file => file.EndsWith(".tgx"))
+                                         .Select(path => Path.GetFileNameWithoutExtension(path))
+                                         .ToArray();
+
+            return textures;
+
         }
+
     }
+
 }

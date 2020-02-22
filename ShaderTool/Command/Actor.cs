@@ -40,7 +40,7 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorAdd(string[] args) {
-            AsssertValues(args, 2); // has to be two params, one for name and one for material
+            AssertValues(args, 2); // has to be two params, one for name and one for material
 
             if (!Directory.Exists(Program.ResourcesFolder)) {
                 Directory.CreateDirectory(Program.ResourcesFolder);
@@ -77,7 +77,7 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorRm(string[] args) {
-            AsssertValues(args, 1);
+            AssertValues(args, 1);
 
             string actorName = args[0];
             string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
