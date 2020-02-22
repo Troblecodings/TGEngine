@@ -90,7 +90,7 @@ namespace ShaderTool.Command {
 
             MaterialData newMaterial = new MaterialData();
             Cache.MATERIALS.Add(name, newMaterial);
-            Console.WriteLine("Added new material {0}, don't forget to use \"material save\"", name);
+            Console.WriteLine("Added new material {0}!", name);
 
             Save();
             return SUCCESS;
