@@ -3,6 +3,7 @@ using ShaderTool.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static ShaderTool.Error;
 using static ShaderTool.Util.Util;
 
@@ -28,13 +29,65 @@ namespace ShaderTool.Command {
                 case "rm":
                 case "remove":
                     return MaterialRm(GetParams(args));
+                case "settexture":
+                case "settex":
+                    return MaterialSetTexture(GetParams(args));
+                case "setcolor":
+                    return MaterialSetColor(GetParams(args));
                 case "list":
                     return MaterialList();
             }
 
-            Console.WriteLine("Wrong parameters! Must be save/add/rm/list!");
+            Console.WriteLine("Wrong parameters! Must be save/add/rm/list/settexture/setcolor!");
             return WRONG_PARAMS;
+        }
 
+        private static int MaterialSetColor(string[] args) {
+            Load();
+
+            string name = args[0];
+            if (!Cache.MATERIALS.ContainsKey(name)) {
+                Console.WriteLine("{0} does not exist!", name);
+                return WRONG_PARAMS;
+            }
+
+            uint output;
+            if (uint.TryParse(args[1], System.Globalization.NumberStyles.HexNumber, null, out output)) {
+                float r = ((output & 0xFF000000) >> 24) / 255;
+                float g = ((output & 0x00FF0000) >> 16) / 255;
+                float b = ((output & 0x0000FF00) >> 8) / 255;
+                float a = ((output & 0x000000FF) / 255);
+                Cache.MATERIALS[name].color = new float[] { r, g, b, a };
+                Save();
+                return SUCCESS;
+            }
+
+            Console.WriteLine("{0} is not a hex number (needs to be without 0x)!", args[1]);
+            return WRONG_PARAMS;
+        }
+
+        public static int MaterialSetTexture(string[] args) {
+            AssertValues(args, 2);
+            
+            Load();
+
+            string name = args[0];
+            if(!Cache.MATERIALS.ContainsKey(name)) {
+                Console.WriteLine("{0} does not exist!", name);
+                return WRONG_PARAMS;
+            }
+
+            MaterialData material = Cache.MATERIALS[name];
+
+            if (Texture.GetExistingTextureNames().Contains(args[1])) {
+                material.diffuseTexture = args[1];
+                Cache.MATERIALS[name] = material;
+                Save();
+                return SUCCESS;
+            }
+
+            Console.WriteLine("Texture {0} does not exist, skipping", args[1]);
+            return WRONG_PARAMS;
         }
 
         public static void Load() {
@@ -70,7 +123,7 @@ namespace ShaderTool.Command {
 
         public static int MaterialAdd(string[] args) {
 
-            AssertValues(args, 1);
+            AsssertNoneNull(args);
 
             if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
                 Console.WriteLine("Maximum limit of 256 textures reached, cannot add more");
@@ -89,6 +142,23 @@ namespace ShaderTool.Command {
             }
 
             MaterialData newMaterial = new MaterialData();
+
+            if (args.Length > 1 && Texture.GetExistingTextureNames().Contains(args[1]))
+                newMaterial.diffuseTexture = args[1];
+
+            if (args.Length == 3) {
+                uint output;
+                if (!uint.TryParse(args[2], System.Globalization.NumberStyles.HexNumber, null, out output)) {
+                    Console.WriteLine("{0} is not a hex number!", args[2]);
+                } else {
+                    float r = ((output & 0xFF000000) >> 24) / 255;
+                    float g = ((output & 0x00FF0000) >> 16) / 255;
+                    float b = ((output & 0x0000FF00) >> 8) / 255;
+                    float a = ((output & 0x000000FF) / 255);
+                    newMaterial.color = new float[] { r, g, b, a };
+                }
+            }
+
             Cache.MATERIALS.Add(name, newMaterial);
             Console.WriteLine("Added new material '{0}'!", name);
 
