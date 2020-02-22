@@ -17,6 +17,7 @@ namespace ShaderTool.Command {
                 case "add":
                     return TextureAdd(GetParams(args));
                 case "rm":
+                case "remove":
                     return TextureRm(GetParams(args));
                 case "list":
                     return TextureList();
