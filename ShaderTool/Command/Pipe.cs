@@ -43,7 +43,7 @@ namespace ShaderTool.Command {
                 string Text = File.ReadAllText(Path);
                 ShaderPipe Pipe = JsonConvert.DeserializeObject<ShaderPipe>(Text);
                 string VertexShader = Array.Find(Pipe.ShaderNames, Name => Name.StartsWith("Vertex"));
-                string VsPath = Program.CWD + "\\" + VertexShader + ".glsl";
+                string VsPath = System.IO.Path.Combine(Program.CWD, VertexShader + ".glsl");
                 if (File.Exists(VsPath)) {
                     // Updating inputs
                     Pipe.Inputs = GetInputs(VertexShader);
@@ -87,7 +87,7 @@ namespace ShaderTool.Command {
         // Create pipe
         public static int PipeCreate(string[] args) {
             AsssertNoneNull(args);
-            AsssertValues(args, 2);
+            AssertValues(args, 2);
 
             string Name = args[0];
             string[] Shader = GetParams(args);
