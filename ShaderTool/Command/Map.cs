@@ -80,7 +80,7 @@ namespace ShaderTool.Command {
                 Material.Load();
                 uint textureID = Cache.MATERIALS[materialName].diffuseTexture;
 
-                Texture.Load();
+                //Texture.Load();
                 string textureName = Cache.PRELOAD.textures.Keys.ToArray()[textureID];
                 if (!newTextureNames.Contains(textureName) && textureName != null) {
                     newTextureNames.Add(textureName);
