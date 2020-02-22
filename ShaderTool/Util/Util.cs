@@ -10,8 +10,7 @@ namespace ShaderTool.Util {
         public static string[] GetParams(string[] args) {
 
             if (args.Length > 1)
-                return args.Skip(1)
-                           .ToArray();
+                return args.Skip(1).ToArray();
             else
                 return null;
 
@@ -23,7 +22,6 @@ namespace ShaderTool.Util {
             if (args == null || args.Length < minlen) {
                 Console.WriteLine("Not enough arguments!");
 
-                // TODO: Change error handling, so the console isn't exited
                 if (!Program.IsInConsoleMode)
                     Environment.Exit(NOT_ENOUGH_PARAMS);
 

@@ -36,7 +36,7 @@ namespace ShaderTool {
                     return 0;
             }
 
-            System.Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
+            Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
             return WRONG_PARAMS;
         }
 
@@ -61,13 +61,13 @@ namespace ShaderTool {
 
                     int returnCode = Execute(args[0], GetParams(args));
                     if (returnCode != SUCCESS)
-                        Console.WriteLine("Exit code " + returnCode);                    
+                        Console.WriteLine("Exit code " + returnCode);
                 }
             }
 
             if (!AssertValues(args))
                 return NOT_ENOUGH_PARAMS;
-            
+
             return Execute(args[0], GetParams(args));
         }
 
