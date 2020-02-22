@@ -72,13 +72,13 @@ namespace ShaderTool.Command {
             AssertValues(args, 1);
 
             // If the file name contains a space then it's being taken care of with this
-            string fileName = string.Join(" ", args) + ".tgx";
+            string fileName = string.Join(" ", args);
 
             if (!GetExistingTextureNames().Contains(fileName)) {
                 Console.WriteLine("Texture {0} was not found!", fileName);
                 return WRONG_PARAMS;
             } else {
-                File.Delete(Path.Combine(Program.ResourcesFolder, fileName));
+                File.Delete(Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
             }
 
             Console.WriteLine("Texture {0} was successfully removed!", fileName);
@@ -90,8 +90,11 @@ namespace ShaderTool.Command {
             string[] textures = GetExistingTextureNames();
             Console.WriteLine("Count: {0} textures", textures.Length);
 
-            foreach (string texture in textures)
-                Console.WriteLine("- {0}", texture);
+            if (textures.Length == 0)
+                Console.WriteLine("No textures added, use 'texture add \"<path>\"' to add a new texture");
+            else
+                foreach (string texture in textures)
+                    Console.WriteLine("- {0}", texture);
 
             return 0;
         }
