@@ -99,11 +99,12 @@ namespace ShaderTool.Command {
         public static string[] GetExistingTextureNames() {
 
             string[] textures = Directory.GetFiles(Program.ResourcesFolder)
-                             .Where(file => file.EndsWith(".tgx"))
-                             .Select(path => Path.GetFileNameWithoutExtension(path))
-                             .ToArray();
+                                         .Where(file => file.EndsWith(".tgx"))
+                                         .Select(path => Path.GetFileNameWithoutExtension(path))
+                                         .ToArray();
 
             return textures;
+
         }
 
     }
