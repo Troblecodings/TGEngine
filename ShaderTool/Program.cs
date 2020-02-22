@@ -42,6 +42,9 @@ namespace ShaderTool {
 
         public static int Main(string[] args) {
 
+            if (!Directory.Exists(ResourcesFolder))
+                Directory.CreateDirectory(ResourcesFolder);
+
             args = GetParamas(args);
             if (args.Length < 1) {
                 console = true;
