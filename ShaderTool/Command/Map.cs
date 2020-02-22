@@ -45,7 +45,7 @@ namespace ShaderTool.Command {
         }
 
         public static MapData Load(string mapName) {
-            string resourceFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
+            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
 
             if (!File.Exists(resourceFilePath))
                 return null;
@@ -57,7 +57,7 @@ namespace ShaderTool.Command {
         }
 
         public static void Save(string mapName, MapData map) {
-            string resourceFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
+            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
             File.WriteAllText(resourceFilePath, JsonConvert.SerializeObject(map, Formatting.Indented));
         }
 
@@ -133,7 +133,7 @@ namespace ShaderTool.Command {
 
             string mapName = args[0];
             string[] actors = GetParams(args);
-            string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
+            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
 
             if (!AssertName(mapName)) {
                 return WRONG_PARAMS;
@@ -158,7 +158,7 @@ namespace ShaderTool.Command {
             AssertValues(args, 1);
 
             string mapName = args[0];
-            string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
+            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
 
             if (!File.Exists(mapFilePath)) {
                 Console.WriteLine("Map {0} was not found", mapName);
@@ -174,8 +174,8 @@ namespace ShaderTool.Command {
             AsssertNoneNull(args);
 
             string mapName = args[0];
-            string mapFilePath = Program.ResourcesFolder + "\\" + mapName + ".json";
-            string resourceFilePath = Program.ResourcesFolder + "\\" + mapName + ".tgr";
+            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".tgr");
 
             // .tgr file format documentation:
             // https://troblecodings.com/fileformat.html
@@ -302,7 +302,7 @@ namespace ShaderTool.Command {
 
             foreach (string mapTextureName in mapTextureNames) {
 
-                string textureFilePath = Program.ResourcesFolder + "\\" + mapTextureName + ".tgx";
+                string textureFilePath = Path.Combine(Program.ResourcesFolder, mapTextureName + ".tgx");
 
                 if (!File.Exists(textureFilePath)) {
                     Console.WriteLine("{0} is not a texture.", mapTextureName);
