@@ -20,7 +20,9 @@ namespace ShaderTool.Command {
         public const uint TGR_VERSION = 1;
 
         public static int MapCommand(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             switch (args[0]) {
                 case "add":
@@ -90,7 +92,6 @@ namespace ShaderTool.Command {
         }
 
         public static void AddActors(MapData map, string[] actorsToAdd) {
-            AssertValues(actorsToAdd, 1);
 
             if (map.actorNames == null)
                 map.actorNames = new string[0];
@@ -123,7 +124,9 @@ namespace ShaderTool.Command {
         }
 
         public static int MapAdd(string[] args) {
-            AssertValues(args, 1);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             if (!Directory.Exists(Program.ResourcesFolder))
                 Directory.CreateDirectory(Program.ResourcesFolder);
@@ -150,7 +153,8 @@ namespace ShaderTool.Command {
         }
 
         public static int MapRm(string[] args) {
-            AssertValues(args, 1);
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
             string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
@@ -166,7 +170,9 @@ namespace ShaderTool.Command {
         }
 
         public static int MapMake(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
             string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
@@ -234,7 +240,8 @@ namespace ShaderTool.Command {
         }
 
         public static int MapAddActor(string[] args) {
-            AssertValues(args, 2);
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
             string[] actorsToAdd = GetParams(args);
@@ -253,7 +260,9 @@ namespace ShaderTool.Command {
         }
 
         public static int MapRmActor(string[] args) {
-            AssertValues(args, 2);
+
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
             string[] actorsToRemove = GetParams(args);
@@ -409,14 +418,14 @@ namespace ShaderTool.Command {
 
                 // Write 0, because we don't want to supply the pointer -> Nullpointer
                 // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0l));
+                resourceStream.Write(BitConverter.GetBytes(0L));
 
                 // Write the amount of vertex points into the file
                 resourceStream.Write(BitConverter.GetBytes(actorData.vertexCount));
 
                 // Write 0, because we don't want to supply the pointer -> Nullpointer
                 // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0l));
+                resourceStream.Write(BitConverter.GetBytes(0L));
 
                 // Write all indices to file
                 if (actorData.indexCount != 0) // Not sure how to handle this?
