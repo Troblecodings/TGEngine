@@ -23,7 +23,9 @@ namespace ShaderTool.Command {
     class Actor {
 
         public static int ActorCommand(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             switch (args[0]) {
                 case "add":
@@ -40,18 +42,19 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorAdd(string[] args) {
-            AssertValues(args, 2); // has to be two params, one for name and one for material
 
-            if (!Directory.Exists(Program.ResourcesFolder)) {
+            // has to be two params, one for name and one for material
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
+            if (!Directory.Exists(Program.ResourcesFolder))
                 Directory.CreateDirectory(Program.ResourcesFolder);
-            }
 
             string actorName = args[0];
             string materialName = args[1];
 
-            if (!AssertName(actorName)) {
+            if (!AssertName(actorName))
                 return WRONG_PARAMS;
-            }
 
             string path = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
 
@@ -62,9 +65,8 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
                 File.Create(path).Close();
-            }
 
             ActorData newActor = new ActorData {
                 name = actorName,
@@ -77,7 +79,9 @@ namespace ShaderTool.Command {
         }
 
         public static int ActorRm(string[] args) {
-            AssertValues(args, 1);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             string actorName = args[0];
             string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");

@@ -13,7 +13,9 @@ namespace ShaderTool.Command {
      */
     class Pipe {
         public static int PipeCommand(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
 
             switch (args[0]) {
                 case "create":
@@ -36,7 +38,10 @@ namespace ShaderTool.Command {
 
         // Updates inputs
         public static int PipeUpdate(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
             string Path = System.IO.Path.Combine(Program.CWD, args[0] + "Pipe.json");
             if (File.Exists(Path)) {
                 // Getting old Pipe
@@ -61,7 +66,10 @@ namespace ShaderTool.Command {
         }
 
         public static int PipeShow(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
             string Path = System.IO.Path.Combine(Program.CWD, args[0] + "Pipe.json");
             if (File.Exists(Path)) {
                 string Text = File.ReadAllText(Path);
@@ -86,8 +94,9 @@ namespace ShaderTool.Command {
 
         // Create pipe
         public static int PipeCreate(string[] args) {
-            AsssertNoneNull(args);
-            AssertValues(args, 2);
+
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
 
             string Name = args[0];
             string[] Shader = GetParams(args);
@@ -191,7 +200,10 @@ namespace ShaderTool.Command {
 
         // Delete pipeline
         public static int PipeDelete(string[] args) {
-            AsssertNoneNull(args);
+
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
+
             string Name = args[0];
             File.Delete(Path.Combine(Program.CWD, Name + "Pipe.json"));
             return SUCCESS;
