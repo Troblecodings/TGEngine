@@ -72,18 +72,18 @@ void loadResourceFile(const char* name, Map* map) {
 
 
 		/*
-		 * It would make sense to use staging buffer in this case to add the indicies 
+		 * It would make sense to use staging buffer in this case to add the indices 
 		 * directly to the Graphics card
 		 */
 
-		// Reads the indicies from the file
+		// Reads the indices from the file
 		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
 		fread(&actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
-		// calculates the length of the verteicies to read
+		// calculates the length of the vertices to read
 		uint32_t len = blocklength - (sizeof(ActorInputInfo) + sizeof(uint32_t) * actorInfo.indexCount);
 
-		// Reads the verticies
+		// Reads the vertices
 		actorInfo.pVertices = new uint8_t[len]; // Object lifetime?
 		fread(actorInfo.pVertices, sizeof(uint8_t), len, file);
 
