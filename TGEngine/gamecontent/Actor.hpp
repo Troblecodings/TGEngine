@@ -53,10 +53,10 @@ namespace tge::gmc {
      */
 	struct ActorInputInfo {
 		ActorProperties pProperties;
-		uint32_t  indexCount;
-		uint32_t* pIndices;
-		uint16_t  vertexCount;
-		uint8_t*  pVertices;
+		uint32_t        indexCount;
+		uint32_t*       pIndices;
+		uint16_t        vertexCount;
+		uint8_t*        pVertices;
 	};
 
 	/*

@@ -10,14 +10,14 @@ using static ShaderTool.Util.Util;
 namespace ShaderTool.Command {
 
     class ActorData {
-        public string name;
+        public string    name;
         public float[][] localTransform;
-        public uint[] indices;
-        public float[] vertices;
-        public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
-        public uint indexCount;
-        public uint vertexCount;
-        public byte layerId;
+        public uint[]    indices;
+        public float[]   vertices;
+        public string    materialName; // will be used to iterate over the materials list and then assign a byte index when making
+        public uint      indexCount;
+        public uint      vertexCount;
+        public byte      layerId;
     }
 
     class Actor {

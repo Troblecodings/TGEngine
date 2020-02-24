@@ -2,13 +2,15 @@
 
 #include "../Stdbase.hpp"
 #include "../gamecontent/Material.hpp"
+#include "../gamecontent/Actor.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 
 #define TGR_VERSION_1 1
 
 struct Map {
-	tge::tex::Texture* textures;
-	tge::gmc::Material* materials;
+	std::vector<tge::tex::TextureInputInfo> textures;
+	std::vector<tge::gmc::Material> materials;
+	std::vector<tge::gmc::ActorInputInfo> actors;
 };
 
-Map loadResourceFile(char* name);
+void loadResourceFile(const char* name, Map* map);

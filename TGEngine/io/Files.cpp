@@ -11,7 +11,7 @@ namespace tge {
 			GetCurrentDir(current_working_dir, sizeof(current_working_dir));
 		}
 
-		File open(char* name, char* mode) {
+		File open(const char* name, const char* mode) {
 			ASSERT_NONE_NULL_DB(name, "Filename is null!", TG_ERR_DB_NULLPTR)
 				ASSERT_NONE_NULL_DB((*name != 0), "Filename is empty!", TG_ERR_DB_EMPTY_STRING)
 				ASSERT_NONE_NULL_DB(mode, "Mode is null [" << name << "] !", TG_ERR_DB_NULLPTR)
@@ -22,7 +22,7 @@ namespace tge {
 				return file;
 		}
 
-		File readFileSize(char* name, char* mode, long* fileLength) {
+		File readFileSize(const char* name, const char* mode, long* fileLength) {
 			ASSERT_NONE_NULL_DB(fileLength, "File length pointer is null [" << name << "] !", TG_ERR_DB_NULLPTR)
 				File file = open(name, mode);
 
@@ -33,7 +33,7 @@ namespace tge {
 			return file;
 		}
 
-		uint8_t* readAll(char* name) {
+		uint8_t* readAll(const char* name) {
 			long size = 0;
 			File file = readFileSize(name, "rb", &size);
 			uint8_t* data = new uint8_t[size];

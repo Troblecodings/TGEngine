@@ -54,19 +54,19 @@ namespace tge {
 		 * Opens the file
 		 * (In debug mode it checks if the open was successful)
 		 */
-		File open(char* name, char* mode);
+		File open(const char* name, const char* mode);
 
 		/*
 		 * Opens the file and gets the size of the file
 		 * (In debug mode it checks if the open was successful)
 		 * (the long* needs to be valid pointer, will be checked in debug mode)
 		 */
-		File readFileSize(char* name, char* mode, /*OUT*/ long* fileLength);
+		File readFileSize(const char* name, const char* mode, /*OUT*/ long* fileLength);
 
 		/*
 		 * Reads all bytes of a file
 		 * (In debug mode it checks if the open was successful)
 		 */
-		uint8_t* readAll(char* name);
+		uint8_t* readAll(const char* name);
 	}
 }

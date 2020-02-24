@@ -57,7 +57,7 @@ namespace ShaderTool.Command {
                     continue;
                 }
 
-                string fileName = Path.GetFileNameWithoutExtension(texturePath);
+                string fileName = Path.GetFileNameWithoutExtension(texturePath).Replace(" ", "_");
 
                 if (GetExistingTextureNames().Contains(fileName)) {
                     Console.WriteLine("Texture '{0}' already exists, skipping", fileName);
