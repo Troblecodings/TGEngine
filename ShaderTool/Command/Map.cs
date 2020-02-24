@@ -395,9 +395,8 @@ namespace ShaderTool.Command {
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
                 // Write the local transform as a 4x4 matrix into the file
-                for (int i = 0; i < 4; i++)
-                    for (int y = 0; y < 4; y++)
-                        resourceStream.Write(BitConverter.GetBytes(actorData.localTransform == null ? 0f : actorData.localTransform[i][y]));
+                for (int y = 0; y < 16; y++)
+                    resourceStream.Write(BitConverter.GetBytes(actorData.localTransform == null ? 0f : actorData.localTransform[y]));
 
                 // Find the material ID from the material name
                 byte id;
