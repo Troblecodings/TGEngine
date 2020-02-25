@@ -10,8 +10,8 @@ namespace tge {
 		 * Holds the information needed to supply a top-down camera
 		 */
 		struct TopDownCamera {
-			float positionx;
-			float positiony;
+			float    positionx;
+			float    positiony;
 			uint32_t screenwidth;
 			uint32_t screenheight;
 		};

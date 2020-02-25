@@ -182,26 +182,6 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
-	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded) {
-		for (uint32_t i = 0; i < size; i++) {
-			ResourceDescriptor desc = input[i];
-			if (ftell(file) != desc.offset)
-				fseek(file, (long)desc.offset, SEEK_SET);
-			stbi_uc* resbuffer = new stbi_uc[desc.size];
-			fread(resbuffer, sizeof(char), desc.size, file);
-			loaded[i].data = stbi_load_from_memory(resbuffer, (int)desc.size, &loaded[i].x, &loaded[i].y, &loaded[i].comp, STBI_rgb_alpha);
-		}
-	}
-
-	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded) {
-		for (uint32_t i = 0; i < size; i++) {
-			ResourceDescriptor desc = input[i];
-			if (ftell(file) != desc.offset)
-				fseek(file, (long)desc.offset, SEEK_SET);
-			fread(&loaded[i], sizeof(char), desc.size, file);
-		}
-	}
-
 	void createSampler(SamplerInputInfo loaded, Sampler* sampler, SamplerBindingInfo* layer) {
 		// TODO Validation checks
 

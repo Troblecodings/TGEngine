@@ -1,13 +1,14 @@
 #include "Resource.hpp"
 #include "../io/Files.hpp"
 #include "../gamecontent/Actor.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace tge::nio;
 using namespace tge::tex;
 using namespace tge::gmc;
 
 void loadResourceFile(const char* name, Map* map) {
-	File file = open(name, "r");
+	File file = open(name, "rb");
 
 	uint32_t header = 0;
 	fread(&header, sizeof(uint32_t), 1, file);
@@ -26,7 +27,7 @@ void loadResourceFile(const char* name, Map* map) {
 	while (blocklength != UINT32_MAX)
 	{
 		stbi_uc* resbuffer = new stbi_uc[blocklength];
-		fread(resbuffer, sizeof(char), blocklength, file);
+		uint32_t test = fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
 		TextureInputInfo inputInfo;
 		inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
@@ -35,7 +36,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file) != 0)
+	if (feof(file))
 		return;
 
 	blocklength = 0;
@@ -54,7 +55,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file) != 0)
+	if (feof(file))
 		return;
 
 	// Start to read the actor
@@ -68,8 +69,17 @@ void loadResourceFile(const char* name, Map* map) {
 	{
 		// Reads the actor properties and so on
 		ActorInputInfo actorInfo;
-		fread(&actorInfo, sizeof(ActorInputInfo), 1, file);
 
+		// Sadly we cannot reduce read calls and have to do this all with manually
+		float transformMatrix[16];
+		fread(&transformMatrix, sizeof(float), 16, file);
+		actorInfo.pProperties.localTransform = glm::make_mat4(transformMatrix);
+
+		fread(&actorInfo.pProperties.material, sizeof(uint8_t), 1, file);
+		fread(&actorInfo.pProperties.layer, sizeof(uint8_t), 1, file);
+		fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
+		fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+		// 2x4 + 2 + 4x16
 
 		/*
 		 * It would make sense to use staging buffer in this case to add the indices 
@@ -78,19 +88,11 @@ void loadResourceFile(const char* name, Map* map) {
 
 		// Reads the indices from the file
 		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
-		fread(&actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
-
-		// calculates the length of the vertices to read
-		uint32_t len = blocklength - (sizeof(ActorInputInfo) + sizeof(uint32_t) * actorInfo.indexCount);
+		fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
 		// Reads the vertices
-		actorInfo.pVertices = new uint8_t[len]; // Object lifetime?
-		fread(actorInfo.pVertices, sizeof(uint8_t), len, file);
-
-		// Not sure about object lifetime here ... problem could be that the objects are being deleted
-		// if the method exits. However those should be part of the ouput
-		// which is returned ... this hover is only a local variable
-		// Needs research
+		actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
+		fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
 
 		map->actors.push_back(actorInfo);
 
@@ -98,7 +100,35 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	createActor(map->actors.data(), (uint32_t)map->actors.size());
+	fclose(file);
 
+	// This is going to be simplified with 89 (See Backlog)
+	// TODO
+
+	SamplerInputInfo inputInfo;
+	inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	inputInfo.filterMagnification = VK_FILTER_NEAREST;
+	inputInfo.filterMignification = VK_FILTER_NEAREST;
+
+	Sampler sampler;
+	SamplerBindingInfo sinfo;
+	createSampler(inputInfo, &sampler, &sinfo);
+
+	Texture* tex = new Texture[map->textures.size()];
+	TextureBindingInfo* info = new TextureBindingInfo[2048];
+	createTextures(map->textures.data(), map->textures.size(), tex, info);
+
+	bindSampler(sinfo, 0);
+	bindSampler(sinfo, 1);
+
+	bindTextures(info, 2048, 0);
+	bindTextures(info, 2048, 1);
+
+	createdMaterials = new Material[map->materials.size()];
+	for (size_t i = 0; i < map->materials.size(); i++)
+		createdMaterials[i] = map->materials[i];
+
+	createActor(map->actors.data(), map->actors.size());
 	return;
 }
