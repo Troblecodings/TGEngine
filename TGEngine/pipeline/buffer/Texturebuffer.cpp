@@ -6,7 +6,7 @@ namespace tge::tex {
 
 	TextureDefaults defaults;
 
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* imagedesc) {
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output) {
 		// TODO default format checks
 
 		VkBuffer* bufferlist = new VkBuffer[size];
@@ -14,6 +14,7 @@ namespace tge::tex {
 
 		VkImageMemoryBarrier* entrymemorybarriers = new VkImageMemoryBarrier[size];
 		VkImageMemoryBarrier* exitmemorybarriers = new VkImageMemoryBarrier[size];
+		TextureBindingInfo imagedesc[2048];
 
 		for (uint32_t i = 0; i < size; i++) {
 			// Todo do Vulkan stuff
@@ -51,9 +52,7 @@ namespace tge::tex {
 
 			CHECKFAIL(vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &output[i].imagememory));
 
-
 			CHECKFAIL(vkBindImageMemory(device, output[i].image, output[i].imagememory, 0));
-
 
 			VkBufferCreateInfo bufferCreateInfo;
 			bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -156,7 +155,6 @@ namespace tge::tex {
 			vkDestroyBuffer(device, bufferlist[i], nullptr);
 		}
 
-#ifndef DISABLE_TEXTURE_FILL
 		VkImageView usedview = imagedesc[0].imageView;
 
 		for (uint32_t i = size; i < 2048; i++) {
@@ -164,14 +162,11 @@ namespace tge::tex {
 			imagedesc[i].imageView = usedview;
 			imagedesc[i].sampler = VK_NULL_HANDLE;
 		}
-#endif // !DISABLE_TEXTURE_FILL
-	}
 
-	void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer) {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSet[layer];
+		descwrite.dstSet = mainDescriptorSets[2];
 		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = size;
@@ -182,7 +177,7 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
-	void createSampler(SamplerInputInfo loaded, Sampler* sampler, SamplerBindingInfo* layer) {
+	void createSampler(SamplerInputInfo loaded, Sampler* sampler) {
 		// TODO Validation checks
 
 		VkSamplerCreateInfo samplerCreateInfo;
@@ -207,21 +202,20 @@ namespace tge::tex {
 
 		CHECKFAIL(vkCreateSampler(device, &samplerCreateInfo, nullptr, sampler));
 
-		layer->sampler = *sampler;
-		layer->imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		layer->imageView = VK_NULL_HANDLE;
-	}
+		SamplerBindingInfo layer;
+		layer.sampler = *sampler;
+		layer.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		layer.imageView = VK_NULL_HANDLE;
 
-	void bindSampler(SamplerBindingInfo input, uint32_t layer) {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSet[layer];
+		descwrite.dstSet = mainDescriptorSets[2];
 		descwrite.dstBinding = 1;
 		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = 1;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-		descwrite.pImageInfo = &input;
+		descwrite.pImageInfo = &layer;
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);

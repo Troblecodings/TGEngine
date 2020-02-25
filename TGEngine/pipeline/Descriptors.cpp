@@ -1,7 +1,7 @@
 #include "Descriptors.hpp"
 
 VkPipelineLayout pipelineLayout;
-VkDescriptorSet mainDescriptorSet[2];
+VkDescriptorSet mainDescriptorSets[3];
 
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
@@ -88,5 +88,5 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.descriptorSetCount = 3;
 	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[]{ descriptorSetLayout[0], descriptorSetLayout[0], descriptorSetLayout[1] };
 
-	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSet));
+	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSets));
 }

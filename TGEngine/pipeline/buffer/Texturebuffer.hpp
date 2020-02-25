@@ -44,11 +44,7 @@ namespace tge::tex {
 	typedef VkDescriptorImageInfo TextureBindingInfo;
 	typedef VkSampler Sampler;
 
-	void createSampler(SamplerInputInfo input, Sampler* sampler, SamplerBindingInfo* bindinginfo);
+	void createSampler(SamplerInputInfo input, Sampler* sampler);
 
-	void bindSampler(SamplerBindingInfo input, uint32_t layer);
-
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* bindinginfo);
-
-	void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer);
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);
 }
