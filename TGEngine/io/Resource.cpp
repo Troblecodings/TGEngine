@@ -90,12 +90,9 @@ void loadResourceFile(const char* name, Map* map) {
 		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
 		fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
-		// calculates the length of the vertices to read
-		uint32_t len = blocklength - (74 + sizeof(uint32_t) * actorInfo.indexCount);
-
 		// Reads the vertices
-		actorInfo.pVertices = new uint8_t[len]; // Object lifetime?
-		fread(actorInfo.pVertices, sizeof(uint8_t), len, file);
+		actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
+		fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
 
 		map->actors.push_back(actorInfo);
 

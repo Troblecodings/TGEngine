@@ -389,9 +389,7 @@ namespace ShaderTool.Command {
 
                 ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
 
-                // Write size of this block in bytes to file
-                // 4*16 + 2 + 2*4 = 74
-                uint actorDataSize = 74 + (uint)(actorData.indexCount + actorData.vertices.Length) * 4u;
+                uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
                 // Write the local transform as a 4x4 matrix into the file
