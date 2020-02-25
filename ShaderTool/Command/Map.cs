@@ -390,13 +390,13 @@ namespace ShaderTool.Command {
                 ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
 
                 // Write size of this block in bytes to file
-                // 2 + 2 * (4 + 8) = 26
-                uint actorDataSize = 26 + (actorData.indexCount + actorData.vertexCount) * 4;
+                // 4*16 + 2 + 2*4 = 74
+                uint actorDataSize = 74 + (actorData.indexCount + actorData.vertexCount) * 4;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
                 // Write the local transform as a 4x4 matrix into the file
                 for (int y = 0; y < 16; y++)
-                    resourceStream.Write(BitConverter.GetBytes(actorData.localTransform == null ? 0f : actorData.localTransform[y]));
+                    resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[y]));
 
                 // Find the material ID from the material name
                 byte id;
@@ -415,16 +415,8 @@ namespace ShaderTool.Command {
                 // Write the index count so that we know how many indices are in the actor
                 resourceStream.Write(BitConverter.GetBytes(actorData.indexCount));
 
-                // Write 0, because we don't want to supply the pointer -> Nullpointer
-                // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0L));
-
                 // Write the amount of vertex points into the file
                 resourceStream.Write(BitConverter.GetBytes(actorData.vertexCount));
-
-                // Write 0, because we don't want to supply the pointer -> Nullpointer
-                // reserved for further use
-                resourceStream.Write(BitConverter.GetBytes(0L));
 
                 // Write all indices to file
                 if (actorData.indexCount != 0) // Not sure how to handle this?

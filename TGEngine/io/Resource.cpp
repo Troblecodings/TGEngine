@@ -1,13 +1,14 @@
 #include "Resource.hpp"
 #include "../io/Files.hpp"
 #include "../gamecontent/Actor.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace tge::nio;
 using namespace tge::tex;
 using namespace tge::gmc;
 
 void loadResourceFile(const char* name, Map* map) {
-	File file = open(name, "r");
+	File file = open(name, "rb");
 
 	uint32_t header = 0;
 	fread(&header, sizeof(uint32_t), 1, file);
@@ -26,7 +27,7 @@ void loadResourceFile(const char* name, Map* map) {
 	while (blocklength != UINT32_MAX)
 	{
 		stbi_uc* resbuffer = new stbi_uc[blocklength];
-		fread(resbuffer, sizeof(char), blocklength, file);
+		uint32_t test = fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
 		TextureInputInfo inputInfo;
 		inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
@@ -35,7 +36,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file) != 0)
+	if (feof(file))
 		return;
 
 	blocklength = 0;
@@ -54,7 +55,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file) != 0)
+	if (feof(file))
 		return;
 
 	// Start to read the actor
@@ -68,8 +69,17 @@ void loadResourceFile(const char* name, Map* map) {
 	{
 		// Reads the actor properties and so on
 		ActorInputInfo actorInfo;
-		fread(&actorInfo, sizeof(ActorInputInfo), 1, file);
 
+		// Sadly we cannot reduce read calls and have to do this all with manually
+		float transformMatrix[16];
+		fread(&transformMatrix, sizeof(float), 16, file);
+		actorInfo.pProperties.localTransform = glm::make_mat4(transformMatrix);
+
+		fread(&actorInfo.pProperties.material, sizeof(uint8_t), 1, file);
+		fread(&actorInfo.pProperties.layer, sizeof(uint8_t), 1, file);
+		fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
+		fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+		// 2x4 + 2 + 4x16
 
 		/*
 		 * It would make sense to use staging buffer in this case to add the indices 
@@ -81,7 +91,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
 		// calculates the length of the vertices to read
-		uint32_t len = blocklength - (sizeof(ActorInputInfo) + sizeof(uint32_t) * actorInfo.indexCount);
+		uint32_t len = blocklength - (74 + sizeof(uint32_t) * actorInfo.indexCount);
 
 		// Reads the vertices
 		actorInfo.pVertices = new uint8_t[len]; // Object lifetime?
@@ -98,7 +108,7 @@ void loadResourceFile(const char* name, Map* map) {
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	createActor(map->actors.data(), (uint32_t)map->actors.size());
+	fclose(file);
 
 	return;
 }
