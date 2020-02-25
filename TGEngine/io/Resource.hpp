@@ -13,4 +13,10 @@ struct Map {
 	std::vector<tge::gmc::ActorInputInfo> actors;
 };
 
+/*
+ * This loads a Map from a ressource file
+ * this needs to be a tgr file:
+ * https://troblecodings.com/fileformat.html
+ * it automatically creates all ressources
+ */
 void loadResourceFile(const char* name, Map* map);

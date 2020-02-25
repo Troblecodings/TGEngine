@@ -391,7 +391,7 @@ namespace ShaderTool.Command {
 
                 // Write size of this block in bytes to file
                 // 4*16 + 2 + 2*4 = 74
-                uint actorDataSize = 74 + (actorData.indexCount + actorData.vertexCount) * 4;
+                uint actorDataSize = 74 + (uint)(actorData.indexCount + actorData.vertices.Length) * 4u;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
                 // Write the local transform as a 4x4 matrix into the file
