@@ -135,7 +135,7 @@ void fillCommandBuffer() {
 		tge::gmc::loadToCommandBuffer(buffer, 0);
 
 		// Render for the UI and so on
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 2, mainDescriptorSets, 0, nullptr);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, new VkDescriptorSet[2]{ mainDescriptorSets[0], mainDescriptorSets[2] }, 0, nullptr);
 
 		tge::gmc::loadToCommandBuffer(buffer, 1);
 

@@ -166,10 +166,10 @@ namespace tge::tex {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSets[2];
+		descwrite.dstSet = mainDescriptorSets[0];
 		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
-		descwrite.descriptorCount = size;
+		descwrite.descriptorCount = 2048;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;
@@ -210,7 +210,7 @@ namespace tge::tex {
 		VkWriteDescriptorSet descwrite;
 		descwrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descwrite.pNext = nullptr;
-		descwrite.dstSet = mainDescriptorSets[2];
+		descwrite.dstSet = mainDescriptorSets[0];
 		descwrite.dstBinding = 1;
 		descwrite.dstArrayElement = 0;
 		descwrite.descriptorCount = 1;

@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 
 
-layout(binding = 0) uniform DATA_BLOCK {
+layout(set = 1, binding = 0) uniform DATA_BLOCK {
     mat4 basicTransform;
 } data;
 
