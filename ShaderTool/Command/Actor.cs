@@ -150,7 +150,7 @@ namespace ShaderTool.Command {
             newActor.name = actorName;
             newActor.materialName = materialName;
             newActor.layerId = 0;
-            newActor.localTransform = IDENTETYMATRIX;
+            newActor.localTransform = IDENTITY_MATRIX;
             newActor.indexCount = 0;
             newActor.vertexCount = 0;
             newActor.vertices = new float[] { };
