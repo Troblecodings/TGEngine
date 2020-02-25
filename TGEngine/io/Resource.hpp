@@ -14,7 +14,7 @@ struct Map {
 };
 
 /*
- * This loads a Map from a ressource file
+ * This loads a map from a resource file
  * this needs to be a tgr file:
  * https://troblecodings.com/fileformat.html
  * it automatically creates all ressources

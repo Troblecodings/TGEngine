@@ -23,7 +23,7 @@ namespace ShaderTool.Command {
 
     class Actor {
 
-        public static float[] IDENTETYMATRIX = {
+        public static float[] IDENTITY_MATRIX = {
             1f, 0f, 0f, 0f,
             0f, 1f, 0f, 0f,
             0f, 0f, 1f, 0f,
