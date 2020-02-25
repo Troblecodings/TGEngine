@@ -12,7 +12,7 @@ void initDescriptors() {
 	sizes[1].descriptorCount = 2;
 
 	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	sizes[2].descriptorCount = 4096;
+	sizes[2].descriptorCount = 2048;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo;
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -25,34 +25,41 @@ void initDescriptors() {
 	VkDescriptorPool descriptorPool;
 	CHECKFAIL(vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool));
 
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding[3];
-	descriptorSetLayoutBinding[0].binding = 0;
-	descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutBinding[0].descriptorCount = 1;
-	descriptorSetLayoutBinding[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	descriptorSetLayoutBinding[0].pImmutableSamplers = VK_NULL_HANDLE;
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBindingTransform;
+	descriptorSetLayoutBindingTransform.binding = 0;
+	descriptorSetLayoutBindingTransform.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutBindingTransform.descriptorCount = 1;
+	descriptorSetLayoutBindingTransform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	descriptorSetLayoutBindingTransform.pImmutableSamplers = VK_NULL_HANDLE;
 
-	descriptorSetLayoutBinding[1].binding = 1;
-	descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-	descriptorSetLayoutBinding[1].descriptorCount = 1;
-	descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	descriptorSetLayoutBinding[1].pImmutableSamplers = VK_NULL_HANDLE;
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBindingTextures[2];
+	descriptorSetLayoutBindingTextures[0].binding = 1;
+	descriptorSetLayoutBindingTextures[0].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+	descriptorSetLayoutBindingTextures[0].descriptorCount = 1;
+	descriptorSetLayoutBindingTextures[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBindingTextures[0].pImmutableSamplers = VK_NULL_HANDLE;
 
-	descriptorSetLayoutBinding[2].binding = 2;
-	descriptorSetLayoutBinding[2].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	descriptorSetLayoutBinding[2].descriptorCount = 2048;
-	descriptorSetLayoutBinding[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	descriptorSetLayoutBinding[2].pImmutableSamplers = VK_NULL_HANDLE;
+	descriptorSetLayoutBindingTextures[1].binding = 2;
+	descriptorSetLayoutBindingTextures[1].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+	descriptorSetLayoutBindingTextures[1].descriptorCount = 2048;
+	descriptorSetLayoutBindingTextures[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	descriptorSetLayoutBindingTextures[1].pImmutableSamplers = VK_NULL_HANDLE;
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
-	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	descriptorSetLayoutCreateInfo.pNext = nullptr;
-	descriptorSetLayoutCreateInfo.flags = 0;
-	descriptorSetLayoutCreateInfo.bindingCount = 3;
-	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBinding;
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo[2];
+	descriptorSetLayoutCreateInfo[0].sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptorSetLayoutCreateInfo[0].pNext = nullptr;
+	descriptorSetLayoutCreateInfo[0].flags = 0;
+	descriptorSetLayoutCreateInfo[0].bindingCount = 1;
+	descriptorSetLayoutCreateInfo[0].pBindings = &descriptorSetLayoutBindingTransform;
 
-	VkDescriptorSetLayout descriptorSetLayout;
-	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout));
+	descriptorSetLayoutCreateInfo[1].sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptorSetLayoutCreateInfo[1].pNext = nullptr;
+	descriptorSetLayoutCreateInfo[1].flags = 0;
+	descriptorSetLayoutCreateInfo[1].bindingCount = 2;
+	descriptorSetLayoutCreateInfo[1].pBindings = descriptorSetLayoutBindingTextures;
+
+	VkDescriptorSetLayout descriptorSetLayout[2];
+	CHECKFAIL(vkCreateDescriptorSetLayout(device, descriptorSetLayoutCreateInfo, nullptr, descriptorSetLayout));
 
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -68,7 +75,7 @@ void initDescriptors() {
 	pipelineLayoutCreateInfo.pNext = nullptr;
 	pipelineLayoutCreateInfo.flags = 0;
 	pipelineLayoutCreateInfo.setLayoutCount = 1;
-	pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
+	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayout;
 	pipelineLayoutCreateInfo.pushConstantRangeCount = 2;
 	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
 
@@ -78,8 +85,8 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	descriptorSetAllocateInfo.pNext = nullptr;
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
-	descriptorSetAllocateInfo.descriptorSetCount = 2;
-	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[2]{ descriptorSetLayout, descriptorSetLayout };
+	descriptorSetAllocateInfo.descriptorSetCount = 3;
+	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[]{ descriptorSetLayout[0], descriptorSetLayout[0], descriptorSetLayout[1] };
 
 	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSet));
 }
