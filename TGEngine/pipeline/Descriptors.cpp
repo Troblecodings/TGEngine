@@ -86,7 +86,7 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.pNext = nullptr;
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
 	descriptorSetAllocateInfo.descriptorSetCount = 3;
-	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[]{ descriptorSetLayout[0], descriptorSetLayout[0], descriptorSetLayout[1] };
+	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[3]{ descriptorSetLayout[0], descriptorSetLayout[0], descriptorSetLayout[1] };
 
 	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSets));
 }
