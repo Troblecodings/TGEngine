@@ -9,7 +9,7 @@ void initDescriptors() {
 	sizes[0].descriptorCount = 2;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-	sizes[1].descriptorCount = 2;
+	sizes[1].descriptorCount = 1;
 
 	sizes[2].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 	sizes[2].descriptorCount = 2048;
@@ -45,22 +45,26 @@ void initDescriptors() {
 	descriptorSetLayoutBindingTextures[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBindingTextures[1].pImmutableSamplers = VK_NULL_HANDLE;
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo[2];
-	descriptorSetLayoutCreateInfo[0].sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	descriptorSetLayoutCreateInfo[0].pNext = nullptr;
-	descriptorSetLayoutCreateInfo[0].flags = 0;
-	descriptorSetLayoutCreateInfo[0].bindingCount = 1;
-	descriptorSetLayoutCreateInfo[0].pBindings = &descriptorSetLayoutBindingTransform;
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfoTransform;
+	descriptorSetLayoutCreateInfoTransform.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptorSetLayoutCreateInfoTransform.pNext = nullptr;
+	descriptorSetLayoutCreateInfoTransform.flags = 0;
+	descriptorSetLayoutCreateInfoTransform.bindingCount = 1;
+	descriptorSetLayoutCreateInfoTransform.pBindings = &descriptorSetLayoutBindingTransform;
 
-	descriptorSetLayoutCreateInfo[1].sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	descriptorSetLayoutCreateInfo[1].pNext = nullptr;
-	descriptorSetLayoutCreateInfo[1].flags = 0;
-	descriptorSetLayoutCreateInfo[1].bindingCount = 2;
-	descriptorSetLayoutCreateInfo[1].pBindings = descriptorSetLayoutBindingTextures;
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfoTextures;
+	descriptorSetLayoutCreateInfoTextures.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptorSetLayoutCreateInfoTextures.pNext = nullptr;
+	descriptorSetLayoutCreateInfoTextures.flags = 0;
+	descriptorSetLayoutCreateInfoTextures.bindingCount = 2;
+	descriptorSetLayoutCreateInfoTextures.pBindings = descriptorSetLayoutBindingTextures;
 
 	VkDescriptorSetLayout descriptorSetLayout[2];
-	CHECKFAIL(vkCreateDescriptorSetLayout(device, descriptorSetLayoutCreateInfo, nullptr, descriptorSetLayout));
+	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTextures, nullptr, descriptorSetLayout));
+	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTransform, nullptr, &descriptorSetLayout[1]));
 
+	// TODO Check push constant size
+	// This is optimistic
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRanges[0].offset = 0;
@@ -70,11 +74,13 @@ void initDescriptors() {
 	pushConstantRanges[1].offset = 64;
 	pushConstantRanges[1].size = 20; // Material
 
+	VkDescriptorSetLayout setLayouts[3] = { descriptorSetLayout[0], descriptorSetLayout[1], descriptorSetLayout[1] };
+
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
 	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutCreateInfo.pNext = nullptr;
 	pipelineLayoutCreateInfo.flags = 0;
-	pipelineLayoutCreateInfo.setLayoutCount = 1;
+	pipelineLayoutCreateInfo.setLayoutCount = 2;
 	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayout;
 	pipelineLayoutCreateInfo.pushConstantRangeCount = 2;
 	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
@@ -86,7 +92,7 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.pNext = nullptr;
 	descriptorSetAllocateInfo.descriptorPool = descriptorPool;
 	descriptorSetAllocateInfo.descriptorSetCount = 3;
-	descriptorSetAllocateInfo.pSetLayouts = new VkDescriptorSetLayout[3]{ descriptorSetLayout[0], descriptorSetLayout[0], descriptorSetLayout[1] };
+	descriptorSetAllocateInfo.pSetLayouts = setLayouts;
 
 	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSets));
 }
