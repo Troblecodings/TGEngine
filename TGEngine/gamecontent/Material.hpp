@@ -7,6 +7,8 @@ namespace tge::gmc {
 
 	using namespace tge::nio;
 
+	constexpr uint32_t MAX_MATERIALS = 256;
+
 	/*
 	 * Holds the materials for the render,
 	 * equivalent to the according push constant
@@ -19,7 +21,7 @@ namespace tge::gmc {
 	/* Holds all the materials for the push constant
 	 * <em>Note: Needs to be initialized before a load call</em>
 	 */
-	extern Material* createdMaterials;
+	extern Material createdMaterials[MAX_MATERIALS];
 
 	/*
 	 * Loads all materials into the createdMaterials
