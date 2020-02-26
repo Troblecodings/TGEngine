@@ -8,9 +8,8 @@
 #define TGR_VERSION_1 1
 
 struct Map {
-	std::vector<tge::tex::TextureInputInfo> textures;
-	std::vector<tge::gmc::Material> materials;
-	std::vector<tge::gmc::ActorInputInfo> actors;
+    tge::tex::Sampler sampler;
+	std::vector<tge::tex::Texture> textures;
 };
 
 /*

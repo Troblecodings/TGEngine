@@ -6,7 +6,7 @@ namespace tge::gmc {
 
 	using namespace buf;
 
-	Material* createdMaterials;
+	Material createdMaterials[MAX_MATERIALS];
 
 	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size) {
 		for (uint32_t i = 0; i < size; i++) {

@@ -20,46 +20,43 @@ void loadResourceFile(const char* name, Map* map) {
 
 	uint32_t blocklength = 0;
 
-	map->textures.reserve(2048);
+	std::vector<TextureInputInfo> textureBindingInfos;
+	textureBindingInfos.reserve(MAX_TEXTURES);
 
 	fread(&blocklength, sizeof(uint32_t), 1, file);
 
 	while (blocklength != UINT32_MAX)
 	{
 		stbi_uc* resbuffer = new stbi_uc[blocklength];
-		uint32_t test = fread(resbuffer, sizeof(stbi_uc), blocklength, file);
+		fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
 		TextureInputInfo inputInfo;
 		inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
-		map->textures.push_back(inputInfo);
+		textureBindingInfos.push_back(inputInfo);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file))
-		return;
-
 	blocklength = 0;
 
-	map->materials.reserve(256);
-
 	fread(&blocklength, sizeof(uint32_t), 1, file);
+
+	uint32_t materialID = 0;
 
 	while (blocklength != UINT32_MAX)
 	{
 		Material material;
 		fread(&material, sizeof(Material), 1, file);
 
-		map->materials.push_back(material);
+		createdMaterials[materialID++] = material;
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
-	if (feof(file))
-		return;
-
 	// Start to read the actor
-	map->actors.reserve(2048);
+	std::vector<ActorInputInfo> actorInputInfos;
+	actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
+	// I just happen to take the texture number
 
 	// Read the block size of the following content
 	fread(&blocklength, sizeof(uint32_t), 1, file);
@@ -94,7 +91,7 @@ void loadResourceFile(const char* name, Map* map) {
 		actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
 		fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
 
-		map->actors.push_back(actorInfo);
+		actorInputInfos.push_back(actorInfo);
 
 		// Read the next block size
 		fread(&blocklength, sizeof(uint32_t), 1, file);
@@ -102,33 +99,17 @@ void loadResourceFile(const char* name, Map* map) {
 
 	fclose(file);
 
-	// This is going to be simplified with 89 (See Backlog)
-	// TODO
-
 	SamplerInputInfo inputInfo;
 	inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	inputInfo.filterMagnification = VK_FILTER_NEAREST;
 	inputInfo.filterMignification = VK_FILTER_NEAREST;
 
-	Sampler sampler;
-	SamplerBindingInfo sinfo;
-	createSampler(inputInfo, &sampler, &sinfo);
+	createSampler(inputInfo, &map->sampler);
 
-	Texture* tex = new Texture[map->textures.size()];
-	TextureBindingInfo* info = new TextureBindingInfo[2048];
-	createTextures(map->textures.data(), map->textures.size(), tex, info);
+	map->textures.resize(textureBindingInfos.size());
+	createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures.data());
 
-	bindSampler(sinfo, 0);
-	bindSampler(sinfo, 1);
-
-	bindTextures(info, 2048, 0);
-	bindTextures(info, 2048, 1);
-
-	createdMaterials = new Material[map->materials.size()];
-	for (size_t i = 0; i < map->materials.size(); i++)
-		createdMaterials[i] = map->materials[i];
-
-	createActor(map->actors.data(), map->actors.size());
+	createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
 	return;
 }

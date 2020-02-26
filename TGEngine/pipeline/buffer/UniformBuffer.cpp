@@ -31,7 +31,7 @@ namespace tge::buf {
 		VkWriteDescriptorSet writeDescriptorSet[2];
 		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSet[0].pNext = nullptr;
-		writeDescriptorSet[0].dstSet = mainDescriptorSet[0];
+		writeDescriptorSet[0].dstSet = mainDescriptorSets[1];
 		writeDescriptorSet[0].dstBinding = 0;
 		writeDescriptorSet[0].dstArrayElement = 0;
 		writeDescriptorSet[0].descriptorCount = 1;
@@ -42,7 +42,7 @@ namespace tge::buf {
 
 		writeDescriptorSet[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSet[1].pNext = nullptr;
-		writeDescriptorSet[1].dstSet = mainDescriptorSet[1];
+		writeDescriptorSet[1].dstSet = mainDescriptorSets[2];
 		writeDescriptorSet[1].dstBinding = 0;
 		writeDescriptorSet[1].dstArrayElement = 0;
 		writeDescriptorSet[1].descriptorCount = 1;
