@@ -11,6 +11,8 @@ namespace tge::tex {
 
 	using namespace tge::nio;
 
+	constexpr uint32_t MAX_TEXTURES = 2048;
+
 	struct TextureDefaults {
 		VkSampler sampler;
 		float     anisotropyFilter;

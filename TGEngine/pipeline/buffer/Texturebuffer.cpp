@@ -157,7 +157,7 @@ namespace tge::tex {
 
 		VkImageView usedview = imagedesc[0].imageView;
 
-		for (uint32_t i = size; i < 2048; i++) {
+		for (uint32_t i = size; i < MAX_TEXTURES; i++) {
 			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imagedesc[i].imageView = usedview;
 			imagedesc[i].sampler = VK_NULL_HANDLE;

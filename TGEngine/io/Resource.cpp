@@ -21,7 +21,7 @@ void loadResourceFile(const char* name, Map* map) {
 	uint32_t blocklength = 0;
 
 	std::vector<TextureInputInfo> textureBindingInfos;
-	textureBindingInfos.reserve(2048);
+	textureBindingInfos.reserve(MAX_TEXTURES);
 
 	fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -39,8 +39,6 @@ void loadResourceFile(const char* name, Map* map) {
 
 	blocklength = 0;
 
-	createdMaterials = new Material[256];
-
 	fread(&blocklength, sizeof(uint32_t), 1, file);
 
 	uint32_t materialID = 0;
@@ -57,7 +55,8 @@ void loadResourceFile(const char* name, Map* map) {
 
 	// Start to read the actor
 	std::vector<ActorInputInfo> actorInputInfos;
-	actorInputInfos.reserve(2048);
+	actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
+	// I just happen to take the texture number
 
 	// Read the block size of the following content
 	fread(&blocklength, sizeof(uint32_t), 1, file);
