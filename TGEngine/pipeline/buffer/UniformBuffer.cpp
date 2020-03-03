@@ -3,7 +3,7 @@
 
 namespace tge::buf {
 
-	BufferObject buffers[2];
+	BufferObject buffers[3];
 
 	void initUniformBuffers() {
 		BufferInputInfo bufferInputInfo[3];
@@ -25,7 +25,7 @@ namespace tge::buf {
 		// TODO only use one device memory
 		createBuffers(bufferInputInfo, 3, buffers);
 
-		VkDescriptorBufferInfo infoTransform[2];
+		VkDescriptorBufferInfo infoTransform[3];
 		infoTransform[0].buffer = buffers[0].buffer;
 		infoTransform[0].offset = 0;
 		infoTransform[0].range = bufferInputInfo[0].size;
@@ -33,6 +33,10 @@ namespace tge::buf {
 		infoTransform[1].buffer = buffers[1].buffer;
 		infoTransform[1].offset = 0;
 		infoTransform[1].range = bufferInputInfo[1].size;
+
+		infoTransform[2].buffer = buffers[2].buffer;
+		infoTransform[2].offset = 0;
+		infoTransform[2].range = bufferInputInfo[2].size;
 
 		VkWriteDescriptorSet writeDescriptorSet[3];
 		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -60,7 +64,7 @@ namespace tge::buf {
 		writeDescriptorSet[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSet[2].pNext = nullptr;
 		writeDescriptorSet[2].dstSet = mainDescriptorSets[0];
-		writeDescriptorSet[2].dstBinding = 0;
+		writeDescriptorSet[2].dstBinding = 3;
 		writeDescriptorSet[2].dstArrayElement = 0;
 		writeDescriptorSet[2].descriptorCount = 1;
 		writeDescriptorSet[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
