@@ -99,16 +99,16 @@ void startTGEngine() {
 
 			Input input = {};
 			if (1 & states) {
-				input.deltay = 0.004f;
+				input.inputY = 0.004f;
 			}
 			if (2 & states) {
-				input.deltay = -0.004f;
+				input.inputY = -0.004f;
 			}
 			if (4 & states) {
-				input.deltax = 0.004f;
+				input.inputX = 0.004f;
 			}
 			if (8 & states) {
-				input.deltax = -0.004f;
+				input.inputX = -0.004f;
 			}
 			playercontroller(input);
 		}

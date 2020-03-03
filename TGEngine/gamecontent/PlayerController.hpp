@@ -12,10 +12,8 @@ namespace tge {
 		 * from the window to the player controller independently
 		 */
 		struct Input {
-			float deltax;
-			float deltay;
-			float x;
-			float y;
+			float inputX;
+			float inputY;
 		};
 
 		/* Function pointer to handle player inputs
