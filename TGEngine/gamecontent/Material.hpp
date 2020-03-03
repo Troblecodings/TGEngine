@@ -12,7 +12,7 @@ namespace tge::gmc {
 	/*
 	 * Holds the materials for the render,
 	 * equivalent to the according push constant
-	 * (contoles animation)
+	 * (controls animation)
 	 */
 	struct Material {
 		glm::vec4 color;
