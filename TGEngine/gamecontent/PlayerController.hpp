@@ -12,14 +12,14 @@ namespace tge {
 		 * from the window to the player controller independently
 		 */
 		struct Input {
-			float x1;
-			float y1;
-			float x2;
-			float y2;
+			float deltax;
+			float deltay;
+			float x;
+			float y;
 		};
 
 		/* Function pointer to handle player inputs
 		 */
-		extern void(*playercontroller)(Input*);
+		extern void(*playercontroller)(Input);
 	}
 }
