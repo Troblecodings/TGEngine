@@ -12,20 +12,16 @@ namespace tge::gmc {
 	/*
 	 * Holds the materials for the render,
 	 * equivalent to the according push constant
+	 * (controls animation)
 	 */
 	struct Material {
 		glm::vec4 color;
 		uint32_t  diffuseTexture;
+		uint32_t  animationID = 0;
 	};
 
 	/* Holds all the materials for the push constant
 	 * <em>Note: Needs to be initialized before a load call</em>
 	 */
 	extern Material createdMaterials[MAX_MATERIALS];
-
-	/*
-	 * Loads all materials into the createdMaterials
-	 * that are defined in the given file
-	 */
-	void loadMaterials(File file, ResourceDescriptor* desc, uint32_t size);
 }

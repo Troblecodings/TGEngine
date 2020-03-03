@@ -45,11 +45,7 @@ void loadResourceFile(const char* name, Map* map) {
 
 	while (blocklength != UINT32_MAX)
 	{
-		Material material;
-		fread(&material, sizeof(Material), 1, file);
-
-		createdMaterials[materialID++] = material;
-
+		fread(&createdMaterials[materialID++], sizeof(uint8_t), blocklength, file);
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 	}
 
