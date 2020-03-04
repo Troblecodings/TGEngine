@@ -65,16 +65,16 @@ namespace tge::win {
 			}
 			else if (raw->header.dwType == RIM_TYPEMOUSE) {
 				RECT rect;
-				if (!GetWindowRect(hwnd, &rect)) {
+				if (GetWindowRect(hwnd, &rect)) {
 					mainWindowX = rect.left;
 					mainWindowY = rect.top;
 				}
 
 				POINT point;
-				if (!GetCursorPos(&point))
-					return DefWindowProc(hwnd, msg, wParam, lParam);
-				mouseX = point.x - mainWindowX;
-				mouseY = point.y - mainWindowY;
+				if (GetCursorPos(&point)) {
+					mouseX = point.x - mainWindowX;
+					mouseY = point.y - mainWindowY;
+				}
 			}
 
 			return DefWindowProc(hwnd, msg, wParam, lParam);
