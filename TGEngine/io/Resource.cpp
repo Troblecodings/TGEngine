@@ -35,6 +35,8 @@ void loadResourceFile(const char* name, Map* map) {
 		textureBindingInfos.push_back(inputInfo);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
+
+		delete resbuffer;
 	}
 
 	blocklength = 0;
