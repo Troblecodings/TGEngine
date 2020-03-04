@@ -12,8 +12,8 @@ namespace tge::win {
 
 	float mouseX = 0;
 	float mouseY = 0;
-	float mouseHomogenousX = 0;
-	float mouseHomogenousY = 0;
+	float mouseHomogeneousX = 0;
+	float mouseHomogeneousY = 0;
 
 	bool isDecorated;
 	bool isFullscreen;

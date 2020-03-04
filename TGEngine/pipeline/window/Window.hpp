@@ -23,8 +23,8 @@ namespace tge::win {
 
     extern float mouseX;
     extern float mouseY;
-    extern float mouseHomogenousX;
-    extern float mouseHomogenousY;
+    extern float mouseHomogeneousX;
+    extern float mouseHomogeneousY;
 
     extern bool isDecorated;
     extern bool isFullscreen;

@@ -97,8 +97,8 @@ void startTGEngine() {
 		if (delta >= (CLOCKS_PER_SEC / 200)) {
 			last_time = current_time;
 			
-			tge::win::mouseHomogenousX = tge::win::mouseX * 2 / (float)tge::win::mainWindowWidth - 1.0f;
-			tge::win::mouseHomogenousY = tge::win::mouseY * 2 / (float)tge::win::mainWindowHeight - 1.0f;
+			tge::win::mouseHomogeneousX = tge::win::mouseX * 2 / (float)tge::win::mainWindowWidth - 1.0f;
+			tge::win::mouseHomogeneousY = tge::win::mouseY * 2 / (float)tge::win::mainWindowHeight - 1.0f;
 
 			Input input = {};
 			if (1 & states) {
