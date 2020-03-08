@@ -1,11 +1,12 @@
 #include "UniformBuffer.hpp"
+#include "../../gamecontent/Material.hpp"
 
 namespace tge::buf {
 
-	BufferObject buffers[2];
+	BufferObject buffers[3];
 
 	void initUniformBuffers() {
-		BufferInputInfo bufferInputInfo[2];
+		BufferInputInfo bufferInputInfo[3];
 		bufferInputInfo[0].flags = VK_SHADER_STAGE_VERTEX_BIT;
 		bufferInputInfo[0].size = sizeof(glm::mat4);
 		bufferInputInfo[0].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
@@ -16,10 +17,15 @@ namespace tge::buf {
 		bufferInputInfo[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[1].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
-		// TODO only use one device memory
-		createBuffers(bufferInputInfo, 2, buffers);
+		bufferInputInfo[2].flags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		bufferInputInfo[2].size = sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
+		bufferInputInfo[2].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+		bufferInputInfo[2].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
-		VkDescriptorBufferInfo infoTransform[2];
+		// TODO only use one device memory
+		createBuffers(bufferInputInfo, 3, buffers);
+
+		VkDescriptorBufferInfo infoTransform[3];
 		infoTransform[0].buffer = buffers[0].buffer;
 		infoTransform[0].offset = 0;
 		infoTransform[0].range = bufferInputInfo[0].size;
@@ -28,10 +34,14 @@ namespace tge::buf {
 		infoTransform[1].offset = 0;
 		infoTransform[1].range = bufferInputInfo[1].size;
 
-		VkWriteDescriptorSet writeDescriptorSet[2];
+		infoTransform[2].buffer = buffers[2].buffer;
+		infoTransform[2].offset = 0;
+		infoTransform[2].range = bufferInputInfo[2].size;
+
+		VkWriteDescriptorSet writeDescriptorSet[3];
 		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSet[0].pNext = nullptr;
-		writeDescriptorSet[0].dstSet = mainDescriptorSet[0];
+		writeDescriptorSet[0].dstSet = mainDescriptorSets[1];
 		writeDescriptorSet[0].dstBinding = 0;
 		writeDescriptorSet[0].dstArrayElement = 0;
 		writeDescriptorSet[0].descriptorCount = 1;
@@ -42,7 +52,7 @@ namespace tge::buf {
 
 		writeDescriptorSet[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSet[1].pNext = nullptr;
-		writeDescriptorSet[1].dstSet = mainDescriptorSet[1];
+		writeDescriptorSet[1].dstSet = mainDescriptorSets[2];
 		writeDescriptorSet[1].dstBinding = 0;
 		writeDescriptorSet[1].dstArrayElement = 0;
 		writeDescriptorSet[1].descriptorCount = 1;
@@ -51,7 +61,18 @@ namespace tge::buf {
 		writeDescriptorSet[1].pBufferInfo = &infoTransform[1];
 		writeDescriptorSet[1].pTexelBufferView = nullptr;
 
-		vkUpdateDescriptorSets(device, 2, writeDescriptorSet, 0, nullptr);
+		writeDescriptorSet[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptorSet[2].pNext = nullptr;
+		writeDescriptorSet[2].dstSet = mainDescriptorSets[0];
+		writeDescriptorSet[2].dstBinding = 3;
+		writeDescriptorSet[2].dstArrayElement = 0;
+		writeDescriptorSet[2].descriptorCount = 1;
+		writeDescriptorSet[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		writeDescriptorSet[2].pImageInfo = nullptr;
+		writeDescriptorSet[2].pBufferInfo = &infoTransform[2];
+		writeDescriptorSet[2].pTexelBufferView = nullptr;
+
+		vkUpdateDescriptorSets(device, 3, writeDescriptorSet, 0, nullptr);
 	}
 
 	void fillUniformBuffer(uint32_t uniformBufferIndex, void* data, VkDeviceSize size, VkDeviceSize offset) {

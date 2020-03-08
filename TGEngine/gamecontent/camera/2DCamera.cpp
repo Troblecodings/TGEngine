@@ -3,10 +3,10 @@
 
 using namespace tge::buf;
 
-void tge::gmc::setTopDownCamera(TopDownCamera* camera) {
+void tge::gmc::setTopDownCamera(TopDownCamera camera) {
 	glm::mat4 mat =
-	{ camera->screenheight / (float)camera->screenwidth, 0, 0, camera->positionx,
-		0, 1, 0, camera->positiony,
+	{ camera.screenheight / (float)camera.screenwidth, 0, 0, camera.positionx,
+		0, 1, 0, camera.positiony,
 		0, 0, 0.2, 0,
 		0, 0, 0, 1
 	};

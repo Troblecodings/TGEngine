@@ -11,6 +11,8 @@ namespace tge::tex {
 
 	using namespace tge::nio;
 
+	constexpr uint32_t MAX_TEXTURES = 2048;
+
 	struct TextureDefaults {
 		VkSampler sampler;
 		float     anisotropyFilter;
@@ -44,15 +46,7 @@ namespace tge::tex {
 	typedef VkDescriptorImageInfo TextureBindingInfo;
 	typedef VkSampler Sampler;
 
-	void loadSampler(File file, ResourceDescriptor* input, uint32_t size, SamplerInputInfo* loaded);
+	void createSampler(SamplerInputInfo input, Sampler* sampler);
 
-	void createSampler(SamplerInputInfo input, Sampler* sampler, SamplerBindingInfo* bindinginfo);
-
-	void bindSampler(SamplerBindingInfo input, uint32_t layer);
-
-	void loadTextures(File file, ResourceDescriptor* input, uint32_t size, TextureInputInfo* loaded);
-
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, TextureBindingInfo* bindinginfo);
-
-	void bindTextures(TextureBindingInfo* imagedesc, uint32_t size, uint32_t layer);
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output);
 }

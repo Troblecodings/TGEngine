@@ -9,7 +9,7 @@ namespace tge::gmc {
 
 	/*
      * This is struct holds all the the properties that
-	 * do not directly influence the mash it self
+	 * do not directly influence the mesh it self
      *
      * <ul>
      * <li><strong class='atr'>localTransform</strong> is the local tranform of the actor that will be computed at runtime</li>
