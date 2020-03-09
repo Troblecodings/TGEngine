@@ -10,12 +10,11 @@ namespace tge {
 	namespace fnt {
 
 		void readFontfile(const char* name, const float fontheight, tge::tex::TextureInputInfo* textureInputInfo, stbtt_bakedchar* charData) {
-			long size = 0;
 			textureInputInfo->data = new uint8_t[FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT * 4];
 			textureInputInfo->x = FONT_TEXTURE_WIDTH;
 			textureInputInfo->y = FONT_TEXTURE_HEIGHT;
 			textureInputInfo->comp = 4;
-			uint8_t* filedata = tge::nio::readAll(name, &size);
+			uint8_t* filedata = tge::nio::readAll(name);
 			stbtt_BakeFontBitmap(filedata, 0, fontheight, textureInputInfo->data, FONT_TEXTURE_WIDTH, FONT_TEXTURE_HEIGHT, 0, 256, charData);
 		}
 
