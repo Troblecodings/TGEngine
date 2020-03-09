@@ -55,11 +55,6 @@
     <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
     <ClInclude Include="pipeline\window\Window.hpp" />
     <ClInclude Include="resources\ShaderPipes.hpp" />
-    <ClInclude Include="ui\UIDrawable.hpp" />
-    <ClInclude Include="ui\UIEntity.hpp" />
-    <ClInclude Include="ui\UITextComponent.hpp" />
-    <ClInclude Include="ui\UITextureComponent.hpp" />
-    <ClInclude Include="ui\UIUpdatable.hpp" />
     <ClInclude Include="util\Debug.hpp" />
     <ClInclude Include="util\Math.hpp" />
     <ClInclude Include="Stdbase.hpp" />
@@ -107,11 +102,6 @@
     <CustomBuild Include="resources\VertexTopDown.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <ClCompile Include="ui\UIDrawable.cpp" />
-    <ClCompile Include="ui\UIEntity.cpp" />
-    <ClCompile Include="ui\UITextComponent.cpp" />
-    <ClCompile Include="ui\UITextureComponent.cpp" />
-    <ClCompile Include="ui\UIUpdatable.cpp" />
     <ClCompile Include="util\Debug.cpp" />
     <ClCompile Include="Stdbase.cpp" />
     <ClCompile Include="TGEngine.cpp" />
