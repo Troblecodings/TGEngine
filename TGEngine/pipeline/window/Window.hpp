@@ -21,6 +21,11 @@ namespace tge::win {
     extern uint32_t mainWindowX;
     extern uint32_t mainWindowY;
 
+    extern float mouseX;
+    extern float mouseY;
+    extern float mouseHomogeneousX;
+    extern float mouseHomogeneousY;
+
     extern bool isDecorated;
     extern bool isFullscreen;
     extern bool isConsumingInput;

@@ -171,11 +171,26 @@
     <ClInclude Include="io\Keyboard.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UITextComponent.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITextureComponent.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
     <ClInclude Include="vlib\VulkanCommandBuffer.hpp">
       <Filter>Headerdateien\vlib</Filter>
     </ClInclude>
     <ClInclude Include="io\Font.hpp">
       <Filter>Headerdateien\io</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEntity.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIDrawable.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIUpdatable.hpp">
+      <Filter>Headerdateien\ui</Filter>
     </ClInclude>
     <ClInclude Include="resources\ShaderPipes.hpp">
       <Filter>resources</Filter>
@@ -302,11 +317,23 @@
     <ClCompile Include="io\Keyboard.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UITextComponent.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITextureComponent.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
     <ClCompile Include="vlib\VulkanCommandBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
-    <ClCompile Include="io\Font.cpp">
-      <Filter>Quelldateien\io</Filter>
+    <ClCompile Include="ui\UIEntity.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDrawable.cpp">
+      <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIUpdatable.cpp">
+      <Filter>Quelldateien\ui</Filter>
     </ClCompile>
     <ClCompile Include="resources\ShaderPipes.cpp">
       <Filter>resources</Filter>
@@ -339,6 +366,9 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="io\Resource.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
   </ItemGroup>

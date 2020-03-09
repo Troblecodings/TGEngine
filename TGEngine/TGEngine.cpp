@@ -90,23 +90,26 @@ void startTGEngine() {
 		clock_t current_time = clock();
 		clock_t delta = current_time - last_time;
 
-		if (delta >= (CLOCKS_PER_SEC / 60)) {
+		if (delta >= (CLOCKS_PER_SEC / 200)) {
 			last_time = current_time;
+			
+			tge::win::mouseHomogeneousX = tge::win::mouseX * 2 / (float)tge::win::mainWindowWidth - 1.0f;
+			tge::win::mouseHomogeneousY = tge::win::mouseY * 2 / (float)tge::win::mainWindowHeight - 1.0f;
 
 			Input input = {};
 			if (1 & states) {
-				input.y1 = 0.01f;
+				input.inputY = 0.004f;
 			}
 			if (2 & states) {
-				input.y1 = -0.01f;
+				input.inputY = -0.004f;
 			}
 			if (4 & states) {
-				input.x1 = 0.01f;
+				input.inputX = 0.004f;
 			}
 			if (8 & states) {
-				input.x1 = -0.01f;
+				input.inputX = -0.004f;
 			}
-			playercontroller(&input);
+			playercontroller(input);
 		}
 
 		submit();

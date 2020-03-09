@@ -30,8 +30,8 @@ namespace ShaderTool.Command {
         }
 
         public static int ShaderCompile(string[] args) {
-            if (args.Length != 1)
-                return WRONG_PARAMS;
+            if (!AssertValues(args))
+                return NOT_ENOUGH_PARAMS;
             Compile(args[0]);
             Make();
             return SUCCESS;

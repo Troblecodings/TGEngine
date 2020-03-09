@@ -5,7 +5,7 @@
 #include "../pipeline/buffer/Memory.hpp"
 
 extern VkPipelineLayout pipelineLayout;
-extern VkDescriptorSet mainDescriptorSet[2];
+extern VkDescriptorSet mainDescriptorSets[3];
 
 /*
  * This initialiazes the descriptor systems (Pool, Memory, Layouts ...)

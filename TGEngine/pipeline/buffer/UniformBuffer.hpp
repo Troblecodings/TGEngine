@@ -8,7 +8,7 @@ namespace tge::buf {
 	constexpr uint32_t TRANSFORM_BUFFER = 0;
 	constexpr uint32_t TRANSFORM_BUFFER_2 = 1;
 
-	extern BufferObject buffers[2];
+	extern BufferObject buffers[3];
 
 	void initUniformBuffers();
 
