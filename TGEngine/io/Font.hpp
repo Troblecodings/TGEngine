@@ -6,9 +6,8 @@
 #define STBTT_STATIC
 #include "../stb/stb_truetype.h"
 #include "../io/Files.hpp"
-#include "../util/VectorUtil.hpp"
-#include "../pipeline/buffer/VertexBuffer.hpp"
-#include "../pipeline/buffer/IndexBuffer.hpp"
+#include "../gamecontent/Actor.hpp"
+#include "../pipeline/buffer/Texturebuffer.hpp"
 
 namespace tge {
 	namespace fnt {

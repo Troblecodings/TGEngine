@@ -1,8 +1,6 @@
 #include "Font.hpp"
 #include "../gamecontent/camera/Camera.hpp"
 #include "Files.hpp"
-#include "../pipeline/buffer/Texturebuffer.hpp"
-#include "../gamecontent/Actor.hpp"
 #include <stdio.h>
 #include <string.h>
 
