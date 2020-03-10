@@ -9,32 +9,6 @@ namespace tge::io {
 	using namespace tge::tex;
 	using namespace tge::gmc;
 
-	void loadResourceFile(const char* name, Map* map) {
-		File file = open(name, "rb");
-
-		uint32_t header = 0;
-		fread(&header, sizeof(uint32_t), 1, file);
-
-#ifdef DEBUG
-		if (header != TGR_LATEST)
-			OUT_LV_DEBUG("Warning: you are using an old version of the tgr file, consider updating!")
-#endif // DEBUG
-
-#ifndef TGE_RESOURCE_LATEST_ONLY
-		if (header == TGR_VERSION_1) {
-			loadResourceFileV1(file, map);
-		}
-		else
-#endif // !TGE_RESOURCE_LATEST_ONLY
-			if (header == TGR_VERSION_2) {
-				loadResourceFileV2(file, map);
-			}
-			else {
-				OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
-				return;
-			}
-	}
-
 	static void loadResourceFileV2(File file, Map* map) {
 		uint32_t blocklength = 0;
 		uint32_t currentId = 0;
@@ -175,15 +149,9 @@ namespace tge::io {
 			// Reads the actor properties and so on
 			ActorInputInfo actorInfo;
 
-			// Sadly we cannot reduce read calls and have to do this all with manually
-			float transformMatrix[16];
-			fread(&transformMatrix, sizeof(float), 16, file);
-			actorInfo->pProperties.localTransform = glm::make_mat4(transformMatrix);
-
-			fread(&actorInfo->pProperties.material, sizeof(uint8_t), 1, file);
-			fread(&actorInfo->pProperties.layer, sizeof(uint8_t), 1, file);
-			fread(&actorInfo->indexCount, sizeof(uint32_t), 1, file);
-			fread(&actorInfo->vertexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo.pProperties, sizeof(tge::gmc::ActorProperties), 1, file);
+			fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
 			// 2x4 + 2 + 4x16
 
 			/*
@@ -192,12 +160,12 @@ namespace tge::io {
 			 */
 
 			 // Reads the indices from the file
-			actorInfo->pIndices = new uint32_t[actorInfo->indexCount]; // Object lifetime ?
-			fread(actorInfo->pIndices, sizeof(uint32_t), actorInfo->indexCount, file);
+			actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
+			fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
 
 			// Reads the vertices
-			actorInfo->pVertices = new uint8_t[blocklength]; // Object lifetime?
-			fread(actorInfo->pVertices, sizeof(uint8_t), blocklength, file);
+			actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
+			fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
 
 			actorInputInfos.push_back(actorInfo);
 
@@ -222,4 +190,30 @@ namespace tge::io {
 		return;
 	}
 #endif
+
+	void loadResourceFile(const char* name, Map* map) {
+		File file = open(name, "rb");
+
+		uint32_t header = 0;
+		fread(&header, sizeof(uint32_t), 1, file);
+
+#ifdef DEBUG
+		if (header != TGR_LATEST)
+			OUT_LV_DEBUG("Warning: you are using an old version of the tgr file, consider updating!")
+#endif // DEBUG
+
+#ifndef TGE_RESOURCE_LATEST_ONLY
+			if (header == TGR_VERSION_1) {
+				loadResourceFileV1(file, map);
+			}
+			else
+#endif // !TGE_RESOURCE_LATEST_ONLY
+				if (header == TGR_VERSION_2) {
+					loadResourceFileV2(file, map);
+				}
+				else {
+					OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
+					return;
+				}
+	}
 }
