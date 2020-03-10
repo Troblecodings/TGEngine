@@ -42,7 +42,7 @@ static void loadResourceFileV2(File file, Map* map) {
 
 		// TODO Staging buffer for image memory
 
-		TextureInputInfo* inputInfo = &inputInfos[currentId++];
+		TextureInputInfo* inputInfo = inputInfos + (currentId++);
 		inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
