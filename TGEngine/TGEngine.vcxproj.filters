@@ -326,9 +326,6 @@
     <ClCompile Include="vlib\VulkanCommandBuffer.cpp">
       <Filter>Quelldateien\vlib</Filter>
     </ClCompile>
-    <ClCompile Include="io\Font.cpp">
-      <Filter>Quelldateien\io</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIEntity.cpp">
       <Filter>Quelldateien\ui</Filter>
     </ClCompile>
@@ -369,6 +366,9 @@
       <Filter>Quelldateien\gamecontent</Filter>
     </ClCompile>
     <ClCompile Include="io\Resource.cpp">
+      <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
     </ClCompile>
   </ItemGroup>

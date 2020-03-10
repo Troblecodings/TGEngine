@@ -137,8 +137,6 @@ void recreateSwapchain() {
 	createFramebuffer();
 	createCommandBuffer();
 
-	tge::ui::ui_scene_entity.init();
-
 	fillCommandBuffer();
 }
 

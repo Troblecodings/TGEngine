@@ -58,16 +58,12 @@ void initEngine() {
 
 	createSwapchain();
 	createFramebuffer();
-
-	tge::ui::ui_scene_entity.init();
 }
 
 void startTGEngine() {
 
 	index_offset = indexBuffer.indexCount;
 	vertex_offset = vertexBuffer.pointCount;
-
-	tge::ui::ui_scene_entity.draw(&indexBuffer, &vertexBuffer);
 
 	vertexBuffer.end();
 	indexBuffer.end();

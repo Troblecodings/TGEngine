@@ -67,6 +67,6 @@ namespace tge {
 		 * Reads all bytes of a file
 		 * (In debug mode it checks if the open was successful)
 		 */
-		uint8_t* readAll(const char* name);
+		uint8_t* readAll(const char* name, long* size = nullptr);
 	}
 }
