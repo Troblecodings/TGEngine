@@ -56,7 +56,7 @@ namespace ShaderTool.Command {
                     continue;
                 }
 
-                string fileName = fontPath.Replace(" ", "_");
+                string fileName = Path.GetFileName(fontPath).Replace(" ", "_");
 
                 if (Directory.GetFiles(Program.ResourcesFolder, "*.ttf").Contains(fileName)) {
                     Console.WriteLine("Font '{0}' already exists, skipping", fileName);
