@@ -3,207 +3,212 @@
 #include "../gamecontent/Actor.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-using namespace tge::nio;
-using namespace tge::tex;
-using namespace tge::gmc;
+namespace tge::io {
 
-void loadResourceFile(const char* name, Map* map) {
-	File file = open(name, "rb");
+	using namespace tge::nio;
+	using namespace tge::tex;
+	using namespace tge::gmc;
 
-	uint32_t header = 0;
-	fread(&header, sizeof(uint32_t), 1, file);
+	void loadResourceFile(const char* name, Map* map) {
+		File file = open(name, "rb");
+
+		uint32_t header = 0;
+		fread(&header, sizeof(uint32_t), 1, file);
 
 #ifndef TGE_RESOURCE_LATEST_ONLY
-	if (header == TGR_VERSION_1) {
-		loadResourceFileV1(file, map);
-	} else
-#endif // !TGE_RESOURCE_LATEST_ONLY
-		if (header == TGR_VERSION_2) {
-			loadResourceFileV2(file, map);
-		} else {
-			OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
-			return;
+		if (header == TGR_VERSION_1) {
+			loadResourceFileV1(file, map);
 		}
-}
+		else
+#endif // !TGE_RESOURCE_LATEST_ONLY
+			if (header == TGR_VERSION_2) {
+				loadResourceFileV2(file, map);
+			}
+			else {
+				OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
+				return;
+			}
+	}
 
-static void loadResourceFileV2(File file, Map* map) {
-	uint32_t blocklength = 0;
-	uint32_t currentId = 0;
+	static void loadResourceFileV2(File file, Map* map) {
+		uint32_t blocklength = 0;
+		uint32_t currentId = 0;
 
-	fread(&blocklength, sizeof(uint32_t), 1, file);
-	map->textures = new Texture[blocklength];
-	TextureInputInfo* inputInfos = new TextureInputInfo[blocklength];
-
-	fread(&blocklength, sizeof(uint32_t), 1, file);
-
-	while (blocklength != UINT32_MAX) {
-		stbi_uc* resbuffer = new stbi_uc[blocklength];
-		fread(resbuffer, sizeof(stbi_uc), blocklength, file);
-
-		// TODO Staging buffer for image memory
-
-		TextureInputInfo* inputInfo = inputInfos + (currentId++);
-		inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
+		fread(&blocklength, sizeof(uint32_t), 1, file);
+		map->textures = new Texture[blocklength];
+		TextureInputInfo* inputInfos = new TextureInputInfo[blocklength];
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		delete[] resbuffer;
-	}
+		while (blocklength != UINT32_MAX) {
+			stbi_uc* resbuffer = new stbi_uc[blocklength];
+			fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
-	fread(&blocklength, sizeof(uint32_t), 1, file);
-	createdMaterials = new Material[blocklength];
+			// TODO Staging buffer for image memory
 
-	fread(&blocklength, sizeof(uint32_t), 1, file);
+			TextureInputInfo* inputInfo = inputInfos + (currentId++);
+			inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
 
+			fread(&blocklength, sizeof(uint32_t), 1, file);
 
-	while (blocklength != UINT32_MAX) {
-		fread(&createdMaterials[currentId++], sizeof(uint8_t), blocklength, file);
+			delete[] resbuffer;
+		}
+
 		fread(&blocklength, sizeof(uint32_t), 1, file);
-	}
+		createdMaterials = new Material[blocklength];
 
-	// Start to read the actor
-	std::vector<ActorInputInfo> actorInputInfos;
-	actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
-	// I just happen to take the texture number
-
-	// Read the block size of the following content
-	fread(&blocklength, sizeof(uint32_t), 1, file);
-
-	// Goes on until it hits a change request block size (2^32)
-	while (blocklength != UINT32_MAX) {
-		// Reads the actor properties and so on
-		ActorInputInfo actorInfo;
-
-		fread(&actorInfo.pProperties, sizeof(tge::gmc::ActorProperties), 1, file);
-		fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
-		fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
-
-		/*
-		 * TODO It would make sense to use staging buffer in this case to add the indices
-		 * directly to the Graphics card
-		 */
-
-		 // Reads the indices from the file
-		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
-		fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
-
-		// Reads the vertices
-		actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
-		fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
-
-		actorInputInfos.push_back(actorInfo);
-
-		// Read the next block size
 		fread(&blocklength, sizeof(uint32_t), 1, file);
+
+
+		while (blocklength != UINT32_MAX) {
+			fread(&createdMaterials[currentId++], sizeof(uint8_t), blocklength, file);
+			fread(&blocklength, sizeof(uint32_t), 1, file);
+		}
+
+		// Start to read the actor
+		std::vector<ActorInputInfo> actorInputInfos;
+		actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
+		// I just happen to take the texture number
+
+		// Read the block size of the following content
+		fread(&blocklength, sizeof(uint32_t), 1, file);
+
+		// Goes on until it hits a change request block size (2^32)
+		while (blocklength != UINT32_MAX) {
+			// Reads the actor properties and so on
+			ActorInputInfo actorInfo;
+
+			fread(&actorInfo.pProperties, sizeof(tge::gmc::ActorProperties), 1, file);
+			fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+
+			/*
+			 * TODO It would make sense to use staging buffer in this case to add the indices
+			 * directly to the Graphics card
+			 */
+
+			 // Reads the indices from the file
+			actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
+			fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
+
+			// Reads the vertices
+			actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
+			fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
+
+			actorInputInfos.push_back(actorInfo);
+
+			// Read the next block size
+			fread(&blocklength, sizeof(uint32_t), 1, file);
+		}
+
+		fclose(file);
+
+		SamplerInputInfo inputInfo;
+		inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		inputInfo.filterMagnification = VK_FILTER_NEAREST;
+		inputInfo.filterMignification = VK_FILTER_NEAREST;
+
+		createSampler(inputInfo, &map->sampler);
+
+		map->textures.resize(textureBindingInfos.size());
+		createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures.data());
+
+		createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
+		return;
 	}
-
-	fclose(file);
-
-	SamplerInputInfo inputInfo;
-	inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	inputInfo.filterMagnification = VK_FILTER_NEAREST;
-	inputInfo.filterMignification = VK_FILTER_NEAREST;
-
-	createSampler(inputInfo, &map->sampler);
-
-	map->textures.resize(textureBindingInfos.size());
-	createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures.data());
-
-	createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
-	return;
-}
 
 #ifndef TGE_RESOURCE_LATEST_ONLY
-static void loadResourceFileV1(File file, Map* map) {
-	uint32_t blocklength = 0;
+	static void loadResourceFileV1(File file, Map* map) {
+		uint32_t blocklength = 0;
 
-	std::vector<TextureInputInfo> textureBindingInfos;
-	textureBindingInfos.reserve(MAX_TEXTURES);
-
-	fread(&blocklength, sizeof(uint32_t), 1, file);
-
-	while (blocklength != UINT32_MAX) {
-		stbi_uc* resbuffer = new stbi_uc[blocklength];
-		fread(resbuffer, sizeof(stbi_uc), blocklength, file);
-
-		TextureInputInfo inputInfo;
-		inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
-		textureBindingInfos.push_back(inputInfo);
+		std::vector<TextureInputInfo> textureBindingInfos;
+		textureBindingInfos.reserve(MAX_TEXTURES);
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		delete[] resbuffer;
-	}
+		while (blocklength != UINT32_MAX) {
+			stbi_uc* resbuffer = new stbi_uc[blocklength];
+			fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
-	blocklength = 0;
+			TextureInputInfo inputInfo;
+			inputInfo.data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo.x, &inputInfo.y, &inputInfo.comp, STBI_rgb_alpha);
+			textureBindingInfos.push_back(inputInfo);
 
-	fread(&blocklength, sizeof(uint32_t), 1, file);
+			fread(&blocklength, sizeof(uint32_t), 1, file);
 
-	uint32_t materialID = 0;
+			delete[] resbuffer;
+		}
 
-	while (blocklength != UINT32_MAX) {
-		fread(&createdMaterials[materialID++], sizeof(uint8_t), blocklength, file);
+		blocklength = 0;
+
 		fread(&blocklength, sizeof(uint32_t), 1, file);
-	}
 
-	// Start to read the actor
-	std::vector<ActorInputInfo> actorInputInfos;
-	actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
-	// I just happen to take the texture number
+		uint32_t materialID = 0;
 
-	// Read the block size of the following content
-	fread(&blocklength, sizeof(uint32_t), 1, file);
+		while (blocklength != UINT32_MAX) {
+			fread(&createdMaterials[materialID++], sizeof(uint8_t), blocklength, file);
+			fread(&blocklength, sizeof(uint32_t), 1, file);
+		}
 
-	// Goes on until it hits a change request block size (2^32)
-	while (blocklength != UINT32_MAX) {
-		// Reads the actor properties and so on
-		ActorInputInfo actorInfo;
+		// Start to read the actor
+		std::vector<ActorInputInfo> actorInputInfos;
+		actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
+		// I just happen to take the texture number
 
-		// Sadly we cannot reduce read calls and have to do this all with manually
-		float transformMatrix[16];
-		fread(&transformMatrix, sizeof(float), 16, file);
-		actorInfo.pProperties.localTransform = glm::make_mat4(transformMatrix);
-
-		fread(&actorInfo.pProperties.material, sizeof(uint8_t), 1, file);
-		fread(&actorInfo.pProperties.layer, sizeof(uint8_t), 1, file);
-		fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
-		fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
-		// 2x4 + 2 + 4x16
-
-		/*
-		 * It would make sense to use staging buffer in this case to add the indices
-		 * directly to the Graphics card
-		 */
-
-		 // Reads the indices from the file
-		actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
-		fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
-
-		// Reads the vertices
-		actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
-		fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
-
-		actorInputInfos.push_back(actorInfo);
-
-		// Read the next block size
+		// Read the block size of the following content
 		fread(&blocklength, sizeof(uint32_t), 1, file);
+
+		// Goes on until it hits a change request block size (2^32)
+		while (blocklength != UINT32_MAX) {
+			// Reads the actor properties and so on
+			ActorInputInfo actorInfo;
+
+			// Sadly we cannot reduce read calls and have to do this all with manually
+			float transformMatrix[16];
+			fread(&transformMatrix, sizeof(float), 16, file);
+			actorInfo.pProperties.localTransform = glm::make_mat4(transformMatrix);
+
+			fread(&actorInfo.pProperties.material, sizeof(uint8_t), 1, file);
+			fread(&actorInfo.pProperties.layer, sizeof(uint8_t), 1, file);
+			fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+			// 2x4 + 2 + 4x16
+
+			/*
+			 * It would make sense to use staging buffer in this case to add the indices
+			 * directly to the Graphics card
+			 */
+
+			 // Reads the indices from the file
+			actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
+			fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
+
+			// Reads the vertices
+			actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
+			fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
+
+			actorInputInfos.push_back(actorInfo);
+
+			// Read the next block size
+			fread(&blocklength, sizeof(uint32_t), 1, file);
+		}
+
+		fclose(file);
+
+		SamplerInputInfo inputInfo;
+		inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		inputInfo.filterMagnification = VK_FILTER_NEAREST;
+		inputInfo.filterMignification = VK_FILTER_NEAREST;
+
+		createSampler(inputInfo, &map->sampler);
+
+		map->textures = new Texture[textureBindingInfos.size()];
+		createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures);
+
+		createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
+		return;
 	}
-
-	fclose(file);
-
-	SamplerInputInfo inputInfo;
-	inputInfo.uSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	inputInfo.vSamplerMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	inputInfo.filterMagnification = VK_FILTER_NEAREST;
-	inputInfo.filterMignification = VK_FILTER_NEAREST;
-
-	createSampler(inputInfo, &map->sampler);
-
-	map->textures = new Texture[textureBindingInfos.size()];
-	createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures);
-
-	createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
-	return;
-}
 #endif
+}

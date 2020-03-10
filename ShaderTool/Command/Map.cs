@@ -13,6 +13,7 @@ namespace ShaderTool.Command {
         public string[] actorNames;
         public string[] materialNames;
         public string[] textureNames;
+        public string[] fontNames;
     }
 
     class Map {
@@ -39,10 +40,75 @@ namespace ShaderTool.Command {
                 case "rmactor":
                 case "removeactor":
                     return MapRmActor(GetParams(args));
+                case "addfont":
+                    return MapAddFont(GetParams(args));
+                case "rmfont":
+                case "removefont":
+                    return MapRmFont(GetParams(args));
             }
 
             Console.WriteLine("Wrong parameters! Must be save/add/rm/make/list!");
             return WRONG_PARAMS;
+
+        }
+
+        private static int MapRmFont(string[] args) {
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
+            string mapName = args[0];
+
+            MapData map = Load(mapName);
+
+            if (map == null) {
+                Console.WriteLine("Map '{0}' not found", mapName);
+                return WRONG_PARAMS;
+            }
+
+            List<string> fontNames = map.fontNames.ToList();
+
+            for (int i = 1; i < args.Length; i++) {
+                if (!fontNames.Contains(args[i])) {
+                    Console.WriteLine("Font {0} is not part of the map {1}, skipping!", args[i], mapName);
+                    continue;
+                }
+                fontNames.Remove(args[i]);
+            }
+
+            map.fontNames = fontNames.ToArray();
+            Save(mapName, map);
+
+            return SUCCESS;
+        }
+
+        private static int MapAddFont(string[] args) {
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
+            string mapName = args[0];
+
+            MapData map = Load(mapName);
+
+            if (map == null) {
+                Console.WriteLine("Map '{0}' not found", mapName);
+                return WRONG_PARAMS;
+            }
+            List<string> fontNames = map.fontNames.ToList();
+
+            for (int i = 1; i < args.Length; i++) {
+                string path = Path.Combine(Program.ResourcesFolder, args[i]);
+                if (!File.Exists(path)) {
+                    Console.WriteLine("Font '{0}' not found, skipping", args[i]);
+                    continue;
+                }
+
+                fontNames.Add(args[i]);
+            }
+
+            map.fontNames = fontNames.ToArray();
+            Save(mapName, map);
+
+            return SUCCESS;
 
         }
 
@@ -195,20 +261,78 @@ namespace ShaderTool.Command {
 
             Material.Load();
 
-            int textureWriteStatus = AddTexturesToResource(resourceStream, mapData);
-            if (textureWriteStatus != SUCCESS)
-                return textureWriteStatus;
+            int status = SUCCESS;
+            status = AddTexturesToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
 
-            int materialWriteStatus = AddMaterialsToResource(resourceStream, mapData);
-            if (materialWriteStatus != SUCCESS)
-                return materialWriteStatus;
+            status = AddMaterialsToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
 
-            int actorWriteStatus = AddActorsToResource(resourceStream, mapData);
-            if (actorWriteStatus != SUCCESS)
-                return actorWriteStatus;
+            status = AddActorsToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddAnimationToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddFontToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddBoundinboxToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddSamplerToResource(resourceStream, mapData);
+            if (status != SUCCESS)
+                return status;
 
             resourceStream.Close();
 
+            return SUCCESS;
+        }
+
+        private static int AddSamplerToResource(Stream resourceStream, MapData mapData) {
+            // Default skip
+            resourceStream.Write(BitConverter.GetBytes(0));
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            return SUCCESS;
+        }
+
+        private static int AddBoundinboxToResource(Stream resourceStream, MapData mapData) {
+            // Default skip
+            resourceStream.Write(BitConverter.GetBytes(0));
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            return SUCCESS;
+        }
+
+        private static int AddFontToResource(Stream resourceStream, MapData mapData) {
+            resourceStream.Write(BitConverter.GetBytes(mapData.fontNames.Length));
+
+            foreach (string font in mapData.fontNames) {
+                string path = Path.Combine(Program.ResourcesFolder, font);
+
+                if(!File.Exists(path)) {
+                    Console.WriteLine("Fontfile {0} not found, skipping!");
+                    continue;
+                }
+
+                byte[] data = File.ReadAllBytes(path);
+                resourceStream.Write(BitConverter.GetBytes(data.Length));
+                resourceStream.Write(data);
+            }
+
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            return SUCCESS;
+        }
+
+        private static int AddAnimationToResource(Stream resourceStream, MapData mapData) {
+            // Default skip
+            resourceStream.Write(BitConverter.GetBytes(0));
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
             return SUCCESS;
         }
 
