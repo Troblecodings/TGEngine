@@ -10,6 +10,11 @@ namespace tge::win {
 	uint32_t mainWindowX = 0;
 	uint32_t mainWindowY = 0;
 
+	float mouseX = 0;
+	float mouseY = 0;
+	float mouseHomogeneousX = 0;
+	float mouseHomogeneousY = 0;
+
 	bool isDecorated;
 	bool isFullscreen;
 	bool isConsumingInput;
@@ -57,7 +62,19 @@ namespace tge::win {
 					else states |= 8;
 					break;
 				}
-			} else if (raw->header.dwType == RIM_TYPEMOUSE) {
+			}
+			else if (raw->header.dwType == RIM_TYPEMOUSE) {
+				RECT rect;
+				if (GetWindowRect(hwnd, &rect)) {
+					mainWindowX = rect.left;
+					mainWindowY = rect.top;
+				}
+
+				POINT point;
+				if (GetCursorPos(&point)) {
+					mouseX = point.x - mainWindowX;
+					mouseY = point.y - mainWindowY;
+				}
 			}
 
 			return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -98,7 +115,8 @@ namespace tge::win {
 		case WM_SYSCOMMAND:
 			if (wParam == SC_MINIMIZE) {
 				isMinimized = true;
-			} else if (wParam == SC_RESTORE) {
+			}
+			else if (wParam == SC_RESTORE) {
 				isMinimized = false;
 			}
 			return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -120,7 +138,8 @@ namespace tge::win {
 			GetWindowRect(hDesktop, &desktop);
 			mainWindowHeight = desktop.bottom;
 			mainWindowWidth = desktop.right;
-		} else if (tgeproperties.getBooleanOrDefault("center", true)) {
+		}
+		else if (tgeproperties.getBooleanOrDefault("center", true)) {
 			const HWND hDesktop = GetDesktopWindow();
 			RECT desktop;
 			GetWindowRect(hDesktop, &desktop);
@@ -128,7 +147,8 @@ namespace tge::win {
 			mainWindowWidth = tgeproperties.getIntOrDefault("width", 400);
 			mainWindowX = desktop.right / 2 - mainWindowWidth / 2;
 			mainWindowY = desktop.bottom / 2 - mainWindowHeight / 2;
-		} else {
+		}
+		else {
 			mainWindowHeight = tgeproperties.getIntOrDefault("height", 400);
 			mainWindowWidth = tgeproperties.getIntOrDefault("width", 400);
 			mainWindowX = tgeproperties.getInt("posx");
@@ -163,7 +183,8 @@ namespace tge::win {
 				style |= WS_SIZEBOX;
 			}
 			winHWND = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, win::mainWindowX, win::mainWindowY, win::mainWindowWidth + 16, win::mainWindowHeight + 39, nullptr, nullptr, systemModule, nullptr);
-		} else {
+		}
+		else {
 			winHWND = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, win::mainWindowX, win::mainWindowY, win::mainWindowWidth, win::mainWindowHeight, nullptr, nullptr, systemModule, nullptr);
 		}
 
@@ -180,7 +201,8 @@ namespace tge::win {
 		Rid[0].usUsage = 0x02;
 		if (isConsumingInput) {
 			Rid[0].dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;   // adds HID mouse and also ignores legacy mouse messages if it consumes input
-		} else {
+		}
+		else {
 			Rid[0].dwFlags = 0;
 		}
 		Rid[0].hwndTarget = winHWND;

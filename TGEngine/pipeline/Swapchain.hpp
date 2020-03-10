@@ -11,7 +11,6 @@
 #include "../gamecontent/camera/Camera.hpp"
 #include "buffer/IndexBuffer.hpp"
 #include "buffer/VertexBuffer.hpp"
-#include "../ui/UIEntity.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkImage* swapchainImages;

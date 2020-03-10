@@ -33,11 +33,12 @@ namespace tge {
 			return file;
 		}
 
-		uint8_t* readAll(const char* name) {
-			long size = 0;
-			File file = readFileSize(name, "rb", &size);
-			uint8_t* data = new uint8_t[size];
-			fread(data, 1, size, file);
+		uint8_t* readAll(const char* name, long* size) {
+			if(size == nullptr)
+				size = new long[1];
+			File file = readFileSize(name, "rb", size);
+			uint8_t* data = new uint8_t[*size];
+			fread(data, 1, *size, file);
 			return data;
 		}
 	}
