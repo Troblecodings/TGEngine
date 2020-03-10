@@ -5,11 +5,12 @@
 #include "../gamecontent/Actor.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 
-#define TGR_VERSION_1 1
+constexpr uint32_t TGR_VERSION_1 = 1;
+constexpr uint32_t TGR_VERSION_2 = 2;
 
 struct Map {
     tge::tex::Sampler sampler;
-	std::vector<tge::tex::Texture> textures;
+	tge::tex::Texture* textures;
 };
 
 /*
