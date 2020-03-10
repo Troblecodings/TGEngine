@@ -33,7 +33,9 @@ namespace ShaderTool {
                     return Material.MaterialCommand(arg);
                 case "exit":
                     Environment.Exit(0);
-                    return 0;
+                    break;
+                case "font":
+                    return Font.FontCommand(arg);
             }
 
             Console.WriteLine("Wrong parameters! Possible: pipe/shader/texture/setcwd/settool/actor/material/exit!");
