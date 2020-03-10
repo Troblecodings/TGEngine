@@ -18,7 +18,7 @@ namespace ShaderTool.Command {
 
     class Map {
 
-        public const uint TGR_VERSION = 1;
+        public const uint TGR_VERSION = 2;
 
         public static int MapCommand(string[] args) {
 
@@ -93,7 +93,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine("Map '{0}' not found", mapName);
                 return WRONG_PARAMS;
             }
-            List<string> fontNames = map.fontNames.ToList();
+            List<string> fontNames = map.fontNames == null ? new List<string>():map.fontNames.ToList();
 
             for (int i = 1; i < args.Length; i++) {
                 string path = Path.Combine(Program.ResourcesFolder, args[i]);
