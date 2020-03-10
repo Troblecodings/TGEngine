@@ -15,6 +15,11 @@ namespace tge::io {
 		uint32_t header = 0;
 		fread(&header, sizeof(uint32_t), 1, file);
 
+#ifdef DEBUG
+		if (header != TGR_LATEST)
+			OUT_LV_DEBUG("Warning: you are using an old version of the tgr file, consider updating!")
+#endif // DEBUG
+
 #ifndef TGE_RESOURCE_LATEST_ONLY
 		if (header == TGR_VERSION_1) {
 			loadResourceFileV1(file, map);
@@ -34,9 +39,10 @@ namespace tge::io {
 		uint32_t blocklength = 0;
 		uint32_t currentId = 0;
 
-		fread(&blocklength, sizeof(uint32_t), 1, file);
-		map->textures = new Texture[blocklength];
-		TextureInputInfo* inputInfos = new TextureInputInfo[blocklength];
+		uint32_t textureCount;
+		fread(&textureCount, sizeof(uint32_t), 1, file);
+		map->textures = new Texture[textureCount];
+		TextureInputInfo* textureInputInfos = new TextureInputInfo[textureCount];
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -46,29 +52,34 @@ namespace tge::io {
 
 			// TODO Staging buffer for image memory
 
-			TextureInputInfo* inputInfo = inputInfos + (currentId++);
+			TextureInputInfo* inputInfo = textureInputInfos + currentId;
 			inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 
 			delete[] resbuffer;
+			currentId++;
 		}
+
+		currentId = 0;
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 		createdMaterials = new Material[blocklength];
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-
 		while (blocklength != UINT32_MAX) {
 			fread(&createdMaterials[currentId++], sizeof(uint8_t), blocklength, file);
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
 
+		currentId = 0;
+		
+		uint32_t actorCount = 0;
+		fread(&actorCount, sizeof(uint32_t), 1, file);
+
 		// Start to read the actor
-		std::vector<ActorInputInfo> actorInputInfos;
-		actorInputInfos.reserve(MAX_TEXTURES); // This is speculativ and could be any number
-		// I just happen to take the texture number
+		ActorInputInfo* actorInputInfos = new ActorInputInfo[actorCount];
 
 		// Read the block size of the following content
 		fread(&blocklength, sizeof(uint32_t), 1, file);
@@ -76,11 +87,11 @@ namespace tge::io {
 		// Goes on until it hits a change request block size (2^32)
 		while (blocklength != UINT32_MAX) {
 			// Reads the actor properties and so on
-			ActorInputInfo actorInfo;
+			ActorInputInfo* actorInfo = actorInputInfos + currentId;
 
-			fread(&actorInfo.pProperties, sizeof(tge::gmc::ActorProperties), 1, file);
-			fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
-			fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo->pProperties, sizeof(tge::gmc::ActorProperties), 1, file);
+			fread(&actorInfo->indexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo->vertexCount, sizeof(uint32_t), 1, file);
 
 			/*
 			 * TODO It would make sense to use staging buffer in this case to add the indices
@@ -88,17 +99,16 @@ namespace tge::io {
 			 */
 
 			 // Reads the indices from the file
-			actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
-			fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
+			actorInfo->pIndices = new uint32_t[actorInfo->indexCount]; // Object lifetime ?
+			fread(actorInfo->pIndices, sizeof(uint32_t), actorInfo->indexCount, file);
 
 			// Reads the vertices
-			actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
-			fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
-
-			actorInputInfos.push_back(actorInfo);
+			actorInfo->pVertices = new uint8_t[blocklength]; // Object lifetime?
+			fread(actorInfo->pVertices, sizeof(uint8_t), blocklength, file);
 
 			// Read the next block size
 			fread(&blocklength, sizeof(uint32_t), 1, file);
+			currentId++;
 		}
 
 		fclose(file);
@@ -111,10 +121,11 @@ namespace tge::io {
 
 		createSampler(inputInfo, &map->sampler);
 
-		map->textures.resize(textureBindingInfos.size());
-		createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures.data());
+		createTextures(textureInputInfos, textureCount, map->textures);
+		delete[] textureInputInfos;
 
-		createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
+		createActor(actorInputInfos, actorCount);
+		delete[] actorInputInfos;
 		return;
 	}
 
@@ -167,12 +178,12 @@ namespace tge::io {
 			// Sadly we cannot reduce read calls and have to do this all with manually
 			float transformMatrix[16];
 			fread(&transformMatrix, sizeof(float), 16, file);
-			actorInfo.pProperties.localTransform = glm::make_mat4(transformMatrix);
+			actorInfo->pProperties.localTransform = glm::make_mat4(transformMatrix);
 
-			fread(&actorInfo.pProperties.material, sizeof(uint8_t), 1, file);
-			fread(&actorInfo.pProperties.layer, sizeof(uint8_t), 1, file);
-			fread(&actorInfo.indexCount, sizeof(uint32_t), 1, file);
-			fread(&actorInfo.vertexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo->pProperties.material, sizeof(uint8_t), 1, file);
+			fread(&actorInfo->pProperties.layer, sizeof(uint8_t), 1, file);
+			fread(&actorInfo->indexCount, sizeof(uint32_t), 1, file);
+			fread(&actorInfo->vertexCount, sizeof(uint32_t), 1, file);
 			// 2x4 + 2 + 4x16
 
 			/*
@@ -181,12 +192,12 @@ namespace tge::io {
 			 */
 
 			 // Reads the indices from the file
-			actorInfo.pIndices = new uint32_t[actorInfo.indexCount]; // Object lifetime ?
-			fread(actorInfo.pIndices, sizeof(uint32_t), actorInfo.indexCount, file);
+			actorInfo->pIndices = new uint32_t[actorInfo->indexCount]; // Object lifetime ?
+			fread(actorInfo->pIndices, sizeof(uint32_t), actorInfo->indexCount, file);
 
 			// Reads the vertices
-			actorInfo.pVertices = new uint8_t[blocklength]; // Object lifetime?
-			fread(actorInfo.pVertices, sizeof(uint8_t), blocklength, file);
+			actorInfo->pVertices = new uint8_t[blocklength]; // Object lifetime?
+			fread(actorInfo->pVertices, sizeof(uint8_t), blocklength, file);
 
 			actorInputInfos.push_back(actorInfo);
 
