@@ -13,7 +13,7 @@ namespace ShaderTool.Command {
         public string[] actorNames;
         public string[] materialNames;
         public string[] textureNames;
-        public string[] fontNames;
+        public Dictionary<string, float> fontNames;
     }
 
     class Map {
@@ -65,24 +65,21 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            List<string> fontNames = map.fontNames.ToList();
-
             for (int i = 1; i < args.Length; i++) {
-                if (!fontNames.Contains(args[i])) {
+                if (!map.fontNames.ContainsKey(args[i])) {
                     Console.WriteLine("Font {0} is not part of the map {1}, skipping!", args[i], mapName);
                     continue;
                 }
-                fontNames.Remove(args[i]);
+                map.fontNames.Remove(args[i]);
             }
 
-            map.fontNames = fontNames.ToArray();
             Save(mapName, map);
 
             return SUCCESS;
         }
 
         private static int MapAddFont(string[] args) {
-            if (!AssertValues(args, 2))
+            if (!AssertValues(args, 3))
                 return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
@@ -93,19 +90,26 @@ namespace ShaderTool.Command {
                 Console.WriteLine("Map '{0}' not found", mapName);
                 return WRONG_PARAMS;
             }
-            List<string> fontNames = map.fontNames == null ? new List<string>():map.fontNames.ToList();
 
-            for (int i = 1; i < args.Length; i++) {
-                string path = Path.Combine(Program.ResourcesFolder, args[i]);
+            if (map.fontNames == null)
+                map.fontNames = new Dictionary<string, float>();
+
+            for (int i = 1; i < (args.Length - 1) / 2 + 1; i++) {
+                string path = Path.Combine(Program.ResourcesFolder, args[i * 2 - 1]);
                 if (!File.Exists(path)) {
-                    Console.WriteLine("Font '{0}' not found, skipping", args[i]);
+                    Console.WriteLine("Font '{0}' not found, skipping", path);
                     continue;
                 }
 
-                fontNames.Add(args[i]);
+                float fontSize = 0;
+                if(!float.TryParse(args[i * 2], out fontSize)) {
+                    Console.WriteLine("'{0}' is not a valid float, skipping!", args[i * 2]);
+                    continue;
+                }
+
+                map.fontNames.Add(args[i * 2 - 1], fontSize);
             }
 
-            map.fontNames = fontNames.ToArray();
             Save(mapName, map);
 
             return SUCCESS;
@@ -310,9 +314,9 @@ namespace ShaderTool.Command {
         }
 
         private static int AddFontToResource(Stream resourceStream, MapData mapData) {
-            resourceStream.Write(BitConverter.GetBytes(mapData.fontNames.Length));
+            resourceStream.Write(BitConverter.GetBytes(mapData.fontNames.Count));
 
-            foreach (string font in mapData.fontNames) {
+            foreach ((string font, float fontSize) in mapData.fontNames) {
                 string path = Path.Combine(Program.ResourcesFolder, font);
 
                 if(!File.Exists(path)) {
@@ -322,6 +326,7 @@ namespace ShaderTool.Command {
 
                 byte[] data = File.ReadAllBytes(path);
                 resourceStream.Write(BitConverter.GetBytes(data.Length));
+                resourceStream.Write(BitConverter.GetBytes(fontSize));
                 resourceStream.Write(data);
             }
 
@@ -428,6 +433,8 @@ namespace ShaderTool.Command {
             if (mapTextureNames == null)
                 return SUCCESS;
 
+            resourceStream.Write(BitConverter.GetBytes(mapData.textureNames.Length));
+
             foreach (string mapTextureName in mapTextureNames) {
 
                 string textureFilePath = Path.Combine(Program.ResourcesFolder, mapTextureName + ".tgx");
@@ -449,6 +456,8 @@ namespace ShaderTool.Command {
         }
 
         private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
+
+            resourceStream.Write(BitConverter.GetBytes(mapData.materialNames.Length));
 
             foreach (string materialName in mapData.materialNames) {
 
@@ -500,6 +509,8 @@ namespace ShaderTool.Command {
         private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
 
             string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
+
+            resourceStream.Write(BitConverter.GetBytes(mapData.actorNames.Length));
 
             // Write the data names into the resource file
             foreach (string actorName in mapData.actorNames) {

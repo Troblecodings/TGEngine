@@ -15,9 +15,15 @@ namespace tge {
 		constexpr uint32_t FONT_TEXTURE_WIDTH = 2000;
 		constexpr uint32_t FONT_TEXTURE_HEIGHT = 2000;
 
-		void readFontfile(const char* name, const float fontheight, tge::tex::TextureInputInfo* textureInputInfo, stbtt_bakedchar* charData);
+		struct Font {
+			uint32_t material;
+			stbtt_bakedchar* charData;
+			float fontheight; // Primarly for alignment
+		};
 
-		void createStringActor(const char* inputString, const stbtt_bakedchar* charData, tge::gmc::ActorInputInfo* actor);
+		extern Font* fonts;
+
+		void createStringActor(const char* inputString, Font* font, tge::gmc::ActorInputInfo* actor);
 
 	}
 }
