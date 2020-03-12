@@ -213,6 +213,9 @@
     <ClInclude Include="io\Resource.hpp">
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UISystem.hpp">
+      <Filter>Headerdateien\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -340,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="io\Font.cpp">
       <Filter>Quelldateien\io</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UISystem.cpp">
+      <Filter>Quelldateien\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
