@@ -18,7 +18,7 @@ namespace tge {
 		struct Font {
 			uint32_t material;
 			stbtt_bakedchar* charData;
-			float fontheight; // Primarly for alignment
+			float fontheight; // Primarily for alignment
 		};
 
 		extern Font* fonts;
