@@ -1,4 +1,5 @@
 #include "Window.hpp"
+#include "../../ui/UISystem.hpp"
 
 namespace tge::win {
 
@@ -75,6 +76,8 @@ namespace tge::win {
 					mouseX = point.x - mainWindowX;
 					mouseY = point.y - mainWindowY;
 				}
+
+				tge::ui::checkBoundingBoxes();
 			}
 
 			return DefWindowProc(hwnd, msg, wParam, lParam);
