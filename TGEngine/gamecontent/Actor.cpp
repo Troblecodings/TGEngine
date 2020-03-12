@@ -9,17 +9,6 @@ namespace tge::gmc {
 	std::vector<uint32_t>  offsetData;
 	std::vector<uint32_t>  vertexOffsetData;
 
-	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize) {
-		for (uint32_t i = 0; i < pSize; i++) {
-			ResourceDescriptor descriptor = pResourceDescriptors[i];
-
-			fseek(pFile, (long)descriptor.offset, SEEK_SET);
-			uint8_t* buffer = new uint8_t[pSize];
-			fread(buffer, sizeof(uint8_t), descriptor.size, pFile);
-			// TODO Deserilize
-		}
-	}
-
 	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize) {
 		properties.reserve(pSize);
 		countData.reserve(pSize);

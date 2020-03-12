@@ -6,6 +6,6 @@ namespace tge::gmc {
 
 	using namespace buf;
 
-	Material createdMaterials[MAX_MATERIALS];
+	Material* createdMaterials;
 
 }

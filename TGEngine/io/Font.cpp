@@ -7,33 +7,26 @@
 namespace tge {
 	namespace fnt {
 
-		void readFontfile(const char* name, const float fontheight, tge::tex::TextureInputInfo* textureInputInfo, stbtt_bakedchar* charData) {
-			textureInputInfo->data = new uint8_t[FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT * 4];
-			textureInputInfo->x = FONT_TEXTURE_WIDTH;
-			textureInputInfo->y = FONT_TEXTURE_HEIGHT;
-			textureInputInfo->comp = 4;
-			uint8_t* filedata = tge::nio::readAll(name);
-			stbtt_BakeFontBitmap(filedata, 0, fontheight, textureInputInfo->data, FONT_TEXTURE_WIDTH, FONT_TEXTURE_HEIGHT, 0, 256, charData);
-		}
+		Font* fonts;
 
-		void createStringActor(const char* inputString, const stbtt_bakedchar* charDataIn, tge::gmc::ActorInputInfo *actor) {
+		void createStringActor(const char* inputString, Font* font, tge::gmc::ActorInputInfo *actor) {
 			size_t inputStringLength = strlen(inputString);
 			float x = 0;
 			float y = 0;
-			stbtt_aligned_quad alignedQuad;
 
+			actor->pProperties.material = 
 			actor->indexCount = inputStringLength * 6;
 			actor->vertexCount = inputStringLength * 4;
 			actor->pIndices = new uint32_t[actor->indexCount];
-			actor->pVertices = (uint8_t*)new float[((uint32_t)actor->vertexCount) * 4];
+			actor->pVertices = (uint8_t*)new float[((uint32_t)actor->vertexCount) * 4u];
 			float* arr = (float*)actor->pVertices;
 
 			float ipw = 1.0f / FONT_TEXTURE_WIDTH, iph = 1.0f / FONT_TEXTURE_HEIGHT;
 
-			for (size_t i = 0; i < inputStringLength; i++) {
+			for (uint32_t i = 0; i < inputStringLength; i++) {
 				int characterNumber = (int)inputString[i];
 
-				const stbtt_bakedchar* charData = charDataIn + characterNumber;
+				const stbtt_bakedchar* charData = font->charData + characterNumber;
 
 				int round_x = STBTT_ifloor((x + charData->xoff) + 0.5f);
 				int round_y = STBTT_ifloor((y + charData->yoff) + 0.5f);
