@@ -2,6 +2,8 @@
 #include "window/Window.hpp"
 #include "../gamecontent/Actor.hpp"
 #include "../resources/ShaderPipes.hpp"
+#include "../gamecontent/PlayerController.hpp"
+#include "../pipeline/Pipe.hpp"
 
 VkImage* swapchainImages;
 VkSwapchainKHR swapchain;
@@ -115,6 +117,7 @@ void recreateSwapchain() {
 	destroyColorResouce();
 	destroyDepthTest();
 	destroySwapchain();
+	tge::pip::destroyPipelines();
 
 	CHECKFAIL(vkDeviceWaitIdle(device));
 
@@ -126,6 +129,7 @@ void recreateSwapchain() {
 	createDepthTest();
 	createRenderpass();
 	createSwapchain();
+	tge::pip::initPipelines();
 	if (lastResult == VK_ERROR_INITIALIZATION_FAILED) {
 		for (uint32_t i = 0; i < imageCount; i++) {
 			vkDestroyImage(device, swapchainImages[i], nullptr);
@@ -138,6 +142,7 @@ void recreateSwapchain() {
 	createCommandBuffer();
 
 	fillCommandBuffer();
+	tge::gmc::playercontroller({});
 }
 
 void destroySwapchain() {

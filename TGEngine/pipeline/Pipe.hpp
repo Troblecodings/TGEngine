@@ -20,4 +20,6 @@ namespace tge::pip {
 	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines);
 
 	void initPipelines();
+
+	void destroyPipelines();
 }
