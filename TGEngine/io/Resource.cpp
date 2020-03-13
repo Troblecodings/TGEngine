@@ -91,22 +91,6 @@ namespace tge::io {
 			currentId++;
 		}
 
-		// TODO Animation
-
-		// Reads the count of blocks following
-		fread(&blocklength, sizeof(uint32_t), 1, file);
-
-		// Read the block size of the following content
-		fread(&blocklength, sizeof(uint32_t), 1, file);
-
-		// TODO needs implementation
-		while (blocklength != UINT32_MAX) {
-			stbi_uc* resbuffer = new stbi_uc[blocklength];
-			fread(resbuffer, sizeof(stbi_uc), blocklength, file);
-
-			fread(&blocklength, sizeof(uint32_t), 1, file);
-		}
-
 		currentId = 0;
 
 		uint32_t fontCount = 0;

@@ -26,7 +26,7 @@ namespace ShaderTool.Command {
                     return FontList();
             }
 
-            Console.WriteLine("Wrong parameters! Must be save/add/rm/list!");
+            Console.WriteLine("Wrong parameters! Must be add/rm/list!");
             return WRONG_PARAMS;
         }
 

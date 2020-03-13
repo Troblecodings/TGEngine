@@ -47,7 +47,7 @@ namespace ShaderTool.Command {
                     return MapRmFont(GetParams(args));
             }
 
-            Console.WriteLine("Wrong parameters! Must be save/add/rm/make/list!");
+            Console.WriteLine("Wrong parameters! Must be add/rm/make/list!");
             return WRONG_PARAMS;
 
         }
@@ -278,38 +278,16 @@ namespace ShaderTool.Command {
             if (status != SUCCESS)
                 return status;
 
-            status = AddAnimationToResource(resourceStream, mapData);
-            if (status != SUCCESS)
-                return status;
-
             status = AddFontToResource(resourceStream, mapData);
             if (status != SUCCESS)
                 return status;
 
-            status = AddBoundinboxToResource(resourceStream, mapData);
-            if (status != SUCCESS)
-                return status;
-
-            status = AddSamplerToResource(resourceStream, mapData);
+            status = AddAnimationToResource(resourceStream, mapData);
             if (status != SUCCESS)
                 return status;
 
             resourceStream.Close();
 
-            return SUCCESS;
-        }
-
-        private static int AddSamplerToResource(Stream resourceStream, MapData mapData) {
-            // Default skip
-            resourceStream.Write(BitConverter.GetBytes(0));
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
-            return SUCCESS;
-        }
-
-        private static int AddBoundinboxToResource(Stream resourceStream, MapData mapData) {
-            // Default skip
-            resourceStream.Write(BitConverter.GetBytes(0));
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
             return SUCCESS;
         }
 
