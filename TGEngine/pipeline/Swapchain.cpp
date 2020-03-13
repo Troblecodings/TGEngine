@@ -34,7 +34,7 @@ void createSwapchain() {
 	swapchainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	swapchainCreateInfo.presentMode = usedPresentMode;
 	swapchainCreateInfo.clipped = VK_TRUE;
-	swapchainCreateInfo.oldSwapchain = swapchain;
+	swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
 
 	lastResult = vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain);
