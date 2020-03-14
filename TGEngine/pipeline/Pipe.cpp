@@ -180,4 +180,8 @@ namespace tge::pip {
 
 		createPipelines(&pipelineInputInfo, 1, &defaultPipeline);
 	}
+
+	void destroyPipelines() {
+		vkDestroyPipeline(device, defaultPipeline, nullptr);
+	}
 }

@@ -51,11 +51,13 @@ TGERROR(lastResult)\
 #define TGE_ASSERT_NORMAL_DB(assertion, action)
 #endif
 
-#define TGE_CHECK_RECREATE else if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
-if(tge::win::isMinimized){\
+#define TGE_CHECK_RECREATE(statement) lastResult = statement;\
+if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
+if(tge::win::isMinimized)\
 return;\
-}\
 recreateSwapchain();\
+} else if (lastResult != VK_SUCCESS) {\
+TGERROR(lastResult)\
 }
 
 #ifdef DEBUG
