@@ -23,5 +23,5 @@ namespace tge::gmc {
 	/* Holds all the materials for the push constant
 	 * <em>Note: Needs to be initialized before a load call</em>
 	 */
-	extern Material createdMaterials[MAX_MATERIALS];
+	extern Material* createdMaterials;
 }

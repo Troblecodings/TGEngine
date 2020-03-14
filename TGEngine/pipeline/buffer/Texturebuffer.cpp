@@ -6,7 +6,7 @@ namespace tge::tex {
 
 	TextureDefaults defaults;
 
-	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output) {
+	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, uint32_t offset) {
 		// TODO default format checks
 
 		VkBuffer* bufferlist = new VkBuffer[size];
@@ -73,7 +73,6 @@ namespace tge::tex {
 			memoryAllocateInfo.memoryTypeIndex = vlibDeviceHostVisibleCoherentIndex; // Goofy
 
 			CHECKFAIL(vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memorylist[i]));
-
 
 			CHECKFAIL(vkBindBufferMemory(device, bufferlist[i], memorylist[i], 0));
 

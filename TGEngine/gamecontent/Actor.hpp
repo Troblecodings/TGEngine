@@ -79,13 +79,6 @@ namespace tge::gmc {
 	extern std::vector<uint32_t>  vertexOffsetData;
 
 	/*
-	 * Loads the model from the file system
-	 * 
-	 * <strong>Unfinished</strong>
-	 */
-	void loadModel(File pFile, ResourceDescriptor* pResourceDescriptors, uint32_t pSize);
-
-	/*
 	 * Creates the actors by loading everything into intermediate
 	 * vectors, before storing it into the command buffer as soon as possible
 	 */
