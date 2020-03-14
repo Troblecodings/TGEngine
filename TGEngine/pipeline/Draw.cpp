@@ -14,8 +14,7 @@ void createMutex() {
 }
 
 void startdraw() {
-	CHECKFAIL(vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, drawFence, &imageIndex))
-	TGE_CHECK_RECREATE;
+	TGE_CHECK_RECREATE(vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, VK_NULL_HANDLE, drawFence, &imageIndex))
 
 	CHECKFAIL(vkWaitForFences(device, 1, &drawFence, VK_TRUE, UINT64_MAX));
 	CHECKFAIL(vkResetFences(device, 1, &drawFence));
@@ -33,8 +32,7 @@ void submit() {
 	submitInfo.signalSemaphoreCount = 0;
 	submitInfo.pSignalSemaphores = nullptr;
 
-	CHECKFAIL(vkQueueSubmit(queue, 1, &submitInfo, drawFence))
-	TGE_CHECK_RECREATE;
+	TGE_CHECK_RECREATE(vkQueueSubmit(queue, 1, &submitInfo, drawFence));
 }
 
 void present() {
@@ -51,8 +49,7 @@ void present() {
 	presentInfoKHR.pImageIndices = &imageIndex;
 	presentInfoKHR.pResults = nullptr;
 
-	CHECKFAIL(vkQueuePresentKHR(queue, &presentInfoKHR))
-	TGE_CHECK_RECREATE;
+	TGE_CHECK_RECREATE(vkQueuePresentKHR(queue, &presentInfoKHR));
 }
 
 void destroyMutex() {
