@@ -29,7 +29,6 @@ namespace tge::tex {
 	};
 
 	struct Texture {
-		uint32_t       id;
 		VkImage        image;
 		VkImageView    view;
 		VkDeviceMemory imagememory;
@@ -48,5 +47,9 @@ namespace tge::tex {
 
 	void createSampler(SamplerInputInfo input, Sampler* sampler);
 
+	void destroySampler(Sampler sampler);
+
 	void createTextures(TextureInputInfo* input, uint32_t size, Texture* output, uint32_t offset = 0);
+
+	void destroyTexture(Texture* texture, uint32_t size);
 }
