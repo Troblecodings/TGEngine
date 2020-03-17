@@ -15,6 +15,6 @@ extern VkDescriptorPool descriptorPool;
 void initDescriptors();
 
 /*
- * This will cleanup the descriptor systems (Pool, Memory, Layouts ...)
+ * This will clean up the descriptor systems (Pool, Memory, Layouts ...)
  */
 void destroyDescriptor();
