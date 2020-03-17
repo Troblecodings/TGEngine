@@ -2,6 +2,7 @@
 #include "gamecontent/Light.hpp"
 #include "pipeline/window/Window.hpp"
 #include "pipeline/buffer/UniformBuffer.hpp"
+#include "io/Resource.hpp"
 
 using namespace std;
 using namespace tge::tex;
@@ -9,6 +10,7 @@ using namespace tge::gmc;
 using namespace tge::pip;
 using namespace tge::buf;
 using namespace tge::win;
+using namespace tge::io;
 
 VertexBuffer vertexBuffer;
 IndexBuffer indexBuffer;
@@ -132,6 +134,8 @@ void startTGEngine() {
 	destroyRenderPass();
 	destroyDepthTest();
 	destroyColorResouce();
+	destroyDescriptor();
+	destroyResource();
 	destroyDevice();
 	destroyWindows();
 	destroyInstance();

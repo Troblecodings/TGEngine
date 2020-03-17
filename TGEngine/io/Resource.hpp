@@ -14,8 +14,10 @@ namespace tge::io {
 
     struct Map {
         tge::tex::Sampler sampler;
-        tge::tex::Texture* textures;
+        std::vector<tge::tex::Texture> textures;
     };
+
+    extern Map currentMap;
 
     /*
      * This loads a map from a resource file
@@ -23,6 +25,11 @@ namespace tge::io {
      * https://troblecodings.com/fileformat.html
      * it automatically creates all ressources
      */
-    void loadResourceFile(const char* name, Map* map);
+    void loadResourceFile(const char* name);
+
+    /*
+     * This will destroy all vulkan tide ressources of the map
+     */
+    void destroyResource();
 
 }

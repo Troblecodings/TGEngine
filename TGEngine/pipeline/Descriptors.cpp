@@ -2,6 +2,8 @@
 
 VkPipelineLayout pipelineLayout;
 VkDescriptorSet mainDescriptorSets[3];
+VkDescriptorSetLayout descriptorSetLayout[2];
+VkDescriptorPool descriptorPool;
 
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
@@ -22,7 +24,6 @@ void initDescriptors() {
 	descriptorPoolCreateInfo.poolSizeCount = 3;
 	descriptorPoolCreateInfo.pPoolSizes = sizes;
 
-	VkDescriptorPool descriptorPool;
 	CHECKFAIL(vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool));
 
 	VkDescriptorSetLayoutBinding descriptorSetLayoutBindingTransform;
@@ -65,7 +66,6 @@ void initDescriptors() {
 	descriptorSetLayoutCreateInfoTextures.bindingCount = 3;
 	descriptorSetLayoutCreateInfoTextures.pBindings = descriptorSetLayoutBindingTextures;
 
-	VkDescriptorSetLayout descriptorSetLayout[2];
 	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTextures, nullptr, descriptorSetLayout));
 	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTransform, nullptr, &descriptorSetLayout[1]));
 
@@ -101,4 +101,13 @@ void initDescriptors() {
 	descriptorSetAllocateInfo.pSetLayouts = setLayouts;
 
 	CHECKFAIL(vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, mainDescriptorSets));
+}
+
+void destroyDescriptor() {
+	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+
+	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[0], nullptr);
+	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[1], nullptr);
+
+	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 }
