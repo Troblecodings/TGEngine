@@ -1,6 +1,7 @@
 #pragma once
 #include "../pipeline/ShaderCreation.hpp"
 void initShader();
+void destroyShader();
 
 extern unsigned char FragmentColorOnlyModule[];
 extern VkPipelineShaderStageCreateInfo FragmentColorOnly;
