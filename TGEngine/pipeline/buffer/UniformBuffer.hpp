@@ -7,7 +7,7 @@ namespace tge::buf {
 
 	constexpr uint32_t TRANSFORM_BUFFER = 0;
 	constexpr uint32_t TRANSFORM_BUFFER_2 = 1;
-	constexpr uint32_t UBO_BUFFER = 1;
+	constexpr uint32_t UV_BUFFER = 2;
 
 	constexpr uint32_t UBO_COUNT = 3;
 
