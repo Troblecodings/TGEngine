@@ -136,6 +136,8 @@ void startTGEngine() {
 	destroyColorResouce();
 	destroyDescriptor();
 	destroyResource();
+	destroyBuffers(buffers, UBO_COUNT);
+	destroyPipelines();
 	destroyDevice();
 	destroyWindows();
 	destroyInstance();

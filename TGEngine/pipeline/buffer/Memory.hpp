@@ -39,4 +39,6 @@ namespace tge::buf {
 
 	void createBuffers(BufferInputInfo* inputInfo, uint32_t size, BufferObject* ubo);
 
+	void destroyBuffers(BufferObject* ubos, uint32_t size);
+
 }
