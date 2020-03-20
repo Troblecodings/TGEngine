@@ -176,6 +176,14 @@ namespace tge::tex {
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
 	}
 
+	void destroyTexture(Texture* texture, uint32_t size) {
+		for (uint32_t i = 0; i < size; i++) {
+			vkDestroyImageView(device, texture[i].view, nullptr);
+			vkDestroyImage(device, texture[i].image, nullptr);
+			vkFreeMemory(device, texture[i].imagememory, nullptr);
+		}
+	}
+
 	void createSampler(SamplerInputInfo loaded, Sampler* sampler) {
 		// TODO Validation checks
 
@@ -218,6 +226,10 @@ namespace tge::tex {
 		descwrite.pBufferInfo = nullptr;
 		descwrite.pTexelBufferView = nullptr;
 		vkUpdateDescriptorSets(device, 1, &descwrite, 0, nullptr);
+	}
+
+	void destroySampler(Sampler sampler) {
+		vkDestroySampler(device, sampler, nullptr);
 	}
 
 }

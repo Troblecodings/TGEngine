@@ -11,13 +11,14 @@ namespace tge::io {
 	using namespace tge::gmc;
 	using namespace tge::fnt;
 
-	static void loadResourceFileV2(File file, Map* map) {
+	Map currentMap;
+
+	static void loadResourceFileV2(File file) {
 		uint32_t blocklength = 0;
 		uint32_t currentId = 0;
 
 		uint32_t textureCount;
 		fread(&textureCount, sizeof(uint32_t), 1, file);
-		map->textures = new Texture[textureCount];
 		std::vector<TextureInputInfo> textureInputInfos;
 		textureInputInfos.resize(textureCount);
 
@@ -137,9 +138,10 @@ namespace tge::io {
 		inputInfo.filterMagnification = VK_FILTER_NEAREST;
 		inputInfo.filterMignification = VK_FILTER_NEAREST;
 
-		createSampler(inputInfo, &map->sampler);
+		createSampler(inputInfo, &currentMap.sampler);
 
-		createTextures(textureInputInfos.data(), textureInputInfos.size(), map->textures);
+		currentMap.textures.resize(textureInputInfos.size());
+		createTextures(textureInputInfos.data(), (uint32_t)textureInputInfos.size(), currentMap.textures.data());
 
 		createActor(actorInputInfos, actorCount);
 		delete[] actorInputInfos;
@@ -147,7 +149,7 @@ namespace tge::io {
 	}
 
 #ifndef TGE_RESOURCE_LATEST_ONLY
-	static void loadResourceFileV1(File file, Map* map) {
+	static void loadResourceFileV1(File file) {
 		uint32_t blocklength = 0;
 
 		std::vector<TextureInputInfo> textureBindingInfos;
@@ -226,17 +228,17 @@ namespace tge::io {
 		inputInfo.filterMagnification = VK_FILTER_NEAREST;
 		inputInfo.filterMignification = VK_FILTER_NEAREST;
 
-		createSampler(inputInfo, &map->sampler);
+		createSampler(inputInfo, &currentMap.sampler);
 
-		map->textures = new Texture[textureBindingInfos.size()];
-		createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), map->textures);
+	    currentMap.textures.resize(textureBindingInfos.size());
+		createTextures(textureBindingInfos.data(), (uint32_t)textureBindingInfos.size(), currentMap.textures.data());
 
 		createActor(actorInputInfos.data(), (uint32_t)actorInputInfos.size());
 		return;
 	}
 #endif
 
-	void loadResourceFile(const char* name, Map* map) {
+	void loadResourceFile(const char* name) {
 		File file = open(name, "rb");
 
 		uint32_t header = 0;
@@ -249,16 +251,21 @@ namespace tge::io {
 
 #ifndef TGE_RESOURCE_LATEST_ONLY
 			if (header == TGR_VERSION_1) {
-				loadResourceFileV1(file, map);
+				loadResourceFileV1(file);
 			}
 			else
 #endif // !TGE_RESOURCE_LATEST_ONLY
 				if (header == TGR_VERSION_2) {
-					loadResourceFileV2(file, map);
+					loadResourceFileV2(file);
 				}
 				else {
 					OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
 					return;
 				}
+	}
+
+	void destroyResource() {
+		destroyTexture(currentMap.textures.data(), currentMap.textures.size());
+		destroySampler(currentMap.sampler);
 	}
 }

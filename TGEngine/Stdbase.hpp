@@ -56,6 +56,7 @@ if(lastResult == VK_ERROR_OUT_OF_DATE_KHR){\
 if(tge::win::isMinimized)\
 return;\
 recreateSwapchain();\
+return;\
 } else if (lastResult != VK_SUCCESS) {\
 TGERROR(lastResult)\
 }
