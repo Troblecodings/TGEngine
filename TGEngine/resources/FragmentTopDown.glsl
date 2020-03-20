@@ -3,9 +3,6 @@
 
 layout(binding = 1) uniform sampler mainsampler;
 layout(binding = 2) uniform texture2D images[2048];
-layout(binding = 3) uniform UV_OFFSETTING {
-    vec2 uvOffsets[256];
-} ubblock;
 
 layout(push_constant) uniform PUSH_CONST{
     layout(offset=64) vec4 color;

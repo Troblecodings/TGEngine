@@ -358,6 +358,9 @@
     <None Include="resources\VertexTextured2D.glsl">
       <Filter>shader</Filter>
     </None>
+    <None Include="resources\VertexTopDownInstanced.glsl">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="resources\FragmentColorOnly.glsl">
