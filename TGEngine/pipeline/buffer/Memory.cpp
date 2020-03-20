@@ -32,4 +32,11 @@ namespace tge::buf {
 		}
 	}
 
+	void destroyBuffers(BufferObject* ubos, uint32_t size) {
+		for (uint32_t i = 0; i < size; i++) {
+			vkDestroyBuffer(device, ubos[i].buffer, nullptr);
+			vkFreeMemory(device, ubos[i].memory, nullptr);
+		}
+	}
+
 }

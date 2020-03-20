@@ -3,6 +3,7 @@
 #include "pipeline/window/Window.hpp"
 #include "pipeline/buffer/UniformBuffer.hpp"
 #include "io/Resource.hpp"
+#include "resources/ShaderData.hpp"
 
 using namespace std;
 using namespace tge::tex;
@@ -124,18 +125,21 @@ void startTGEngine() {
 		counter++;
 	}
 
-	destroyMutex();
 	destroyCommandBuffer();
 	destroyIndexBuffer(&indexBuffer);
 	destroyVertexBuffer(&vertexBuffer);
 	destroyStagingBuffer();
 	destroyFrameBuffer();
+	destroyMutex();
 	destroySwapchain();
 	destroyRenderPass();
 	destroyDepthTest();
 	destroyColorResouce();
 	destroyDescriptor();
 	destroyResource();
+	destroyBuffers(buffers, UBO_COUNT);
+	destroyPipelines();
+	destroyShader();
 	destroyDevice();
 	destroyWindows();
 	destroyInstance();

@@ -79,7 +79,7 @@ namespace ShaderTool.Command {
             StreamWriter shaderDataCPP = new StreamWriter(cppStream);
 
             shaderDataCPP.WriteLine("#include \"ShaderData.hpp\"\r\n");
-            shaderDataHPP.WriteLine("#pragma once\r\n#include \"../pipeline/ShaderCreation.hpp\"\r\nvoid initShader();\r\n");
+            shaderDataHPP.WriteLine("#pragma once\r\n#include \"../pipeline/ShaderCreation.hpp\"\r\nvoid initShader();\r\nvoid destroyShader();\r\n");
             foreach (string path in files) {
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
                 shaderDataHPP.WriteLine("extern unsigned char " + name + "Module[];\r\nextern VkPipelineShaderStageCreateInfo " + name + ";");
@@ -97,6 +97,12 @@ namespace ShaderTool.Command {
                 string name = path.Replace(Program.CWD, "").Replace(".spv", "").Replace("\\", "").Replace("/", "");
                 string shaderstage = path.Contains("Vertex") ? "VK_SHADER_STAGE_VERTEX_BIT" : "VK_SHADER_STAGE_FRAGMENT_BIT";
                 shaderDataCPP.WriteLine(name + " = createShader(" + name + "Module, " + shaderstage + ", " + length + ");");
+            }
+            shaderDataCPP.WriteLine("}");
+            shaderDataCPP.WriteLine("\r\nvoid destroyShader() {\r\n");
+            foreach (string path in files) {
+                string name = System.IO.Path.GetFileNameWithoutExtension(path);
+                shaderDataCPP.WriteLine("vkDestroyShaderModule(device, " + name + ".module, nullptr);\r\n");
             }
             shaderDataCPP.WriteLine("}");
             shaderDataHPP.Close();

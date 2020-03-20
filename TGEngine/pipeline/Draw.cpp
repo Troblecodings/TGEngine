@@ -53,7 +53,5 @@ void present() {
 }
 
 void destroyMutex() {
-	CHECKFAIL(vkDeviceWaitIdle(device));
-
 	vkDestroyFence(device, drawFence, nullptr);
 }

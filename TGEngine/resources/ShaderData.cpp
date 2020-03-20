@@ -36,3 +36,29 @@ VertexTexturedMovable = createShader(VertexTexturedMovableModule, VK_SHADER_STAG
 VertexTopDown = createShader(VertexTopDownModule, VK_SHADER_STAGE_VERTEX_BIT, 1324);
 VertexUI = createShader(VertexUIModule, VK_SHADER_STAGE_VERTEX_BIT, 932);
 }
+
+void destroyShader() {
+
+vkDestroyShaderModule(device, FragmentColorOnly.module, nullptr);
+
+vkDestroyShaderModule(device, FragmentTextured.module, nullptr);
+
+vkDestroyShaderModule(device, FragmentTextured2D.module, nullptr);
+
+vkDestroyShaderModule(device, FragmentTopDown.module, nullptr);
+
+vkDestroyShaderModule(device, FragmentUIColor.module, nullptr);
+
+vkDestroyShaderModule(device, FragmentUITextured.module, nullptr);
+
+vkDestroyShaderModule(device, VertexTextured.module, nullptr);
+
+vkDestroyShaderModule(device, VertexTextured2D.module, nullptr);
+
+vkDestroyShaderModule(device, VertexTexturedMovable.module, nullptr);
+
+vkDestroyShaderModule(device, VertexTopDown.module, nullptr);
+
+vkDestroyShaderModule(device, VertexUI.module, nullptr);
+
+}
