@@ -292,6 +292,8 @@ namespace ShaderTool.Command {
         }
 
         private static int AddFontToResource(Stream resourceStream, MapData mapData) {
+            if (mapData.fontNames == null)
+                mapData.fontNames = new Dictionary<string, float>();
             resourceStream.Write(BitConverter.GetBytes(mapData.fontNames.Count));
 
             foreach ((string font, float fontSize) in mapData.fontNames) {
