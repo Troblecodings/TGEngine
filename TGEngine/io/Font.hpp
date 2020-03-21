@@ -9,8 +9,7 @@
 #include "../gamecontent/Actor.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
 
-namespace tge {
-	namespace fnt {
+namespace tge::fnt {
 
 		constexpr uint32_t FONT_TEXTURE_WIDTH = 2000;
 		constexpr uint32_t FONT_TEXTURE_HEIGHT = 2000;
@@ -23,7 +22,8 @@ namespace tge {
 
 		extern Font* fonts;
 
+#if 0
 		void createStringActor(const char* inputString, Font* font, tge::gmc::ActorInputInfo* actor);
+#endif // DEBUG
 
-	}
 }

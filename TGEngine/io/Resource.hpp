@@ -4,6 +4,7 @@
 #include "../gamecontent/Material.hpp"
 #include "../gamecontent/Actor.hpp"
 #include "../pipeline/buffer/Texturebuffer.hpp"
+#include "../pipeline/buffer/Memory.hpp"
 
 namespace tge::io {
 
@@ -15,6 +16,7 @@ namespace tge::io {
     struct Map {
         tge::tex::Sampler sampler;
         std::vector<tge::tex::Texture> textures;
+        tge::buf::BufferObject mapBuffers[2];
     };
 
     extern Map currentMap;

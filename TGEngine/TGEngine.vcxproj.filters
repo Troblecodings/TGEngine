@@ -114,9 +114,6 @@
     <ClInclude Include="Pipeline\Swapchain.hpp">
       <Filter>Headerdateien\pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\Buffer\IndexBuffer.hpp">
-      <Filter>Headerdateien\pipeline\buffer</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\Buffer\Memory.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
       <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Buffer\UniformBuffer.hpp">
-      <Filter>Headerdateien\pipeline\buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline\Buffer\VertexBuffer.hpp">
       <Filter>Headerdateien\pipeline\buffer</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Window\Window.hpp">
@@ -260,9 +254,6 @@
     <ClCompile Include="Resources\ShaderData.cpp">
       <Filter>resources</Filter>
     </ClCompile>
-    <ClCompile Include="pipeline\Buffer\IndexBuffer.cpp">
-      <Filter>Quelldateien\pipeline\buffer</Filter>
-    </ClCompile>
     <ClCompile Include="pipeline\Buffer\Memory.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
@@ -270,9 +261,6 @@
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
     <ClCompile Include="pipeline\Buffer\UniformBuffer.cpp">
-      <Filter>Quelldateien\pipeline\buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="pipeline\Buffer\VertexBuffer.cpp">
       <Filter>Quelldateien\pipeline\buffer</Filter>
     </ClCompile>
     <ClCompile Include="io\Files.cpp">

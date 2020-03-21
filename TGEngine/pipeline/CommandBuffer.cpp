@@ -1,7 +1,7 @@
 #include "CommandBuffer.hpp"
 #include "../gamecontent/Actor.hpp"
 #include "window/Window.hpp"
-#include "../TGEngine.hpp"
+#include "../io/Resource.hpp"
 
 VkCommandPool commandPool;
 VkFence singelTimeCommandBufferFence;
@@ -124,9 +124,9 @@ void fillCommandBuffer() {
 		vkCmdBeginRenderPass(buffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkDeviceSize offsets = 0;
-		vkCmdBindVertexBuffers(buffer, 0, 1, &vertexBuffer.vertex_buffer, &offsets);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &tge::io::currentMap.mapBuffers[1].buffer, &offsets);
 
-		vkCmdBindIndexBuffer(buffer, indexBuffer.index_buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(buffer, tge::io::currentMap.mapBuffers[0].buffer, 0, VK_INDEX_TYPE_UINT32);
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, mainDescriptorSets, 0, nullptr);
 

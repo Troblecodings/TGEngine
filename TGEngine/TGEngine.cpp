@@ -13,9 +13,6 @@ using namespace tge::buf;
 using namespace tge::win;
 using namespace tge::io;
 
-VertexBuffer vertexBuffer;
-IndexBuffer indexBuffer;
-
 void initEngine() {
 	tge::nio::initFileSystem();
 #ifndef TGE_NO_PROPERTY_FILE
@@ -49,28 +46,13 @@ void initEngine() {
 	};
 	fillUniformBuffer(TRANSFORM_BUFFER_2, &mat, sizeof(glm::mat4));
 
-	vertexBuffer.maximumVertexCount = 9000;
-	createVertexBuffer(&vertexBuffer);
-
-	indexBuffer.maximumIndexCount = 90000;
-	createIndexBuffer(&indexBuffer);
 	createCommandBuffer();
-
-	vertexBuffer.start();
-	indexBuffer.start();
 
 	createSwapchain();
 	createFramebuffer();
 }
 
 void startTGEngine() {
-
-	index_offset = indexBuffer.indexCount;
-	vertex_offset = vertexBuffer.pointCount;
-
-	vertexBuffer.end();
-	indexBuffer.end();
-
 	fillCommandBuffer();
 
 	startupCommands();
@@ -126,8 +108,6 @@ void startTGEngine() {
 	}
 
 	destroyCommandBuffer();
-	destroyIndexBuffer(&indexBuffer);
-	destroyVertexBuffer(&vertexBuffer);
 	destroyStagingBuffer();
 	destroyFrameBuffer();
 	destroyMutex();

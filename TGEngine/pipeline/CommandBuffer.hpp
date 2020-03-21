@@ -4,8 +4,6 @@
 #include "Device.hpp"
 #include "RenderPass.hpp"
 #include "Framebuffer.hpp"
-#include "buffer/VertexBuffer.hpp"
-#include "buffer/IndexBuffer.hpp"
 #include "Pipe.hpp"
 #include "Descriptors.hpp"
 #include "buffer/StagingBuffer.hpp"
