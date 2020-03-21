@@ -56,10 +56,10 @@ namespace ShaderTool.Command {
 
             uint output;
             if (uint.TryParse(args[1], System.Globalization.NumberStyles.HexNumber, null, out output)) {
-                float r = ((output & 0xFF000000) >> 24) / 255;
-                float g = ((output & 0x00FF0000) >> 16) / 255;
-                float b = ((output & 0x0000FF00) >> 8) / 255;
-                float a = ((output & 0x000000FF) / 255);
+                float r = ((output & 0xFF000000) >> 24) / 255.0f;
+                float g = ((output & 0x00FF0000) >> 16) / 255.0f;
+                float b = ((output & 0x0000FF00) >> 8) / 2255.0f;
+                float a = ((output & 0x000000FF) / 255.0f);
                 Cache.MATERIALS[name].color = new float[] { r, g, b, a };
                 Save();
                 return SUCCESS;
@@ -153,10 +153,10 @@ namespace ShaderTool.Command {
                 if (!uint.TryParse(args[2], System.Globalization.NumberStyles.HexNumber, null, out output)) {
                     Console.WriteLine("{0} is not a hex number!", args[2]);
                 } else {
-                    float r = ((output & 0xFF000000) >> 24) / 255;
-                    float g = ((output & 0x00FF0000) >> 16) / 255;
-                    float b = ((output & 0x0000FF00) >> 8) / 255;
-                    float a = ((output & 0x000000FF) / 255);
+                    float r = ((output & 0xFF000000) >> 24) / 255.0f;
+                    float g = ((output & 0x00FF0000) >> 16) / 255.0f;
+                    float b = ((output & 0x0000FF00) >> 8) / 255.0f;
+                    float a = ((output & 0x000000FF) / 255.0f);
                     newMaterial.color = new float[] { r, g, b, a };
                 }
             }
