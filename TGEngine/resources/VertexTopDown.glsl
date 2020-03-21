@@ -7,6 +7,7 @@ layout(set = 1, binding = 0) uniform DATA_BLOCK {
 
 layout(push_constant) uniform PUSH_CONST{
     mat4 localTransform;
+    uint animationIndex;
 } pushconst;
 
 layout(location = 0) in vec2 pos;
@@ -20,5 +21,5 @@ out gl_PerVertex{
 
 void main(){
     gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform);
-    uvOut = uv;
+    uvOut = uv + data.uvOffsets[pushconst.animationIndex];
 }

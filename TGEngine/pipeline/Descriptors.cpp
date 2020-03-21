@@ -1,4 +1,5 @@
 #include "Descriptors.hpp"
+#include "buffer/UniformBuffer.hpp"
 
 VkPipelineLayout pipelineLayout;
 VkDescriptorSet mainDescriptorSets[3];
@@ -8,7 +9,7 @@ VkDescriptorPool descriptorPool;
 void initDescriptors() {
 	VkDescriptorPoolSize* sizes = new VkDescriptorPoolSize[3];
 	sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	sizes[0].descriptorCount = 3;
+	sizes[0].descriptorCount = tge::buf::UBO_COUNT;
 
 	sizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLER;
 	sizes[1].descriptorCount = 1;
@@ -46,12 +47,6 @@ void initDescriptors() {
 	descriptorSetLayoutBindingTextures[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	descriptorSetLayoutBindingTextures[1].pImmutableSamplers = VK_NULL_HANDLE;
 
-	descriptorSetLayoutBindingTextures[2].binding = 3;
-	descriptorSetLayoutBindingTextures[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutBindingTextures[2].descriptorCount = 1;
-	descriptorSetLayoutBindingTextures[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	descriptorSetLayoutBindingTextures[2].pImmutableSamplers = VK_NULL_HANDLE;
-
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfoTransform;
 	descriptorSetLayoutCreateInfoTransform.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfoTransform.pNext = nullptr;
@@ -74,11 +69,11 @@ void initDescriptors() {
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRanges[0].offset = 0;
-	pushConstantRanges[0].size = 64; // mat4
+	pushConstantRanges[0].size = 68; // mat4 + animationIndex
 
 	pushConstantRanges[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	pushConstantRanges[1].offset = 64;
-	pushConstantRanges[1].size = 24; // Material
+	pushConstantRanges[1].offset = 68;
+	pushConstantRanges[1].size = 20; // Material
 
 	VkDescriptorSetLayout setLayouts[3] = { descriptorSetLayout[0], descriptorSetLayout[1], descriptorSetLayout[1] };
 

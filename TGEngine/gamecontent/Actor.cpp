@@ -26,15 +26,24 @@ namespace tge::gmc {
 		}
 	}
 
+	// Internal tranform struct
+	struct __Transform {
+		glm::mat4 mat;
+		uint32_t animationIndex;
+	};
+
 	void loadToCommandBuffer(VkCommandBuffer buffer, uint8_t layerId) {
 
 		for (size_t i = 0; i < properties.size(); i++) {
 			ActorProperties prop = properties[i];
 			if (prop.layer != layerId) continue;
 
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 64, &prop.localTransform);
+			// TODO change the incoming datapattern
+			__Transform transf = { prop.localTransform, createdMaterials[prop.material].animationID };
 
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, 20, &createdMaterials[prop.material]);
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 68, &transf);
+
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 68, 20, &createdMaterials[prop.material]);
 
 			vkCmdDrawIndexed(buffer, countData[i], 1, offsetData[i], vertexOffsetData[i], 0);
 		}
