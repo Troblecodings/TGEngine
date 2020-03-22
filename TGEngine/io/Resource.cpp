@@ -102,17 +102,11 @@ namespace tge::io {
 		}
 
 #ifdef DEBUG
-		if (lastIndexOffset == 0) {
-			OUT_LV_DEBUG("It seams like you are missing indices!")
+		if (lastIndexOffset == 0 || lastIndexCount == 0) {
+			OUT_LV_DEBUG("It seems like you are missing indices!")
 		}
-		if (lastVertexOffset == 0) {
-			OUT_LV_DEBUG("It seams like you are missing vertices")
-		}
-		if (lastIndexCount == 0) {
-			OUT_LV_DEBUG("It seams like you are missing indices!")
-		}
-		if (lastVertexCount == 0) {
-			OUT_LV_DEBUG("It seams like you are missing vertices")
+		if (lastVertexOffset == 0 || lastVertexCount == 0) {
+			OUT_LV_DEBUG("It seems like you are missing vertices!")
 		}
 #endif // DEBUG
 
