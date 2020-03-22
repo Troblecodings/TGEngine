@@ -460,8 +460,8 @@ namespace ShaderTool.Command {
                     for (int i = 0; i < 4; i++)
                         resourceStream.Write(BitConverter.GetBytes(1f));
                 else
-                    foreach (float value in materialData.color)
-                        resourceStream.Write(BitConverter.GetBytes(value));
+                    for (int i = 0; i < 4; i++)
+                        resourceStream.Write(BitConverter.GetBytes(materialData.color[i]));
 
                 // Refresh texture cache
                 Cache.TEXTURES = Texture.GetExistingTextureNames();
@@ -474,11 +474,11 @@ namespace ShaderTool.Command {
                 if (texture == null)
                     Console.WriteLine("No texture provided, using default");
                 else
-                    textureIndex = (uint)Cache.TEXTURES.ToList().IndexOf(texture);
+                    textureIndex = (uint)Array.IndexOf(mapData.textureNames, texture);
 
                 // Write diffuse texture to file
                 resourceStream.Write(BitConverter.GetBytes(textureIndex));
-
+                resourceStream.Write(BitConverter.GetBytes(0u)); // Animation support?
             }
 
             resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
@@ -487,8 +487,6 @@ namespace ShaderTool.Command {
         }
 
         private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
-
-            string[] allMaterialNames = Cache.MATERIALS.Keys.ToArray();
 
             resourceStream.Write(BitConverter.GetBytes(mapData.actorNames.Length));
 
@@ -512,11 +510,7 @@ namespace ShaderTool.Command {
                     resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[y]));
 
                 // Find the material ID from the material name
-                byte id;
-
-                for (id = 0; id < Cache.MATERIALS.Keys.Count; id++)
-                    if (allMaterialNames[id] == actorData.materialName)
-                        break;
+                byte id = (byte)Array.IndexOf(mapData.materialNames, actorData.materialName);
 
                 // Just take the last material in case none was supplied
                 // We can avoid excessive error handling that way

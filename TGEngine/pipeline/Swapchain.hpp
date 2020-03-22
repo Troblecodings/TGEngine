@@ -9,8 +9,6 @@
 #include "RenderPass.hpp"
 #include "DepthStencil.hpp"
 #include "../gamecontent/camera/Camera.hpp"
-#include "buffer/IndexBuffer.hpp"
-#include "buffer/VertexBuffer.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkImage* swapchainImages;

@@ -4,39 +4,22 @@
 
 namespace tge::gmc {
 
-	std::vector<ActorProperties> properties;
-	std::vector<uint32_t>  countData;
-	std::vector<uint32_t>  offsetData;
-	std::vector<uint32_t>  vertexOffsetData;
-
-	void createActor(ActorInputInfo* pInputInfo, uint32_t pSize) {
-		properties.reserve(pSize);
-		countData.reserve(pSize);
-		offsetData.reserve(pSize);
-		vertexOffsetData.reserve(pSize);
-
-		for (size_t i = 0; i < pSize; i++) {
-			ActorInputInfo input = pInputInfo[i];
-			properties.push_back(input.pProperties);
-			countData.push_back(input.indexCount);
-			offsetData.push_back(indexBuffer.indexCount);
-			indexBuffer.addAll(input.pIndices, input.indexCount);
-			vertexOffsetData.push_back((uint32_t)vertexBuffer.pointCount);
-			vertexBuffer.addAll(input.pVertices, sizeof(glm::vec4) * input.vertexCount, input.vertexCount);
-		}
-	}
+	std::vector<ActorProperties> actorProperties;
+	std::vector<ActorDescriptor> actorDescriptor;
 
 	void loadToCommandBuffer(VkCommandBuffer buffer, uint8_t layerId) {
 
-		for (size_t i = 0; i < properties.size(); i++) {
-			ActorProperties prop = properties[i];
-			if (prop.layer != layerId) continue;
+		for (size_t i = 0; i < actorProperties.size(); i++) {
+			ActorProperties properties = actorProperties[i];
+			if (properties.layer != layerId) continue;
 
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 64, &prop.localTransform);
+			Material mat = createdMaterials[properties.material];
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 64, &properties.localTransform);
 
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, 20, &createdMaterials[prop.material]);
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, 24, &mat);
 
-			vkCmdDrawIndexed(buffer, countData[i], 1, offsetData[i], vertexOffsetData[i], 0);
+			ActorDescriptor description = actorDescriptor[i];
+			vkCmdDrawIndexed(buffer, description.indexDrawCount, 1, description.indexOffset, description.vertexOffset, 0);
 		}
 
 	}
