@@ -21,7 +21,7 @@ namespace tge::tex {
 			TextureInputInfo tex = input[i];
 #if DEBUG
 			if (tex.comp != 4) {
-				OUT_LV_DEBUG("Invalid component count, must be 4! IDX: " << i);
+				OUT_LV_DEBUG("Invalid component count, must be 4! Texture index: " << i);
 			}
 #endif // DEBUG
 
