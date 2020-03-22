@@ -22,8 +22,6 @@ void startSingleTimeCommand();
 
 void endSingleTimeCommand();
 
-void startupCommands();
-
 void fillCommandBuffer();
 
 void destroyCommandBuffer();

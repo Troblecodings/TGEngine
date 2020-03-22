@@ -101,6 +101,22 @@ namespace tge::io {
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
 
+#ifdef DEBUG
+		if (lastIndexOffset == 0) {
+			OUT_LV_DEBUG("It seams like you are missing indices!")
+		}
+		if (lastVertexOffset == 0) {
+			OUT_LV_DEBUG("It seams like you are missing vertices")
+		}
+		if (lastIndexCount == 0) {
+			OUT_LV_DEBUG("It seams like you are missing indices!")
+		}
+		if (lastVertexCount == 0) {
+			OUT_LV_DEBUG("It seams like you are missing vertices")
+		}
+#endif // DEBUG
+
+
 		BufferInputInfo bufferInputInfos[2];
 		bufferInputInfos[0].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
 		bufferInputInfos[0].size = lastIndexOffset;
@@ -155,20 +171,27 @@ namespace tge::io {
 			currentId++;
 		}
 
-		currentId = 0;
-
 		uint32_t materialCount = 0;
 		fread(&materialCount, sizeof(uint32_t), 1, file);
-		createdMaterials = new Material[256];
+		createdMaterials = new Material[materialCount];
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		while (blocklength != UINT32_MAX) {
-			fread(&createdMaterials[currentId++], sizeof(uint8_t), blocklength, file);
+		for (size_t i = 0; i < materialCount; i++) {
+#ifdef DEBUG
+			if (blocklength != sizeof(Material)) {
+				OUT_LV_DEBUG("The materials are out of size! Must be " << sizeof(Material))
+			}
+#endif // DEBUG
+
+			fread(createdMaterials + i, sizeof(Material), 1, file);
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
-
-		currentId = 0;
+#ifdef DEBUG
+		if (blocklength != UINT32_MAX) {
+			OUT_LV_DEBUG("Something went wrong while reading the Materials! Out of size!")
+		}
+#endif // DEBUG
 
 		loadActorV2(file);
 
@@ -232,18 +255,19 @@ namespace tge::io {
 		fread(&header, sizeof(uint32_t), 1, file);
 
 #ifdef DEBUG
-		if (header != TGR_LATEST)
+		if (header != TGR_LATEST) {
 			OUT_LV_DEBUG("Warning: you are using an old version of the tgr file, consider updating!");
+		}
 #endif // DEBUG
 
-			if (header == TGR_VERSION_1) {
-				OUT_LV_DEBUG("Support for version 1 was removed, skipping!");
-			} else if (header == TGR_VERSION_2) {
-				loadResourceFileV2(file);
-			} else {
-				OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
-				return;
-			}
+		if (header == TGR_VERSION_1) {
+			OUT_LV_DEBUG("Support for version 1 was removed, skipping!");
+		} else if (header == TGR_VERSION_2) {
+			loadResourceFileV2(file);
+		} else {
+			OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
+			return;
+		}
 	}
 
 	void destroyResource() {

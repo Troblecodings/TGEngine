@@ -65,26 +65,6 @@ void endSingleTimeCommand() {
 	CHECKFAIL(vkWaitForFences(device, 1, &singelTimeCommandBufferFence, VK_TRUE, UINT64_MAX));
 }
 
-void startupCommands() {
-	startSingleTimeCommand();
-
-	VkBufferCopy bufferCopy;
-	bufferCopy.srcOffset = 0;
-	bufferCopy.dstOffset = 0;
-	for each (StagingBuffer* buf in staging_buffer) {
-		bufferCopy.size = buf->size;
-		vkCmdCopyBuffer(
-			SINGLE_TIME_COMMAND_BUFFER,
-			buf->staging_buffer,
-			*buf->destination,
-			1,
-			&bufferCopy
-		);
-	}
-
-	endSingleTimeCommand();
-}
-
 void fillCommandBuffer() {
 	for (size_t i = 0; i < imageCount; i++) {
 		VkCommandBuffer buffer = commandBuffer[i];

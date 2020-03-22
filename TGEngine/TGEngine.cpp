@@ -54,8 +54,6 @@ void initEngine() {
 
 void startTGEngine() {
 	fillCommandBuffer();
-
-	startupCommands();
 	createMutex();
 
 	clock_t last_time = clock();

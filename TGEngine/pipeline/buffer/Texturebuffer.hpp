@@ -15,8 +15,8 @@ namespace tge::tex {
 
 	struct TextureDefaults {
 		VkSampler sampler;
-		float     anisotropyFilter;
-		uint32_t  mipmapLevels;
+		float     anisotropyFilter = 0;
+		uint32_t  mipmapLevels = 1;
 	};
 
 	extern TextureDefaults defaults;
