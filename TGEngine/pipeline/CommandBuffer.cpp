@@ -2,6 +2,7 @@
 #include "../gamecontent/Actor.hpp"
 #include "window/Window.hpp"
 #include "../io/Resource.hpp"
+#include "../io/Font.hpp"
 
 VkCommandPool commandPool;
 VkFence singelTimeCommandBufferFence;
@@ -118,6 +119,14 @@ void fillCommandBuffer() {
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, new VkDescriptorSet[2]{ mainDescriptorSets[0], mainDescriptorSets[2] }, 0, nullptr);
 
 		tge::gmc::loadToCommandBuffer(buffer, 1);
+
+		for (uint32_t i = 0; i < tge::fnt::fontBufferObjects.size(); i += 2) {
+			vkCmdBindIndexBuffer(buffer, tge::fnt::fontBufferObjects[i].buffer, 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdBindVertexBuffers(buffer, 0, 1, &tge::fnt::fontBufferObjects[i + 1].buffer, &offsets);
+
+			tge::gmc::loadToCommandBuffer(buffer, i + 2);
+		}
 
 		vkCmdEndRenderPass(buffer);
 
