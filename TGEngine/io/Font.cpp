@@ -9,7 +9,7 @@ namespace tge::fnt {
 	std::vector<tge::fnt::Font> fonts;
 	std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-	void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size) {
+	void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size, glm::mat4* tranforms) {
 		float ipw = 1.0f / FONT_TEXTURE_WIDTH, iph = 1.0f / FONT_TEXTURE_HEIGHT;
 
 		uint32_t vertexByteSize = 0;
@@ -31,6 +31,7 @@ namespace tge::fnt {
 		for (size_t i = 0; i < size; i++) {
 			const char* cstring = pInputStrings[i];
 			uint32_t inputStringLength = (uint32_t)strlen(cstring);
+			properties.localTransform = tranforms[i];
 			tge::gmc::actorProperties.push_back(properties);
 
 			tge::gmc::ActorDescriptor descriptor;
@@ -144,4 +145,7 @@ namespace tge::fnt {
 		fontBufferObjects.shrink_to_fit();
 	}
 
+	void destroyFontresources() {
+		tge::buf::destroyBuffers(fontBufferObjects.data(), fontBufferObjects.size());
+	}
 }

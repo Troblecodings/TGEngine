@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <glm/glm.hpp>
 
 namespace tge::drw {
 
@@ -39,5 +40,14 @@ namespace tge::drw {
 		indexbytes[3] = 1 + offset;
 		indexbytes[4] = 0 + offset;
 		indexbytes[5] = 3 + offset;
+	}
+
+	inline const glm::mat4 genMatrix(const float x, const float y, const float z, const float scalex, const float scaley) {
+		return {
+			scalex, 0, 0, x,
+			0, scaley, 0, y,
+			0, 0, 1.0f, z,
+			0, 0, 0, 1.0f
+		};
 	}
 }

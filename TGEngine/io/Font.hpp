@@ -10,7 +10,7 @@ namespace tge::fnt {
 
 		constexpr uint32_t FONT_TEXTURE_WIDTH = 2000;
 		constexpr uint32_t FONT_TEXTURE_HEIGHT = 2000;
-		constexpr float FONT_MULTIPLIER = 0.01;
+		constexpr float FONT_MULTIPLIER = 0.01f;
 
 		struct Font {
 			uint32_t material;
@@ -21,6 +21,7 @@ namespace tge::fnt {
 		extern std::vector<tge::fnt::Font> fonts;
 		extern std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-		void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size);
+		void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size, glm::mat4* tranforms);
 
+		void destroyFontresources();
 }
