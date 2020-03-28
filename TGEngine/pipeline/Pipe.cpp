@@ -6,12 +6,11 @@
 
 namespace tge::pip {
 
-	VkPipeline defaultPipeline;
+	VkPipeline defaultPipeline[PIPELINE_COUNT];
 
 	void createPipelines(PipelineInputInfo* input, uint32_t size, VkPipeline* pipelines) {
 
 		VkGraphicsPipelineCreateInfo* graphicsPipelineCreateInfo = new VkGraphicsPipelineCreateInfo[size];
-		VkVertexInputBindingDescription* vertexInputBindingDescriptor = new VkVertexInputBindingDescription[size];
 		VkPipelineVertexInputStateCreateInfo* pipelineVertexInputStateCreateInfo = new VkPipelineVertexInputStateCreateInfo[size];
 		VkViewport* viewport = new VkViewport[size];
 		VkRect2D* sicossor = new VkRect2D[size];
@@ -96,29 +95,25 @@ namespace tge::pip {
 		for (size_t i = 0; i < size; i++) {
 			PipelineInputInfo in = input[i];
 
-			vertexInputBindingDescriptor[i].binding = 0;
-			vertexInputBindingDescriptor[i].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-			vertexInputBindingDescriptor[i].stride = in.stride;
-
 			pipelineVertexInputStateCreateInfo[i].sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			pipelineVertexInputStateCreateInfo[i].pNext = nullptr;
 			pipelineVertexInputStateCreateInfo[i].flags = 0;
-			pipelineVertexInputStateCreateInfo[i].vertexBindingDescriptionCount = 1;
-			pipelineVertexInputStateCreateInfo[i].pVertexBindingDescriptions = &vertexInputBindingDescriptor[i];
+			pipelineVertexInputStateCreateInfo[i].vertexBindingDescriptionCount = in.inputBindingCount;
+			pipelineVertexInputStateCreateInfo[i].pVertexBindingDescriptions = in.inputBindings;
 			pipelineVertexInputStateCreateInfo[i].vertexAttributeDescriptionCount = in.pipe.inputCount;
 			pipelineVertexInputStateCreateInfo[i].pVertexAttributeDescriptions = in.pipe.inputs;
 
 			viewport[i].x = 0;
 			viewport[i].y = 0;
-			viewport[i].width = (float)in.width;
-			viewport[i].height = (float)in.height;
+			viewport[i].width = (float)tge::win::mainWindowWidth;
+			viewport[i].height = (float)tge::win::mainWindowHeight;
 			viewport[i].minDepth = 0;
 			viewport[i].maxDepth = 1.0;
 
 			sicossor[i].offset.x = 0;
 			sicossor[i].offset.y = 0;
-			sicossor[i].extent.width = in.width;
-			sicossor[i].extent.height = in.height;
+			sicossor[i].extent.width = tge::win::mainWindowWidth;
+			sicossor[i].extent.height = tge::win::mainWindowHeight;
 
 			pipelineViewportStateCreateInfo[i].sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 			pipelineViewportStateCreateInfo[i].pNext = nullptr;
@@ -140,7 +135,7 @@ namespace tge::pip {
 			pipelineRasterizationStateCreateInfo[i].depthBiasConstantFactor = 0;
 			pipelineRasterizationStateCreateInfo[i].depthBiasClamp = 0;
 			pipelineRasterizationStateCreateInfo[i].depthBiasSlopeFactor = 1;
-			pipelineRasterizationStateCreateInfo[i].lineWidth = in.lineWidth;
+			pipelineRasterizationStateCreateInfo[i].lineWidth = 1;
 
 			graphicsPipelineCreateInfo[i].sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			graphicsPipelineCreateInfo[i].pNext = nullptr;
@@ -169,19 +164,31 @@ namespace tge::pip {
 	void initPipelines() {
 
 		//TODO Autogenerate pipelines
-		PipelineInputInfo pipelineInputInfo;
-		pipelineInputInfo.pipe = TopDownPipe;
-		pipelineInputInfo.stride = sizeof(glm::vec4);
-		pipelineInputInfo.width = win::mainWindowWidth;
-		pipelineInputInfo.height = win::mainWindowHeight;
-		pipelineInputInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-		pipelineInputInfo.polygonMode = VK_POLYGON_MODE_FILL;
-		pipelineInputInfo.lineWidth = 1;
+		PipelineInputInfo pipelineInputInfo[PIPELINE_COUNT];
+		pipelineInputInfo[0].pipe = TopDownPipe;
+		pipelineInputInfo[0].cullMode = VK_CULL_MODE_BACK_BIT;
+		pipelineInputInfo[0].polygonMode = VK_POLYGON_MODE_FILL;
+		pipelineInputInfo[0].inputBindingCount = 1;
+		pipelineInputInfo[0].inputBindings = new VertexInputBinding[1] { { 0, sizeof(glm::vec4), VK_VERTEX_INPUT_RATE_INSTANCE} };
 
-		createPipelines(&pipelineInputInfo, 1, &defaultPipeline);
+		pipelineInputInfo[1].pipe = TopDownInstancedPipe;
+		pipelineInputInfo[1].cullMode = VK_CULL_MODE_BACK_BIT;
+		pipelineInputInfo[1].polygonMode = VK_POLYGON_MODE_FILL;
+		pipelineInputInfo[1].inputBindingCount = 2;
+		pipelineInputInfo[1].inputBindings = new VertexInputBinding[2];
+		pipelineInputInfo[1].inputBindings[0].binding = 0;
+		pipelineInputInfo[1].inputBindings[0].stride = sizeof(glm::vec4);
+		pipelineInputInfo[1].inputBindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		pipelineInputInfo[1].inputBindings[1].binding = 1;
+		pipelineInputInfo[1].inputBindings[1].stride = sizeof(glm::mat4);
+		pipelineInputInfo[1].inputBindings[1].inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
+
+		createPipelines(pipelineInputInfo, PIPELINE_COUNT, defaultPipeline);
 	}
 
 	void destroyPipelines() {
-		vkDestroyPipeline(device, defaultPipeline, nullptr);
+		for (size_t i = 0; i < PIPELINE_COUNT; i++) {
+			vkDestroyPipeline(device, defaultPipeline[i], nullptr);
+		}
 	}
 }

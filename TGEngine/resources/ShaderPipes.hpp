@@ -26,6 +26,14 @@ extern const unsigned int TexturedBasicInputCount;
 extern const unsigned int TexturedBasicLayoutBindingCount;
 extern ShaderPipe TexturedBasicPipe;
 
+extern VkPipelineShaderStageCreateInfo TopDownInstancedShader[2];
+extern const VkVertexInputAttributeDescription TopDownInstancedInput[];
+extern const VkDescriptorSetLayoutBinding TopDownInstancedLayoutBinding[];
+extern const unsigned int TopDownInstancedShaderCount;
+extern const unsigned int TopDownInstancedInputCount;
+extern const unsigned int TopDownInstancedLayoutBindingCount;
+extern ShaderPipe TopDownInstancedPipe;
+
 extern VkPipelineShaderStageCreateInfo TopDownShader[2];
 extern const VkVertexInputAttributeDescription TopDownInput[];
 extern const VkDescriptorSetLayoutBinding TopDownLayoutBinding[];

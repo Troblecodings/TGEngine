@@ -64,8 +64,7 @@ void initDescriptors() {
 	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTextures, nullptr, descriptorSetLayout));
 	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTransform, nullptr, &descriptorSetLayout[1]));
 
-	// TODO Check push constant size
-	// This is optimistic
+	// Push constant size seams to be at least 128byte on each device
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRanges[0].offset = 0;
@@ -103,6 +102,8 @@ void destroyDescriptor() {
 
 	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[0], nullptr);
 	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[1], nullptr);
+
+	vkFreeDescriptorSets(device, descriptorPool, 3, mainDescriptorSets);
 
 	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 }

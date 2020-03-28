@@ -130,7 +130,7 @@ void fillCommandBuffer() {
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, mainDescriptorSets, 0, nullptr);
 
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[0]);
 
 		tge::gmc::loadToCommandBuffer(buffer, 0);
 
@@ -138,6 +138,19 @@ void fillCommandBuffer() {
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, new VkDescriptorSet[2]{ mainDescriptorSets[0], mainDescriptorSets[2] }, 0, nullptr);
 
 		tge::gmc::loadToCommandBuffer(buffer, 1);
+
+		// Binding for 
+		vkCmdBindVertexBuffers(buffer, 1, 1, &vertexBuffer.vertex_buffer, &offsets);
+
+		//Instance based rendering for UI
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[1]);
+
+		tge::gmc::loadToCommandBuffer(buffer, 2);
+
+		//Instance based rendering for the game layer
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, mainDescriptorSets, 0, nullptr);
+
+		tge::gmc::loadToCommandBuffer(buffer, 3);
 
 		vkCmdEndRenderPass(buffer);
 

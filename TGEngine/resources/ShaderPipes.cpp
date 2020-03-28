@@ -25,6 +25,14 @@ const unsigned int TexturedBasicInputCount = 3;
 const unsigned int TexturedBasicLayoutBindingCount = 3;
 ShaderPipe TexturedBasicPipe;
 
+VkPipelineShaderStageCreateInfo TopDownInstancedShader[2];
+const VkVertexInputAttributeDescription TopDownInstancedInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_UNDEFINED,16}};
+const VkDescriptorSetLayoutBinding TopDownInstancedLayoutBinding[] = {{ 10, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_VERTEX_BIT},{ 1, VK_DESCRIPTOR_TYPE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT},{ 2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
+const unsigned int TopDownInstancedShaderCount = 2;
+const unsigned int TopDownInstancedInputCount = 3;
+const unsigned int TopDownInstancedLayoutBindingCount = 3;
+ShaderPipe TopDownInstancedPipe;
+
 VkPipelineShaderStageCreateInfo TopDownShader[2];
 const VkVertexInputAttributeDescription TopDownInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8}};
 const VkDescriptorSetLayoutBinding TopDownLayoutBinding[] = {{ 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_VERTEX_BIT},{ 1, VK_DESCRIPTOR_TYPE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT},{ 2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1,VK_SHADER_STAGE_FRAGMENT_BIT},{ 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
@@ -59,6 +67,9 @@ void initShaderPipes(){
     TexturedBasicShader[0] = VertexTextured;
     TexturedBasicShader[1] = FragmentTextured;
     TexturedBasicPipe = ShaderPipe(TexturedBasicShader, TexturedBasicInput, TexturedBasicLayoutBinding, TexturedBasicShaderCount, TexturedBasicInputCount, TexturedBasicLayoutBindingCount);
+    TopDownInstancedShader[0] = VertexTopDownInstanced;
+    TopDownInstancedShader[1] = FragmentTopDown;
+    TopDownInstancedPipe = ShaderPipe(TopDownInstancedShader, TopDownInstancedInput, TopDownInstancedLayoutBinding, TopDownInstancedShaderCount, TopDownInstancedInputCount, TopDownInstancedLayoutBindingCount);
     TopDownShader[0] = VertexTopDown;
     TopDownShader[1] = FragmentTopDown;
     TopDownPipe = ShaderPipe(TopDownShader, TopDownInput, TopDownLayoutBinding, TopDownShaderCount, TopDownInputCount, TopDownLayoutBindingCount);
