@@ -15,9 +15,11 @@ namespace ShaderTool {
             switch (id) {
                 case "setcwd":
                     CWD = arg[0];
+                    ResourcesFolder = Path.Combine(CWD, "Resources");
                     return 0;
                 case "settool":
                     CWD = Environment.CurrentDirectory + "../../../../../TGEngine/resources";
+                    ResourcesFolder = Path.Combine(CWD, "Resources");
                     return 0;
                 case "pipe":
                     return Pipe.PipeCommand(arg);

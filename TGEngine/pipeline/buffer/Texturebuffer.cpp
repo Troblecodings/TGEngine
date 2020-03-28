@@ -14,11 +14,16 @@ namespace tge::tex {
 
 		VkImageMemoryBarrier* entrymemorybarriers = new VkImageMemoryBarrier[size];
 		VkImageMemoryBarrier* exitmemorybarriers = new VkImageMemoryBarrier[size];
-		TextureBindingInfo imagedesc[2048];
+		TextureBindingInfo imagedesc[MAX_TEXTURES];
 
 		for (uint32_t i = 0; i < size; i++) {
 			// Todo do Vulkan stuff
 			TextureInputInfo tex = input[i];
+#if DEBUG
+			if (tex.comp != 4) {
+				OUT_LV_DEBUG("Invalid component count, must be 4! Texture index: " << i);
+			}
+#endif // DEBUG
 
 			// TODO general validation checks for image creation
 			// Hold my beer! https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#resources-image-creation-limits
@@ -27,12 +32,12 @@ namespace tge::tex {
 			imageCreateInfo.pNext = nullptr;
 			imageCreateInfo.flags = 0;
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // TODO format checks this is optimistic
+			imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
 			imageCreateInfo.extent = { (uint32_t)tex.x, (uint32_t)tex.y, 1 };
 			imageCreateInfo.mipLevels = 1; // TODO Miplevel selection. TextureIn?
 			imageCreateInfo.arrayLayers = 1; // TODO layered textures. TextureIn?
 			imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-			imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // Why would one use linear? Maybe take a look
+			imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 			imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 			imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 			imageCreateInfo.queueFamilyIndexCount = 0;
@@ -149,17 +154,13 @@ namespace tge::tex {
 		vkCmdPipelineBarrier(SINGLE_TIME_COMMAND_BUFFER, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_DEPENDENCY_BY_REGION_BIT, 0, nullptr, 0, nullptr, size, exitmemorybarriers);
 		endSingleTimeCommand();
 
+		for (uint32_t i = size; i < MAX_TEXTURES; i++) {
+			imagedesc[i] = imagedesc[0];
+		}
+
 		for (uint32_t i = 0; i < size; i++) {
 			vkFreeMemory(device, memorylist[i], nullptr);
 			vkDestroyBuffer(device, bufferlist[i], nullptr);
-		}
-
-		VkImageView usedview = imagedesc[0].imageView;
-
-		for (uint32_t i = size; i < MAX_TEXTURES; i++) {
-			imagedesc[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			imagedesc[i].imageView = usedview;
-			imagedesc[i].sampler = VK_NULL_HANDLE;
 		}
 
 		VkWriteDescriptorSet descwrite;
@@ -168,7 +169,7 @@ namespace tge::tex {
 		descwrite.dstSet = mainDescriptorSets[0];
 		descwrite.dstBinding = 2;
 		descwrite.dstArrayElement = 0;
-		descwrite.descriptorCount = 2048;
+		descwrite.descriptorCount = MAX_TEXTURES;
 		descwrite.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		descwrite.pImageInfo = imagedesc;
 		descwrite.pBufferInfo = nullptr;

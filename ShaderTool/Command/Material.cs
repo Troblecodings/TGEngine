@@ -17,7 +17,7 @@ namespace ShaderTool.Command {
     class Material {
 
         public static string MaterialPath = Path.Combine(Program.ResourcesFolder, @"Materials.json");
-        public const uint MATERIAL_SIZE = 20; // Color is 4 * 4 bytes, diffuse texture ID is 4 bytes which equals 20 bytes
+        public const uint MATERIAL_SIZE = 24; // Color is 4 * 4 bytes, diffuse texture ID and animation is 4 bytes * 2 which equals 24 bytes
 
         public static int MaterialCommand(string[] args) {
 
@@ -56,10 +56,10 @@ namespace ShaderTool.Command {
 
             uint output;
             if (uint.TryParse(args[1], System.Globalization.NumberStyles.HexNumber, null, out output)) {
-                float r = ((output & 0xFF000000) >> 24) / 255;
-                float g = ((output & 0x00FF0000) >> 16) / 255;
-                float b = ((output & 0x0000FF00) >> 8) / 255;
-                float a = ((output & 0x000000FF) / 255);
+                float r = ((output & 0xFF000000) >> 24) / 255.0f;
+                float g = ((output & 0x00FF0000) >> 16) / 255.0f;
+                float b = ((output & 0x0000FF00) >> 8) / 255.0f;
+                float a = ((output & 0x000000FF) / 255.0f);
                 Cache.MATERIALS[name].color = new float[] { r, g, b, a };
                 Save();
                 return SUCCESS;
@@ -153,10 +153,10 @@ namespace ShaderTool.Command {
                 if (!uint.TryParse(args[2], System.Globalization.NumberStyles.HexNumber, null, out output)) {
                     Console.WriteLine("{0} is not a hex number!", args[2]);
                 } else {
-                    float r = ((output & 0xFF000000) >> 24) / 255;
-                    float g = ((output & 0x00FF0000) >> 16) / 255;
-                    float b = ((output & 0x0000FF00) >> 8) / 255;
-                    float a = ((output & 0x000000FF) / 255);
+                    float r = ((output & 0xFF000000) >> 24) / 255.0f;
+                    float g = ((output & 0x00FF0000) >> 16) / 255.0f;
+                    float b = ((output & 0x0000FF00) >> 8) / 255.0f;
+                    float a = ((output & 0x000000FF) / 255.0f);
                     newMaterial.color = new float[] { r, g, b, a };
                 }
             }

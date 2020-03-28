@@ -48,11 +48,9 @@
     <ClInclude Include="pipeline\RenderPass.hpp" />
     <ClInclude Include="pipeline\ShaderCreation.hpp" />
     <ClInclude Include="pipeline\Swapchain.hpp" />
-    <ClInclude Include="pipeline\buffer\IndexBuffer.hpp" />
     <ClInclude Include="pipeline\buffer\Memory.hpp" />
     <ClInclude Include="pipeline\buffer\Texturebuffer.hpp" />
     <ClInclude Include="pipeline\buffer\UniformBuffer.hpp" />
-    <ClInclude Include="pipeline\buffer\VertexBuffer.hpp" />
     <ClInclude Include="pipeline\window\Window.hpp" />
     <ClInclude Include="resources\ShaderPipes.hpp" />
     <ClInclude Include="ui\UISystem.hpp" />
@@ -94,11 +92,9 @@
     <ClCompile Include="pipeline\ShaderCreation.cpp" />
     <ClCompile Include="pipeline\Swapchain.cpp" />
     <ClCompile Include="pipeline\window\Window.cpp" />
-    <ClCompile Include="pipeline\buffer\IndexBuffer.cpp" />
     <ClCompile Include="pipeline\buffer\Memory.cpp" />
     <ClCompile Include="pipeline\buffer\Texturebuffer.cpp" />
     <ClCompile Include="pipeline\buffer\UniformBuffer.cpp" />
-    <ClCompile Include="pipeline\buffer\VertexBuffer.cpp" />
     <ClCompile Include="resources\ShaderPipes.cpp" />
     <CustomBuild Include="resources\VertexTopDown.glsl">
       <FileType>Document</FileType>

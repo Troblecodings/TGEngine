@@ -102,28 +102,28 @@ namespace tge::pro {
 
 	char* Properties::getStringOrDefault(const char* name, char* def) {
 		for (size_t i = 0; i < this->stringNames.size(); i++)
-			if (strcmp(this->stringNames[i], name))
+			if (strcmp(this->stringNames[i], name) == 0)
 				return this->strings[i];
 		return def;
 	}
 
 	bool Properties::getBooleanOrDefault(const char* name, bool def) {
 		for (size_t i = 0; i < this->boolNames.size(); i++)
-			if (strcmp(this->boolNames[i], name))
+			if (strcmp(this->boolNames[i], name) == 0)
 				return this->bools[i];
 		return def;
 	}
 
 	float Properties::getFloatOrDefault(const char* name, float def) {
 		for (size_t i = 0; i < this->floatNames.size(); i++)
-			if (strcmp(this->floatNames[i], name))
+			if (strcmp(this->floatNames[i], name) == 0)
 				return this->floats[i];
 		return def;
 	}
 
 	int Properties::getIntOrDefault(const char* name, int def) {
 		for (size_t i = 0; i < this->intNames.size(); i++)
-			if (strcmp(this->intNames[i], name))
+			if (strcmp(this->intNames[i], name) == 0)
 				return this->ints[i];
 		return def;
 	}

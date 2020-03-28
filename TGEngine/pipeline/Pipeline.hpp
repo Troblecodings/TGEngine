@@ -6,8 +6,6 @@
 #include "RenderPass.hpp"
 #include "Pipe.hpp"
 #include "Swapchain.hpp"
-#include "buffer/IndexBuffer.hpp"
-#include "buffer/UniformBuffer.hpp"
 #include "Descriptors.hpp"
 #include "buffer/Texturebuffer.hpp"
 #include "DepthStencil.hpp"

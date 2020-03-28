@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace tge {
-	namespace fnt {
+namespace tge::fnt {
 
 		Font* fonts;
 
+#if 0
 		void createStringActor(const char* inputString, Font* font, tge::gmc::ActorInputInfo *actor) {
 			size_t inputStringLength = strlen(inputString);
 			float x = 0;
@@ -72,4 +72,5 @@ namespace tge {
 			
 		}
 	}
+#endif
 }
