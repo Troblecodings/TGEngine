@@ -26,10 +26,10 @@ const unsigned int TexturedBasicLayoutBindingCount = 3;
 ShaderPipe TexturedBasicPipe;
 
 VkPipelineShaderStageCreateInfo TopDownInstancedShader[2];
-const VkVertexInputAttributeDescription TopDownInstancedInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_UNDEFINED,16}};
+const VkVertexInputAttributeDescription TopDownInstancedInput[] = {{ 0, 0, VK_FORMAT_R32G32_SFLOAT,0},{ 1, 0, VK_FORMAT_R32G32_SFLOAT,8},{ 2, 0, VK_FORMAT_R32G32_SFLOAT,16},{ 3, 0, VK_FORMAT_R32G32_SFLOAT,24}};
 const VkDescriptorSetLayoutBinding TopDownInstancedLayoutBinding[] = {{ 10, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,VK_SHADER_STAGE_VERTEX_BIT},{ 1, VK_DESCRIPTOR_TYPE_SAMPLER, 1,VK_SHADER_STAGE_FRAGMENT_BIT},{ 2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1,VK_SHADER_STAGE_FRAGMENT_BIT}};
 const unsigned int TopDownInstancedShaderCount = 2;
-const unsigned int TopDownInstancedInputCount = 3;
+const unsigned int TopDownInstancedInputCount = 4;
 const unsigned int TopDownInstancedLayoutBindingCount = 3;
 ShaderPipe TopDownInstancedPipe;
 

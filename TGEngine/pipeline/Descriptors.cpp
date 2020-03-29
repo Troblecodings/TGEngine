@@ -34,7 +34,7 @@ void initDescriptors() {
 	descriptorSetLayoutBindingTransform.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	descriptorSetLayoutBindingTransform.pImmutableSamplers = VK_NULL_HANDLE;
 
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBindingTextures[3];
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBindingTextures[2];
 	descriptorSetLayoutBindingTextures[0].binding = 1;
 	descriptorSetLayoutBindingTextures[0].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
 	descriptorSetLayoutBindingTextures[0].descriptorCount = 1;
@@ -58,7 +58,7 @@ void initDescriptors() {
 	descriptorSetLayoutCreateInfoTextures.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfoTextures.pNext = nullptr;
 	descriptorSetLayoutCreateInfoTextures.flags = 0;
-	descriptorSetLayoutCreateInfoTextures.bindingCount = 3;
+	descriptorSetLayoutCreateInfoTextures.bindingCount = 2;
 	descriptorSetLayoutCreateInfoTextures.pBindings = descriptorSetLayoutBindingTextures;
 
 	CHECKFAIL(vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfoTextures, nullptr, descriptorSetLayout));

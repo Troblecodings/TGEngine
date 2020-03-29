@@ -120,7 +120,7 @@ void fillCommandBuffer() {
 		tge::gmc::loadToCommandBuffer(buffer, 1);
 
 		// Binding for 
-		vkCmdBindVertexBuffers(buffer, 1, 1, &vertexBuffer.vertex_buffer, &offsets);
+		vkCmdBindVertexBuffers(buffer, 1, 1, &tge::io::currentMap.mapBuffers[2].buffer, &offsets);
 
 		//Instance based rendering for UI
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[1]);

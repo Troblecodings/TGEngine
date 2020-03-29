@@ -169,7 +169,10 @@ namespace tge::pip {
 		pipelineInputInfo[0].cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInputInfo[0].polygonMode = VK_POLYGON_MODE_FILL;
 		pipelineInputInfo[0].inputBindingCount = 1;
-		pipelineInputInfo[0].inputBindings = new VertexInputBinding[1] { { 0, sizeof(glm::vec4), VK_VERTEX_INPUT_RATE_INSTANCE} };
+		pipelineInputInfo[0].inputBindings = new VertexInputBinding[1];
+		pipelineInputInfo[0].inputBindings[0].binding = 0;
+		pipelineInputInfo[0].inputBindings[0].stride = sizeof(glm::vec4);
+		pipelineInputInfo[0].inputBindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
 		pipelineInputInfo[1].pipe = TopDownInstancedPipe;
 		pipelineInputInfo[1].cullMode = VK_CULL_MODE_BACK_BIT;

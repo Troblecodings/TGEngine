@@ -39,12 +39,18 @@ namespace tge::io {
 		uint32_t lastVertexCount = 0;
 		uint32_t lastIndexCount = 0;
 
+		uint32_t actorWithIndices = 0;
+		uint32_t instanceCount = 0;
+
 		// Goes on until it hits a change request block size (2^32)
 		for (uint32_t currentId = 0; currentId < actorCount; currentId++) {
 
 			// Reads the actor properties and so on
 			ActorProperties* currentProperty = actorProperties.data() + currentId;
 			ActorDescriptor* currentDescription = actorDescriptor.data() + currentId;
+
+			uint32_t cinstanceCount = 0;
+			fread(&cinstanceCount, sizeof(uint32_t), 1, file);
 
 			fread(&currentProperty->localTransform, sizeof(float), 16, file);
 			fread(&currentProperty->material, sizeof(uint8_t), 1, file);
@@ -102,6 +108,9 @@ namespace tge::io {
 		}
 
 #ifdef DEBUG
+		if (blocklength != UINT32_MAX) {
+			OUT_LV_DEBUG("Something went wrong while reading the Actors! Out of size!")
+		}
 		if (lastIndexOffset == 0 || lastIndexCount == 0) {
 			OUT_LV_DEBUG("It seems like you are missing indices!")
 		}
@@ -111,7 +120,7 @@ namespace tge::io {
 #endif // DEBUG
 
 
-		BufferInputInfo bufferInputInfos[2];
+		BufferInputInfo bufferInputInfos[TGE_MAP_BUFFER_COUNT];
 		bufferInputInfos[0].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
 		bufferInputInfos[0].size = lastIndexOffset;
 		bufferInputInfos[0].memoryIndex = vlibDeviceLocalMemoryIndex;
@@ -122,7 +131,12 @@ namespace tge::io {
 		bufferInputInfos[1].memoryIndex = vlibDeviceLocalMemoryIndex;
 		bufferInputInfos[1].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
-		createBuffers(bufferInputInfos, 2, currentMap.mapBuffers);
+		bufferInputInfos[2].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		bufferInputInfos[2].size = instanceCount * sizeof(glm::mat4);
+		bufferInputInfos[2].memoryIndex = vlibDeviceLocalMemoryIndex;
+		bufferInputInfos[2].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+
+		createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT, currentMap.mapBuffers);
 
 		startSingleTimeCommand();
 
@@ -178,7 +192,7 @@ namespace tge::io {
 			}
 #endif // DEBUG
 
-			fread(createdMaterials + i, sizeof(Material), 1, file);
+			fread(createdMaterials + i, blocklength, 1, file);
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
 #ifdef DEBUG
@@ -267,6 +281,6 @@ namespace tge::io {
 	void destroyResource() {
 		destroyTexture(currentMap.textures.data(), currentMap.textures.size());
 		destroySampler(currentMap.sampler);
-		destroyBuffers(currentMap.mapBuffers, 2);
+		destroyBuffers(currentMap.mapBuffers, TGE_MAP_BUFFER_COUNT);
 	}
 }

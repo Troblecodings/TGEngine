@@ -13,10 +13,12 @@ namespace tge::io {
 
     constexpr uint32_t TGR_LATEST = TGR_VERSION_2;
 
+    constexpr uint32_t TGE_MAP_BUFFER_COUNT = 3;
+
     struct Map {
         tge::tex::Sampler sampler;
         std::vector<tge::tex::Texture> textures;
-        tge::buf::BufferObject mapBuffers[2];
+        tge::buf::BufferObject mapBuffers[TGE_MAP_BUFFER_COUNT];
     };
 
     extern Map currentMap;
