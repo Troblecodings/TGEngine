@@ -133,6 +133,8 @@ void fillCommandBuffer() {
 
 		tge::gmc::loadToCommandBuffer(buffer, 3);
 
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[0]);
+
 		for (uint32_t i = 0; i < tge::fnt::fontBufferObjects.size(); i += 2) {
 			vkCmdBindIndexBuffer(buffer, tge::fnt::fontBufferObjects[i].buffer, 0, VK_INDEX_TYPE_UINT32);
 

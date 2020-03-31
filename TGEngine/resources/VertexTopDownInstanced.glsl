@@ -23,6 +23,12 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = (vec4((pos + transform) * scale, 1, 1) * data.basicTransform * pushconst.localTransform);
+    mat4 mat = {
+        { scale.x, 0, 0, transform.x },
+        { 0, scale.y, 0, transform.y },
+        { 0, 0, 1.0, 0 },
+        { 0, 0, 0, 1.0 }
+    };
+    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform * mat);
     uvOut = uv + data.uvOffsets[pushconst.animationIndex];
 }
