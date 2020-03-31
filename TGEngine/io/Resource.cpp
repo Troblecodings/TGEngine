@@ -62,7 +62,7 @@ namespace tge::io {
 				currentDescription->instanceID = tge::gmc::actorInstanceDescriptor.size();
 				tge::gmc::actorInstanceDescriptor.push_back({ cinstanceCount, instanceCount });
 
-				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4), cinstanceCount * sizeof(glm::vec4) });
+				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4), cinstanceCount * sizeof(glm::vec4)});
 
 				BufferInputInfo bufferInputInfos;
 				bufferInputInfos.flags = VK_SHADER_STAGE_ALL_GRAPHICS;
@@ -172,7 +172,7 @@ namespace tge::io {
 		bufferInputInfos[1].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
 		bufferInputInfos[2].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-		bufferInputInfos[2].size = instanceCount * sizeof(glm::mat4);
+		bufferInputInfos[2].size = instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4);
 		bufferInputInfos[2].memoryIndex = vlibDeviceLocalMemoryIndex;
 		bufferInputInfos[2].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 

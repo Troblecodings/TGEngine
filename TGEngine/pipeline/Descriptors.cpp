@@ -103,7 +103,5 @@ void destroyDescriptor() {
 	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[0], nullptr);
 	vkDestroyDescriptorSetLayout(device, descriptorSetLayout[1], nullptr);
 
-	vkFreeDescriptorSets(device, descriptorPool, 3, mainDescriptorSets);
-
 	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 }
