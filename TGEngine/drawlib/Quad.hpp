@@ -46,7 +46,7 @@ namespace tge::drw {
 		return {
 			scalex, 0, 0, x,
 			0, scaley, 0, y,
-			0, 0, 1.0f, z,
+			0, 0, z, 0,
 			0, 0, 0, 1.0f
 		};
 	}

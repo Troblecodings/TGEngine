@@ -88,7 +88,7 @@ void fillCommandBuffer() {
 		CHECKFAIL(vkBeginCommandBuffer(buffer, &commandBufferBeginInfo));
 
 		VkClearValue clearValues[2];
-		clearValues[0] = { 1, 1, 1, 1 };
+		clearValues[0] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		clearValues[1] = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassBeginInfo;
