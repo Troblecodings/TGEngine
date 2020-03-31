@@ -38,6 +38,7 @@ namespace tge::fnt {
 			descriptor.indexDrawCount = 6 * inputStringLength;
 			descriptor.indexOffset = indexLength;
 			descriptor.vertexOffset = vertexLength;
+			descriptor.instanceID = UINT32_MAX;
 			tge::gmc::actorDescriptor.push_back(descriptor);
 
 			indexLength += 6 * inputStringLength;
