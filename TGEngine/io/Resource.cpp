@@ -58,7 +58,7 @@ namespace tge::io {
 			fread(&cinstanceCount, sizeof(uint32_t), 1, file);
 
 			fread(&currentProperty->localTransform, sizeof(float), 16, file);
-			if (cinstanceCount > 1) {
+			if (cinstanceCount > 0) {
 				currentDescription->instanceID = tge::gmc::actorInstanceDescriptor.size();
 				tge::gmc::actorInstanceDescriptor.push_back({ cinstanceCount, instanceCount });
 
