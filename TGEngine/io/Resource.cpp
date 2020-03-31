@@ -54,19 +54,19 @@ namespace tge::io {
 			ActorProperties* currentProperty = actorProperties.data() + currentId;
 			ActorDescriptor* currentDescription = actorDescriptor.data() + currentId;
 
-			uint32_t cinstanceCount = 0;
-			fread(&cinstanceCount, sizeof(uint32_t), 1, file);
+			uint32_t currentInstanceCount = 0;
+			fread(&currentInstanceCount, sizeof(uint32_t), 1, file);
 
 			fread(&currentProperty->localTransform, sizeof(float), 16, file);
-			if (cinstanceCount > 0) {
+			if (currentInstanceCount > 0) {
 				currentDescription->instanceID = tge::gmc::actorInstanceDescriptor.size();
-				tge::gmc::actorInstanceDescriptor.push_back({ cinstanceCount, instanceCount });
+				tge::gmc::actorInstanceDescriptor.push_back({ currentInstanceCount, instanceCount });
 
-				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4), cinstanceCount * sizeof(glm::vec4)});
+				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4), currentInstanceCount * sizeof(glm::vec4)});
 
 				BufferInputInfo bufferInputInfos;
 				bufferInputInfos.flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-				bufferInputInfos.size = sizeof(glm::vec4) * cinstanceCount;
+				bufferInputInfos.size = sizeof(glm::vec4) * currentInstanceCount;
 				bufferInputInfos.memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 				bufferInputInfos.bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
@@ -76,7 +76,7 @@ namespace tge::io {
 				void* memory;
 				CHECKFAIL(vkMapMemory(device, cobj.memory, 0, VK_WHOLE_SIZE, 0, &memory));
 
-				fread(memory, sizeof(glm::vec4), cinstanceCount, file);
+				fread(memory, sizeof(glm::vec4), currentInstanceCount, file);
 
 				vkUnmapMemory(device, cobj.memory);
 
@@ -84,13 +84,13 @@ namespace tge::io {
 			} else {
 				currentDescription->instanceID = UINT32_MAX;
 			}
-			instanceCount += cinstanceCount;
+			instanceCount += currentInstanceCount;
 
 			fread(&currentProperty->material, sizeof(uint8_t), 1, file);
 			fread(&currentProperty->layer, sizeof(uint8_t), 1, file);
 
 #ifdef DEBUG
-			if (currentProperty->layer < 2 && cinstanceCount > 0) {
+			if (currentProperty->layer < 2 && currentInstanceCount > 0) {
 				OUT_LV_DEBUG("Instances provided, but drawn on a uninstanced layer, [" << currentProperty->layer << "] must be 2 or higher")
 			}
 #endif // DEBUG
