@@ -505,8 +505,18 @@ namespace ShaderTool.Command {
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
+                if((actorData.localTransform.Length - 16) % 4 != 0) {
+                    Console.WriteLine("Wrong transform size, needs to be a multiple of 4");
+                }
+
+                uint matrixCount = (uint)Math.Truncate((actorData.localTransform.Length - 16) / 4.0f);
+                if (matrixCount == 1) {
+                    Console.WriteLine("Possibly wrong instance count, lower then 2. Make sure to include your basic Matrix for all objects end aftwards the others.");
+                }
+                resourceStream.Write(BitConverter.GetBytes(matrixCount));
+
                 // Write the local transform as a 4x4 matrix into the file
-                for (int y = 0; y < 16; y++)
+                for (int y = 0; y < (16 + matrixCount * 4); y++)
                     resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[y]));
 
                 // Find the material ID from the material name

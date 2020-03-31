@@ -16,7 +16,7 @@ namespace ShaderTool.Command {
         public override string ToString() {
             string ShaderModule = "VkPipelineShaderStageCreateInfo " + Name + "Shader[" + ShaderNames.Length + "];\r\n";
 
-            string Input = "const VkVertexInputAttributeDescription " + Name + "Input[] = {";
+            string Input = "VkVertexInputAttributeDescription " + Name + "Input[] = {";
             foreach (Input str in Inputs) {
                 Input += str + ",";
             }
@@ -50,7 +50,7 @@ namespace ShaderTool.Command {
 
         public string GenHeader() {
             return "extern VkPipelineShaderStageCreateInfo " + Name + "Shader[" + ShaderNames.Length + "];\r\n"
-                + "extern const VkVertexInputAttributeDescription " + Name + "Input[];\r\n"
+                + "extern VkVertexInputAttributeDescription " + Name + "Input[];\r\n"
                 + (Descriptors.Length > 0 ? "extern const VkDescriptorSetLayoutBinding " + Name + "LayoutBinding[];\r\n" : "")
                 + "extern const unsigned int " + Name + "ShaderCount;\r\n"
                 + "extern const unsigned int " + Name + "InputCount;\r\n"

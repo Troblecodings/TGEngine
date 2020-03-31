@@ -44,7 +44,7 @@ namespace tge::gmc {
 	 * <li><strong class='atr'>indexDrawCount</strong> needs to be greater then 3</li>
 	 * <li><strong class='atr'>indexOffset</strong> needs to be smaller then the maximum index count of the map buffer</li>
 	 * <li><strong class='atr'>vertexOffset</strong> needs to be smaller then the maximum vertex count + current index</li></ul>
-	 * <li><strong class='atr'>instanceID</strong> must be a valid id in the actorInstanceDescriptor array or UINT_MAX</li></ul>
+	 * <li><strong class='atr'>instanceID</strong> must be a valid id in the actorInstanceDescriptor array or UINT32_MAX</li></ul>
 	 */
 	struct ActorDescriptor {
 		uint32_t indexDrawCount;

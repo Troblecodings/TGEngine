@@ -174,6 +174,8 @@ namespace tge::pip {
 		pipelineInputInfo[0].inputBindings[0].stride = sizeof(glm::vec4);
 		pipelineInputInfo[0].inputBindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
+		TopDownInstancedPipe.inputs[2].binding = 1;
+		TopDownInstancedPipe.inputs[3].binding = 1;
 		pipelineInputInfo[1].pipe = TopDownInstancedPipe;
 		pipelineInputInfo[1].cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInputInfo[1].polygonMode = VK_POLYGON_MODE_FILL;
@@ -183,7 +185,7 @@ namespace tge::pip {
 		pipelineInputInfo[1].inputBindings[0].stride = sizeof(glm::vec4);
 		pipelineInputInfo[1].inputBindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 		pipelineInputInfo[1].inputBindings[1].binding = 1;
-		pipelineInputInfo[1].inputBindings[1].stride = sizeof(glm::mat4);
+		pipelineInputInfo[1].inputBindings[1].stride = sizeof(glm::vec4);
 		pipelineInputInfo[1].inputBindings[1].inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
 
 		createPipelines(pipelineInputInfo, PIPELINE_COUNT, defaultPipeline);

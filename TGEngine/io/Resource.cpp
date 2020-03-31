@@ -22,6 +22,7 @@ namespace tge::io {
 		// Start to read the actor
 		actorProperties.resize(actorCount);
 		actorDescriptor.resize(actorCount);
+		tge::gmc::actorInstanceDescriptor.reserve(actorCount); // Spekulative
 
 		// Read the block size of the following content
 		uint32_t blocklength;
@@ -39,8 +40,12 @@ namespace tge::io {
 		uint32_t lastVertexCount = 0;
 		uint32_t lastIndexCount = 0;
 
-		uint32_t actorWithIndices = 0;
 		uint32_t instanceCount = 0;
+
+		std::vector<BufferObject> instanceStaging;
+		std::vector<VkBufferCopy> instanceStagingCopy;
+		instanceStaging.reserve(actorCount); // Speculative
+		instanceStagingCopy.reserve(actorCount); // Speculative
 
 		// Goes on until it hits a change request block size (2^32)
 		for (uint32_t currentId = 0; currentId < actorCount; currentId++) {
@@ -53,8 +58,43 @@ namespace tge::io {
 			fread(&cinstanceCount, sizeof(uint32_t), 1, file);
 
 			fread(&currentProperty->localTransform, sizeof(float), 16, file);
+			if (cinstanceCount > 1) {
+				currentDescription->instanceID = tge::gmc::actorInstanceDescriptor.size();
+				tge::gmc::actorInstanceDescriptor.push_back({ cinstanceCount, instanceCount });
+
+				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4), cinstanceCount * sizeof(glm::vec4) });
+
+				BufferInputInfo bufferInputInfos;
+				bufferInputInfos.flags = VK_SHADER_STAGE_ALL_GRAPHICS;
+				bufferInputInfos.size = sizeof(glm::vec4) * cinstanceCount;
+				bufferInputInfos.memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+				bufferInputInfos.bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+				BufferObject cobj;
+				createBuffers(&bufferInputInfos, 1, &cobj);
+
+				void* memory;
+				CHECKFAIL(vkMapMemory(device, cobj.memory, 0, VK_WHOLE_SIZE, 0, &memory));
+
+				fread(memory, sizeof(glm::vec4), cinstanceCount, file);
+
+				vkUnmapMemory(device, cobj.memory);
+
+				instanceStaging.push_back(cobj);
+			} else {
+				currentDescription->instanceID = UINT32_MAX;
+			}
+			instanceCount += cinstanceCount;
+
 			fread(&currentProperty->material, sizeof(uint8_t), 1, file);
 			fread(&currentProperty->layer, sizeof(uint8_t), 1, file);
+
+#ifdef DEBUG
+			if (currentProperty->layer < 2 && cinstanceCount > 0) {
+				OUT_LV_DEBUG("Instances provided but drawn on a none instanced layer [" << currentProperty->layer << "] must be 2 or higher")
+			}
+#endif // DEBUG
+
 
 			uint32_t vertexCount = 0;
 			fread(&currentDescription->indexDrawCount, sizeof(uint32_t), 1, file);
@@ -136,7 +176,10 @@ namespace tge::io {
 		bufferInputInfos[2].memoryIndex = vlibDeviceLocalMemoryIndex;
 		bufferInputInfos[2].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
-		createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT, currentMap.mapBuffers);
+		if (actorCount > 0)
+			createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT, currentMap.mapBuffers);
+		else
+			createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT - 1, currentMap.mapBuffers);
 
 		startSingleTimeCommand();
 
@@ -145,9 +188,14 @@ namespace tge::io {
 			vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, buffer[i * 2 + 1].buffer, currentMap.mapBuffers[1].buffer, 1, vertexBufferCopy + i);
 		}
 
+		for (uint32_t i = 0; i < instanceStagingCopy.size(); i++) {
+			vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, instanceStaging[i].buffer, currentMap.mapBuffers[2].buffer, 1, instanceStagingCopy.data() + i);
+		}
+
 		endSingleTimeCommand();
 
 		destroyBuffers(buffer, bufferCount);
+		destroyBuffers(instanceStaging.data(), instanceStaging.size());
 		delete[] buffer;
 		delete[] indexBufferCopy;
 		delete[] vertexBufferCopy;
@@ -188,7 +236,7 @@ namespace tge::io {
 		for (size_t i = 0; i < materialCount; i++) {
 #ifdef DEBUG
 			if (blocklength != sizeof(Material)) {
-				OUT_LV_DEBUG("The materials are out of size! Must be " << sizeof(Material))
+				OUT_LV_DEBUG("The materials are out of size! Must be " << sizeof(Material) << " is " << blocklength)
 			}
 #endif // DEBUG
 
