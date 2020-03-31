@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="drawlib\Quad.hpp" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="gamecontent\Actor.hpp" />
     <ClInclude Include="gamecontent\camera\2DCamera.hpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="vlib\VulkanCommandBuffer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="drawlib\Quad.cpp" />
     <ClCompile Include="gamecontent\Actor.cpp" />
     <ClCompile Include="gamecontent\camera\2DCamera.cpp" />
     <ClCompile Include="gamecontent\camera\Camera.cpp" />

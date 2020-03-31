@@ -229,7 +229,7 @@ namespace tge::io {
 
 		uint32_t materialCount = 0;
 		fread(&materialCount, sizeof(uint32_t), 1, file);
-		createdMaterials = new Material[materialCount];
+		createdMaterials = new Material[255];
 
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -256,14 +256,14 @@ namespace tge::io {
 		uint32_t fontCount = 0;
 		// Reads the count of blocks following
 		fread(&fontCount, sizeof(uint32_t), 1, file);
-		fonts = new Font[fontCount];
+		fonts.resize(fontCount);
 		textureInputInfos.resize(textureInputInfos.size() + fontCount);
 
 		// Read the block size of the following content
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		while (blocklength != UINT32_MAX) {
-			Font* font = fonts + currentId;
+		for (uint32_t i = 0; i < fontCount; i++) {
+			Font* font = fonts.data() + currentId;
 			fread(&font->fontheight, sizeof(float), 1, file);
 
 			uint8_t* resbuffer = new uint8_t[blocklength];
@@ -276,8 +276,17 @@ namespace tge::io {
 			textureInputInfo->comp = 4;
 
 			font->charData = new stbtt_bakedchar[256];
-			stbtt_BakeFontBitmap(resbuffer, 0, font->fontheight, textureInputInfo->data, FONT_TEXTURE_WIDTH, FONT_TEXTURE_HEIGHT, 0, 256, font->charData);
+			uint8_t* interdata = new uint8_t[FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT];
+			stbtt_BakeFontBitmap(resbuffer, 0, font->fontheight, interdata, FONT_TEXTURE_WIDTH, FONT_TEXTURE_HEIGHT, 0, 128, font->charData);
 			delete[] resbuffer;
+
+			for (size_t i = 0; i < FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT; i++) {
+				textureInputInfo->data[i * 4] = interdata[i];
+				textureInputInfo->data[i * 4 + 1] = interdata[i];
+				textureInputInfo->data[i * 4 + 2] = interdata[i];
+				textureInputInfo->data[i * 4 + 3] = interdata[i];
+			}
+			delete[] interdata;
 
 			font->material = currentId + materialCount;
 			Material* material = createdMaterials + font->material;
@@ -288,6 +297,12 @@ namespace tge::io {
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
+		
+#ifdef DEBUG
+		if (blocklength != UINT32_MAX) {
+			OUT_LV_DEBUG("Something went wrong while reading the Fonts! Out of size!")
+		}
+#endif // DEBUG
 
 		fclose(file);
 

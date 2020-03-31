@@ -76,6 +76,12 @@
     <Filter Include="shader">
       <UniqueIdentifier>{3bb9f22a-8f9f-4665-9bdb-e01084d34ec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\drawlib">
+      <UniqueIdentifier>{5461e077-a379-458a-9e5b-ab74283f9caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\drawlib">
+      <UniqueIdentifier>{5ec632b9-7864-44d0-80f8-f33fb65a4f62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TGEngine.hpp">
@@ -210,6 +216,9 @@
     <ClInclude Include="ui\UISystem.hpp">
       <Filter>Headerdateien\ui</Filter>
     </ClInclude>
+    <ClInclude Include="drawlib\Quad.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TGEngine.cpp">
@@ -334,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="ui\UISystem.cpp">
       <Filter>Quelldateien\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="drawlib\Quad.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "pipeline/buffer/UniformBuffer.hpp"
 #include "io/Resource.hpp"
 #include "resources/ShaderData.hpp"
+#include "io/Font.hpp"
 
 using namespace std;
 using namespace tge::tex;
@@ -116,6 +117,7 @@ void startTGEngine() {
 	destroyDescriptor();
 	destroyResource();
 	destroyBuffers(buffers, UBO_COUNT);
+	tge::fnt::destroyFontresources();
 	destroyPipelines();
 	destroyShader();
 	destroyDevice();
