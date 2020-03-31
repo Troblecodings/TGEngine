@@ -201,11 +201,11 @@ namespace tge::tex {
 		samplerCreateInfo.mipLodBias = 0;
 		samplerCreateInfo.anisotropyEnable = defaults.anisotropyFilter > 0;
 		samplerCreateInfo.maxAnisotropy = defaults.anisotropyFilter;
-		samplerCreateInfo.compareEnable = VK_FALSE;
-		samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
+		samplerCreateInfo.compareEnable = VK_TRUE;
+		samplerCreateInfo.compareOp = VK_COMPARE_OP_LESS;
 		samplerCreateInfo.minLod = 0;
 		samplerCreateInfo.maxLod = 1; // TODO Lod
-		samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Black int color as default border color
+		samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 		samplerCreateInfo.unnormalizedCoordinates = VK_FALSE;
 
 		CHECKFAIL(vkCreateSampler(device, &samplerCreateInfo, nullptr, sampler));

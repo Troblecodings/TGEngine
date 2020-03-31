@@ -16,7 +16,7 @@ struct ShaderPipe {
 
 	ShaderPipe() {}
 	ShaderPipe(VkPipelineShaderStageCreateInfo* shader,
-		const VkVertexInputAttributeDescription* inputs,
+		VkVertexInputAttributeDescription* inputs,
 		const VkDescriptorSetLayoutBinding* layouts,
 		const unsigned int shaderCount,
 		const unsigned int inputCount,

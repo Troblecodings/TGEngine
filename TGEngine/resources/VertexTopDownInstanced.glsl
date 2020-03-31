@@ -15,11 +15,20 @@ layout(location = 1) in vec2 uv;
 
 layout(location = 0) out vec2 uvOut;
 
+layout(location = 2) in vec2 transform;
+layout(location = 3) in vec2 scale;
+
 out gl_PerVertex{
    vec4 gl_Position;
 };
 
 void main(){
-    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform);
+    mat4 mat = {
+        { scale.x, 0, 0, transform.x },
+        { 0, scale.y, 0, transform.y },
+        { 0, 0, 1.0, 0 },
+        { 0, 0, 0, 1.0 }
+    };
+    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform * mat);
     uvOut = uv + data.uvOffsets[pushconst.animationIndex];
 }

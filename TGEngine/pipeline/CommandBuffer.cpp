@@ -88,7 +88,7 @@ void fillCommandBuffer() {
 		CHECKFAIL(vkBeginCommandBuffer(buffer, &commandBufferBeginInfo));
 
 		VkClearValue clearValues[2];
-		clearValues[0] = { 1, 1, 1, 1 };
+		clearValues[0] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		clearValues[1] = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassBeginInfo;
@@ -111,7 +111,7 @@ void fillCommandBuffer() {
 
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, mainDescriptorSets, 0, nullptr);
 
-		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline);
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[0]);
 
 		tge::gmc::loadToCommandBuffer(buffer, 0);
 
@@ -120,12 +120,27 @@ void fillCommandBuffer() {
 
 		tge::gmc::loadToCommandBuffer(buffer, 1);
 
+		// Binding for 
+		vkCmdBindVertexBuffers(buffer, 1, 1, &tge::io::currentMap.mapBuffers[2].buffer, &offsets);
+
+		//Instance based rendering for UI
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[1]);
+
+		tge::gmc::loadToCommandBuffer(buffer, 2);
+
+		//Instance based rendering for the game layer
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, mainDescriptorSets, 0, nullptr);
+
+		tge::gmc::loadToCommandBuffer(buffer, 3);
+
+		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[0]);
+
 		for (uint32_t i = 0; i < tge::fnt::fontBufferObjects.size(); i += 2) {
 			vkCmdBindIndexBuffer(buffer, tge::fnt::fontBufferObjects[i].buffer, 0, VK_INDEX_TYPE_UINT32);
 
 			vkCmdBindVertexBuffers(buffer, 0, 1, &tge::fnt::fontBufferObjects[i + 1].buffer, &offsets);
 
-			tge::gmc::loadToCommandBuffer(buffer, i + 2);
+			tge::gmc::loadToCommandBuffer(buffer, i + 4);
 		}
 
 		vkCmdEndRenderPass(buffer);

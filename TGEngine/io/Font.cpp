@@ -26,7 +26,7 @@ namespace tge::fnt {
 		tge::gmc::ActorProperties properties;
 		properties.localTransform = glm::mat4(1);
 		properties.material = pFont->material;
-		properties.layer = cindex + 2;
+		properties.layer = cindex + 4;
 
 		for (size_t i = 0; i < size; i++) {
 			const char* cstring = pInputStrings[i];
@@ -38,6 +38,7 @@ namespace tge::fnt {
 			descriptor.indexDrawCount = 6 * inputStringLength;
 			descriptor.indexOffset = indexLength;
 			descriptor.vertexOffset = vertexLength;
+			descriptor.instanceID = UINT32_MAX;
 			tge::gmc::actorDescriptor.push_back(descriptor);
 
 			indexLength += 6 * inputStringLength;

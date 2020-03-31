@@ -173,6 +173,7 @@
     <None Include="resources\FragmentTextured2D.glsl" />
     <None Include="resources\FragmentTopDown.glsl" />
     <None Include="resources\VertexTextured2D.glsl" />
+    <None Include="resources\VertexTopDownInstanced.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

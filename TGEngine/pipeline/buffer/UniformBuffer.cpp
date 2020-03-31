@@ -3,24 +3,19 @@
 
 namespace tge::buf {
 
-	BufferObject buffers[3];
+	BufferObject buffers[UBO_COUNT];
 
 	void initUniformBuffers() {
 		BufferInputInfo bufferInputInfo[UBO_COUNT];
 		bufferInputInfo[0].flags = VK_SHADER_STAGE_VERTEX_BIT;
-		bufferInputInfo[0].size = sizeof(glm::mat4);
+		bufferInputInfo[0].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
 		bufferInputInfo[0].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[0].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
 		bufferInputInfo[1].flags = VK_SHADER_STAGE_VERTEX_BIT;
-		bufferInputInfo[1].size = sizeof(glm::mat4);
+		bufferInputInfo[1].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
 		bufferInputInfo[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[1].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-
-		bufferInputInfo[2].flags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		bufferInputInfo[2].size = sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
-		bufferInputInfo[2].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
-		bufferInputInfo[2].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
 		// TODO only use one device memory
 		createBuffers(bufferInputInfo, UBO_COUNT, buffers);
@@ -33,10 +28,6 @@ namespace tge::buf {
 		infoTransform[1].buffer = buffers[1].buffer;
 		infoTransform[1].offset = 0;
 		infoTransform[1].range = bufferInputInfo[1].size;
-
-		infoTransform[2].buffer = buffers[2].buffer;
-		infoTransform[2].offset = 0;
-		infoTransform[2].range = bufferInputInfo[2].size;
 
 		VkWriteDescriptorSet writeDescriptorSet[UBO_COUNT];
 		writeDescriptorSet[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -60,17 +51,6 @@ namespace tge::buf {
 		writeDescriptorSet[1].pImageInfo = nullptr;
 		writeDescriptorSet[1].pBufferInfo = &infoTransform[1];
 		writeDescriptorSet[1].pTexelBufferView = nullptr;
-
-		writeDescriptorSet[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		writeDescriptorSet[2].pNext = nullptr;
-		writeDescriptorSet[2].dstSet = mainDescriptorSets[0];
-		writeDescriptorSet[2].dstBinding = 3;
-		writeDescriptorSet[2].dstArrayElement = 0;
-		writeDescriptorSet[2].descriptorCount = 1;
-		writeDescriptorSet[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		writeDescriptorSet[2].pImageInfo = nullptr;
-		writeDescriptorSet[2].pBufferInfo = &infoTransform[2];
-		writeDescriptorSet[2].pTexelBufferView = nullptr;
 
 		vkUpdateDescriptorSets(device, UBO_COUNT, writeDescriptorSet, 0, nullptr);
 	}

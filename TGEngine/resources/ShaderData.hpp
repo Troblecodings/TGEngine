@@ -23,5 +23,7 @@ extern unsigned char VertexTexturedMovableModule[];
 extern VkPipelineShaderStageCreateInfo VertexTexturedMovable;
 extern unsigned char VertexTopDownModule[];
 extern VkPipelineShaderStageCreateInfo VertexTopDown;
+extern unsigned char VertexTopDownInstancedModule[];
+extern VkPipelineShaderStageCreateInfo VertexTopDownInstanced;
 extern unsigned char VertexUIModule[];
 extern VkPipelineShaderStageCreateInfo VertexUI;
