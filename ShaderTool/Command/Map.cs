@@ -511,7 +511,7 @@ namespace ShaderTool.Command {
 
                 uint matrixCount = (uint)Math.Truncate((actorData.localTransform.Length - 16) / 4.0f);
                 if (matrixCount == 1) {
-                    Console.WriteLine("Possibly wrong instance count, lower then 2. Make sure to include your basic Matrix for all objects end aftwards the others.");
+                    Console.WriteLine("Possibly wrong instance count, lower than 2. Make sure to include your basic matrix for all objects and the others after the basic matrix.");
                 }
                 resourceStream.Write(BitConverter.GetBytes(matrixCount));
 

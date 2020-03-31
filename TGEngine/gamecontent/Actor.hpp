@@ -30,11 +30,11 @@ namespace tge::gmc {
 
 	/*
      * This is struct holds all the information
-     * needed to draw an actor such offsets in the buffer
+     * needed to draw an actor such as offsets in the buffer
 	 * and index count
 	 *
      * <ul>
-     * <li><strong class='atr'>indexDrawCount</strong> is the count of drawen indices</li>
+     * <li><strong class='atr'>indexDrawCount</strong> is the count of drawn indices</li>
      * <li><strong class='atr'>indexOffset</strong> is the first index to be drawn by this actor in the given map</li>
      * <li><strong class='atr'>vertexOffset</strong> is the first vertex the indices are describing</li></ul>
      * <li><strong class='atr'>instanceID</strong> is the id in the actorInstanceDescriptor array</li></ul>

@@ -22,7 +22,7 @@ namespace tge::io {
 		// Start to read the actor
 		actorProperties.resize(actorCount);
 		actorDescriptor.resize(actorCount);
-		tge::gmc::actorInstanceDescriptor.reserve(actorCount); // Spekulative
+		tge::gmc::actorInstanceDescriptor.reserve(actorCount); // Speculative
 
 		// Read the block size of the following content
 		uint32_t blocklength;
@@ -91,7 +91,7 @@ namespace tge::io {
 
 #ifdef DEBUG
 			if (currentProperty->layer < 2 && cinstanceCount > 0) {
-				OUT_LV_DEBUG("Instances provided but drawn on a none instanced layer [" << currentProperty->layer << "] must be 2 or higher")
+				OUT_LV_DEBUG("Instances provided, but drawn on a uninstanced layer, [" << currentProperty->layer << "] must be 2 or higher")
 			}
 #endif // DEBUG
 
@@ -236,7 +236,7 @@ namespace tge::io {
 		for (size_t i = 0; i < materialCount; i++) {
 #ifdef DEBUG
 			if (blocklength != sizeof(Material)) {
-				OUT_LV_DEBUG("The materials are out of size! Must be " << sizeof(Material) << " is " << blocklength)
+				OUT_LV_DEBUG("The materials are out of size! Must be " << sizeof(Material) << ", but is " << blocklength)
 			}
 #endif // DEBUG
 
