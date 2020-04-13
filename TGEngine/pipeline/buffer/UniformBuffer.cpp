@@ -8,12 +8,14 @@ namespace tge::buf {
 	void initUniformBuffers() {
 		BufferInputInfo bufferInputInfo[UBO_COUNT];
 		bufferInputInfo[0].flags = VK_SHADER_STAGE_VERTEX_BIT;
-		bufferInputInfo[0].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
+		bufferInputInfo[0].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS / 2
+			+ sizeof(glm::vec4) * tge::gmc::MAX_MATERIALS / 2;
 		bufferInputInfo[0].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[0].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
 		bufferInputInfo[1].flags = VK_SHADER_STAGE_VERTEX_BIT;
-		bufferInputInfo[1].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS;
+		bufferInputInfo[1].size = sizeof(glm::mat4) + sizeof(glm::vec2) * tge::gmc::MAX_MATERIALS / 2
+			+ sizeof(glm::vec4) * tge::gmc::MAX_MATERIALS / 2;
 		bufferInputInfo[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfo[1].bufferUsageFlag = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
