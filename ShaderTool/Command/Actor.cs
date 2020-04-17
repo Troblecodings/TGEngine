@@ -10,6 +10,18 @@ using static ShaderTool.Util.Util;
 
 namespace ShaderTool.Command {
 
+    enum Anchor {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER, CENTER_LEFT, CENTER_RIGHT, TOP_CENTER, BOTTOM_CENTER
+    }
+
+    class Instance {
+        public String name;
+        public float[]  matrix = new float[4];
+        public Anchor Anchor;
+        public String relation;
+        public Anchor relationAnchor;
+    }
+
     class ActorData {
         public string  name;
         public float[] localTransform;
@@ -19,6 +31,7 @@ namespace ShaderTool.Command {
         public uint    indexCount;
         public uint    vertexCount;
         public byte    layerId;
+        public Instance[] instance = new Instance[] { };
     }
 
     class Actor {
@@ -51,6 +64,8 @@ namespace ShaderTool.Command {
                     return ActorTransform(GetParams(args));
                 case "layer":
                     return ActorLayer(GetParams(args));
+                case "instance":
+                    return ActorInstance(GetParams(args));
             }
 
             Console.WriteLine("Wrong parameters! Must be add/rm/make/list!");
@@ -115,6 +130,31 @@ namespace ShaderTool.Command {
         public static int ActorLayer(string[] args) {
             return Update(args, 2, act => {
                 act.layerId = byte.Parse(args[1]);
+                return act;
+            });
+        }
+
+        public static int ActorInstance(string[] args) {
+
+            return Update(args, 6, act => {
+
+                Instance instance = new Instance();
+                instance.name = args[1];
+                instance.matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) };
+                instance.Anchor = Anchor.TOP_LEFT;
+                instance.relation = "";
+                instance.relationAnchor = Anchor.TOP_LEFT;
+
+                if (args.Length >= 7) {
+                    instance.Anchor = Enum.Parse<Anchor>(args[6]);
+                }
+                if (args.Length >= 8) {
+                    instance.relation = args[7];
+                }
+                if (args.Length == 9) {
+                    instance.relationAnchor = Enum.Parse<Anchor>(args[8]);
+                }
+                act.instance = act.instance.Append(instance).ToArray();
                 return act;
             });
         }
@@ -207,6 +247,7 @@ namespace ShaderTool.Command {
 
             return SUCCESS;
         }
-    }
 
+    }
+ 
 }
