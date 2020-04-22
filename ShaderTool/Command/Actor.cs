@@ -16,21 +16,21 @@ namespace ShaderTool.Command {
 
     class Instance {
         public String name;
-        public float[]  matrix = new float[4];
+        public float[] matrix = new float[4];
         public Anchor Anchor;
         public String relation;
         public Anchor relationAnchor;
     }
 
     class ActorData {
-        public string  name;
+        public string name;
         public float[] localTransform;
-        public uint[]  indices;
+        public uint[] indices;
         public float[] vertices;
-        public string  materialName; // will be used to iterate over the materials list and then assign a byte index when making
-        public uint    indexCount;
-        public uint    vertexCount;
-        public byte    layerId;
+        public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
+        public uint indexCount;
+        public uint vertexCount;
+        public byte layerId;
         public Instance[] instance = new Instance[] { };
     }
 
@@ -137,23 +137,23 @@ namespace ShaderTool.Command {
         public static int ActorInstance(string[] args) {
 
             return Update(args, 6, act => {
+                Instance instance = new Instance {
+                    name = args[1],
+                    matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) },
+                    Anchor = Anchor.TOP_LEFT,
+                    relation = "",
+                    relationAnchor = Anchor.TOP_LEFT
+                };
 
-                Instance instance = new Instance();
-                instance.name = args[1];
-                instance.matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) };
-                instance.Anchor = Anchor.TOP_LEFT;
-                instance.relation = "";
-                instance.relationAnchor = Anchor.TOP_LEFT;
-
-                if (args.Length >= 7) {
+                if (args.Length >= 7)
                     instance.Anchor = Enum.Parse<Anchor>(args[6]);
-                }
-                if (args.Length >= 8) {
+
+                if (args.Length >= 8)
                     instance.relation = args[7];
-                }
-                if (args.Length == 9) {
+
+                if (args.Length == 9)
                     instance.relationAnchor = Enum.Parse<Anchor>(args[8]);
-                }
+
                 act.instance = act.instance.Append(instance).ToArray();
                 return act;
             });
@@ -249,5 +249,5 @@ namespace ShaderTool.Command {
         }
 
     }
- 
+
 }
