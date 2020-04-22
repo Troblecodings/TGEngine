@@ -31,7 +31,7 @@ namespace ShaderTool.Command {
         public uint indexCount;
         public uint vertexCount;
         public byte layerId;
-        public Instance[] instance = new Instance[] { };
+        public Instance[] instances = new Instance[] { };
     }
 
     class Actor {
@@ -154,7 +154,7 @@ namespace ShaderTool.Command {
                 if (args.Length == 9)
                     instance.relationAnchor = Enum.Parse<Anchor>(args[8]);
 
-                act.instance = act.instance.Append(instance).ToArray();
+                act.instances = act.instances.Append(instance).ToArray();
                 return act;
             });
         }
