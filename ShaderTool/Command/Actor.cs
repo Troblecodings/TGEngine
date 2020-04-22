@@ -72,19 +72,17 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
         }
 
+        public static string GetFilePath(string actorName) => Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+
         private static int Update(string[] args, int size, Func<ActorData, ActorData> func) {
             if (!AssertValues(args, size))
                 return NOT_ENOUGH_PARAMS;
 
             string actorName = args[0];
-            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+            ActorData data = Load(actorName);
 
-            if (!File.Exists(filePath)) {
-                Console.WriteLine("Actor {0} was not found", actorName);
+            if (data == null) // Error message already printed in Load()
                 return WRONG_PARAMS;
-            }
-
-            ActorData data = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(filePath));
 
             try {
                 data = func(data);
@@ -93,9 +91,20 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(data, Formatting.Indented));
+            File.WriteAllText(GetFilePath(actorName), JsonConvert.SerializeObject(data, Program.FORMATTING_MODE));
 
             return SUCCESS;
+        }
+
+        public static ActorData Load(string actorName) {
+            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+
+            if (!File.Exists(filePath)) {
+                Console.WriteLine("Actor {0} was not found", actorName);
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(filePath));
         }
 
         public static int ActorTransform(string[] args) {
@@ -196,7 +205,7 @@ namespace ShaderTool.Command {
             newActor.vertices = new float[] { };
             newActor.indices = new uint[] { };
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Formatting.Indented));
+            File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Program.FORMATTING_MODE));
             Console.WriteLine("Added new actor {0}", actorName);
             return SUCCESS;
         }

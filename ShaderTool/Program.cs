@@ -1,4 +1,5 @@
-﻿using ShaderTool.Command;
+﻿using Newtonsoft.Json;
+using ShaderTool.Command;
 using System;
 using System.IO;
 using static ShaderTool.Error;
@@ -10,6 +11,7 @@ namespace ShaderTool {
         public static string CWD = Environment.CurrentDirectory;
         public static string ResourcesFolder = Path.Combine(CWD, "Resources");
         public static bool IsInConsoleMode = false;
+        public const Formatting FORMATTING_MODE = Formatting.Indented; // Easy switching for smaller files
 
         public static int Execute(string id, string[] arg) {
             switch (id) {

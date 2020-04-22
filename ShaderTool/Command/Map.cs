@@ -19,6 +19,8 @@ namespace ShaderTool.Command {
     class Map {
 
         public const uint TGR_VERSION = 2;
+        public const string MAP_FILE_EXTENSION = ".json";
+        public const string RESOURCE_FILE_EXTENSION = ".tgr";
 
         public static int MapCommand(string[] args) {
 
@@ -51,6 +53,9 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
 
         }
+
+        public static string GetMapFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + MAP_FILE_EXTENSION);
+        public static string GetResourceFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + RESOURCE_FILE_EXTENSION);
 
         private static int MapRmFont(string[] args) {
             if (!AssertValues(args, 2))
@@ -102,7 +107,7 @@ namespace ShaderTool.Command {
                 }
 
                 float fontSize = 0;
-                if(!float.TryParse(args[i * 2], out fontSize)) {
+                if (!float.TryParse(args[i * 2], out fontSize)) {
                     Console.WriteLine("'{0}' is not a valid float, skipping!", args[i * 2]);
                     continue;
                 }
@@ -117,7 +122,7 @@ namespace ShaderTool.Command {
         }
 
         public static MapData Load(string mapName) {
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string resourceFilePath = GetMapFilePath(mapName);
 
             if (!File.Exists(resourceFilePath))
                 return null;
@@ -129,10 +134,7 @@ namespace ShaderTool.Command {
             return map;
         }
 
-        public static void Save(string mapName, MapData map) {
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
-            File.WriteAllText(resourceFilePath, JsonConvert.SerializeObject(map, Formatting.Indented));
-        }
+        public static void Save(string mapName, MapData map) => File.WriteAllText(GetMapFilePath(mapName), JsonConvert.SerializeObject(map, Program.FORMATTING_MODE));
 
         public static void UpdateMaterials(MapData map) {
 
@@ -141,7 +143,7 @@ namespace ShaderTool.Command {
 
             foreach (string actorName in map.actorNames) {
 
-                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+                string actorPath = Actor.GetFilePath(actorName);
                 string actorFileContent = File.ReadAllText(actorPath);
                 ActorData actor = JsonConvert.DeserializeObject<ActorData>(actorFileContent);
                 string materialName = actor.materialName;
@@ -172,7 +174,7 @@ namespace ShaderTool.Command {
             List<string> actorNames = map.actorNames.ToList();
 
             foreach (string actorName in actorsToAdd) {
-                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+                string actorPath = Actor.GetFilePath(actorName);
 
                 if (!File.Exists(actorPath)) {
                     Console.WriteLine("Actor '{0}' not found, skipping", actorName);
@@ -203,7 +205,7 @@ namespace ShaderTool.Command {
 
             string mapName = args[0];
             string[] actors = GetParams(args);
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string mapFilePath = GetMapFilePath(mapName);
 
             if (!AssertName(mapName))
                 return WRONG_PARAMS;
@@ -227,7 +229,7 @@ namespace ShaderTool.Command {
                 return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string mapFilePath = GetMapFilePath(mapName);
 
             if (!File.Exists(mapFilePath)) {
                 Console.WriteLine("Map '{0}' was not found", mapName);
@@ -245,8 +247,8 @@ namespace ShaderTool.Command {
                 return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".tgr");
+            string mapFilePath = GetMapFilePath(mapName);
+            string resourceFilePath = GetResourceFilePath(mapName);
 
             // .tgr file format documentation:
             // https://troblecodings.com/fileformat.html
@@ -299,7 +301,7 @@ namespace ShaderTool.Command {
             foreach ((string font, float fontSize) in mapData.fontNames) {
                 string path = Path.Combine(Program.ResourcesFolder, font);
 
-                if(!File.Exists(path)) {
+                if (!File.Exists(path)) {
                     Console.WriteLine("Fontfile {0} not found, skipping!");
                     continue;
                 }
@@ -417,7 +419,7 @@ namespace ShaderTool.Command {
 
             foreach (string mapTextureName in mapTextureNames) {
 
-                string textureFilePath = Path.Combine(Program.ResourcesFolder, mapTextureName + ".tgx");
+                string textureFilePath = Texture.GetFilePath(mapTextureName);
 
                 if (!File.Exists(textureFilePath)) {
                     Console.WriteLine("'{0}' is not a texture.", mapTextureName);
@@ -493,19 +495,12 @@ namespace ShaderTool.Command {
             // Write the data names into the resource file
             foreach (string actorName in mapData.actorNames) {
 
-                string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
-
-                if (!File.Exists(actorFilePath)) {
-                    Console.WriteLine("'{0}' is not a valid actor!", actorName);
-                    continue;
-                }
-
-                ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
+                ActorData actorData = Actor.Load(actorName);
 
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
-                if((actorData.localTransform.Length - 16) % 4 != 0) {
+                if ((actorData.localTransform.Length - 16) % 4 != 0) {
                     Console.WriteLine("Wrong transform size, needs to be a multiple of 4");
                 }
 
@@ -544,7 +539,6 @@ namespace ShaderTool.Command {
                 if (actorData.vertexCount != 0) // Not sure how to handle this?
                     foreach (float vertex in actorData.vertices)
                         resourceStream.Write(BitConverter.GetBytes(vertex));
-
 
             }
 
