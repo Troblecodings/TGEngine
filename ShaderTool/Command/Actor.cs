@@ -32,10 +32,10 @@ namespace ShaderTool.Command {
     }
 
     class Instance {
-        public String name;
+        public string name;
         public float[] matrix = new float[4];
         public Anchor anchor;
-        public String relation;
+        public string relation;
         public Anchor relationAnchor;
     }
 
