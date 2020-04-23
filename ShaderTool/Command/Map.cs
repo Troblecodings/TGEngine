@@ -19,6 +19,8 @@ namespace ShaderTool.Command {
     class Map {
 
         public const uint TGR_VERSION = 2;
+        public const string MAP_FILE_EXTENSION = ".json";
+        public const string RESOURCE_FILE_EXTENSION = ".tgr";
 
         public static int MapCommand(string[] args) {
 
@@ -51,6 +53,9 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
 
         }
+
+        public static string GetMapFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + MAP_FILE_EXTENSION);
+        public static string GetResourceFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + RESOURCE_FILE_EXTENSION);
 
         private static int MapRmFont(string[] args) {
             if (!AssertValues(args, 2))
@@ -102,7 +107,7 @@ namespace ShaderTool.Command {
                 }
 
                 float fontSize = 0;
-                if(!float.TryParse(args[i * 2], out fontSize)) {
+                if (!float.TryParse(args[i * 2], out fontSize)) {
                     Console.WriteLine("'{0}' is not a valid float, skipping!", args[i * 2]);
                     continue;
                 }
@@ -117,7 +122,7 @@ namespace ShaderTool.Command {
         }
 
         public static MapData Load(string mapName) {
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string resourceFilePath = GetMapFilePath(mapName);
 
             if (!File.Exists(resourceFilePath))
                 return null;
@@ -129,10 +134,7 @@ namespace ShaderTool.Command {
             return map;
         }
 
-        public static void Save(string mapName, MapData map) {
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
-            File.WriteAllText(resourceFilePath, JsonConvert.SerializeObject(map, Formatting.Indented));
-        }
+        public static void Save(string mapName, MapData map) => File.WriteAllText(GetMapFilePath(mapName), JsonConvert.SerializeObject(map, Program.FORMATTING_MODE));
 
         public static void UpdateMaterials(MapData map) {
 
@@ -141,7 +143,7 @@ namespace ShaderTool.Command {
 
             foreach (string actorName in map.actorNames) {
 
-                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+                string actorPath = Actor.GetFilePath(actorName);
                 string actorFileContent = File.ReadAllText(actorPath);
                 ActorData actor = JsonConvert.DeserializeObject<ActorData>(actorFileContent);
                 string materialName = actor.materialName;
@@ -172,7 +174,7 @@ namespace ShaderTool.Command {
             List<string> actorNames = map.actorNames.ToList();
 
             foreach (string actorName in actorsToAdd) {
-                string actorPath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+                string actorPath = Actor.GetFilePath(actorName);
 
                 if (!File.Exists(actorPath)) {
                     Console.WriteLine("Actor '{0}' not found, skipping", actorName);
@@ -203,7 +205,7 @@ namespace ShaderTool.Command {
 
             string mapName = args[0];
             string[] actors = GetParams(args);
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string mapFilePath = GetMapFilePath(mapName);
 
             if (!AssertName(mapName))
                 return WRONG_PARAMS;
@@ -227,7 +229,7 @@ namespace ShaderTool.Command {
                 return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
+            string mapFilePath = GetMapFilePath(mapName);
 
             if (!File.Exists(mapFilePath)) {
                 Console.WriteLine("Map '{0}' was not found", mapName);
@@ -245,8 +247,8 @@ namespace ShaderTool.Command {
                 return NOT_ENOUGH_PARAMS;
 
             string mapName = args[0];
-            string mapFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".json");
-            string resourceFilePath = Path.Combine(Program.ResourcesFolder, mapName + ".tgr");
+            string mapFilePath = GetMapFilePath(mapName);
+            string resourceFilePath = GetResourceFilePath(mapName);
 
             // .tgr file format documentation:
             // https://troblecodings.com/fileformat.html
@@ -299,7 +301,7 @@ namespace ShaderTool.Command {
             foreach ((string font, float fontSize) in mapData.fontNames) {
                 string path = Path.Combine(Program.ResourcesFolder, font);
 
-                if(!File.Exists(path)) {
+                if (!File.Exists(path)) {
                     Console.WriteLine("Fontfile {0} not found, skipping!");
                     continue;
                 }
@@ -417,7 +419,7 @@ namespace ShaderTool.Command {
 
             foreach (string mapTextureName in mapTextureNames) {
 
-                string textureFilePath = Path.Combine(Program.ResourcesFolder, mapTextureName + ".tgx");
+                string textureFilePath = Texture.GetFilePath(mapTextureName);
 
                 if (!File.Exists(textureFilePath)) {
                     Console.WriteLine("'{0}' is not a texture.", mapTextureName);
@@ -434,6 +436,8 @@ namespace ShaderTool.Command {
 
             return SUCCESS;
         }
+
+        // AddTransformsToResource
 
         private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
 
@@ -493,19 +497,12 @@ namespace ShaderTool.Command {
             // Write the data names into the resource file
             foreach (string actorName in mapData.actorNames) {
 
-                string actorFilePath = Program.ResourcesFolder + @"\" + actorName + "_Actor.json";
-
-                if (!File.Exists(actorFilePath)) {
-                    Console.WriteLine("'{0}' is not a valid actor!", actorName);
-                    continue;
-                }
-
-                ActorData actorData = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(actorFilePath));
+                ActorData actorData = Actor.Load(actorName);
 
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 resourceStream.Write(BitConverter.GetBytes(actorDataSize));
 
-                if((actorData.localTransform.Length - 16) % 4 != 0) {
+                if ((actorData.localTransform.Length - 16) % 4 != 0) {
                     Console.WriteLine("Wrong transform size, needs to be a multiple of 4");
                 }
 
@@ -545,6 +542,10 @@ namespace ShaderTool.Command {
                     foreach (float vertex in actorData.vertices)
                         resourceStream.Write(BitConverter.GetBytes(vertex));
 
+                foreach (Instance instance in actorData.instances) {
+                    float[] matrix = CalculateInstanceMatrix(actorData, instance);
+                    // Instance map writing
+                }
 
             }
 
@@ -554,5 +555,57 @@ namespace ShaderTool.Command {
 
         }
 
+        private static float[] CalculateInstanceMatrix(ActorData actorData, Instance instance) {
+            float[] matrix = instance.matrix;
+            ActorData baseActor = actorData;
+
+            // If using relation actor, use that, otherwise use base actor as relation
+            if (instance.relation != "" || instance.relation != null) {
+                ActorData relActor = Actor.Load(instance.relation);
+                if (relActor != null)
+                    baseActor = relActor;
+            }
+
+            matrix[0] += baseActor.localTransform[3]; // x
+            matrix[1] += baseActor.localTransform[7]; // y
+
+            float relActorWidth = baseActor.localTransform[0];
+            float relActorHeight = baseActor.localTransform[5];
+
+            matrix = ShiftMatrixCoordinates(matrix, relActorWidth / 2, relActorHeight / 2, instance.relationAnchor);
+
+            float width = matrix[2];
+            float height = matrix[3];
+            matrix = ShiftMatrixCoordinates(matrix, width / 2, height / 2, instance.anchor);
+
+            return matrix;
+        }
+
+        private static float[] ShiftMatrixCoordinates(float[] matrix, float shiftWidth, float shiftHeight, Anchor anchor) {
+            int[] scaleMult = { 0, 0 }; // 0 = don't move, 1 = add, -1 = subtract
+
+            // Read: If anchor is a left/right/top/bottom anchor, then ...
+            if (AnchorGroup.LEFT_ANCHORS.Contains(anchor))
+                scaleMult[0] = 1;
+            else if (AnchorGroup.RIGHT_ANCHORS.Contains(anchor))
+                scaleMult[0] = -1;
+
+            if (AnchorGroup.TOP_ANCHORS.Contains(anchor))
+                scaleMult[1] = 1;
+            else if (AnchorGroup.BOTTOM_ANCHORS.Contains(anchor))
+                scaleMult[1] = -1;
+
+            // Anchors with center elements will not move the matrix in their respective direction,
+            // as the scale remains 0 because it doesn't pass through any if.
+
+            float[] newMatrix = {
+                matrix[0] + shiftWidth * scaleMult[0],
+                matrix[1] + shiftHeight * scaleMult[1],
+                matrix[2],
+                matrix[3]
+            };
+
+            return newMatrix;
+        }
     }
 }

@@ -71,11 +71,11 @@ namespace ShaderTool.Command {
 
         public static int MaterialSetTexture(string[] args) {
             AssertValues(args, 2);
-            
+
             Load();
 
             string name = args[0];
-            if(!Cache.MATERIALS.ContainsKey(name)) {
+            if (!Cache.MATERIALS.ContainsKey(name)) {
                 Console.WriteLine("{0} does not exist!", name);
                 return WRONG_PARAMS;
             }
@@ -119,7 +119,7 @@ namespace ShaderTool.Command {
         }
 
         public static void Save() {
-            string json = JsonConvert.SerializeObject(Cache.MATERIALS, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(Cache.MATERIALS, Program.FORMATTING_MODE);
             File.WriteAllText(MaterialPath, json);
             Console.WriteLine("Saved materials!");
         }

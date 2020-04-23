@@ -10,6 +10,8 @@ using static ShaderTool.Util.Util;
 namespace ShaderTool.Command {
     class Texture {
 
+        public const string TEXTURE_FILE_EXTENSION = ".tgx";
+
         public static int TextureCommand(string[] args) {
 
             if (!AssertValues(args))
@@ -28,6 +30,8 @@ namespace ShaderTool.Command {
             Console.WriteLine("Wrong params! Possible: add/rm/list/import");
             return WRONG_PARAMS;
         }
+
+        public static string GetFilePath(string textureName) => Path.Combine(Program.ResourcesFolder, textureName + TEXTURE_FILE_EXTENSION);
 
         public static int TextureAdd(string[] args) {
 
@@ -64,7 +68,7 @@ namespace ShaderTool.Command {
                     continue;
                 }
 
-                File.Copy(texturePath, Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
+                File.Copy(texturePath, Texture.GetFilePath(fileName));
                 Console.WriteLine("Texture '{0}' was successfully added!", fileName);
 
             }
@@ -84,7 +88,7 @@ namespace ShaderTool.Command {
                 Console.WriteLine("Texture '{0}' was not found!", fileName);
                 return WRONG_PARAMS;
             } else {
-                File.Delete(Path.Combine(Program.ResourcesFolder, fileName + ".tgx"));
+                File.Delete(GetFilePath(fileName));
             }
 
             Console.WriteLine("Texture '{0}' was successfully removed!", fileName);

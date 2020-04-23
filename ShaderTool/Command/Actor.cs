@@ -14,33 +14,50 @@ namespace ShaderTool.Command {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER, CENTER_LEFT, CENTER_RIGHT, TOP_CENTER, BOTTOM_CENTER
     }
 
+    // Used for AnchorGroup.Contains() comparisons
+    class AnchorGroup {
+        // Can't define these as a constant
+        public static Anchor[] TOP_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.TOP_CENTER };
+        public static Anchor[] HORIZONTAL_CENTER_ANCHORS = { Anchor.CENTER_LEFT, Anchor.CENTER, Anchor.CENTER_RIGHT };
+        public static Anchor[] BOTTOM_ANCHORS = { Anchor.BOTTOM_LEFT, Anchor.BOTTOM_CENTER, Anchor.BOTTOM_RIGHT };
+
+        public static Anchor[] LEFT_ANCHORS = { Anchor.TOP_LEFT, Anchor.CENTER_LEFT, Anchor.BOTTOM_LEFT };
+        public static Anchor[] VERTICAL_CENTER_ANCHORS = { Anchor.TOP_CENTER, Anchor.CENTER, Anchor.BOTTOM_CENTER };
+        public static Anchor[] RIGHT_ANCHORS = { Anchor.TOP_RIGHT, Anchor.CENTER_RIGHT, Anchor.BOTTOM_RIGHT };
+
+        public static Anchor[] CORNER_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT };
+        public static Anchor[] CENTER_ANCHORS = { Anchor.CENTER, Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT, Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER };
+
+        public static Anchor[] EDGE_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT, Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT, Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER };
+    }
+
     class Instance {
-        public String name;
-        public float[]  matrix = new float[4];
-        public Anchor Anchor;
-        public String relation;
+        public string name;
+        public float[] matrix = new float[4];
+        public Anchor anchor;
+        public string relation;
         public Anchor relationAnchor;
     }
 
     class ActorData {
-        public string  name;
+        public string name;
         public float[] localTransform;
-        public uint[]  indices;
+        public uint[] indices;
         public float[] vertices;
-        public string  materialName; // will be used to iterate over the materials list and then assign a byte index when making
-        public uint    indexCount;
-        public uint    vertexCount;
-        public byte    layerId;
-        public Instance[] instance = new Instance[] { };
+        public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
+        public uint indexCount;
+        public uint vertexCount;
+        public byte layerId;
+        public Instance[] instances = new Instance[] { };
     }
 
     class Actor {
 
         public static float[] IDENTITY_MATRIX = {
-            1f, 0f, 0f, 0f,
-            0f, 1f, 0f, 0f,
-            0f, 0f, 1f, 0f,
-            0f, 0f, 0f, 1f,
+            1f, 0f, 0f, 0f, // xScale,       ,       , x
+            0f, 1f, 0f, 0f, //       , yScale,       , y
+            0f, 0f, 1f, 0f, //       ,       , zScale, z
+            0f, 0f, 0f, 1f, //       ,       ,       , w
         };
 
         public static int ActorCommand(string[] args) {
@@ -72,19 +89,17 @@ namespace ShaderTool.Command {
             return WRONG_PARAMS;
         }
 
+        public static string GetFilePath(string actorName) => Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+
         private static int Update(string[] args, int size, Func<ActorData, ActorData> func) {
             if (!AssertValues(args, size))
                 return NOT_ENOUGH_PARAMS;
 
             string actorName = args[0];
-            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+            ActorData data = Load(actorName);
 
-            if (!File.Exists(filePath)) {
-                Console.WriteLine("Actor {0} was not found", actorName);
+            if (data == null) // Error message already printed in Load()
                 return WRONG_PARAMS;
-            }
-
-            ActorData data = JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(filePath));
 
             try {
                 data = func(data);
@@ -93,9 +108,20 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(data, Formatting.Indented));
+            File.WriteAllText(GetFilePath(actorName), JsonConvert.SerializeObject(data, Program.FORMATTING_MODE));
 
             return SUCCESS;
+        }
+
+        public static ActorData Load(string actorName) {
+            string filePath = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+
+            if (!File.Exists(filePath)) {
+                Console.WriteLine("Actor {0} was not found", actorName);
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<ActorData>(File.ReadAllText(filePath));
         }
 
         public static int ActorTransform(string[] args) {
@@ -137,24 +163,24 @@ namespace ShaderTool.Command {
         public static int ActorInstance(string[] args) {
 
             return Update(args, 6, act => {
+                Instance instance = new Instance {
+                    name = args[1],
+                    matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) },
+                    anchor = Anchor.TOP_LEFT,
+                    relation = "",
+                    relationAnchor = Anchor.TOP_LEFT
+                };
 
-                Instance instance = new Instance();
-                instance.name = args[1];
-                instance.matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) };
-                instance.Anchor = Anchor.TOP_LEFT;
-                instance.relation = "";
-                instance.relationAnchor = Anchor.TOP_LEFT;
+                if (args.Length >= 7)
+                    instance.anchor = Enum.Parse<Anchor>(args[6]);
 
-                if (args.Length >= 7) {
-                    instance.Anchor = Enum.Parse<Anchor>(args[6]);
-                }
-                if (args.Length >= 8) {
+                if (args.Length >= 8)
                     instance.relation = args[7];
-                }
-                if (args.Length == 9) {
+
+                if (args.Length == 9)
                     instance.relationAnchor = Enum.Parse<Anchor>(args[8]);
-                }
-                act.instance = act.instance.Append(instance).ToArray();
+
+                act.instances = act.instances.Append(instance).ToArray();
                 return act;
             });
         }
@@ -196,7 +222,7 @@ namespace ShaderTool.Command {
             newActor.vertices = new float[] { };
             newActor.indices = new uint[] { };
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Formatting.Indented));
+            File.WriteAllText(path, JsonConvert.SerializeObject(newActor, Program.FORMATTING_MODE));
             Console.WriteLine("Added new actor {0}", actorName);
             return SUCCESS;
         }
@@ -249,5 +275,5 @@ namespace ShaderTool.Command {
         }
 
     }
- 
+
 }
