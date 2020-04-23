@@ -437,6 +437,8 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
+        // AddTransformsToResource
+
         private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
 
             resourceStream.Write(BitConverter.GetBytes(mapData.materialNames.Length));
@@ -540,6 +542,11 @@ namespace ShaderTool.Command {
                     foreach (float vertex in actorData.vertices)
                         resourceStream.Write(BitConverter.GetBytes(vertex));
 
+                foreach (Instance instance in actorData.instances) {
+                    float[] matrix = CalculateInstanceMatrix(actorData, instance);
+                    // Instance map writing
+                }
+
             }
 
             resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
@@ -548,5 +555,57 @@ namespace ShaderTool.Command {
 
         }
 
+        private static float[] CalculateInstanceMatrix(ActorData actorData, Instance instance) {
+            float[] matrix = instance.matrix;
+            ActorData baseActor = actorData;
+
+            // If using relation actor, use that, otherwise use base actor as relation
+            if (instance.relation != "" || instance.relation != null) {
+                ActorData relActor = Actor.Load(instance.relation);
+                if (relActor != null)
+                    baseActor = relActor;
+            }
+
+            matrix[0] += baseActor.localTransform[3]; // x
+            matrix[1] += baseActor.localTransform[7]; // y
+
+            float relActorWidth = baseActor.localTransform[0];
+            float relActorHeight = baseActor.localTransform[5];
+
+            matrix = ShiftMatrixCoordinates(matrix, relActorWidth / 2, relActorHeight / 2, instance.relationAnchor);
+
+            float width = matrix[2];
+            float height = matrix[3];
+            matrix = ShiftMatrixCoordinates(matrix, width / 2, height / 2, instance.anchor);
+
+            return matrix;
+        }
+
+        private static float[] ShiftMatrixCoordinates(float[] matrix, float shiftWidth, float shiftHeight, Anchor anchor) {
+            int[] scaleMult = { 0, 0 }; // 0 = don't move, 1 = add, -1 = subtract
+
+            // Read: If anchor is a left/right/top/bottom anchor, then ...
+            if (AnchorGroup.LEFT_ANCHORS.Contains(anchor))
+                scaleMult[0] = 1;
+            else if (AnchorGroup.RIGHT_ANCHORS.Contains(anchor))
+                scaleMult[0] = -1;
+
+            if (AnchorGroup.TOP_ANCHORS.Contains(anchor))
+                scaleMult[1] = 1;
+            else if (AnchorGroup.BOTTOM_ANCHORS.Contains(anchor))
+                scaleMult[1] = -1;
+
+            // Anchors with center elements will not move the matrix in their respective direction,
+            // as the scale remains 0 because it doesn't pass through any if.
+
+            float[] newMatrix = {
+                matrix[0] + shiftWidth * scaleMult[0],
+                matrix[1] + shiftHeight * scaleMult[1],
+                matrix[2],
+                matrix[3]
+            };
+
+            return newMatrix;
+        }
     }
 }
