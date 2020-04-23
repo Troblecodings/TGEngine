@@ -14,10 +14,27 @@ namespace ShaderTool.Command {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER, CENTER_LEFT, CENTER_RIGHT, TOP_CENTER, BOTTOM_CENTER
     }
 
+    // Used for AnchorGroup.Contains() comparisons
+    class AnchorGroup {
+        // Can't define these as a constant
+        public static Anchor[] TOP_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.TOP_CENTER };
+        public static Anchor[] HORIZONTAL_CENTER_ANCHORS = { Anchor.CENTER_LEFT, Anchor.CENTER, Anchor.CENTER_RIGHT };
+        public static Anchor[] BOTTOM_ANCHORS = { Anchor.BOTTOM_LEFT, Anchor.BOTTOM_CENTER, Anchor.BOTTOM_RIGHT };
+
+        public static Anchor[] LEFT_ANCHORS = { Anchor.TOP_LEFT, Anchor.CENTER_LEFT, Anchor.BOTTOM_LEFT };
+        public static Anchor[] VERTICAL_CENTER_ANCHORS = { Anchor.TOP_CENTER, Anchor.CENTER, Anchor.BOTTOM_CENTER };
+        public static Anchor[] RIGHT_ANCHORS = { Anchor.TOP_RIGHT, Anchor.CENTER_RIGHT, Anchor.BOTTOM_RIGHT };
+
+        public static Anchor[] CORNER_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT };
+        public static Anchor[] CENTER_ANCHORS = { Anchor.CENTER, Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT, Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER };
+
+        public static Anchor[] EDGE_ANCHORS = { Anchor.TOP_LEFT, Anchor.TOP_RIGHT, Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT, Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT, Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER };
+    }
+
     class Instance {
         public String name;
         public float[] matrix = new float[4];
-        public Anchor Anchor;
+        public Anchor anchor;
         public String relation;
         public Anchor relationAnchor;
     }
@@ -37,10 +54,10 @@ namespace ShaderTool.Command {
     class Actor {
 
         public static float[] IDENTITY_MATRIX = {
-            1f, 0f, 0f, 0f,
-            0f, 1f, 0f, 0f,
-            0f, 0f, 1f, 0f,
-            0f, 0f, 0f, 1f,
+            1f, 0f, 0f, 0f, // xScale,       ,       , x
+            0f, 1f, 0f, 0f, //       , yScale,       , y
+            0f, 0f, 1f, 0f, //       ,       , zScale, z
+            0f, 0f, 0f, 1f, //       ,       ,       , w
         };
 
         public static int ActorCommand(string[] args) {
@@ -149,13 +166,13 @@ namespace ShaderTool.Command {
                 Instance instance = new Instance {
                     name = args[1],
                     matrix = new float[] { float.Parse(args[2]), float.Parse(args[3]), float.Parse(args[4]), float.Parse(args[5]) },
-                    Anchor = Anchor.TOP_LEFT,
+                    anchor = Anchor.TOP_LEFT,
                     relation = "",
                     relationAnchor = Anchor.TOP_LEFT
                 };
 
                 if (args.Length >= 7)
-                    instance.Anchor = Enum.Parse<Anchor>(args[6]);
+                    instance.anchor = Enum.Parse<Anchor>(args[6]);
 
                 if (args.Length >= 8)
                     instance.relation = args[7];
