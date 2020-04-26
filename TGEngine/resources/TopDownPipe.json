@@ -18,7 +18,7 @@
   ],
   "Descriptors": [
     {
-      "Binding": 0,
+      "Binding": 10,
       "Type": 6,
       "flag": 1
     },
@@ -30,11 +30,6 @@
     {
       "Binding": 2,
       "Type": 2,
-      "flag": 16
-    },
-    {
-      "Binding": 3,
-      "Type": 6,
       "flag": 16
     }
   ]
