@@ -65,70 +65,6 @@ namespace ShaderTool.Command {
         public static string GetMapFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + MAP_FILE_EXTENSION);
         public static string GetResourceFilePath(string mapName) => Path.Combine(Program.ResourcesFolder, mapName + RESOURCE_FILE_EXTENSION);
 
-        private static int MapRmFont(string[] args) {
-            if (!AssertValues(args, 2))
-                return NOT_ENOUGH_PARAMS;
-
-            string mapName = args[0];
-
-            MapData map = Load(mapName);
-
-            if (map == null) {
-                Console.WriteLine("Map '{0}' not found", mapName);
-                return WRONG_PARAMS;
-            }
-
-            for (int i = 1; i < args.Length; i++) {
-                if (!map.fontNames.ContainsKey(args[i])) {
-                    Console.WriteLine("Font {0} is not part of the map {1}, skipping!", args[i], mapName);
-                    continue;
-                }
-                map.fontNames.Remove(args[i]);
-            }
-
-            Save(mapName, map);
-
-            return SUCCESS;
-        }
-
-        private static int MapAddFont(string[] args) {
-            if (!AssertValues(args, 3))
-                return NOT_ENOUGH_PARAMS;
-
-            string mapName = args[0];
-
-            MapData map = Load(mapName);
-
-            if (map == null) {
-                Console.WriteLine("Map '{0}' not found", mapName);
-                return WRONG_PARAMS;
-            }
-
-            if (map.fontNames == null)
-                map.fontNames = new Dictionary<string, float>();
-
-            for (int i = 1; i < (args.Length - 1) / 2 + 1; i++) {
-                string path = Path.Combine(Program.ResourcesFolder, args[i * 2 - 1]);
-                if (!File.Exists(path)) {
-                    Console.WriteLine("Font '{0}' not found, skipping", path);
-                    continue;
-                }
-
-                float fontSize = 0;
-                if (!float.TryParse(args[i * 2], out fontSize)) {
-                    Console.WriteLine("'{0}' is not a valid float, skipping!", args[i * 2]);
-                    continue;
-                }
-
-                map.fontNames.Add(args[i * 2 - 1], fontSize);
-            }
-
-            Save(mapName, map);
-
-            return SUCCESS;
-
-        }
-
         public static MapData Load(string mapName) {
             string resourceFilePath = GetMapFilePath(mapName);
 
@@ -275,19 +211,21 @@ namespace ShaderTool.Command {
 
             Material.Load();
 
-            int status = SUCCESS;
-            status = AddTexturesToResource();
+            int status = AddTexturesToResource();
             if (status != SUCCESS)
                 return status;
-
-            long transformPos = resourceStream.Position;
-            List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
 
             status = AddMaterialsToResource();
             if (status != SUCCESS)
                 return status;
 
+            List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
+
             status = AddActorsToResource(ref transformList);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddTransformsToResource(transformList);
             if (status != SUCCESS)
                 return status;
 
@@ -299,49 +237,12 @@ namespace ShaderTool.Command {
             if (status != SUCCESS)
                 return status;
 
-
-            // Transforms
-            resourceStream.Seek(transformPos, SeekOrigin.Current);
-            StreamWrite(transformList.ToArray().Length);
-            foreach (float value in transformList.ToArray())
-                StreamWrite(value);
-
             StreamWrite(0xFFFFFFFF);
             resourceStream.Close();
 
             mapData = null;
             resourceStream = null;
 
-            return SUCCESS;
-        }
-
-        private static int AddFontToResource() {
-            if (mapData.fontNames == null)
-                mapData.fontNames = new Dictionary<string, float>();
-            StreamWrite(mapData.fontNames.Count);
-
-            foreach ((string font, float fontSize) in mapData.fontNames) {
-                string path = Path.Combine(Program.ResourcesFolder, font);
-
-                if (!File.Exists(path)) {
-                    Console.WriteLine("Fontfile {0} not found, skipping!");
-                    continue;
-                }
-
-                byte[] data = File.ReadAllBytes(path);
-                StreamWrite(data.Length);
-                StreamWrite(fontSize);
-                resourceStream.Write(data);
-            }
-
-            StreamWrite(0xFFFFFFFF);
-            return SUCCESS;
-        }
-
-        private static int AddAnimationToResource() {
-            // Default skip
-            StreamWrite(0);
-            StreamWrite(0xFFFFFFFF);
             return SUCCESS;
         }
 
@@ -428,6 +329,70 @@ namespace ShaderTool.Command {
             }
 
             return SUCCESS;
+        }
+
+        private static int MapRmFont(string[] args) {
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
+            string mapName = args[0];
+
+            MapData map = Load(mapName);
+
+            if (map == null) {
+                Console.WriteLine("Map '{0}' not found", mapName);
+                return WRONG_PARAMS;
+            }
+
+            for (int i = 1; i < args.Length; i++) {
+                if (!map.fontNames.ContainsKey(args[i])) {
+                    Console.WriteLine("Font {0} is not part of the map {1}, skipping!", args[i], mapName);
+                    continue;
+                }
+                map.fontNames.Remove(args[i]);
+            }
+
+            Save(mapName, map);
+
+            return SUCCESS;
+        }
+
+        private static int MapAddFont(string[] args) {
+            if (!AssertValues(args, 3))
+                return NOT_ENOUGH_PARAMS;
+
+            string mapName = args[0];
+
+            MapData map = Load(mapName);
+
+            if (map == null) {
+                Console.WriteLine("Map '{0}' not found", mapName);
+                return WRONG_PARAMS;
+            }
+
+            if (map.fontNames == null)
+                map.fontNames = new Dictionary<string, float>();
+
+            for (int i = 1; i < (args.Length - 1) / 2 + 1; i++) {
+                string path = Path.Combine(Program.ResourcesFolder, args[i * 2 - 1]);
+                if (!File.Exists(path)) {
+                    Console.WriteLine("Font '{0}' not found, skipping", path);
+                    continue;
+                }
+
+                float fontSize = 0;
+                if (!float.TryParse(args[i * 2], out fontSize)) {
+                    Console.WriteLine("'{0}' is not a valid float, skipping!", args[i * 2]);
+                    continue;
+                }
+
+                map.fontNames.Add(args[i * 2 - 1], fontSize);
+            }
+
+            Save(mapName, map);
+
+            return SUCCESS;
+
         }
 
         private static int AddTexturesToResource() {
@@ -594,6 +559,45 @@ namespace ShaderTool.Command {
 
             return SUCCESS;
 
+        }
+
+        private static int AddTransformsToResource(List<float> transformList) {
+            StreamWrite(transformList.ToArray().Length);
+            foreach (float value in transformList.ToArray())
+                StreamWrite(value);
+            StreamWrite(0xFFFFFFFF);
+
+            return SUCCESS;
+        }
+
+        private static int AddFontToResource() {
+            if (mapData.fontNames == null)
+                mapData.fontNames = new Dictionary<string, float>();
+            StreamWrite(mapData.fontNames.Count);
+
+            foreach ((string font, float fontSize) in mapData.fontNames) {
+                string path = Path.Combine(Program.ResourcesFolder, font);
+
+                if (!File.Exists(path)) {
+                    Console.WriteLine("Fontfile {0} not found, skipping!");
+                    continue;
+                }
+
+                byte[] data = File.ReadAllBytes(path);
+                StreamWrite(data.Length);
+                StreamWrite(fontSize);
+                resourceStream.Write(data);
+            }
+
+            StreamWrite(0xFFFFFFFF);
+            return SUCCESS;
+        }
+
+        private static int AddAnimationToResource() {
+            // Default skip
+            StreamWrite(0);
+            StreamWrite(0xFFFFFFFF);
+            return SUCCESS;
         }
 
         private static float[] CalculateInstanceMatrix(ActorData actorData, Instance instance) {
