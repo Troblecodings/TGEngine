@@ -620,7 +620,7 @@ namespace ShaderTool.Command {
             ActorData baseActor = actorData;
 
             // If using relation actor, use that, otherwise use base actor as relation
-            if (instance.relation != "" || instance.relation != null) {
+            if (!(instance.relation == null || instance.relation.Length == 0)) {
                 ActorData relActor = Actor.Load(instance.relation);
                 if (relActor != null)
                     baseActor = relActor;
