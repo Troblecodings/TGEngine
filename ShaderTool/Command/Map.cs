@@ -272,11 +272,14 @@ namespace ShaderTool.Command {
             if (status != SUCCESS)
                 return status;
 
+            long transformPos = resourceStream.Position;
+            List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
+
             status = AddMaterialsToResource(resourceStream, mapData);
             if (status != SUCCESS)
                 return status;
 
-            status = AddActorsToResource(resourceStream, mapData);
+            status = AddActorsToResource(resourceStream, mapData, transformList);
             if (status != SUCCESS)
                 return status;
 
@@ -288,6 +291,12 @@ namespace ShaderTool.Command {
             if (status != SUCCESS)
                 return status;
 
+            resourceStream.Seek(transformPos, SeekOrigin.Current);
+            resourceStream.Write(BitConverter.GetBytes(transformList.ToArray().Length));
+            foreach (float value in transformList.ToArray())
+                resourceStream.Write(BitConverter.GetBytes(value));
+
+            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
             resourceStream.Close();
 
             return SUCCESS;
@@ -437,7 +446,12 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        // AddTransformsToResource
+        private static int AddTransformsToResource(Stream resourceStream, MapData mapData) {
+
+
+
+            return SUCCESS;
+        }
 
         private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
 
@@ -490,7 +504,7 @@ namespace ShaderTool.Command {
 
         }
 
-        private static int AddActorsToResource(Stream resourceStream, MapData mapData) {
+        private static int AddActorsToResource(Stream resourceStream, MapData mapData, List<float> transformList) {
 
             resourceStream.Write(BitConverter.GetBytes(mapData.actorNames.Length));
 
@@ -542,9 +556,30 @@ namespace ShaderTool.Command {
                     foreach (float vertex in actorData.vertices)
                         resourceStream.Write(BitConverter.GetBytes(vertex));
 
+                float actorX = actorData.localTransform[3];
+                float actorY = actorData.localTransform[7];
+                float actorXScale = actorData.localTransform[0];
+                float actorYScale = actorData.localTransform[5];
+
+                // List is always a multiple of 4
+                int actorTransformID = transformList.Count / 4;
+                resourceStream.Write(BitConverter.GetBytes(actorTransformID));
+                transformList.AddRange(new float[] { actorX, actorY, actorXScale, actorYScale });
+
+                // Instances
+                resourceStream.Write(BitConverter.GetBytes(actorData.instances.Length));
+                int instanceCount = 0;
                 foreach (Instance instance in actorData.instances) {
-                    float[] matrix = CalculateInstanceMatrix(actorData, instance);
-                    // Instance map writing
+                    resourceStream.Write(BitConverter.GetBytes(instanceCount)); // used as ID here
+
+                    float[] instanceMatrix = CalculateInstanceMatrix(actorData, instance); // { x, y, xScale, yScale }
+                    foreach (float value in instanceMatrix)
+                        resourceStream.Write(BitConverter.GetBytes(value));
+
+                    int instanceTransformID = transformList.Count / 4;
+                    resourceStream.Write(BitConverter.GetBytes(instanceTransformID));
+
+                    transformList.AddRange(instanceMatrix);
                 }
 
             }
