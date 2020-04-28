@@ -13,7 +13,7 @@ namespace tge::io {
 
     constexpr uint32_t TGR_LATEST = TGR_VERSION_2;
 
-    constexpr uint32_t TGE_MAP_BUFFER_COUNT = 3;
+    constexpr uint32_t TGE_MAP_BUFFER_COUNT = 4;
 
     struct Map {
         tge::tex::Sampler sampler;

@@ -47,7 +47,7 @@ namespace ShaderTool.Command {
         public string materialName; // will be used to iterate over the materials list and then assign a byte index when making
         public uint indexCount;
         public uint vertexCount;
-        public byte layerId;
+        public uint layerId;
         public Instance[] instances = new Instance[] { };
     }
 

@@ -21,14 +21,12 @@ namespace ShaderTool.Command {
         public const uint TGR_VERSION = 2;
         public const string MAP_FILE_EXTENSION = ".json";
         public const string RESOURCE_FILE_EXTENSION = ".tgr";
+        public const uint INSTANCE_SIZE = 4 * 6;
 
         private static MapData mapData;
         private static Stream resourceStream;
-        // Anyone know how to simplify this code?
         private static void StreamWrite(byte value) => resourceStream.WriteByte(value);
-        private static void StreamWrite(int value) => resourceStream.Write(BitConverter.GetBytes(value));
-        private static void StreamWrite(float value) => resourceStream.Write(BitConverter.GetBytes(value));
-        private static void StreamWrite(long value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(dynamic value) => resourceStream.Write(BitConverter.GetBytes(value));
 
         public static int MapCommand(string[] args) {
 
@@ -220,8 +218,13 @@ namespace ShaderTool.Command {
                 return status;
 
             List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
+            List<_TransformData> transformData = new List<_TransformData>();
 
-            status = AddActorsToResource(ref transformList);
+            status = AddActorsToResource(ref transformList, ref transformData);
+            if (status != SUCCESS)
+                return status;
+
+            status = AddInstancesToResource(transformData);
             if (status != SUCCESS)
                 return status;
 
@@ -474,7 +477,13 @@ namespace ShaderTool.Command {
 
         }
 
-        private static int AddActorsToResource(ref List<float> transformList) {
+        struct _TransformData{
+            public float[] transform;
+            public uint animationId;
+            public uint transformId;
+        }
+
+        private static int AddActorsToResource(ref List<float> transformList, ref List<_TransformData> instanceList) {
 
             StreamWrite(mapData.actorNames.Length);
 
@@ -486,29 +495,31 @@ namespace ShaderTool.Command {
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 StreamWrite(actorDataSize);
 
-                if ((actorData.localTransform.Length - 16) % 4 != 0) {
-                    Console.WriteLine("Wrong transform size, needs to be a multiple of 4");
+                if (actorData.localTransform.Length != 16) {
+                    Console.WriteLine("Wrong transform size, needs to be 16 is {0}", actorData.localTransform.Length);
                 }
 
-                uint matrixCount = (uint)Math.Truncate((actorData.localTransform.Length - 16) / 4.0f);
-                if (matrixCount == 1) {
-                    Console.WriteLine("Possibly wrong instance count, lower than 2. Make sure to include your basic matrix for all objects and the others after the basic matrix.");
-                }
-                StreamWrite(matrixCount);
+                foreach (float x in actorData.localTransform)
+                    StreamWrite(x);
 
-                // Write the local transform as a 4x4 matrix into the file
-                for (int y = 0; y < (16 + matrixCount * 4); y++)
-                    StreamWrite(actorData.localTransform[y]);
+                StreamWrite(0); // TODO Animation ID
 
-                // Find the material ID from the material name
-                byte id = (byte)Array.IndexOf(mapData.materialNames, actorData.materialName);
+                // List is always a multiple of 4
+                int actorTransformID = transformList.Count / 4;
+                StreamWrite(actorTransformID);
 
                 // Just take the last material in case none was supplied
                 // We can avoid excessive error handling that way
-                StreamWrite(id);
+                StreamWrite(Array.IndexOf(mapData.materialNames, actorData.materialName));
 
                 // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
                 StreamWrite(actorData.layerId);
+
+                // Instance count
+                StreamWrite(actorData.instances.Length);
+
+                // Instance offset
+                StreamWrite(instanceList.Count);
 
                 // Write the index count so that we know how many indices are in the actor
                 StreamWrite(actorData.indexCount);
@@ -531,41 +542,46 @@ namespace ShaderTool.Command {
                 float actorXScale = actorData.localTransform[0];
                 float actorYScale = actorData.localTransform[5];
 
-                // List is always a multiple of 4
-                int actorTransformID = transformList.Count / 4;
-                StreamWrite(actorTransformID);
                 transformList.AddRange(new float[] { actorX, actorY, actorXScale, actorYScale });
 
-                // Instances
-                StreamWrite(actorData.instances.Length);
-                int instanceCount = 0;
                 foreach (Instance instance in actorData.instances) {
-                    StreamWrite(instanceCount); // used as ID here
-
                     float[] instanceMatrix = CalculateInstanceMatrix(actorData, instance); // { x, y, xScale, yScale }
-                    foreach (float value in instanceMatrix)
-                        StreamWrite(value);
 
-                    int instanceTransformID = transformList.Count / 4;
-                    StreamWrite(instanceTransformID);
+                    uint instanceTransformID = (uint)transformList.Count / 4;
+                    _TransformData data = new _TransformData();
+                    data.transform = instanceMatrix;
+                    data.transformId = instanceTransformID;
+                    data.animationId = 0;
+                    instanceList.Add(data);
 
                     transformList.AddRange(instanceMatrix);
                 }
 
             }
 
-            StreamWrite(0xFFFFFFFF);
+            StreamWrite(instanceList.Count);
 
             return SUCCESS;
 
         }
 
         private static int AddTransformsToResource(List<float> transformList) {
-            StreamWrite(transformList.ToArray().Length);
+            StreamWrite(transformList.Count);
             foreach (float value in transformList.ToArray())
                 StreamWrite(value);
             StreamWrite(0xFFFFFFFF);
+            return SUCCESS;
+        }
 
+        private static int AddInstancesToResource(List<_TransformData> transformList) {
+            StreamWrite(transformList.Count);
+            foreach (_TransformData transform in transformList) {
+                foreach (float value in transform.transform)
+                    StreamWrite(value);
+                StreamWrite(transform.animationId);
+                StreamWrite(transform.transformId);
+            }
+            StreamWrite(0xFFFFFFFF);
             return SUCCESS;
         }
 

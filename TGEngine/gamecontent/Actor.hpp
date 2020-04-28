@@ -8,28 +8,49 @@
 namespace tge::gmc {
 
 	/*
-     * This is struct holds all the properties that
+     * This struct holds all the transform information
+	 * used within a drawcall by this actor
+     *
+     * <ul>
+     * <li><strong class='atr'>matrix</strong> are the tranform information</li>
+     * <li><strong class='atr'>animationIndex</strong> is the index of the material used to draw this mesh</li>
+     * <li><strong class='atr'>transformIndex</strong> is the index of the object transform used to draw this mesh</li></ul>
+     *
+     * <h4>Valid usage</h4>
+     * <ul>
+     * <li><strong class='atr'>matrix/strong> must be a valid matrix</li>
+     * <li><strong class='atr'>animationIndex</strong> must be a valid material id in the material list</li>
+     * <li><strong class='atr'>transformIndex</strong> must be a valid transform id in the transform list</li></ul>
+     */
+	struct ActorTransform {
+		glm::fmat4 matrix;
+		uint32_t  animationIndex;
+		uint32_t  transformIndex;
+	};
+
+	/*
+     * This struct holds all the properties that
 	 * do not directly influence the mesh it self
      *
      * <ul>
-     * <li><strong class='atr'>localTransform</strong> is the local tranform of the actor that will be computed at runtime</li>
+     * <li><strong class='atr'>transform</strong> are the tranform information</li>
      * <li><strong class='atr'>material</strong> is the index of the material used to draw this mesh</li>
      * <li><strong class='atr'>layer</strong> is the layer the actor is drawn on (e.g. 0 for normal world)</li></ul>
      *
      * <h4>Valid usage</h4>
      * <ul>
-     * <li><strong class='atr'>localTransform</strong> must be a non-zero matrix otherwise this actor will be ignored</li>
+     * <li><strong class='atr'>transform</strong> must be a valid ActorTransform struct</li>
      * <li><strong class='atr'>material</strong> must be a valid material id in the material list</li>
      * <li><strong class='atr'>layer</strong> must be a valid layer id otherwise this actor will be ingnored</li></ul>
      */
 	struct ActorProperties {
-		glm::mat4 localTransform;
-		uint32_t  material;
-		uint32_t  layer;
+		ActorTransform transform;
+		uint32_t       material;
+		uint32_t       layer;
 	};
 
 	/*
-     * This is struct holds all the information
+     * This struct holds all the information
      * needed to draw an actor such as offsets in the buffer
 	 * and index count
 	 *
@@ -54,7 +75,7 @@ namespace tge::gmc {
 	};
 
 	/*
-	 * This is struct holds all the information
+	 * This struct holds all the information
 	 * needed to draw an instance of this actor
 	 *
 	 * <ul>
