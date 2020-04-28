@@ -55,7 +55,7 @@ namespace ShaderTool.Command {
                     // Updatign descriptors
                     Pipe.Descriptors = (Descriptor[])GetDescriptors(Pipe.ShaderNames).Clone();
 
-                    File.WriteAllText(Path, JsonConvert.SerializeObject(Pipe, Formatting.Indented));
+                    File.WriteAllText(Path, JsonConvert.SerializeObject(Pipe, Program.FORMATTING_MODE));
                     return SUCCESS;
                 }
                 Console.WriteLine("Shader doesn't exist!");
@@ -131,7 +131,7 @@ namespace ShaderTool.Command {
 
             // Create shader pipe
             File.Create(FileName).Close();
-            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs, descriptors), Formatting.Indented);
+            string str = JsonConvert.SerializeObject(new ShaderPipe(Name, Shader, Inputs, descriptors), Program.FORMATTING_MODE);
             File.WriteAllText(FileName, str);
             return SUCCESS;
         }

@@ -60,6 +60,8 @@ def callback(cob, size, total):
 def updateSubmodules():
     p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"], cwd=os.getcwd())
     p.wait()
+    p = subprocess.Popen("git submodule foreach git pull origin master", cwd=os.getcwd())
+    p.wait()
 
 def trigger(id):
     global msg
@@ -108,23 +110,7 @@ def trigger(id):
         elif id == 2:
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
-            print("Generating draco build files")
             updateSubmodules()
-            if os.path.exists("draco_build"):
-                shutil.rmtree("draco_build")
-            os.mkdir("draco_build")
-            p = subprocess.Popen(["cmake", "../draco"], cwd=os.getcwd() + "\\draco_build")
-            p.wait()
-            p = subprocess.Popen(["MSbuild.exe", "ALL_BUILD.vcxproj"], cwd=os.getcwd() + "\\draco_build")
-            p.wait()
-            wrtdir(os.getcwd() + "\\draco_build\\Debug\\", "", tp="\\Lib\\")
-            p = subprocess.Popen(["cmake", "../draco", "-A", "Win32"], cwd=os.getcwd() + "\\draco_build")
-            p.wait()
-            p = subprocess.Popen(["MSbuild.exe", "ALL_BUILD.vcxproj"], cwd=os.getcwd() + "\\draco_build")
-            p.wait()
-            wrtdir(os.getcwd() + "\\draco_build\\Debug\\", "", tp="\\Lib32\\")
-            wrtdir(os.getcwd() + "\\draco\\src\\", "", tp="\\Include\\")
-            wrt(os.getcwd() + "\\draco_build\\draco\\", "draco_features.h", tp="\\Include\\draco\\")
             wrtdir(vulkan, "\\Bin\\")
             wrtdir(vulkan, "\\Bin32\\")
             wrtdir(vulkan, "\\Include\\")
@@ -133,7 +119,6 @@ def trigger(id):
             wrtdir(vulkan, "\\Third-Party\\")
             wrt(vulkan, "\\LICENSE.txt")
             dependencies_file.close()
-            shutil.rmtree("draco_build")
             msg = "Finished!"
             clear()
             return
@@ -193,7 +178,7 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.6      ")
+    print("       DEPENDENCIES 2.7      ")
     print("=============================")
     print("")
     if msg is not None:
