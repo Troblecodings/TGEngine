@@ -7,6 +7,14 @@
 
 namespace tge::io {
 
+#ifdef DEBUG
+#define SIZE_CHECK if (blocklength != UINT32_MAX) {\
+		OUT_LV_DEBUG("Something went wrong while reading, out of size! L " << __LINE__)\
+	}
+#else
+#define SIZE_CHECK
+#endif // DEBUG
+
 	using namespace tge::nio;
 	using namespace tge::tex;
 	using namespace tge::gmc;
@@ -15,7 +23,7 @@ namespace tge::io {
 
 	Map currentMap;
 
-	static void loadActorV2(File file) {
+	inline static void loadActorV2(File file) noexcept {
 		uint32_t actorCount = 0;
 		fread(&actorCount, sizeof(uint32_t), 1, file);
 
@@ -146,11 +154,9 @@ namespace tge::io {
 			// Read the next block size
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
+		SIZE_CHECK;
 
 #ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Actors! Out of size!")
-		}
 		if (lastIndexOffset == 0 || lastIndexCount == 0) {
 			OUT_LV_DEBUG("It seems like you are missing indices!")
 		}
@@ -201,36 +207,34 @@ namespace tge::io {
 		delete[] vertexBufferCopy;
 	}
 
-	static void loadResourceFileV2(File file) {
-		uint32_t blocklength = 0;
-		uint32_t currentId = 0;
-
+	inline static void loadTexturesV2(File file, std::vector<TextureInputInfo>& textureInputInfos) noexcept {
 		uint32_t textureCount;
 		fread(&textureCount, sizeof(uint32_t), 1, file);
-		std::vector<TextureInputInfo> textureInputInfos;
 		textureInputInfos.resize(textureCount);
 
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		while (blocklength != UINT32_MAX) {
+		for (uint32_t id = 0; id < textureCount; ) {
 			stbi_uc* resbuffer = new stbi_uc[blocklength];
 			fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
-			// TODO Staging buffer for image memory
-
-			TextureInputInfo* inputInfo = textureInputInfos.data() + currentId;
+			TextureInputInfo* inputInfo = textureInputInfos.data() + id;
 			inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 
 			delete[] resbuffer;
-			currentId++;
 		}
+		SIZE_CHECK;
+	}
 
+	inline static uint32_t loadMaterialsV2(File file) {
 		uint32_t materialCount = 0;
 		fread(&materialCount, sizeof(uint32_t), 1, file);
 		createdMaterials = new Material[255];
 
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
 		for (size_t i = 0; i < materialCount; i++) {
@@ -243,33 +247,31 @@ namespace tge::io {
 			fread(createdMaterials + i, blocklength, 1, file);
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
-#ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Materials! Out of size!")
-		}
-#endif // DEBUG
 
-		loadActorV2(file);
+		SIZE_CHECK;
+	}
 
-		currentId = 0;
-
+	inline static void loadFontsV2(File file, std::vector<TextureInputInfo>& textureInputInfos, uint32_t materialCount) {
 		uint32_t fontCount = 0;
 		// Reads the count of blocks following
 		fread(&fontCount, sizeof(uint32_t), 1, file);
 		fonts.resize(fontCount);
-		textureInputInfos.resize(textureInputInfos.size() + fontCount);
+
+		uint32_t textureCount = textureInputInfos.size();
+		textureInputInfos.resize(textureCount + fontCount);
 
 		// Read the block size of the following content
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
 		for (uint32_t i = 0; i < fontCount; i++) {
-			Font* font = fonts.data() + currentId;
+			Font* font = fonts.data() + i;
 			fread(&font->fontheight, sizeof(float), 1, file);
 
 			uint8_t* resbuffer = new uint8_t[blocklength];
 			fread(resbuffer, sizeof(uint8_t), blocklength, file);
 
-			TextureInputInfo* textureInputInfo = textureInputInfos.data() + textureCount + currentId;
+			TextureInputInfo* textureInputInfo = textureInputInfos.data() + textureCount + i;
 			textureInputInfo->data = new uint8_t[FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT * 4];
 			textureInputInfo->x = FONT_TEXTURE_WIDTH;
 			textureInputInfo->y = FONT_TEXTURE_HEIGHT;
@@ -288,21 +290,35 @@ namespace tge::io {
 			}
 			delete[] interdata;
 
-			font->material = currentId + materialCount;
+			font->material = i + materialCount;
 			Material* material = createdMaterials + font->material;
 			material->color = glm::vec4(1);
-			material->diffuseTexture = textureCount + currentId;
-
-			currentId++;
+			material->diffuseTexture = textureCount + i;
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
-		
-#ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Fonts! Out of size!")
-		}
-#endif // DEBUG
+	}
+
+	inline static void loadTransformsV2(File file) noexcept {
+		uint32_t sizeOfFloats = 0;
+		fread(&sizeOfFloats, sizeof(uint32_t), 1, file);
+
+		currentMap.transforms.resize(sizeOfFloats / 4);
+		fread(currentMap.transforms.data(), sizeof(float), sizeOfFloats, file);
+	}
+
+	inline static void loadResourceFileV2(File file) noexcept {
+		std::vector<TextureInputInfo> textureInputInfos;
+
+		loadTexturesV2(file, textureInputInfos);
+
+		uint32_t materialCount = loadMaterialsV2(file);
+
+		loadActorV2(file);
+
+		loadTransformsV2(file);
+
+		loadFontsV2(file, textureInputInfos, materialCount);
 
 		fclose(file);
 
@@ -319,7 +335,7 @@ namespace tge::io {
 		return;
 	}
 
-	void loadResourceFile(const char* name) {
+	void loadResourceFile(const char* name) noexcept {
 		File file = open(name, "rb");
 
 		uint32_t header = 0;
@@ -341,7 +357,7 @@ namespace tge::io {
 		}
 	}
 
-	void destroyResource() {
+	void destroyResource() noexcept {
 		destroyTexture(currentMap.textures.data(), currentMap.textures.size());
 		destroySampler(currentMap.sampler);
 		destroyBuffers(currentMap.mapBuffers, TGE_MAP_BUFFER_COUNT);

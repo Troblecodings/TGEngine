@@ -19,6 +19,7 @@ namespace tge::io {
         tge::tex::Sampler sampler;
         std::vector<tge::tex::Texture> textures;
         tge::buf::BufferObject mapBuffers[TGE_MAP_BUFFER_COUNT];
+        std::vector<glm::vec4> transforms;
     };
 
     extern Map currentMap;
@@ -29,11 +30,11 @@ namespace tge::io {
      * https://troblecodings.com/fileformat.html
      * it automatically creates all ressources
      */
-    void loadResourceFile(const char* name);
+    void loadResourceFile(const char* name) noexcept;
 
     /*
      * This will destroy all vulkan tide ressources of the map
      */
-    void destroyResource();
+    void destroyResource() noexcept;
 
 }
