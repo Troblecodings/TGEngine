@@ -467,7 +467,6 @@ namespace ShaderTool.Command {
 
                 // Write diffuse texture to file
                 StreamWrite(textureIndex);
-                StreamWrite(0u); // Animation support?
             }
 
             StreamWrite(0xFFFFFFFF);
