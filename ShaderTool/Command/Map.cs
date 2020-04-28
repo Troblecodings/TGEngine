@@ -22,6 +22,14 @@ namespace ShaderTool.Command {
         public const string MAP_FILE_EXTENSION = ".json";
         public const string RESOURCE_FILE_EXTENSION = ".tgr";
 
+        private static MapData mapData;
+        private static Stream resourceStream;
+        // Anyone know how to simplify this code?
+        private static void StreamWrite(byte value) => resourceStream.WriteByte(value);
+        private static void StreamWrite(int value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(float value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(long value) => resourceStream.Write(BitConverter.GetBytes(value));
+
         public static int MapCommand(string[] args) {
 
             if (!AssertValues(args))
@@ -260,52 +268,57 @@ namespace ShaderTool.Command {
 
             File.Delete(resourceFilePath);
 
-            Stream resourceStream = File.OpenWrite(resourceFilePath);
-            resourceStream.Write(BitConverter.GetBytes(TGR_VERSION));
+            resourceStream = File.OpenWrite(resourceFilePath);
+            StreamWrite(TGR_VERSION);
 
-            MapData mapData = Load(mapName);
+            mapData = Load(mapName);
 
             Material.Load();
 
             int status = SUCCESS;
-            status = AddTexturesToResource(resourceStream, mapData);
+            status = AddTexturesToResource();
             if (status != SUCCESS)
                 return status;
 
             long transformPos = resourceStream.Position;
             List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
 
-            status = AddMaterialsToResource(resourceStream, mapData);
+            status = AddMaterialsToResource();
             if (status != SUCCESS)
                 return status;
 
-            status = AddActorsToResource(resourceStream, mapData, transformList);
+            status = AddActorsToResource(ref transformList);
             if (status != SUCCESS)
                 return status;
 
-            status = AddFontToResource(resourceStream, mapData);
+            status = AddFontToResource();
             if (status != SUCCESS)
                 return status;
 
-            status = AddAnimationToResource(resourceStream, mapData);
+            status = AddAnimationToResource();
             if (status != SUCCESS)
                 return status;
 
+
+            // Transforms
             resourceStream.Seek(transformPos, SeekOrigin.Current);
-            resourceStream.Write(BitConverter.GetBytes(transformList.ToArray().Length));
+            StreamWrite(transformList.ToArray().Length);
             foreach (float value in transformList.ToArray())
-                resourceStream.Write(BitConverter.GetBytes(value));
+                StreamWrite(value);
 
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0xFFFFFFFF);
             resourceStream.Close();
+
+            mapData = null;
+            resourceStream = null;
 
             return SUCCESS;
         }
 
-        private static int AddFontToResource(Stream resourceStream, MapData mapData) {
+        private static int AddFontToResource() {
             if (mapData.fontNames == null)
                 mapData.fontNames = new Dictionary<string, float>();
-            resourceStream.Write(BitConverter.GetBytes(mapData.fontNames.Count));
+            StreamWrite(mapData.fontNames.Count);
 
             foreach ((string font, float fontSize) in mapData.fontNames) {
                 string path = Path.Combine(Program.ResourcesFolder, font);
@@ -316,19 +329,19 @@ namespace ShaderTool.Command {
                 }
 
                 byte[] data = File.ReadAllBytes(path);
-                resourceStream.Write(BitConverter.GetBytes(data.Length));
-                resourceStream.Write(BitConverter.GetBytes(fontSize));
+                StreamWrite(data.Length);
+                StreamWrite(fontSize);
                 resourceStream.Write(data);
             }
 
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0xFFFFFFFF);
             return SUCCESS;
         }
 
-        private static int AddAnimationToResource(Stream resourceStream, MapData mapData) {
+        private static int AddAnimationToResource() {
             // Default skip
-            resourceStream.Write(BitConverter.GetBytes(0));
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0);
+            StreamWrite(0xFFFFFFFF);
             return SUCCESS;
         }
 
@@ -417,14 +430,14 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        private static int AddTexturesToResource(Stream resourceStream, MapData mapData) {
+        private static int AddTexturesToResource() {
 
             string[] mapTextureNames = mapData.textureNames;
 
             if (mapTextureNames == null)
                 return SUCCESS;
 
-            resourceStream.Write(BitConverter.GetBytes(mapData.textureNames.Length));
+            StreamWrite(mapData.textureNames.Length);
 
             foreach (string mapTextureName in mapTextureNames) {
 
@@ -436,26 +449,19 @@ namespace ShaderTool.Command {
                 }
 
                 byte[] textureData = File.ReadAllBytes(textureFilePath);
-                resourceStream.Write(BitConverter.GetBytes(textureData.Length));
+                StreamWrite(textureData.Length);
                 resourceStream.Write(textureData);
 
             }
 
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0xFFFFFFFF);
 
             return SUCCESS;
         }
 
-        private static int AddTransformsToResource(Stream resourceStream, MapData mapData) {
+        private static int AddMaterialsToResource() {
 
-
-
-            return SUCCESS;
-        }
-
-        private static int AddMaterialsToResource(Stream resourceStream, MapData mapData) {
-
-            resourceStream.Write(BitConverter.GetBytes(mapData.materialNames.Length));
+            StreamWrite(mapData.materialNames.Length);
 
             foreach (string materialName in mapData.materialNames) {
 
@@ -469,17 +475,17 @@ namespace ShaderTool.Command {
                 }
 
                 // Write size of this block in bytes to file
-                resourceStream.Write(BitConverter.GetBytes(Material.MATERIAL_SIZE));
+                StreamWrite(Material.MATERIAL_SIZE);
 
                 MaterialData materialData = Cache.MATERIALS[materialName];
 
                 // Write color to file, provided as an R,G,B,A float array
                 if (materialData.color == null)
                     for (int i = 0; i < 4; i++)
-                        resourceStream.Write(BitConverter.GetBytes(1f));
+                        StreamWrite(1f);
                 else
                     for (int i = 0; i < 4; i++)
-                        resourceStream.Write(BitConverter.GetBytes(materialData.color[i]));
+                        StreamWrite(materialData.color[i]);
 
                 // Refresh texture cache
                 Cache.TEXTURES = Texture.GetExistingTextureNames();
@@ -495,18 +501,18 @@ namespace ShaderTool.Command {
                     textureIndex = (uint)Array.IndexOf(mapData.textureNames, texture);
 
                 // Write diffuse texture to file
-                resourceStream.Write(BitConverter.GetBytes(textureIndex));
-                resourceStream.Write(BitConverter.GetBytes(0u)); // Animation support?
+                StreamWrite(textureIndex);
+                StreamWrite(0u); // Animation support?
             }
 
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0xFFFFFFFF);
             return SUCCESS;
 
         }
 
-        private static int AddActorsToResource(Stream resourceStream, MapData mapData, List<float> transformList) {
+        private static int AddActorsToResource(ref List<float> transformList) {
 
-            resourceStream.Write(BitConverter.GetBytes(mapData.actorNames.Length));
+            StreamWrite(mapData.actorNames.Length);
 
             // Write the data names into the resource file
             foreach (string actorName in mapData.actorNames) {
@@ -514,7 +520,7 @@ namespace ShaderTool.Command {
                 ActorData actorData = Actor.Load(actorName);
 
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
-                resourceStream.Write(BitConverter.GetBytes(actorDataSize));
+                StreamWrite(actorDataSize);
 
                 if ((actorData.localTransform.Length - 16) % 4 != 0) {
                     Console.WriteLine("Wrong transform size, needs to be a multiple of 4");
@@ -524,37 +530,37 @@ namespace ShaderTool.Command {
                 if (matrixCount == 1) {
                     Console.WriteLine("Possibly wrong instance count, lower than 2. Make sure to include your basic matrix for all objects and the others after the basic matrix.");
                 }
-                resourceStream.Write(BitConverter.GetBytes(matrixCount));
+                StreamWrite(matrixCount);
 
                 // Write the local transform as a 4x4 matrix into the file
                 for (int y = 0; y < (16 + matrixCount * 4); y++)
-                    resourceStream.Write(BitConverter.GetBytes(actorData.localTransform[y]));
+                    StreamWrite(actorData.localTransform[y]);
 
                 // Find the material ID from the material name
                 byte id = (byte)Array.IndexOf(mapData.materialNames, actorData.materialName);
 
                 // Just take the last material in case none was supplied
                 // We can avoid excessive error handling that way
-                resourceStream.WriteByte(id);
+                StreamWrite(id);
 
                 // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
-                resourceStream.WriteByte(actorData.layerId);
+                StreamWrite(actorData.layerId);
 
                 // Write the index count so that we know how many indices are in the actor
-                resourceStream.Write(BitConverter.GetBytes(actorData.indexCount));
+                StreamWrite(actorData.indexCount);
 
                 // Write the amount of vertex points into the file
-                resourceStream.Write(BitConverter.GetBytes(actorData.vertexCount));
+                StreamWrite(actorData.vertexCount);
 
                 // Write all indices to file
                 if (actorData.indexCount != 0) // Not sure how to handle this?
                     foreach (int index in actorData.indices)
-                        resourceStream.Write(BitConverter.GetBytes(index));
+                        StreamWrite(index);
 
                 // Write all vertices to the file
                 if (actorData.vertexCount != 0) // Not sure how to handle this?
                     foreach (float vertex in actorData.vertices)
-                        resourceStream.Write(BitConverter.GetBytes(vertex));
+                        StreamWrite(vertex);
 
                 float actorX = actorData.localTransform[3];
                 float actorY = actorData.localTransform[7];
@@ -563,28 +569,28 @@ namespace ShaderTool.Command {
 
                 // List is always a multiple of 4
                 int actorTransformID = transformList.Count / 4;
-                resourceStream.Write(BitConverter.GetBytes(actorTransformID));
+                StreamWrite(actorTransformID);
                 transformList.AddRange(new float[] { actorX, actorY, actorXScale, actorYScale });
 
                 // Instances
-                resourceStream.Write(BitConverter.GetBytes(actorData.instances.Length));
+                StreamWrite(actorData.instances.Length);
                 int instanceCount = 0;
                 foreach (Instance instance in actorData.instances) {
-                    resourceStream.Write(BitConverter.GetBytes(instanceCount)); // used as ID here
+                    StreamWrite(instanceCount); // used as ID here
 
                     float[] instanceMatrix = CalculateInstanceMatrix(actorData, instance); // { x, y, xScale, yScale }
                     foreach (float value in instanceMatrix)
-                        resourceStream.Write(BitConverter.GetBytes(value));
+                        StreamWrite(value);
 
                     int instanceTransformID = transformList.Count / 4;
-                    resourceStream.Write(BitConverter.GetBytes(instanceTransformID));
+                    StreamWrite(instanceTransformID);
 
                     transformList.AddRange(instanceMatrix);
                 }
 
             }
 
-            resourceStream.Write(BitConverter.GetBytes(0xFFFFFFFF));
+            StreamWrite(0xFFFFFFFF);
 
             return SUCCESS;
 
@@ -642,5 +648,6 @@ namespace ShaderTool.Command {
 
             return newMatrix;
         }
+
     }
 }
