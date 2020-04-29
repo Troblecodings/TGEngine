@@ -30,7 +30,7 @@ namespace tge::gmc {
 
 	/*
      * This struct holds all the properties that
-	 * do not directly influence the mesh it self
+	 * do not directly influence the mesh itself
      *
      * <ul>
      * <li><strong class='atr'>transform</strong> is the transform information</li>
@@ -41,7 +41,7 @@ namespace tge::gmc {
      * <ul>
      * <li><strong class='atr'>transform</strong> must be a valid ActorTransform struct</li>
      * <li><strong class='atr'>material</strong> must be a valid material id in the material list</li>
-     * <li><strong class='atr'>layer</strong> must be a valid layer id otherwise this actor will be ingnored</li></ul>
+     * <li><strong class='atr'>layer</strong> must be a valid layer id, otherwise this actor will be ingnored</li></ul>
      */
 	struct ActorProperties {
 		ActorTransform transform;
@@ -51,7 +51,7 @@ namespace tge::gmc {
 
 	/*
      * This struct holds all the information
-     * needed to draw an actor such as offsets in the buffer
+     * needed to draw an actor, such as offsets in the buffer
 	 * and index count
 	 *
      * <ul>
