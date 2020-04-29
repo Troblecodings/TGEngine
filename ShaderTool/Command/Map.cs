@@ -551,7 +551,7 @@ namespace ShaderTool.Command {
 
                     uint instanceTransformID = (uint)transformList.Count / 4;
                     _TransformData data = new _TransformData();
-                    data.transform = instanceMatrix;
+                    data.transform = instance.matrix;
                     data.transformId = instanceTransformID;
                     data.animationId = 0;
                     instanceList.Add(data);
@@ -578,8 +578,10 @@ namespace ShaderTool.Command {
         private static int AddInstancesToResource(List<_TransformData> transformList) {
             StreamWrite(transformList.Count);
             foreach (_TransformData transform in transformList) {
-                foreach (float value in transform.transform)
-                    StreamWrite(value);
+                if (transform.transform.Length != 4)
+                    Console.WriteLine("Transforms should be of length 4 but is {0}", transform.transform.Length);
+                for (int i = 0; i < 4; i++)
+                    StreamWrite(transform.transform[i]);
                 StreamWrite(transform.animationId);
                 StreamWrite(transform.transformId);
             }

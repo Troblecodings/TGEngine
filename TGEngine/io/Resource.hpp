@@ -10,10 +10,10 @@ namespace tge::io {
 
     constexpr uint32_t TGR_VERSION_1 = 1;
     constexpr uint32_t TGR_VERSION_2 = 2;
-
     constexpr uint32_t TGR_LATEST = TGR_VERSION_2;
 
     constexpr uint32_t TGE_MAP_BUFFER_COUNT = 4;
+    constexpr uint32_t INSTANCE_LENGTH = 4 * 6;
 
     struct Map {
         tge::tex::Sampler sampler;

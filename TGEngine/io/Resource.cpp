@@ -21,8 +21,6 @@ namespace tge::io {
 	using namespace tge::fnt;
 	using namespace tge::buf;
 
-	constexpr uint32_t INSTANCE_LENGTH = 4 * 6;
-
 	Map currentMap;
 
 	inline static void loadActorV2(File file) noexcept {
@@ -140,12 +138,12 @@ namespace tge::io {
 		bufferInputInfos[1].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
 		bufferInputInfos[2].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-		bufferInputInfos[2].size = blocklength * INSTANCE_LENGTH + INSTANCE_LENGTH;
+		bufferInputInfos[2].size = blocklength * INSTANCE_LENGTH + sizeof(glm::vec4);
 		bufferInputInfos[2].memoryIndex = vlibDeviceLocalMemoryIndex;
 		bufferInputInfos[2].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
 		bufferInputInfos[3].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-		bufferInputInfos[3].size = blocklength * INSTANCE_LENGTH + INSTANCE_LENGTH;
+		bufferInputInfos[3].size = blocklength * INSTANCE_LENGTH;
 		bufferInputInfos[3].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 		bufferInputInfos[3].bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
@@ -286,7 +284,7 @@ namespace tge::io {
 
 		VkBufferCopy bufferCopy;
 		bufferCopy.srcOffset = 0;
-		bufferCopy.dstOffset = 0;
+		bufferCopy.dstOffset = sizeof(glm::vec4);
 		bufferCopy.size = instanceCount * INSTANCE_LENGTH;
 		vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, currentMap.mapBuffers[3].buffer, currentMap.mapBuffers[2].buffer, 1, &bufferCopy);
 
