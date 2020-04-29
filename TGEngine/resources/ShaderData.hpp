@@ -15,8 +15,6 @@ extern unsigned char FragmentUIColorModule[];
 extern VkPipelineShaderStageCreateInfo FragmentUIColor;
 extern unsigned char FragmentUITexturedModule[];
 extern VkPipelineShaderStageCreateInfo FragmentUITextured;
-extern unsigned char vertModule[];
-extern VkPipelineShaderStageCreateInfo vert;
 extern unsigned char VertexTexturedModule[];
 extern VkPipelineShaderStageCreateInfo VertexTextured;
 extern unsigned char VertexTextured2DModule[];

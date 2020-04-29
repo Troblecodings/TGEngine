@@ -24,8 +24,8 @@ out gl_PerVertex{
 void main(){
     vec4 pack = data.transforms[pushconst.transformid];
     mat4 matrix2 = {
-        { pack.x, 0, 0, pack.z },
-        { 0, pack.y, 0, pack.w },
+        { pack.z, 0, 0, pack.x },
+        { 0, pack.w, 0, pack.y },
         { 0, 0, 1, 1 },
         { 0, 0, 0, 1.0 }
     };
