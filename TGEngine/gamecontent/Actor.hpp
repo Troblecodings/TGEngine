@@ -24,8 +24,8 @@ namespace tge::gmc {
      */
 	struct ActorTransform {
 		glm::fmat4 matrix;
-		uint32_t  animationIndex;
-		uint32_t  transformIndex;
+		uint32_t   animationIndex;
+		uint32_t   transformIndex;
 	};
 
 	/*
@@ -57,14 +57,14 @@ namespace tge::gmc {
      * <ul>
      * <li><strong class='atr'>indexDrawCount</strong> is the count of drawn indices</li>
      * <li><strong class='atr'>indexOffset</strong> is the first index to be drawn by this actor in the given map</li>
-     * <li><strong class='atr'>vertexOffset</strong> is the first vertex the indices are describing</li></ul>
+     * <li><strong class='atr'>vertexOffset</strong> is the first vertex the indices are describing</li>
      * <li><strong class='atr'>instanceID</strong> is the id in the actorInstanceDescriptor array</li></ul>
      *
      * <h4>Valid usage</h4>
      * <ul>
 	 * <li><strong class='atr'>indexDrawCount</strong> needs to be greater then 3</li>
 	 * <li><strong class='atr'>indexOffset</strong> needs to be smaller then the maximum index count of the map buffer</li>
-	 * <li><strong class='atr'>vertexOffset</strong> needs to be smaller then the maximum vertex count + current index</li></ul>
+	 * <li><strong class='atr'>vertexOffset</strong> needs to be smaller then the maximum vertex count + current index</li>
 	 * <li><strong class='atr'>instanceID</strong> must be a valid id in the actorInstanceDescriptor array or UINT32_MAX</li></ul>
 	 */
 	struct ActorDescriptor {
@@ -81,11 +81,13 @@ namespace tge::gmc {
 	 * <ul>
 	 * <li><strong class='atr'>instanceCount</strong> is the count of instances to be drawn</li>
 	 * <li><strong class='atr'>instanceOffset</strong> is the first instance to start with</li>
+	 * </ul>
 	 *
 	 * <h4>Valid usage</h4>
 	 * <ul>
 	 * <li><strong class='atr'>instanceCount</strong> needs to be greater then 1</li>
 	 * <li><strong class='atr'>instanceOffset</strong> needs to be smaller then the maximum instance count of the map buffer</li>
+	 * </ul>
 	 */
 	struct ActorInstanceDescriptor {
 		uint32_t instanceCount;
