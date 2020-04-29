@@ -25,7 +25,7 @@ namespace ShaderTool.Command {
 
         private static MapData mapData;
         private static Stream resourceStream;
-        private static void StreamWrite(byte value) => resourceStream.WriteByte(value);
+
         private static void StreamWrite(uint value) => resourceStream.Write(BitConverter.GetBytes(value));
         private static void StreamWrite(int value) => resourceStream.Write(BitConverter.GetBytes(value));
         private static void StreamWrite(float value) => resourceStream.Write(BitConverter.GetBytes(value));
@@ -220,7 +220,7 @@ namespace ShaderTool.Command {
                 return status;
 
             List<float> transformList = new List<float>(); // We don't know how many actors/instances there are yet so...
-            List<_TransformData> transformData = new List<_TransformData>();
+            List<TransformData> transformData = new List<TransformData>();
 
             status = AddActorsToResource(ref transformList, ref transformData);
             if (status != SUCCESS)
@@ -479,13 +479,13 @@ namespace ShaderTool.Command {
 
         }
 
-        struct _TransformData{
+        struct TransformData{
             public float[] transform;
             public uint animationId;
             public uint transformId;
         }
 
-        private static int AddActorsToResource(ref List<float> transformList, ref List<_TransformData> instanceList) {
+        private static int AddActorsToResource(ref List<float> transformList, ref List<TransformData> instanceList) {
 
             StreamWrite(mapData.actorNames.Length);
 
@@ -550,7 +550,7 @@ namespace ShaderTool.Command {
                     float[] instanceMatrix = CalculateInstanceMatrix(actorData, instance); // { x, y, xScale, yScale }
 
                     uint instanceTransformID = (uint)transformList.Count / 4;
-                    _TransformData data = new _TransformData();
+                    TransformData data = new TransformData();
                     data.transform = instance.matrix;
                     data.transformId = instanceTransformID;
                     data.animationId = 0;
@@ -575,9 +575,9 @@ namespace ShaderTool.Command {
             return SUCCESS;
         }
 
-        private static int AddInstancesToResource(List<_TransformData> transformList) {
+        private static int AddInstancesToResource(List<TransformData> transformList) {
             StreamWrite(transformList.Count);
-            foreach (_TransformData transform in transformList) {
+            foreach (TransformData transform in transformList) {
                 if (transform.transform.Length != 4)
                     Console.WriteLine("Transforms should be of length 4 but is {0}", transform.transform.Length);
                 for (int i = 0; i < 4; i++)

@@ -17,7 +17,7 @@ namespace ShaderTool.Command {
     class Material {
 
         public static string MaterialPath = Path.Combine(Program.ResourcesFolder, @"Materials.json");
-        public const uint MATERIAL_SIZE = 20; // Color is 4 * 4 bytes, diffuse texture ID and animation is 4 bytes * 2 which equals 24 bytes
+        public const uint MATERIAL_SIZE = 20; // Color is 4 * 4 bytes, diffuse texture ID is 4 bytes which equals 24 bytes
 
         public static int MaterialCommand(string[] args) {
 
