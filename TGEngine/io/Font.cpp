@@ -24,14 +24,16 @@ namespace tge::fnt {
 		tge::gmc::actorDescriptor.reserve(tge::gmc::actorDescriptor.size() + size);
 
 		tge::gmc::ActorProperties properties;
-		properties.localTransform = glm::mat4(1);
+		properties.transform.matrix = glm::mat4(1);
+		properties.transform.animationIndex = 0;
+		properties.transform.transformIndex = 0;
 		properties.material = pFont->material;
 		properties.layer = cindex + 4;
 
 		for (size_t i = 0; i < size; i++) {
 			const char* cstring = pInputStrings[i];
 			uint32_t inputStringLength = (uint32_t)strlen(cstring);
-			properties.localTransform = tranforms[i];
+			properties.transform.matrix = tranforms[i];
 			tge::gmc::actorProperties.push_back(properties);
 
 			tge::gmc::ActorDescriptor descriptor;

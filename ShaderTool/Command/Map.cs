@@ -26,7 +26,9 @@ namespace ShaderTool.Command {
         private static MapData mapData;
         private static Stream resourceStream;
         private static void StreamWrite(byte value) => resourceStream.WriteByte(value);
-        private static void StreamWrite(dynamic value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(uint value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(int value) => resourceStream.Write(BitConverter.GetBytes(value));
+        private static void StreamWrite(float value) => resourceStream.Write(BitConverter.GetBytes(value));
 
         public static int MapCommand(string[] args) {
 
@@ -495,12 +497,11 @@ namespace ShaderTool.Command {
                 uint actorDataSize = (uint)actorData.vertices.Length * 4;
                 StreamWrite(actorDataSize);
 
-                if (actorData.localTransform.Length != 16) {
+                if (actorData.localTransform.Length != 16)
                     Console.WriteLine("Wrong transform size, needs to be 16 is {0}", actorData.localTransform.Length);
-                }
 
-                foreach (float x in actorData.localTransform)
-                    StreamWrite(x);
+                for (int i = 0; i < 16; i++)
+                    StreamWrite(actorData.localTransform[i]);
 
                 StreamWrite(0); // TODO Animation ID
 
@@ -510,7 +511,8 @@ namespace ShaderTool.Command {
 
                 // Just take the last material in case none was supplied
                 // We can avoid excessive error handling that way
-                StreamWrite(Array.IndexOf(mapData.materialNames, actorData.materialName));
+                int materialindex = Array.IndexOf(mapData.materialNames, actorData.materialName);
+                StreamWrite(materialindex);
 
                 // Write the layer id to the file (e.g. 0 for game actors and 1 for UI actors)
                 StreamWrite(actorData.layerId);
