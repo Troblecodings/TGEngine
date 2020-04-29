@@ -68,7 +68,7 @@ void initDescriptors() {
 	VkPushConstantRange pushConstantRanges[2];
 	pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRanges[0].offset = 0;
-	pushConstantRanges[0].size = 72; // mat4 + animationIndex + tranformIndex
+	pushConstantRanges[0].size = 72; // mat4 + animationIndex + transformIndex
 
 	pushConstantRanges[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	pushConstantRanges[1].offset = 72;

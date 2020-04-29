@@ -12,7 +12,7 @@ namespace tge::gmc {
 	 * used within a drawcall by this actor
      *
      * <ul>
-     * <li><strong class='atr'>matrix</strong> are the tranform information</li>
+     * <li><strong class='atr'>matrix</strong> is the transform information</li>
      * <li><strong class='atr'>animationIndex</strong> is the index of the material used to draw this mesh</li>
      * <li><strong class='atr'>transformIndex</strong> is the index of the object transform used to draw this mesh</li></ul>
      *
@@ -33,7 +33,7 @@ namespace tge::gmc {
 	 * do not directly influence the mesh it self
      *
      * <ul>
-     * <li><strong class='atr'>transform</strong> are the tranform information</li>
+     * <li><strong class='atr'>transform</strong> is the transform information</li>
      * <li><strong class='atr'>material</strong> is the index of the material used to draw this mesh</li>
      * <li><strong class='atr'>layer</strong> is the layer the actor is drawn on (e.g. 0 for normal world)</li></ul>
      *
