@@ -8,24 +8,15 @@ namespace tge::gmc {
 	std::vector<ActorDescriptor> actorDescriptor;
 	std::vector<ActorInstanceDescriptor> actorInstanceDescriptor;
 
-	// Internal tranform struct
-	struct __Transform {
-		glm::mat4 mat;
-		uint32_t animationIndex;
-	};
-
 	void loadToCommandBuffer(VkCommandBuffer buffer, uint8_t layerId) {
 
 		for (size_t i = 0; i < actorProperties.size(); i++) {
 			ActorProperties properties = actorProperties[i];
 			if (properties.layer != layerId) continue;
 
-			// TODO change the incoming datapattern
-			__Transform transf = { properties.localTransform, createdMaterials[properties.material].animationID };
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 72, &properties.transform);
 
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, 68, &transf);
-
-			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 68, 20, &createdMaterials[properties.material]);
+			vkCmdPushConstants(buffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, 72, 20, &createdMaterials[properties.material]);
 
 			ActorDescriptor description = actorDescriptor[i];
 			if(description.instanceID == UINT32_MAX)

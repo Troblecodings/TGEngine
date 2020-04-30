@@ -7,6 +7,14 @@
 
 namespace tge::io {
 
+#ifdef DEBUG
+#define SIZE_CHECK if (blocklength != UINT32_MAX) {\
+		OUT_LV_DEBUG("Something went wrong while reading, out of size! L " << __LINE__)\
+	}
+#else
+#define SIZE_CHECK
+#endif // DEBUG
+
 	using namespace tge::nio;
 	using namespace tge::tex;
 	using namespace tge::gmc;
@@ -15,16 +23,15 @@ namespace tge::io {
 
 	Map currentMap;
 
-	static void loadActorV2(File file) {
+	inline static void loadActorV2(File file) noexcept {
 		uint32_t actorCount = 0;
 		fread(&actorCount, sizeof(uint32_t), 1, file);
 
 		// Start to read the actor
 		actorProperties.resize(actorCount);
 		actorDescriptor.resize(actorCount);
-		tge::gmc::actorInstanceDescriptor.reserve(actorCount); // Speculative
+		actorInstanceDescriptor.reserve(actorCount);
 
-		// Read the block size of the following content
 		uint32_t blocklength;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
@@ -40,13 +47,6 @@ namespace tge::io {
 		uint32_t lastVertexCount = 0;
 		uint32_t lastIndexCount = 0;
 
-		uint32_t instanceCount = 0;
-
-		std::vector<BufferObject> instanceStaging;
-		std::vector<VkBufferCopy> instanceStagingCopy;
-		instanceStaging.reserve(actorCount); // Speculative
-		instanceStagingCopy.reserve(actorCount); // Speculative
-
 		// Goes on until it hits a change request block size (2^32)
 		for (uint32_t currentId = 0; currentId < actorCount; currentId++) {
 
@@ -54,47 +54,16 @@ namespace tge::io {
 			ActorProperties* currentProperty = actorProperties.data() + currentId;
 			ActorDescriptor* currentDescription = actorDescriptor.data() + currentId;
 
-			uint32_t currentInstanceCount = 0;
-			fread(&currentInstanceCount, sizeof(uint32_t), 1, file);
+			fread(currentProperty, sizeof(ActorProperties), 1, file);
 
-			fread(&currentProperty->localTransform, sizeof(float), 16, file);
-			if (currentInstanceCount > 0) {
-				currentDescription->instanceID = tge::gmc::actorInstanceDescriptor.size();
-				tge::gmc::actorInstanceDescriptor.push_back({ currentInstanceCount, instanceCount });
-
-				instanceStagingCopy.push_back({ 0, instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4), currentInstanceCount * sizeof(glm::vec4)});
-
-				BufferInputInfo bufferInputInfos;
-				bufferInputInfos.flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-				bufferInputInfos.size = sizeof(glm::vec4) * currentInstanceCount;
-				bufferInputInfos.memoryIndex = vlibDeviceHostVisibleCoherentIndex;
-				bufferInputInfos.bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-
-				BufferObject cobj;
-				createBuffers(&bufferInputInfos, 1, &cobj);
-
-				void* memory;
-				CHECKFAIL(vkMapMemory(device, cobj.memory, 0, VK_WHOLE_SIZE, 0, &memory));
-
-				fread(memory, sizeof(glm::vec4), currentInstanceCount, file);
-
-				vkUnmapMemory(device, cobj.memory);
-
-				instanceStaging.push_back(cobj);
+			ActorInstanceDescriptor currentInstanceDescription;
+			fread(&currentInstanceDescription, sizeof(ActorInstanceDescriptor), 1, file);
+			if (currentInstanceDescription.instanceCount > 1) {
+				currentDescription->instanceID = actorInstanceDescriptor.size();
+				actorInstanceDescriptor.push_back(currentInstanceDescription);
 			} else {
 				currentDescription->instanceID = UINT32_MAX;
 			}
-			instanceCount += currentInstanceCount;
-
-			fread(&currentProperty->material, sizeof(uint8_t), 1, file);
-			fread(&currentProperty->layer, sizeof(uint8_t), 1, file);
-
-#ifdef DEBUG
-			if (currentProperty->layer < 2 && currentInstanceCount > 0) {
-				OUT_LV_DEBUG("Instances provided, but drawn on a uninstanced layer, [" << currentProperty->layer << "] must be 2 or higher")
-			}
-#endif // DEBUG
-
 
 			uint32_t vertexCount = 0;
 			fread(&currentDescription->indexDrawCount, sizeof(uint32_t), 1, file);
@@ -148,9 +117,6 @@ namespace tge::io {
 		}
 
 #ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Actors! Out of size!")
-		}
 		if (lastIndexOffset == 0 || lastIndexCount == 0) {
 			OUT_LV_DEBUG("It seems like you are missing indices!")
 		}
@@ -172,14 +138,16 @@ namespace tge::io {
 		bufferInputInfos[1].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
 		bufferInputInfos[2].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
-		bufferInputInfos[2].size = instanceCount * sizeof(glm::vec4) + sizeof(glm::vec4);
+		bufferInputInfos[2].size = blocklength * INSTANCE_LENGTH + sizeof(glm::vec4);
 		bufferInputInfos[2].memoryIndex = vlibDeviceLocalMemoryIndex;
 		bufferInputInfos[2].bufferUsageFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
-		if (actorCount > 0)
-			createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT, currentMap.mapBuffers);
-		else
-			createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT - 1, currentMap.mapBuffers);
+		bufferInputInfos[3].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		bufferInputInfos[3].size = blocklength * INSTANCE_LENGTH;
+		bufferInputInfos[3].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+		bufferInputInfos[3].bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+		createBuffers(bufferInputInfos, TGE_MAP_BUFFER_COUNT, currentMap.mapBuffers);
 
 		startSingleTimeCommand();
 
@@ -188,49 +156,42 @@ namespace tge::io {
 			vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, buffer[i * 2 + 1].buffer, currentMap.mapBuffers[1].buffer, 1, vertexBufferCopy + i);
 		}
 
-		for (uint32_t i = 0; i < instanceStagingCopy.size(); i++) {
-			vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, instanceStaging[i].buffer, currentMap.mapBuffers[2].buffer, 1, instanceStagingCopy.data() + i);
-		}
-
 		endSingleTimeCommand();
 
 		destroyBuffers(buffer, bufferCount);
-		destroyBuffers(instanceStaging.data(), instanceStaging.size());
 		delete[] buffer;
 		delete[] indexBufferCopy;
 		delete[] vertexBufferCopy;
 	}
 
-	static void loadResourceFileV2(File file) {
-		uint32_t blocklength = 0;
-		uint32_t currentId = 0;
-
+	inline static void loadTexturesV2(File file, std::vector<TextureInputInfo>& textureInputInfos) noexcept {
 		uint32_t textureCount;
 		fread(&textureCount, sizeof(uint32_t), 1, file);
-		std::vector<TextureInputInfo> textureInputInfos;
 		textureInputInfos.resize(textureCount);
 
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
-		while (blocklength != UINT32_MAX) {
+		for (uint32_t id = 0; id < textureCount; id++) {
 			stbi_uc* resbuffer = new stbi_uc[blocklength];
 			fread(resbuffer, sizeof(stbi_uc), blocklength, file);
 
-			// TODO Staging buffer for image memory
-
-			TextureInputInfo* inputInfo = textureInputInfos.data() + currentId;
+			TextureInputInfo* inputInfo = textureInputInfos.data() + id;
 			inputInfo->data = stbi_load_from_memory(resbuffer, (int)blocklength, &inputInfo->x, &inputInfo->y, &inputInfo->comp, STBI_rgb_alpha);
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 
 			delete[] resbuffer;
-			currentId++;
 		}
+		SIZE_CHECK;
+	}
 
+	inline static uint32_t loadMaterialsV2(File file) {
 		uint32_t materialCount = 0;
 		fread(&materialCount, sizeof(uint32_t), 1, file);
 		createdMaterials = new Material[255];
 
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
 		for (size_t i = 0; i < materialCount; i++) {
@@ -243,33 +204,32 @@ namespace tge::io {
 			fread(createdMaterials + i, blocklength, 1, file);
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
-#ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Materials! Out of size!")
-		}
-#endif // DEBUG
 
-		loadActorV2(file);
+		SIZE_CHECK;
+		return materialCount;
+	}
 
-		currentId = 0;
-
+	inline static void loadFontsV2(File file, std::vector<TextureInputInfo>& textureInputInfos, uint32_t materialCount) {
 		uint32_t fontCount = 0;
 		// Reads the count of blocks following
 		fread(&fontCount, sizeof(uint32_t), 1, file);
 		fonts.resize(fontCount);
-		textureInputInfos.resize(textureInputInfos.size() + fontCount);
+
+		uint32_t textureCount = textureInputInfos.size();
+		textureInputInfos.resize(textureCount + fontCount);
 
 		// Read the block size of the following content
+		uint32_t blocklength = 0;
 		fread(&blocklength, sizeof(uint32_t), 1, file);
 
 		for (uint32_t i = 0; i < fontCount; i++) {
-			Font* font = fonts.data() + currentId;
+			Font* font = fonts.data() + i;
 			fread(&font->fontheight, sizeof(float), 1, file);
 
 			uint8_t* resbuffer = new uint8_t[blocklength];
 			fread(resbuffer, sizeof(uint8_t), blocklength, file);
 
-			TextureInputInfo* textureInputInfo = textureInputInfos.data() + textureCount + currentId;
+			TextureInputInfo* textureInputInfo = textureInputInfos.data() + textureCount + i;
 			textureInputInfo->data = new uint8_t[FONT_TEXTURE_WIDTH * FONT_TEXTURE_HEIGHT * 4];
 			textureInputInfo->x = FONT_TEXTURE_WIDTH;
 			textureInputInfo->y = FONT_TEXTURE_HEIGHT;
@@ -288,21 +248,69 @@ namespace tge::io {
 			}
 			delete[] interdata;
 
-			font->material = currentId + materialCount;
+			font->material = i + materialCount;
 			Material* material = createdMaterials + font->material;
 			material->color = glm::vec4(1);
-			material->diffuseTexture = textureCount + currentId;
-
-			currentId++;
+			material->diffuseTexture = textureCount + i;
 
 			fread(&blocklength, sizeof(uint32_t), 1, file);
 		}
-		
-#ifdef DEBUG
-		if (blocklength != UINT32_MAX) {
-			OUT_LV_DEBUG("Something went wrong while reading the Fonts! Out of size!")
-		}
-#endif // DEBUG
+	}
+
+	inline static void loadTransformsV2(File file) noexcept {
+		uint32_t sizeOfFloats = 0;
+		fread(&sizeOfFloats, sizeof(uint32_t), 1, file);
+
+		currentMap.transforms.resize(sizeOfFloats / 4);
+		fread(currentMap.transforms.data(), sizeof(float), sizeOfFloats, file);
+
+		uint32_t blocklength = 0;
+		fread(&blocklength, sizeof(uint32_t), 1, file);
+		SIZE_CHECK;
+	}
+
+	inline static void loadInstancesV2(File file) {
+		uint32_t instanceCount = 0;
+		fread(&instanceCount, sizeof(uint32_t), 1, file);
+
+		void* memory;
+		CHECKFAIL(vkMapMemory(device, currentMap.mapBuffers[3].memory, 0, VK_WHOLE_SIZE, 0, &memory));
+
+		fread(memory, INSTANCE_LENGTH, instanceCount, file);
+
+		vkUnmapMemory(device, currentMap.mapBuffers[3].memory);
+
+		startSingleTimeCommand();
+
+		VkBufferCopy bufferCopy;
+		bufferCopy.srcOffset = 0;
+		bufferCopy.dstOffset = sizeof(glm::vec4);
+		bufferCopy.size = instanceCount * INSTANCE_LENGTH;
+		vkCmdCopyBuffer(SINGLE_TIME_COMMAND_BUFFER, currentMap.mapBuffers[3].buffer, currentMap.mapBuffers[2].buffer, 1, &bufferCopy);
+
+		endSingleTimeCommand();
+
+		destroyBuffers(&currentMap.mapBuffers[3], 1);
+
+		uint32_t blocklength = 0;
+		fread(&blocklength, sizeof(uint32_t), 1, file);
+		SIZE_CHECK;
+	}
+
+	inline static void loadResourceFileV2(File file) noexcept {
+		std::vector<TextureInputInfo> textureInputInfos;
+
+		loadTexturesV2(file, textureInputInfos);
+
+		uint32_t materialCount = loadMaterialsV2(file);
+
+		loadActorV2(file);
+
+		loadInstancesV2(file);
+
+		loadTransformsV2(file);
+
+		loadFontsV2(file, textureInputInfos, materialCount);
 
 		fclose(file);
 
@@ -319,7 +327,7 @@ namespace tge::io {
 		return;
 	}
 
-	void loadResourceFile(const char* name) {
+	void loadResourceFile(const char* name) noexcept {
 		File file = open(name, "rb");
 
 		uint32_t header = 0;
@@ -341,9 +349,9 @@ namespace tge::io {
 		}
 	}
 
-	void destroyResource() {
+	void destroyResource() noexcept {
 		destroyTexture(currentMap.textures.data(), currentMap.textures.size());
 		destroySampler(currentMap.sampler);
-		destroyBuffers(currentMap.mapBuffers, TGE_MAP_BUFFER_COUNT);
+		destroyBuffers(currentMap.mapBuffers, TGE_MAP_BUFFER_COUNT - 1);
 	}
 }

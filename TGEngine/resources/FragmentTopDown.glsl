@@ -4,7 +4,7 @@ layout(binding = 1) uniform sampler mainsampler;
 layout(binding = 2) uniform texture2D images[2048];
 
 layout(push_constant) uniform PUSH_CONST{
-    layout(offset=68) float r;
+    layout(offset=72) float r;
     float g;
     float b;
     float a;

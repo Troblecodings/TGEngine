@@ -2,12 +2,14 @@
 
 layout(set = 1, binding = 0) uniform DATA_BLOCK {
     mat4 basicTransform;
-    vec2 uvOffsets[256];
+    vec4 transforms[128];
+    vec2 uvOffsets[128];
 } data;
 
 layout(push_constant) uniform PUSH_CONST{
     mat4 localTransform;
     uint animationIndex;
+    uint transformid;
 } pushconst;
 
 layout(location = 0) in vec2 pos;
@@ -20,6 +22,14 @@ out gl_PerVertex{
 };
 
 void main(){
-    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform);
+    vec4 pack = data.transforms[pushconst.transformid];
+    mat4 matrix2 = {
+        { pack.z, 0, 0, pack.x },
+        { 0, pack.w, 0, pack.y },
+        { 0, 0, 1, 1 },
+        { 0, 0, 0, 1.0 }
+    };
+
+    gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform * matrix2);
     uvOut = uv + data.uvOffsets[pushconst.animationIndex];
 }
