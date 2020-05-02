@@ -37,7 +37,7 @@ void main(){
     mat4 matrix2 = {
         { pack.z, 0, 0, pack.x },
         { 0, pack.w, 0, pack.y },
-        { 0, 0, 1, 1 },
+        { 0, 0, 1, 0},
         { 0, 0, 0, 1.0 }
     };
     gl_Position = (vec4(pos, 1, 1) * data.basicTransform * pushconst.localTransform * matrix1 * matrix2);
