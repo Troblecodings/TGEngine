@@ -126,7 +126,7 @@ namespace tge::win {
 		default:
 			return DefWindowProc(hwnd, msg, wParam, lParam);
 		}
-		return 0;
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 #endif
 
@@ -212,7 +212,11 @@ namespace tge::win {
 
 		Rid[1].usUsagePage = 0x01;
 		Rid[1].usUsage = 0x06; // Keyboard usage
-		Rid[1].dwFlags = RIDEV_NOLEGACY;
+		if (isConsumingInput) {
+			Rid[1].dwFlags = RIDEV_NOLEGACY;   // adds HID mouse and also ignores legacy mouse messages if it consumes input
+		} else {
+			Rid[1].dwFlags = 0;
+		}
 		Rid[1].hwndTarget = winHWND;
 		if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE) {
 			TGE_CRASH(L"Can not register raw input device!", -401)

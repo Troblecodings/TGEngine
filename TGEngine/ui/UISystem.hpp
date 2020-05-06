@@ -11,7 +11,7 @@ namespace tge::ui {
 	};
 
 	extern std::vector<BoundingBox> boundingBoxes;
-	extern std::vector<void(*)(void)> boundingBoxFunctions;
+	extern std::vector<void(*)(uint32_t)> boundingBoxFunctions;
 
 	void checkBoundingBoxes();
 }
