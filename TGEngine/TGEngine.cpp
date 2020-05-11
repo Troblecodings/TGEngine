@@ -39,13 +39,6 @@ void initEngine() {
 	initCameras();
 
 	initUniformBuffers();
-	glm::mat4 mat = {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 0.1, 0,
-		0, 0, 0, 1
-	};
-	fillUniformBuffer(TRANSFORM_BUFFER_2, &mat, sizeof(glm::mat4));
 
 	createCommandBuffer();
 
@@ -94,6 +87,11 @@ void startTGEngine() {
 				input.inputX = -0.004f;
 			}
 			playercontroller(input);
+
+			while (!executionQueue.empty()) {
+				executionQueue.back()();
+				executionQueue.pop_back();
+			}
 		}
 
 		submit();

@@ -9,26 +9,26 @@ namespace tge::fnt {
 	std::vector<tge::fnt::Font> fonts;
 	std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-	void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size, glm::mat4* tranforms) {
-		float ipw = 1.0f / FONT_TEXTURE_WIDTH, iph = 1.0f / FONT_TEXTURE_HEIGHT;
+	const uint32_t createStringActor(const Font* pFont, const char** pInputStrings, const uint32_t size, const glm::mat4* tranforms) {
+		constexpr float ipw = 1.0f / FONT_TEXTURE_WIDTH, iph = 1.0f / FONT_TEXTURE_HEIGHT;
 
-		uint32_t vertexByteSize = 0;
-		uint32_t indexByteSize = 0;
 		uint32_t vertexLength = 0;
 		uint32_t indexLength = 0;
 
-		uint32_t cindex = fontBufferObjects.size();
-		fontBufferObjects.resize(cindex + 4);
+		const uint32_t cindex = fontBufferObjects.size();
+		const uint32_t cglobalindex = cindex + LAYER_ID_OFFSET;
+		fontBufferObjects.resize(cglobalindex);
 
-		tge::gmc::actorProperties.reserve(tge::gmc::actorProperties.size() + size);
-		tge::gmc::actorDescriptor.reserve(tge::gmc::actorDescriptor.size() + size);
+		const uint32_t reservesize = tge::gmc::actorProperties.size() + size;
+		tge::gmc::actorProperties.reserve(reservesize);
+		tge::gmc::actorDescriptor.reserve(reservesize);
 
 		tge::gmc::ActorProperties properties;
 		properties.transform.matrix = glm::mat4(1);
 		properties.transform.animationIndex = 0;
 		properties.transform.transformIndex = 0;
 		properties.material = pFont->material;
-		properties.layer = cindex + 4;
+		properties.layer = cglobalindex;
 
 		for (size_t i = 0; i < size; i++) {
 			const char* cstring = pInputStrings[i];
@@ -46,8 +46,8 @@ namespace tge::fnt {
 			indexLength += 6 * inputStringLength;
 			vertexLength += 4 * inputStringLength;
 		}
-		vertexByteSize = vertexLength * 4 * sizeof(float);
-		indexByteSize = indexLength * sizeof(uint32_t);
+		const uint32_t vertexByteSize = vertexLength * 4 * sizeof(float);
+		const uint32_t indexByteSize = indexLength * sizeof(uint32_t);
 
 		tge::buf::BufferInputInfo bufferInfos[4];
 		bufferInfos[0].flags = VK_SHADER_STAGE_ALL_GRAPHICS;
@@ -145,10 +145,36 @@ namespace tge::fnt {
 		tge::buf::destroyBuffers(bufferStorage + 2, 2);
 
 		fontBufferObjects.erase(fontBufferObjects.end() - 2, fontBufferObjects.end());
-		fontBufferObjects.shrink_to_fit();
+		return cglobalindex;
 	}
 
 	void destroyFontresources() {
 		tge::buf::destroyBuffers(fontBufferObjects.data(), fontBufferObjects.size());
 	}
+
+	void destroyStrings(const uint32_t destroy) {
+		auto fontbegin = fontBufferObjects.begin() + (destroy - LAYER_ID_OFFSET);
+		for (auto it = fontbegin; fontbegin + 2 != it; it++) {
+			vkDestroyBuffer(device, it->buffer, nullptr);
+			vkFreeMemory(device, it->memory, nullptr);
+			it->memory = VK_NULL_HANDLE;
+		}
+
+		auto startitProperties = std::find_if(tge::gmc::actorProperties.begin(), tge::gmc::actorProperties.end(), [&](tge::gmc::ActorProperties prop) { return prop.layer == destroy; });
+
+#ifdef DEBUG
+		if (startitProperties == tge::gmc::actorProperties.end()) {
+			OUT_LV_DEBUG("Couldn't find layerid in properties");
+			return;
+		}
+#endif // DEBUG
+
+		auto enditProperties = std::find_if(startitProperties, tge::gmc::actorProperties.end(), [&](tge::gmc::ActorProperties prop) { return prop.layer != destroy; });
+		auto startitDescriptor = tge::gmc::actorDescriptor.begin() + std::distance(tge::gmc::actorProperties.begin(), startitProperties);
+		auto enditDescriptor = startitDescriptor + std::distance(startitProperties, enditProperties);
+
+		tge::gmc::actorProperties.erase(startitProperties, enditProperties);
+		tge::gmc::actorDescriptor.erase(startitDescriptor, enditDescriptor);
+	}
+
 }
