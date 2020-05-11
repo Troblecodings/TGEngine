@@ -5,6 +5,8 @@
 uint32_t imageIndex;
 VkFence drawFence;
 
+std::vector<std::function<void(void)>> executionQueue;
+
 void createMutex() {
 	VkFenceCreateInfo fenceCreateInfo;
 	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;

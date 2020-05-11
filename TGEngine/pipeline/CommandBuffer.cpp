@@ -19,6 +19,13 @@ void createCommandBuffer() {
 		commmandPoolCreateInfo.queueFamilyIndex = queueIndex;
 
 		CHECKFAIL(vkCreateCommandPool(device, &commmandPoolCreateInfo, nullptr, &commandPool));
+
+
+		VkFenceCreateInfo fenceCreateInfo;
+		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceCreateInfo.flags = 0;
+		fenceCreateInfo.pNext = nullptr;
+		CHECKFAIL(vkCreateFence(device, &fenceCreateInfo, nullptr, &singelTimeCommandBufferFence));
 	}
 
 	VkCommandBufferAllocateInfo commandBufferAllocateInfo;
@@ -28,12 +35,6 @@ void createCommandBuffer() {
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	commandBufferAllocateInfo.commandBufferCount = imageCount + 1;
 	CHECKFAIL(vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffer));
-
-	VkFenceCreateInfo fenceCreateInfo;
-	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceCreateInfo.flags = 0;
-	fenceCreateInfo.pNext = nullptr;
-	CHECKFAIL(vkCreateFence(device, &fenceCreateInfo, nullptr, &singelTimeCommandBufferFence));
 }
 
 void startSingleTimeCommand() {
@@ -140,7 +141,7 @@ void fillCommandBuffer() {
 
 			vkCmdBindVertexBuffers(buffer, 0, 1, &tge::fnt::fontBufferObjects[i + 1].buffer, &offsets);
 
-			tge::gmc::loadToCommandBuffer(buffer, i + 4);
+			tge::gmc::loadToCommandBuffer(buffer, i + LAYER_ID_OFFSET);
 		}
 
 		vkCmdEndRenderPass(buffer);

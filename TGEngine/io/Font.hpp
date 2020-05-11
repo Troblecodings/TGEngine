@@ -21,7 +21,9 @@ namespace tge::fnt {
 		extern std::vector<tge::fnt::Font> fonts;
 		extern std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-		void createStringActor(Font* pFont, const char** pInputStrings, uint32_t size, glm::mat4* tranforms);
+		const uint32_t createStringActor(const Font* pFont, const char** pInputStrings, const uint32_t size, const glm::mat4* tranforms);
 
 		void destroyFontresources();
+
+		void destroyStrings(const uint32_t destroy);
 }
