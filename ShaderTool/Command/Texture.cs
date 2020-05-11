@@ -38,18 +38,21 @@ namespace ShaderTool.Command {
             if (!AssertValues(args))
                 return NOT_ENOUGH_PARAMS;
 
-            // All paths are required to be put in double quotes as paths with spaces in them would break
-            string input = string.Join(' ', args);
+            string[] texturePaths = args;
+            if (Program.IsInConsoleMode) { // Args does the parsing already
+                // All paths are required to be put in double quotes as paths with spaces in them would break
+                string input = string.Join(' ', args);
 
-            if (!input.Contains('"')) { // Allow a single path without spaces
-                Console.WriteLine("Paths could not be read! (did you forget to wrap the paths in quotes?)");
-                return WRONG_PARAMS;
+                if (!input.Contains('"')) { // Allow a single path without spaces
+                    Console.WriteLine("Paths could not be read! (did you forget to wrap the paths in quotes?)");
+                    return WRONG_PARAMS;
+                }
+
+                texturePaths = input.Replace(@"\", @"/")
+                                             .Split('"')
+                                             .Where(path => !string.IsNullOrWhiteSpace(path))
+                                             .ToArray();
             }
-
-            string[] texturePaths = input.Replace(@"\", @"/")
-                                         .Split('"')
-                                         .Where(path => !string.IsNullOrWhiteSpace(path))
-                                         .ToArray();
 
             if (!Directory.Exists(Program.ResourcesFolder))
                 Directory.CreateDirectory(Program.ResourcesFolder);
