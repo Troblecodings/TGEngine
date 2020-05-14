@@ -13,9 +13,17 @@ namespace tge::ui {
 			BoundingBox box = boundingBoxes[i];
 			if (box.topLeftX <= mouseHomogeneousX && box.bottomRightX >= mouseHomogeneousX
 				&& box.topLeftY <= mouseHomogeneousY && box.bottomRightY >= mouseHomogeneousY) {
-				boundingBoxFunctions[i](i);
+				auto func = boundingBoxFunctions[i];
+				if(func)
+					func(i);
 			}
 		}
 	}
 
+	void deleteBoundingBoxes(uint32_t start, uint32_t end) {
+		auto itr = boundingBoxes.begin();
+		boundingBoxes.erase(itr + start, itr + end);
+		auto itr2 = boundingBoxFunctions.begin();
+		boundingBoxFunctions.erase(itr2 + start, itr2 + end);
+	}
 }

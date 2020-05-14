@@ -8,12 +8,13 @@
 #include "../gamecontent/Actor.hpp"
 #include "../drawlib/Quad.hpp"
 #include "../pipeline/CommandBuffer.hpp"
+#include "../pipeline/window/Window.hpp"
+#include <type_traits>
 
 namespace tge::fnt {
 
 		constexpr uint32_t FONT_TEXTURE_WIDTH = 2000;
 		constexpr uint32_t FONT_TEXTURE_HEIGHT = 2000;
-		constexpr float FONT_MULTIPLIER = 0.01f;
 
 		struct Font {
 			uint32_t material;
@@ -24,9 +25,14 @@ namespace tge::fnt {
 		extern std::vector<tge::fnt::Font> fonts;
 		extern std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-		template<class T>
+		constexpr float homogenHeight(Font* pFont) {
+			return pFont->fontheight / tge::win::mainWindowHeight;
+		}
+
+		template<typename T>
 		inline const uint32_t createStringActor(const Font* pFont, const T* pInputStrings, const uint32_t size, const glm::mat4* tranforms) {
-			static_assert(!std::is_same_v<T, std::string> && !std::is_same_v<T, char*>, "Only string or cstring is allowed!");
+			constexpr bool isValid = std::is_same_v<T, const char*> || std::is_same_v<T, std::string>;
+			static_assert(isValid, "Only Strings and C-Strings allowed");
 
 			constexpr float ipw = 1.0f / FONT_TEXTURE_WIDTH, iph = 1.0f / FONT_TEXTURE_HEIGHT;
 
@@ -103,6 +109,8 @@ namespace tge::fnt {
 			void* vertexMemory;
 			CHECKFAIL(vkMapMemory(device, bufferStorage[3].memory, 0, vertexByteSize, 0, &vertexMemory));
 
+			const float FONT_MULTIPLIER = 1.0f / (0.6f * (float)tge::win::mainWindowHeight);
+
 			uint32_t quadCount = 0;
 			for (uint32_t i = 0; i < size; i++) {
 				const char* cstring;
@@ -113,11 +121,10 @@ namespace tge::fnt {
 				}
 
 				float x = 0;
-				float y = 0;
 
 				uint32_t cquat = 0;
 				while (*cstring) {
-					int i = *cstring;
+					const int i = *cstring;
 
 #ifdef DEBUG
 					if (i >= 128) {
@@ -127,21 +134,20 @@ namespace tge::fnt {
 
 					const stbtt_bakedchar* charData = pFont->charData + i;
 
+					const float round_x = STBTT_ifloor((x + charData->xoff) + 0.5f) * FONT_MULTIPLIER;
+					const float round_y = STBTT_ifloor(charData->yoff + 0.5f) * FONT_MULTIPLIER;
+					const float y1 = round_y + (charData->y1 - charData->y0) * FONT_MULTIPLIER;
+					const float x1 = round_x + (charData->x1 - charData->x0) * FONT_MULTIPLIER;
 
-					float round_x = STBTT_ifloor((x + charData->xoff) + 0.5f) * FONT_MULTIPLIER;
-					float round_y = STBTT_ifloor((y + charData->yoff) + 0.5f) * FONT_MULTIPLIER;
-					float y1 = round_y + (charData->y1 - charData->y0) * FONT_MULTIPLIER;
-					float x1 = round_x + (charData->x1 - charData->x0) * FONT_MULTIPLIER;
-
-					float s0 = charData->x0 * ipw;
-					float t0 = charData->y0 * iph;
-					float s1 = charData->x1 * ipw;
-					float t1 = charData->y1 * iph;
+					const float s0 = charData->x0 * ipw;
+					const float t0 = charData->y0 * iph;
+					const float s1 = charData->x1 * ipw;
+					const float t1 = charData->y1 * iph;
 
 					x += charData->xadvance;
 
-					uint8_t* vert = (uint8_t*)vertexMemory + quadCount * 16u * sizeof(float);
-					uint8_t* indx = (uint8_t*)indexMemory + quadCount * 6u * sizeof(uint32_t);
+					const uint8_t* vert = (uint8_t*)vertexMemory + quadCount * 16u * sizeof(float);
+					const uint8_t* indx = (uint8_t*)indexMemory + quadCount * 6u * sizeof(uint32_t);
 
 					tge::drw::genQuad(x1, y1, round_x, round_y, s1, t1, s0, t0, vert, indx, cquat * 4);
 					quadCount++;

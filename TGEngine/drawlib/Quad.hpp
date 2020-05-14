@@ -5,7 +5,8 @@
 
 namespace tge::drw {
 
-	inline void genQuad(float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, void* vertexBuffer, void* indexBuffer, uint32_t offset = 0) {
+	inline void genQuad(const float x0, const float y0, const float x1, const float y1, const float u0,
+		const float v0, const float u1, const float v1, const void* vertexBuffer, const void* indexBuffer, const uint32_t offset = 0) {
 		float* vertexbytes = (float*)vertexBuffer;
 		uint32_t* indexbytes = (uint32_t*)indexBuffer;
 
@@ -42,7 +43,7 @@ namespace tge::drw {
 		indexbytes[5] = 3 + offset;
 	}
 
-	inline const glm::mat4 genMatrix(const float x, const float y, const float z, const float scalex, const float scaley) {
+	constexpr glm::mat4 genMatrix(const float x, const float y, const float z, const float scalex, const float scaley) {
 		return {
 			scalex, 0, 0, x,
 			0, scaley, 0, y,
