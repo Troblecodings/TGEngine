@@ -139,7 +139,7 @@ void fillCommandBuffer() {
 		for (uint32_t i = 0; i < tge::fnt::fontBufferObjects.size(); i += 2) {
 			tge::buf::BufferObject indexbufferobject = tge::fnt::fontBufferObjects[i];
 			tge::buf::BufferObject vertexbufferobject = tge::fnt::fontBufferObjects[i + 1];
-			if (vertexbufferobject.memory == nullptr || indexbufferobject.memory == nullptr)
+			if (vertexbufferobject.memory == VK_NULL_HANDLE || indexbufferobject.memory == VK_NULL_HANDLE)
 				continue;
 
 			vkCmdBindIndexBuffer(buffer, indexbufferobject.buffer, 0, VK_INDEX_TYPE_UINT32);
