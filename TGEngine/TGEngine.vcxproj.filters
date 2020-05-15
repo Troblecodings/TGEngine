@@ -61,9 +61,6 @@
     <Filter Include="Quelldateien\ui">
       <UniqueIdentifier>{ee8d2418-0cdb-426d-93ec-e760d39155a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\ui">
-      <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Quelldateien\util">
       <UniqueIdentifier>{80e1f404-29d7-40c5-90b1-c9d2d4182125}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,9 @@
     </Filter>
     <Filter Include="Quelldateien\drawlib">
       <UniqueIdentifier>{5ec632b9-7864-44d0-80f8-f33fb65a4f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\io\ui">
+      <UniqueIdentifier>{cd44c7b3-b963-4852-9767-3e6ad3bd40d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -214,7 +214,7 @@
       <Filter>Headerdateien\io</Filter>
     </ClInclude>
     <ClInclude Include="ui\UISystem.hpp">
-      <Filter>Headerdateien\ui</Filter>
+      <Filter>Headerdateien\io\ui</Filter>
     </ClInclude>
     <ClInclude Include="drawlib\Quad.hpp">
       <Filter>Headerdateien</Filter>
@@ -361,31 +361,13 @@
     <None Include="resources\VertexTopDownInstanced.glsl">
       <Filter>shader</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="resources\FragmentColorOnly.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\FragmentTextured.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\FragmentUIColor.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\FragmentUITextured.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\VertexTextured.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\VertexTexturedMovable.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\VertexUI.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resources\VertexTopDown.glsl">
-      <Filter>shader</Filter>
-    </CustomBuild>
+    <None Include="resources\VertexTopDown.glsl" />
+    <None Include="resources\FragmentColorOnly.glsl" />
+    <None Include="resources\FragmentTextured.glsl" />
+    <None Include="resources\FragmentUIColor.glsl" />
+    <None Include="resources\FragmentUITextured.glsl" />
+    <None Include="resources\VertexTextured.glsl" />
+    <None Include="resources\VertexTexturedMovable.glsl" />
+    <None Include="resources\VertexUI.glsl" />
   </ItemGroup>
 </Project>
