@@ -137,9 +137,14 @@ void fillCommandBuffer() {
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, tge::pip::defaultPipeline[0]);
 
 		for (uint32_t i = 0; i < tge::fnt::fontBufferObjects.size(); i += 2) {
-			vkCmdBindIndexBuffer(buffer, tge::fnt::fontBufferObjects[i].buffer, 0, VK_INDEX_TYPE_UINT32);
+			tge::buf::BufferObject indexbufferobject = tge::fnt::fontBufferObjects[i];
+			tge::buf::BufferObject vertexbufferobject = tge::fnt::fontBufferObjects[i + 1];
+			if (vertexbufferobject.memory == VK_NULL_HANDLE || indexbufferobject.memory == VK_NULL_HANDLE)
+				continue;
 
-			vkCmdBindVertexBuffers(buffer, 0, 1, &tge::fnt::fontBufferObjects[i + 1].buffer, &offsets);
+			vkCmdBindIndexBuffer(buffer, indexbufferobject.buffer, 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdBindVertexBuffers(buffer, 0, 1, &vertexbufferobject.buffer, &offsets);
 
 			tge::gmc::loadToCommandBuffer(buffer, i + LAYER_ID_OFFSET);
 		}
