@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "../../ui/UISystem.hpp"
+#include "../../io/Keyboard.hpp"
 
 namespace tge::win {
 
@@ -45,24 +46,27 @@ namespace tge::win {
 			RAWINPUT* raw = (RAWINPUT*)lpb;
 
 			if (raw->header.dwType == RIM_TYPEKEYBOARD) {
-				switch (raw->data.keyboard.VKey) {
+				const uint16_t vkey = raw->data.keyboard.VKey;
+				const bool pressed = raw->data.keyboard.Flags;
+				switch (vkey) {
 				case 'W':
-					if (raw->data.keyboard.Flags) states &= 0b00001110;
+					if (pressed) states &= 0b00001110;
 					else states |= 1;
 					break;
 				case 'S':
-					if (raw->data.keyboard.Flags) states &= 0b00001101;
+					if (pressed) states &= 0b00001101;
 					else states |= 2;
 					break;
 				case 'D':
-					if (raw->data.keyboard.Flags) states &= 0b00001011;
+					if (pressed) states &= 0b00001011;
 					else states |= 4;
 					break;
 				case 'A':
-					if (raw->data.keyboard.Flags) states &= 0b00000111;
+					if (pressed) states &= 0b00000111;
 					else states |= 8;
 					break;
 				}
+				tge::io::implKeyUpdate(vkey, pressed);
 			}
 			else if (raw->header.dwType == RIM_TYPEMOUSE) {
 				RECT rect;
@@ -92,22 +96,22 @@ namespace tge::win {
 			SetCursor(winHCURSOR);
 			break;
 		case WM_LBUTTONDOWN:
-			tg_io::FIRST_MOUSE_BUTTON = true;
+			tge::io::FIRST_MOUSE_BUTTON = true;
 			break;
 		case WM_LBUTTONUP:
-			tg_io::FIRST_MOUSE_BUTTON = false;
+			tge::io::FIRST_MOUSE_BUTTON = false;
 			break;
 		case WM_MBUTTONDOWN:
-			tg_io::THIRED_MOUSE_BUTTON = true;
+			tge::io::THIRED_MOUSE_BUTTON = true;
 			break;
 		case WM_MBUTTONUP:
-			tg_io::THIRED_MOUSE_BUTTON = false;
+			tge::io::THIRED_MOUSE_BUTTON = false;
 			break;
 		case WM_RBUTTONDOWN:
-			tg_io::SECOND_MOUSE_BUTTON = true;
+			tge::io::SECOND_MOUSE_BUTTON = true;
 			break;
 		case WM_RBUTTONUP:
-			tg_io::SECOND_MOUSE_BUTTON = false;
+			tge::io::SECOND_MOUSE_BUTTON = false;
 			break;
 		case WM_KILLFOCUS:
 			isFocused = false;
