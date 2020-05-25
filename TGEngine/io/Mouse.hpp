@@ -10,7 +10,7 @@ namespace tge::io {
 	 */
 	extern bool FIRST_MOUSE_BUTTON;
 	extern bool SECOND_MOUSE_BUTTON;
-	extern bool THIRED_MOUSE_BUTTON;
+	extern bool THIRD_MOUSE_BUTTON;
 
 	/*
 	 * Internal mouse handling list

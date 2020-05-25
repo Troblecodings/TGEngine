@@ -6,7 +6,7 @@ namespace tge::io {
 
 	bool FIRST_MOUSE_BUTTON;
 	bool SECOND_MOUSE_BUTTON;
-	bool THIRED_MOUSE_BUTTON;
+	bool THIRD_MOUSE_BUTTON;
 
 	void inputupdate(glm::vec2 pos, glm::vec2 delta) {
 		for each (void(*ptr)(glm::vec2, glm::vec2) in mouse_handler) {

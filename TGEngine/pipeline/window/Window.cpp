@@ -102,10 +102,10 @@ namespace tge::win {
 			tge::io::FIRST_MOUSE_BUTTON = false;
 			break;
 		case WM_MBUTTONDOWN:
-			tge::io::THIRED_MOUSE_BUTTON = true;
+			tge::io::THIRD_MOUSE_BUTTON = true;
 			break;
 		case WM_MBUTTONUP:
-			tge::io::THIRED_MOUSE_BUTTON = false;
+			tge::io::THIRD_MOUSE_BUTTON = false;
 			break;
 		case WM_RBUTTONDOWN:
 			tge::io::SECOND_MOUSE_BUTTON = true;

@@ -39,16 +39,16 @@ namespace tge::ui {
 
 	void deleteBoundingBoxes(uint32_t start, uint32_t end);
 
-	inline void createList(const ListInputInfo* listInputInfo, const float z, const uint32_t size, glm::mat4* output, std::function<void(uint32_t)> promis = NULL) {
+	inline void createList(const ListInputInfo* listInputInfo, const float z, const uint32_t size, glm::mat4* output, std::function<void(uint32_t)> function = NULL) {
 		uint32_t lastSize = 0;
 		for (uint32_t i = 0; i < size; i++) {
 			ListInputInfo listInput = listInputInfo[i];
 			for (uint32_t j = 0; j < listInput.size; j++) {
 				output[lastSize++] = drw::genMatrix(listInput.startX, listInput.startY, z, listInput.scalefactor, listInput.scalefactor);
 				listInput.startY += listInput.heightOffset;
-				if (promis) {
+				if (function) {
 					boundingBoxes.push_back({ listInput.startX, listInput.startY, listInput.startX + listInput.width, listInput.startY + (listInput.heightOffset / 2) });
-					boundingBoxFunctions.push_back(promis);
+					boundingBoxFunctions.push_back(function);
 				}
 			}
 		}
