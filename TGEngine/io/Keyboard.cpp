@@ -1,16 +1,11 @@
 #include "Keyboard.hpp"
 
-namespace tg_io {
+namespace tge::io {
 
-	std::vector<void(*)(uint16_t, bool)> keyboard_handler;
+	std::vector<std::function<void(uint16_t, bool)>> keyboardHandler;
 
-	void __impl_key_update(uint16_t key, bool state) {
-		for each (void(*key_handle)(uint16_t, bool) in keyboard_handler) {
-			key_handle(key, state);
-		}
-	}
-
-	void addKeyListener(void(*key_handle)(uint16_t, bool)) {
-		keyboard_handler.push_back(key_handle);
+	void implKeyUpdate(uint16_t key, bool state) {
+		for (const auto& func : keyboardHandler)
+			func(key, state);
 	}
 }

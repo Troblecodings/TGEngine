@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include <future>
 #include "../io/Font.hpp"
 #include "../drawlib/Quad.hpp"
 
@@ -21,6 +22,14 @@ namespace tge::ui {
 		float    width;
 		float    startY;
 		uint32_t size;
+	};
+
+	struct TextInputInfo {
+		float      x;
+		float      y;
+		float      z;
+		float      scale;
+		const fnt::Font* font;
 	};
 
 	extern std::vector<BoundingBox> boundingBoxes;
@@ -44,4 +53,6 @@ namespace tge::ui {
 			}
 		}
 	}
+
+	void createTextInput(const TextInputInfo& textInput, std::function<void(std::string)> promis);
 }

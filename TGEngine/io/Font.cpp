@@ -6,16 +6,36 @@ namespace tge::fnt {
 	std::vector<tge::buf::BufferObject> fontBufferObjects;
 
 	void destroyFontresources() {
-		tge::buf::destroyBuffers(fontBufferObjects.data(), fontBufferObjects.size());
+		tge::buf::destroyBuffers(fontBufferObjects.data(), (uint32_t)fontBufferObjects.size());
 	}
 
 	void destroyStrings(const uint32_t destroy) {
-		auto fontbegin = fontBufferObjects.begin() + (destroy - LAYER_ID_OFFSET);
-		for (auto it = fontbegin; fontbegin + 2 != it; it++) {
-			vkDestroyBuffer(device, it->buffer, nullptr);
-			vkFreeMemory(device, it->memory, nullptr);
-			it->memory = VK_NULL_HANDLE;
+		const auto offset = destroy - LAYER_ID_OFFSET;
+		const auto offsetend = offset + 1;
+#ifdef DEBUG
+		if (offsetend >= fontBufferObjects.size()) {
+			TGE_CRASH(L"Odd destroy ID (greater then size)", TG_ERR_DB_NULLPTR)
 		}
+#endif // DEBUG
+		tge::buf::BufferObject buffer = fontBufferObjects[offset];
+#ifdef DEBUG
+		if (buffer.memory == VK_NULL_HANDLE) {
+			TGE_CRASH(L"Text already destroyed!", TG_ERR_DB_NULLPTR)
+		}
+#endif // DEBUG
+		vkDestroyBuffer(device, buffer.buffer, nullptr);
+		vkFreeMemory(device, buffer.memory, nullptr);
+		fontBufferObjects[offset].memory = VK_NULL_HANDLE;
+
+		buffer = fontBufferObjects[offsetend];
+#ifdef DEBUG
+		if (buffer.memory == VK_NULL_HANDLE) {
+			TGE_CRASH(L"Text already destroyed!", TG_ERR_DB_NULLPTR)
+		}
+#endif // DEBUG
+		vkDestroyBuffer(device, buffer.buffer, nullptr);
+		vkFreeMemory(device, buffer.memory, nullptr);
+		fontBufferObjects[offsetend].memory = VK_NULL_HANDLE;
 
 		auto startitProperties = std::find_if(tge::gmc::actorProperties.begin(), tge::gmc::actorProperties.end(), [&](tge::gmc::ActorProperties prop) { return prop.layer == destroy; });
 

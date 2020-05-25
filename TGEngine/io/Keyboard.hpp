@@ -1,23 +1,18 @@
 #pragma once
 
-#include "../util/VectorUtil.hpp"
+#include <vector>
+#include <functional>
 
-
-namespace tg_io {
+namespace tge::io {
 
 	/*
 	 * Internal keayboard handling list
 	 */
-	extern std::vector<void(*)(uint16_t, bool)> keyboard_handler;
+	extern std::vector<std::function<void(uint16_t, bool)>> keyboardHandler;
 
 	/*
 	 * Internal keyinput handling method
 	 */
-	void __impl_key_update(uint16_t key, bool state);
-
-	/*
-	 * A Listener, which is called every time a key input is detected, can be added with this method
-	 */
-	void addKeyListener(void(*key_handle)(uint16_t, bool));
+	void implKeyUpdate(uint16_t key, bool state);
 
 }

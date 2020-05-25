@@ -4,19 +4,13 @@
 
 #include <glm/glm.hpp>
 
-namespace tg_io {
-	/*
-	 * These variables can be used to track the mouses position
-	 */
-	extern glm::vec2 pos;
-	extern glm::vec2 delta;
-
+namespace tge::io {
 	/*
 	 * These variables can be used to check if the buttons are down;
 	 */
 	extern bool FIRST_MOUSE_BUTTON;
 	extern bool SECOND_MOUSE_BUTTON;
-	extern bool THIRED_MOUSE_BUTTON;
+	extern bool THIRD_MOUSE_BUTTON;
 
 	/*
 	 * Internal mouse handling list

@@ -13,8 +13,8 @@ namespace tge {
 		size_t active_camera = 0;
 
 		void initCameras() {
-			if (cameras_on_scene.size() > 0) tg_io::addListener(__impl_input_handle);
-			if (cameras_on_scene.size() > 0) tg_io::addKeyListener(__impl_keyinput_handle);
+			if (cameras_on_scene.size() > 0) tge::io::addListener(__impl_input_handle);
+			if (cameras_on_scene.size() > 0) tge::io::keyboardHandler.push_back(__impl_keyinput_handle);
 		}
 
 		void createCamera(Camera* camera) {
