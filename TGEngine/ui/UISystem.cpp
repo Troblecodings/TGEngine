@@ -36,20 +36,19 @@ namespace tge::ui {
 
 		uint32_t createdStringId = fnt::createStringActor(textInput.font, &stringbuffer, 1, &position);
 
-		tge::io::keyboardHandler.push_back([exit = false, isShiftPressed = false, stringbuffer = std::move(stringbuffer), position = position, //
+		tge::io::keyboardHandler.push_back([exit = false, isShiftNotPressed = true, stringbuffer = std::move(stringbuffer), position = position, //
 			currentHandlerId = (uint32_t)tge::io::keyboardHandler.size(), createdStringId = createdStringId, font=textInput.font, //
 			func=std::move(promis)](uint16_t vkey, bool pressed) mutable {
-			OUT_LV_DEBUG(vkey << " " << pressed);
 			if (exit)
 				return;
 			// Equals to [a-z0-9]
 			if ((vkey > 0x40 && vkey < 0x5B) || (vkey > 0x30 && vkey < 0x39)) {
 				if (pressed)
 					return;
-				stringbuffer[stringbuffer.length() - 1] = (char)vkey + (isShiftPressed * 0x20);
+				stringbuffer[stringbuffer.length() - 1] = (char)vkey + (isShiftNotPressed * 0x20);
 				stringbuffer.push_back('_');
 			} else if (vkey == VK_SHIFT) {
-				isShiftPressed = !pressed;
+				isShiftNotPressed = pressed;
 				return;
 			} else if (vkey == VK_BACK) {
 				if (pressed || stringbuffer.length() < 2)
