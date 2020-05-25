@@ -91,8 +91,8 @@ namespace tge::io {
 			bufferInputInfos[1].memoryIndex = vlibDeviceHostVisibleCoherentIndex;
 			bufferInputInfos[1].bufferUsageFlag = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
-			lastIndexOffset += (indexBufferCopy[currentId].size = bufferInputInfos[0].size);
-			lastVertexOffset += (vertexBufferCopy[currentId].size = blocklength);
+			lastIndexOffset += (uint32_t)(indexBufferCopy[currentId].size = bufferInputInfos[0].size);
+			lastVertexOffset += (uint32_t)(vertexBufferCopy[currentId].size = blocklength);
 
 			createBuffers(bufferInputInfos, 2, &buffer[currentId * 2]);
 

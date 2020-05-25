@@ -1,6 +1,7 @@
 #include "UISystem.hpp"
 #include "../pipeline/window/Window.hpp"
 #include <string>
+#include "../pipeline/Draw.hpp"
 
 using namespace tge::win;
 
@@ -10,12 +11,12 @@ namespace tge::ui {
 	std::vector<std::function<void(uint32_t)>> boundingBoxFunctions;
 
 	void checkBoundingBoxes() {
-		for (size_t i = 0; i < boundingBoxes.size(); i++) {
+		for (uint32_t i = 0; i < boundingBoxes.size(); i++) {
 			BoundingBox box = boundingBoxes[i];
 			if (box.topLeftX <= mouseHomogeneousX && box.bottomRightX >= mouseHomogeneousX
 				&& box.topLeftY <= mouseHomogeneousY && box.bottomRightY >= mouseHomogeneousY) {
 				auto func = boundingBoxFunctions[i];
-				if(func)
+				if (func)
 					func(i);
 			}
 		}
@@ -28,31 +29,45 @@ namespace tge::ui {
 		boundingBoxFunctions.erase(bbFunctionIterator + start, bbFunctionIterator + end);
 	}
 
-	struct TextInput {
-		float      x;
-		float      y;
-		float      z;
-		float      scaleX;
-		float      scaleY;
-		fnt::Font* font;
-	};
+	void createTextInput(const TextInputInfo& textInput, std::function<void(std::string)> promis) {
+		std::string stringbuffer("_");
+		stringbuffer.reserve(100);
+		const glm::mat4 position = drw::genMatrix(textInput.x, textInput.y, textInput.z, textInput.scale, textInput.scale);
 
-	void createTextInput(const TextInput& textInput, std::function<void(uint32_t)> onExit) {
-		std::thread textInputThread([=] {
-			std::string stringbuffer("_");
-			const glm::mat4 position = drw::genMatrix(textInput.x, textInput.y, textInput.z, textInput.scaleX, textInput.scaleY);
+		uint32_t createdStringId = fnt::createStringActor(textInput.font, &stringbuffer, 1, &position);
 
-			uint32_t createdStringId = fnt::createStringActor(textInput.font, &stringbuffer, 1, &position);
-
-			const uint32_t currentHandlerId = (uint32_t)tge::io::keyboardHandler.size();
-			auto lambda = [&stringbuffer, &createdStringId](uint16_t vkey, bool pressed) mutable {
-				OUT_LV_DEBUG(vkey);
-				if (vkey <= 128 && pressed) {
-					stringbuffer.push_back((char)vkey);
-				}
-			};
-			tge::io::keyboardHandler.push_back(lambda);
+		tge::io::keyboardHandler.push_back([exit = false, isShiftPressed = false, stringbuffer = std::move(stringbuffer), position = position, //
+			currentHandlerId = (uint32_t)tge::io::keyboardHandler.size(), createdStringId = createdStringId, font=textInput.font, //
+			func=std::move(promis)](uint16_t vkey, bool pressed) mutable {
+			OUT_LV_DEBUG(vkey << " " << pressed);
+			if (exit)
+				return;
+			// Equals to [a-z0-9]
+			if ((vkey > 0x40 && vkey < 0x5B) || (vkey > 0x30 && vkey < 0x39)) {
+				if (pressed)
+					return;
+				stringbuffer[stringbuffer.length() - 1] = (char)vkey + (isShiftPressed * 0x20);
+				stringbuffer.push_back('_');
+			} else if (vkey == VK_SHIFT) {
+				isShiftPressed = !pressed;
+				return;
+			} else if (vkey == VK_BACK) {
+				if (pressed || stringbuffer.length() < 2)
+					return;
+				stringbuffer[stringbuffer.length() - 2] = '_';
+				stringbuffer.pop_back();
+			} else if (vkey == VK_RETURN) {
+				exit = true;
+				fnt::destroyStrings(createdStringId);
+				executionQueue.push_back(fillCommandBuffer);
+				stringbuffer.pop_back();
+				func(stringbuffer);
+				tge::io::keyboardHandler.erase(tge::io::keyboardHandler.begin() + currentHandlerId, tge::io::keyboardHandler.begin() + currentHandlerId + 1);
+				return;
+			}
+			fnt::destroyStrings(createdStringId);
+			createdStringId = fnt::createStringActor(font, &stringbuffer, 1, &position);
+			executionQueue.push_back(fillCommandBuffer);
 		});
-		textInputThread.detach();
 	}
 }

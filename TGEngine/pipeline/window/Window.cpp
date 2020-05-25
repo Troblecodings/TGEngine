@@ -77,8 +77,8 @@ namespace tge::win {
 
 				POINT point;
 				if (GetCursorPos(&point)) {
-					mouseX = point.x - mainWindowX;
-					mouseY = point.y - mainWindowY;
+					mouseX = (float)(point.x - mainWindowX);
+					mouseY = (float)(point.y - mainWindowY);
 				}
 
 				tge::ui::checkBoundingBoxes();
