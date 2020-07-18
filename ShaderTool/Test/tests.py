@@ -3,6 +3,7 @@ import os.path as pt
 import subprocess
 import random as rnd
 import re
+import shutil
 
 def runcommand(command, console, toolpath):
     '''
@@ -46,11 +47,12 @@ TESTS = {
     ("map add", 3, (-1, -1)),
     ("map", 3, (-1, -1)),
     ("setcwd", 3, (-1, -1)),
-    ("settool", 3, (-1, -1))
+    ("settool", 3, (0, 0)),
+    ("setcwd " + pt.abspath(os.getcwd()), 3, (0, 0)),
 }
 
 def runtest(toolpath):
-    os.remove("Resources")
+    shutil.rmtree("Resources")
     for test in TESTS:
         output = runcommand(test[0], test[1], toolpath)
         if output == test[2]:
