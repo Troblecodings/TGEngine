@@ -82,6 +82,10 @@ def updateSubmodules():
     p.wait()
 
 
+def retrieve(url, filename):
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0"})) as response, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(response, out_file)
+
 def trigger(id):
     global msg
     global dependencies_file
@@ -105,18 +109,14 @@ def trigger(id):
                 with open(
                         "dependencies/dependencie_version.txt") as versionfile:
                     version = versionfile.read()
-            urllib.request.urlretrieve(
-                "https://1seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
-                "dependencies/dependencie_version.txt", callback)
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
             with open("dependencies/dependencie_version.txt") as versionfile:
                 if versionfile.read() == version:
                     msg = "Already up to date!"
                     clear()
                     return
             print("Downloading... this can take a while")
-            urllib.request.urlretrieve(
-                "https://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1",
-                "Dependencies.zip", callback)
+            retrieve("https://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1", "Dependencies.zip")
             print("Finished download         ")
             print("Deleting old")
             if os.path.exists("dependencies"):
@@ -125,9 +125,7 @@ def trigger(id):
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
-            urllib.request.urlretrieve(
-                "https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
-                "dependencies/dependencie_version.txt", callback)
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()
