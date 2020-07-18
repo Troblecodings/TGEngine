@@ -297,3 +297,5 @@ dependencies/deps.zip
 /TGEngine/resources/Resources.json
 /TGEngine/resources/Resources.tgr
 *.spv
+ShaderTool/Test/ShaderPipes.cpp
+ShaderTool/Test/ShaderPipes.hpp
