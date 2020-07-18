@@ -70,11 +70,6 @@ TESTS = {
 FAILED = False
 
 def runtest(toolpath):
-    shutil.rmtree("Resources")
-    for x in os.listdir("."):
-        if x == "tests.py":
-            continue
-        os.remove(x)
     for test in TESTS:
         output = runcommand(test[0], test[1], toolpath)
         if output == test[2]:
@@ -84,10 +79,19 @@ def runtest(toolpath):
             FAILED = True
 
 
+def cleanup():
+    shutil.rmtree("Resources")
+    for x in os.listdir("."):
+        if x == "tests.py":
+            continue
+        os.remove(x)
+
+cleanup()
 for path, name, files in os.walk("../bin"):
     if "ShaderTool.exe" in files:
         toolpath = pt.abspath(pt.join(path, "ShaderTool.exe")).replace("\\", "/")
         runtest(toolpath)
+cleanup()
 
 if FAILED:
     exit(1)
