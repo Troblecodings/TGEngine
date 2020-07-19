@@ -52,13 +52,7 @@ def rng(regex=r"[\W]"):
     return resultarray + "x"
 
 TESTS = [
-    ("map make " + rng(), 3, (-2, -2)),
     (rng(), 3, (-2, -2)),
-    ("map add " + rng(), 2, (0, 0)),
-    ("map add test", 1, (0, 0)),
-    ("map add " + rng(r"[\w\s]"), 3, (-2, -2)),
-    ("map add", 3, (-1, -1)),
-    ("map", 3, (-1, -1)),
 
     ("setcwd", 3, (-1, -1)),
     ("settool", 3, (0, 0)),
@@ -87,6 +81,12 @@ TESTS = [
     ("texture rm test", 1, (0, 0)),
     ("texture add \"test.png\"", 2, (0, 0)),
     ("texture rm test", 2, (0, 0)),
+    ("texture add \"test.png\"", 1, (0, 0)),
+    ("texture remove test", 1, (0, 0)),
+    ("texture add \"test.png\"", 2, (0, 0)),
+    ("texture remove test", 2, (0, 0)),
+    ("texture add \"test.png\"", 2, (0, 0)),
+    ("texture add \"test.png\"", 3, (-2, -2)),
 
     ("texture rm", 3, (-1, -1)),
     ("texture rm " + rng(), 3, (-2, -2)),
@@ -119,6 +119,21 @@ TESTS = [
     ("map addfont", 3, (-1, -1)),
     ("map rmfont", 3, (-1, -1)),
     ("map removefont", 3, (-1, -1)),
+
+    ("map make " + rng(), 3, (-2, -2)),
+    ("map add " + rng(), 2, (0, 0)),
+    ("map add " + rng(r"[\w\s]"), 3, (-2, -2)),
+    ("map add test", 1, (0, 0)),
+    ("map add test", 3, (-2, -2)),
+    ("map rm test", 1, (0, 0)),
+    ("map add test", 2, (0, 0)),
+    ("map rm test", 2, (0, 0)),
+    ("map add test", 2, (0, 0)),
+    ("map remove test", 2, (0, 0)),
+    ("map add test", 2, (0, 0)),
+    ("map remove test", 2, (0, 0)),
+    ("map remove " + rng(), 3, (-2, -2)),
+
     ("map " + rng(), 3, (-2, -2)),
 
     ("material", 3, (-1, -1)),
