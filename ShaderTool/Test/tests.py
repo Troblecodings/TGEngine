@@ -67,6 +67,7 @@ TESTS = {
     ("shader " + rng(), 3, (-2, -2)),
 
     ("texture add", 3, (-1, -1)),
+    ("texture add \"" + rng() + "\"", 3, (-2, -2)),
     ("texture add " + rng(), 3, (-2, -2)),
     ("texture rm", 3, (-1, -1)),
     ("texture rm " + rng(), 3, (-2, -2)),
@@ -99,7 +100,7 @@ TESTS = {
     ("map addfont", 3, (-1, -1)),
     ("map rmfont", 3, (-1, -1)),
     ("map removefont", 3, (-1, -1)),
-    ("map " + rng(), 3, (0, 0)),
+    ("map " + rng(), 3, (-2, -2)),
 
     ("material", 3, (-1, -1)),
     ("material add", 3, (-1, -1)),
@@ -118,20 +119,24 @@ TESTS = {
 
 }
 
-FAILED = False
+FAILED = 0
+RUNS = 0
 
 def runtest(toolpath):
+    global FAILED
+    global RUNS
+    RUNS += 1
     for test in TESTS:
         output = runcommand(test[0], test[1], toolpath)
         if output == test[2]:
             print("Test passed!")
         else:
             print("Failed at " + str(test) + " Output: " + str(output))
-            FAILED = True
+            FAILED += 1
 
 
 def cleanup():
-    shutil.rmtree("Resources")
+    if os.path.exists("Resources") : shutil.rmtree("Resources")
     for x in os.listdir("."):
         if x == "tests.py" or x == "test.glsl":
             continue
@@ -144,5 +149,8 @@ for path, name, files in os.walk("../bin"):
         runtest(toolpath)
 cleanup()
 
-if FAILED:
+if FAILED != 0:
+    print(str(FAILED) + " out of " + str(len(TESTS) * RUNS) + " tests failed!")
     exit(1)
+else:
+    print("Everything passed!")

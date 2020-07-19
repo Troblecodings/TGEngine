@@ -46,6 +46,9 @@ namespace ShaderTool.Command {
         }
 
         private static int MaterialSetColor(string[] args) {
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
             Load();
 
             string name = args[0];
@@ -70,7 +73,8 @@ namespace ShaderTool.Command {
         }
 
         public static int MaterialSetTexture(string[] args) {
-            AssertValues(args, 2);
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
 
             Load();
 
