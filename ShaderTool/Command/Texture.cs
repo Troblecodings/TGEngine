@@ -90,13 +90,13 @@ namespace ShaderTool.Command {
             // If the file name contains a space then it's being taken care of with this
             string fileName = string.Join(" ", args);
 
-            if (!GetExistingTextureNames().Contains(fileName)) {
+            string path = GetFilePath(fileName);
+            if (!File.Exists(path)) {
                 Console.WriteLine("Texture '{0}' was not found!", fileName);
                 return WRONG_PARAMS;
-            } else {
-                File.Delete(GetFilePath(fileName));
             }
 
+            File.Delete(path);
             Console.WriteLine("Texture '{0}' was successfully removed!", fileName);
             return SUCCESS;
 

@@ -5,6 +5,15 @@ import random as rnd
 import re
 import shutil
 
+VERBOSE = False
+
+CLEANUPLIST = ("ShaderData.cpp", "ShaderData.hpp", "ShaderPipes.cpp", "ShaderPipes.hpp")
+
+def cleanup():
+    if os.path.exists("Resources") : shutil.rmtree("Resources")
+    for x in CLEANUPLIST:
+        if os.path.exists(x): os.remove(x)
+
 def runcommand(command, console, toolpath):
     '''
     Runs a command in the given mode
@@ -19,8 +28,12 @@ def runcommand(command, console, toolpath):
         outstr = str(outs)
         if "Exit code " in outstr:
             result[0] = int(re.split(r"(\\r|\\n)", outstr.split("Exit code ")[1])[0].strip())
+        pr.wait()
     if console & 2 == 2:
-        rtc = subprocess.call(toolpath + " " + command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        if VERBOSE:
+            rtc = subprocess.call(toolpath + " " + command)
+        else:
+            rtc = subprocess.call(toolpath + " " + command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         # This is bullshit
         # Who the fuck thought that negative numbers could come out of this
         if rtc == 0:
@@ -38,7 +51,7 @@ def rng(regex=r"[\W]"):
     resultarray = re.sub(regex, "", resultarray, flags=re.M)
     return resultarray + "x"
 
-TESTS = {
+TESTS = [
     ("map make " + rng(), 3, (-2, -2)),
     (rng(), 3, (-2, -2)),
     ("map add " + rng(), 2, (0, 0)),
@@ -69,6 +82,12 @@ TESTS = {
     ("texture add", 3, (-1, -1)),
     ("texture add \"" + rng() + "\"", 3, (-2, -2)),
     ("texture add " + rng(), 3, (-2, -2)),
+
+    ("texture add \"test.png\"", 1, (0, 0)),
+    ("texture rm test", 1, (0, 0)),
+    ("texture add \"test.png\"", 2, (0, 0)),
+    ("texture rm test", 2, (0, 0)),
+
     ("texture rm", 3, (-1, -1)),
     ("texture rm " + rng(), 3, (-2, -2)),
     ("texture remove", 3, (-1, -1)),
@@ -117,7 +136,7 @@ TESTS = {
     ("font remove", 3, (-1, -1)),
     ("font list", 3, (0, 0)),
 
-}
+]
 
 FAILED = 0
 RUNS = 0
@@ -126,28 +145,22 @@ def runtest(toolpath):
     global FAILED
     global RUNS
     RUNS += 1
+    cleanup()
     for test in TESTS:
         output = runcommand(test[0], test[1], toolpath)
-        if output == test[2]:
-            print("Test passed!")
-        else:
+        if output != test[2]:
             print("Failed at " + str(test) + " Output: " + str(output))
             FAILED += 1
 
-
-def cleanup():
-    if os.path.exists("Resources") : shutil.rmtree("Resources")
-    for x in os.listdir("."):
-        if x == "tests.py" or x == "test.glsl":
-            continue
-        os.remove(x)
-
-cleanup()
 for path, name, files in os.walk("../bin"):
     if "ShaderTool.exe" in files:
         toolpath = pt.abspath(pt.join(path, "ShaderTool.exe")).replace("\\", "/")
         runtest(toolpath)
 cleanup()
+
+if RUNS == 0:
+    print("No executable found")
+    exit(2)
 
 if FAILED != 0:
     print(str(FAILED) + " out of " + str(len(TESTS) * RUNS) + " tests failed!")
