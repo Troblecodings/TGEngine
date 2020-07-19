@@ -58,13 +58,64 @@ TESTS = {
     ("pipe update", 3, (-1, -1)),
     ("pipe list", 3, (0, 0)),
     ("pipe make", 3, (0, 0)),
+    ("pipe " + rng(), 3, (-2, -2)),
 
     ("shader", 3, (-1, -1)),
-    ("texture", 3, (-1, -1)),
+    ("shader make", 3, (0, 0)),
+    ("shader list", 3, (0, 0)),
+    ("shader compile", 3, (-1, -1)),
+    ("shader " + rng(), 3, (-2, -2)),
+
+    ("texture add", 3, (-1, -1)),
+    ("texture add " + rng(), 3, (-2, -2)),
+    ("texture rm", 3, (-1, -1)),
+    ("texture rm " + rng(), 3, (-2, -2)),
+    ("texture remove", 3, (-1, -1)),
+    ("texture remove " + rng(), 3, (-2, -2)),
+    ("texture list", 3, (0, 0)),
+    ("texture " + rng(), 3, (-2, -2)),
+
     ("actor", 3, (-1, -1)),
+    ("actor add", 3, (-1, -1)),
+    ("actor rm", 3, (-1, -1)),
+    ("actor remove", 3, (-1, -1)),
+    ("actor list", 3, (0, 0)),
+    ("actor vertex", 3, (-1, -1)),
+    ("actor index", 3, (-1, -1)),
+    ("actor transform", 3, (-1, -1)),
+    ("actor layer", 3, (-1, -1)),
+    ("actor instance", 3, (-1, -1)),
+    ("actor " + rng(), 3, (-2, -2)),
+
     ("map", 3, (-1, -1)),
+    ("map add", 3, (-1, -1)),
+    ("map rm", 3, (-1, -1)),
+    ("map remove", 3, (-1, -1)),
+    ("map make", 3, (-1, -1)),
+    ("map list", 3, (0, 0)),
+    ("map addactor", 3, (-1, -1)),
+    ("map rmactor", 3, (-1, -1)),
+    ("map removeactor", 3, (-1, -1)),
+    ("map addfont", 3, (-1, -1)),
+    ("map rmfont", 3, (-1, -1)),
+    ("map removefont", 3, (-1, -1)),
+    ("map " + rng(), 3, (0, 0)),
+
     ("material", 3, (-1, -1)),
+    ("material add", 3, (-1, -1)),
+    ("material rm", 3, (-1, -1)),
+    ("material remove", 3, (-1, -1)),
+    ("material settexture", 3, (-1, -1)),
+    ("material settex", 3, (-1, -1)),
+    ("material setcolor", 3, (-1, -1)),
+    ("material list", 3, (0, 0)),
+
     ("font", 3, (-1, -1)),
+    ("font add", 3, (-1, -1)),
+    ("font rm", 3, (-1, -1)),
+    ("font remove", 3, (-1, -1)),
+    ("font list", 3, (0, 0)),
+
 }
 
 FAILED = False
@@ -82,7 +133,7 @@ def runtest(toolpath):
 def cleanup():
     shutil.rmtree("Resources")
     for x in os.listdir("."):
-        if x == "tests.py":
+        if x == "tests.py" or x == "test.glsl":
             continue
         os.remove(x)
 
