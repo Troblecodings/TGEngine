@@ -129,7 +129,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MaterialAdd(string[] args) {
-            if (!AssertValues(args))
+            if (!AssertValues(args, 2))
                 return NOT_ENOUGH_PARAMS;
 
             if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
@@ -144,13 +144,16 @@ namespace ShaderTool.Command {
 
             if (Cache.MATERIALS.ContainsKey(name)) {
                 Console.WriteLine("Material {0} already exists!", name);
-                return ALREADY_EXIST;
+                return WRONG_PARAMS;
             }
 
             MaterialData newMaterial = new MaterialData();
 
-            if (args.Length > 1 && Texture.GetExistingTextureNames().Contains(args[1]))
-                newMaterial.diffuseTexture = args[1];
+            if (!Texture.GetExistingTextureNames().Contains(args[1])) {
+                Console.WriteLine("Texture {0} does not exist", args[1]);
+                return WRONG_PARAMS;
+            }
+            newMaterial.diffuseTexture = args[1];
 
             if (args.Length == 3) {
                 uint output;

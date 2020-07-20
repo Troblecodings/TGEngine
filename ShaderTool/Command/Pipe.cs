@@ -106,7 +106,7 @@ namespace ShaderTool.Command {
             // Check if pipe already exists
             if (File.Exists(FileName)) {
                 Console.WriteLine("Pipe already exist with the name " + Name);
-                return ALREADY_EXIST;
+                return WRONG_PARAMS;
             }
 
             foreach (string FileN in Shader) {
