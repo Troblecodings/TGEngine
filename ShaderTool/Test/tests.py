@@ -104,6 +104,7 @@ TESTS = [
     ("material", 3, (-1, -1)),
     ("material add", 3, (-1, -1)),
     ("material add " + rng(), 3, (-1, -1)),
+    ("material add " + rng(r"[\w]") + " test", 3, (-2, -2)),
     ("material add test " + rng(), 3, (-2, -2)),
     #
     ("material add test test", 1, (0, 0)),
@@ -114,8 +115,7 @@ TESTS = [
     ("material remove " + rng(), 3, (-2, -2)),
     ("material add test test", 1, (0, 0)),
     ("material remove test", 1, (0, 0)),
-    ("material add test test " + rng(), 2, (-2, -2)),
-    ("material remove test", 2, (0, 0)),
+    ("material add test test " + rng(), 3, (-2, -2)),
     ("material add test test", 1, (0, 0)),
     ("material add test test", 3, (-2, -2)),
     #
