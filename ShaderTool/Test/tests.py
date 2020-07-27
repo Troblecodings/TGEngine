@@ -47,27 +47,34 @@ def runcommand(command, console, toolpath):
                                   stderr=subprocess.PIPE)
         # This is bullshit
         # Who the fuck thought that negative numbers could come out of this
-        if rtc == 0:
-            result[1] = 0
-        else:
-            result[1] = rtc - 2**32
+        # Actually Microsoft didn't
+        if rtc > 2**31 - 1:
+            # Convert to signed int
+            rtc -= 2**32
+        result[1] = rtc
     return tuple(result)
 
 
-def rng(regex=r"[\W]"):
-    strsize = rnd.randint(0, 20)
+def rng(regex=r"[\W]", size=0):
+    if size == 0:
+        size = rnd.randint(0, 20)
     resultarray = str()
-    for x in range(strsize):
-        resultarray += chr(rnd.randint(0x40, 0x72))
-    resultarray = re.sub(regex, "", resultarray, flags=re.M)
-    return resultarray + "x"
+    while len(resultarray) < size:
+        for x in range(size):
+            resultarray += chr(rnd.randint(0x10, 0xD0))
+        resultarray = re.sub(regex, "", resultarray, flags=re.M)
+    if len(resultarray) > size:
+        resultarray = resultarray[:size]
+    return resultarray
 
 
 TESTS = [
+    # General
     (rng(), 3, (-2, -2)),
     ("setcwd", 3, (-1, -1)),
     ("settool", 3, (0, 0)),
     ("setcwd " + pt.abspath(os.getcwd()), 3, (0, 0)),
+    # Pipeline tests
     ("pipe", 3, (-1, -1)),
     ("pipe create", 3, (-1, -1)),
     ("pipe delete", 3, (-1, -1)),
@@ -76,11 +83,13 @@ TESTS = [
     ("pipe list", 3, (0, 0)),
     ("pipe make", 3, (0, 0)),
     ("pipe " + rng(), 3, (-2, -2)),
+    # Shader tests
     ("shader", 3, (-1, -1)),
     ("shader make", 3, (0, 0)),
     ("shader list", 3, (0, 0)),
     ("shader compile", 3, (-1, -1)),
     ("shader " + rng(), 3, (-2, -2)),
+    # Texture tests
     ("texture add", 3, (-1, -1)),
     ("texture add \"" + rng() + "\"", 3, (-2, -2)),
     ("texture add " + rng(), 3, (-2, -2)),
@@ -101,12 +110,13 @@ TESTS = [
     ("texture remove " + rng(), 3, (-2, -2)),
     ("texture list", 3, (0, 0)),
     ("texture " + rng(), 3, (-2, -2)),
+    # Material Tests
     ("material", 3, (-1, -1)),
+    ("material " + rng(), 3, (-2, -2)),
     ("material add", 3, (-1, -1)),
     ("material add " + rng(), 3, (-1, -1)),
     ("material add " + rng(r"[\w]") + " test", 3, (-2, -2)),
     ("material add test " + rng(), 3, (-2, -2)),
-    #
     ("material add test test", 1, (0, 0)),
     ("material rm test", 1, (0, 0)),
     ("material add test test", 2, (0, 0)),
@@ -118,13 +128,15 @@ TESTS = [
     ("material add test test " + rng(), 3, (-2, -2)),
     ("material add test test", 1, (0, 0)),
     ("material add test test", 3, (-2, -2)),
-    #
+    ("material add test2 test " + rng(r"[^a-fA-F0-9]", 6), 1, (0, 0)),
+    ("material add test3 test " + rng(r"[^a-fA-F0-9]", 6), 2, (0, 0)),
     ("material rm", 3, (-1, -1)),
     ("material remove", 3, (-1, -1)),
     ("material settexture", 3, (-1, -1)),
     ("material settex", 3, (-1, -1)),
     ("material setcolor", 3, (-1, -1)),
     ("material list", 3, (0, 0)),
+    # Actor tests
     ("actor", 3, (-1, -1)),
     ("actor add", 3, (-1, -1)),
     ("actor rm", 3, (-1, -1)),
@@ -136,6 +148,7 @@ TESTS = [
     ("actor layer", 3, (-1, -1)),
     ("actor instance", 3, (-1, -1)),
     ("actor " + rng(), 3, (-2, -2)),
+    # Map tests
     ("map", 3, (-1, -1)),
     ("map add", 3, (-1, -1)),
     ("map rm", 3, (-1, -1)),
@@ -162,6 +175,7 @@ TESTS = [
     ("map remove test", 2, (0, 0)),
     ("map remove " + rng(), 3, (-2, -2)),
     ("map " + rng(), 3, (-2, -2)),
+    # Font tests
     ("font", 3, (-1, -1)),
     ("font add", 3, (-1, -1)),
     ("font rm", 3, (-1, -1)),
