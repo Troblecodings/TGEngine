@@ -124,7 +124,7 @@ TESTS = [
     ("material add test test", 1, (0, 0)),
     ("material remove test", 1, (0, 0)),
     ("material add test test " + rng(), 3, (-2, -2)),
-    ("material add test test", 1, (0, 0)),
+    ("material add testmaterial test", 1, (0, 0)),
     ("material add test test", 3, (-2, -2)),
     ("material add test2 test " + rng(r"[^a-fA-F0-9]", 6), 1, (0, 0)),
     ("material add test3 test " + rng(r"[^a-fA-F0-9]", 6), 2, (0, 0)),
@@ -148,6 +148,9 @@ TESTS = [
     # Actor tests
     ("actor", 3, (-1, -1)),
     ("actor add", 3, (-1, -1)),
+    ("actor add " + rng(), 3, (-1, -1)),
+    ("actor add testactor testmaterial", 1, (0, 0)),
+    ("actor add testactor2 testmaterial", 2, (0, 0)),
     ("actor rm", 3, (-1, -1)),
     ("actor remove", 3, (-1, -1)),
     ("actor list", 3, (0, 0)),
