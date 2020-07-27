@@ -219,11 +219,10 @@ for path, name, files in os.walk("../bin"):
 cleanup()
 
 if RUNS == 0:
-    print("No executable found")
-    exit(2)
+    raise Exception("No executable found")
 
 if FAILED != 0:
-    print(str(FAILED) + " out of " + str(len(TESTS) * RUNS) + " tests failed!")
-    exit(-1)
+    raise Exception(
+        str(FAILED) + " out of " + str(len(TESTS) * RUNS) + " tests failed!")
 else:
     print("Everything passed!")
