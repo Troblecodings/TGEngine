@@ -125,7 +125,7 @@ TESTS = [
     ("material remove test", 1, (0, 0)),
     ("material add test test " + rng(), 3, (-2, -2)),
     ("material add testmaterial test", 1, (0, 0)),
-    ("material add test test", 3, (-2, -2)),
+    ("material add testmaterial test", 3, (-2, -2)),
     ("material add test2 test " + rng(r"[^a-fA-F0-9]", 6), 1, (0, 0)),
     ("material add test3 test " + rng(r"[^a-fA-F0-9]", 6), 2, (0, 0)),
     ("material rm", 3, (-1, -1)),
