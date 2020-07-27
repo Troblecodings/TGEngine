@@ -45,9 +45,6 @@ def runcommand(command, console, toolpath):
                                   stdout=subprocess.PIPE,
                                   stdin=subprocess.PIPE,
                                   stderr=subprocess.PIPE)
-        # This is bullshit
-        # Who the fuck thought that negative numbers could come out of this
-        # Actually Microsoft didn't
         if rtc > 2**31 - 1:
             # Convert to signed int
             rtc -= 2**32
@@ -57,12 +54,13 @@ def runcommand(command, console, toolpath):
 
 def rng(regex=r"[\W]", size=0):
     if size == 0:
-        size = rnd.randint(0, 20)
+        size = rnd.randint(3, 20)
     resultarray = str()
     while len(resultarray) < size:
-        for x in range(size):
-            resultarray += chr(rnd.randint(0x10, 0xD0))
-        resultarray = re.sub(regex, "", resultarray, flags=re.M)
+        resultarray += re.sub(regex,
+                              "",
+                              str(chr(rnd.randint(0x10, 128))),
+                              flags=re.M)
     if len(resultarray) > size:
         resultarray = resultarray[:size]
     return resultarray
@@ -212,6 +210,6 @@ if RUNS == 0:
 
 if FAILED != 0:
     print(str(FAILED) + " out of " + str(len(TESTS) * RUNS) + " tests failed!")
-    exit(1)
+    exit(-1)
 else:
     print("Everything passed!")
