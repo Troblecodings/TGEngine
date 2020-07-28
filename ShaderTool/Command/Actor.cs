@@ -201,6 +201,10 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
 
             string path = Path.Combine(Program.ResourcesFolder, actorName + @"_Actor.json");
+            if (File.Exists(path)) {
+                Console.WriteLine("Actor {0} already exists", materialName);
+                return WRONG_PARAMS;
+            }
 
             Material.Load();
 
@@ -209,8 +213,7 @@ namespace ShaderTool.Command {
                 return WRONG_PARAMS;
             }
 
-            if (!File.Exists(path))
-                File.Create(path).Close();
+            File.Create(path).Close();
 
             ActorData newActor = new ActorData();
             newActor.name = actorName;

@@ -52,6 +52,22 @@ def runcommand(command, console, toolpath):
     return tuple(result)
 
 
+def rngd(count=1):
+    result = str()
+    for x in range(count):
+        result += str(rnd.random())
+        if x + 1 != count:
+            result += " "
+    return result
+
+def rngn(count=1):
+    result = str()
+    for x in range(count):
+        result += str(rnd.randint(0, 1000000))
+        if x + 1 != count:
+            result += " "
+    return result
+
 def rng(regex=r"[\W]", size=0):
     if size == 0:
         size = rnd.randint(3, 20)
@@ -65,6 +81,9 @@ def rng(regex=r"[\W]", size=0):
         resultarray = resultarray[:size]
     return resultarray
 
+
+HEXREGEX = r"[^a-fA-F0-9]"
+NONEWORD = r"[\w\"\s]"
 
 TESTS = [
     # General
@@ -103,7 +122,6 @@ TESTS = [
     ("texture add \"test.png\"", 3, (-2, -2)),
     ("texture rm", 3, (-1, -1)),
     ("texture rm " + rng(), 3, (-2, -2)),
-    ("texture rm " + rng(r"[\W]"), 3, (-2, -2)),
     ("texture remove", 3, (-1, -1)),
     ("texture remove " + rng(), 3, (-2, -2)),
     ("texture list", 3, (0, 0)),
@@ -113,7 +131,7 @@ TESTS = [
     ("material " + rng(), 3, (-2, -2)),
     ("material add", 3, (-1, -1)),
     ("material add " + rng(), 3, (-1, -1)),
-    ("material add " + rng(r"[\w]") + " test", 3, (-2, -2)),
+    ("material add " + rng(NONEWORD) + " test", 3, (-2, -2)),
     ("material add test " + rng(), 3, (-2, -2)),
     ("material add test test", 1, (0, 0)),
     ("material rm test", 1, (0, 0)),
@@ -126,8 +144,8 @@ TESTS = [
     ("material add test test " + rng(), 3, (-2, -2)),
     ("material add testmaterial test", 1, (0, 0)),
     ("material add testmaterial test", 3, (-2, -2)),
-    ("material add test2 test " + rng(r"[^a-fA-F0-9]", 6), 1, (0, 0)),
-    ("material add test3 test " + rng(r"[^a-fA-F0-9]", 6), 2, (0, 0)),
+    ("material add test2 test " + rng(HEXREGEX, 6), 1, (0, 0)),
+    ("material add test3 test " + rng(HEXREGEX, 6), 2, (0, 0)),
     ("material rm", 3, (-1, -1)),
     ("material remove", 3, (-1, -1)),
     ("material settexture", 3, (-1, -1)),
@@ -143,14 +161,27 @@ TESTS = [
     ("material setcolor", 3, (-1, -1)),
     ("material setcolor " + rng(), 3, (-1, -1)),
     ("material setcolor test3 " + rng(), 3, (-2, -2)),
-    ("material setcolor test3 " + rng(r"[^a-fA-F0-9]", 6), 3, (0, 0)),
+    ("material setcolor test3 " + rng(HEXREGEX, 6), 3, (0, 0)),
     ("material list", 3, (0, 0)),
     # Actor tests
     ("actor", 3, (-1, -1)),
     ("actor add", 3, (-1, -1)),
     ("actor add " + rng(), 3, (-1, -1)),
     ("actor add testactor testmaterial", 1, (0, 0)),
+    ("actor add " + rng(NONEWORD) + " testmaterial", 3, (-2, -2)),
     ("actor add testactor2 testmaterial", 2, (0, 0)),
+    ("actor add testactor2 testmaterial", 3, (-2, -2)),
+    ("actor add testactor " + rng(), 3, (-2, -2)),
+    ("actor rm testactor", 1, (0, 0)),
+    ("actor rm testactor2", 2, (0, 0)),
+    ("actor rm testactor", 3, (-2, -2)),
+    ("actor add testactor testmaterial", 1, (0, 0)),
+    ("actor add testactor2 testmaterial", 2, (0, 0)),
+    ("actor remove testactor", 1, (0, 0)),
+    ("actor remove testactor2", 2, (0, 0)),
+    ("actor remove testactor", 3, (-2, -2)),
+    ("actor add testactor testmaterial", 1, (0, 0)),
+    ("actor vertex testactor ", 3, (-1, -1)),
     ("actor rm", 3, (-1, -1)),
     ("actor remove", 3, (-1, -1)),
     ("actor list", 3, (0, 0)),
@@ -159,6 +190,16 @@ TESTS = [
     ("actor transform", 3, (-1, -1)),
     ("actor layer", 3, (-1, -1)),
     ("actor instance", 3, (-1, -1)),
+    ("actor vertex " + rng(), 3, (-1, -1)),
+    ("actor index " + rng(), 3, (-1, -1)),
+    ("actor transform " + rng(), 3, (-1, -1)),
+    ("actor layer " + rng(), 3, (-1, -1)),
+    ("actor instance " + rng(), 3, (-1, -1)),
+    ("actor vertex " + rng() + " 1.0", 3, (-1, -1)),
+    ("actor index " + rng() + " 1", 3, (-2, -2)),
+    ("actor transform " + rng() + " 0", 3, (-1, -1)),
+    ("actor layer " + rng() + " 0", 3, (-2, -2)),
+    ("actor instance " + rng() + " " + rng(), 3, (-1, -1)),
     ("actor " + rng(), 3, (-2, -2)),
     # Map tests
     ("map", 3, (-1, -1)),
@@ -175,7 +216,7 @@ TESTS = [
     ("map removefont", 3, (-1, -1)),
     ("map make " + rng(), 3, (-2, -2)),
     ("map add " + rng(), 2, (0, 0)),
-    ("map add " + rng(r"[\w\s]"), 3, (-2, -2)),
+    ("map add " + rng(NONEWORD), 3, (-2, -2)),
     ("map add test", 1, (0, 0)),
     ("map add test", 3, (-2, -2)),
     ("map rm test", 1, (0, 0)),
