@@ -265,6 +265,7 @@ __pycache__/
 /TGEditor/Vraag.png
 /TGEngine/run/TGEngine-0.0.3.zip
 /TGEngine/run
+/TGEngine/out
 dependencies/deps.zip
 /dependencies/deps/Deps
 /TGEditor/helmet.blend
@@ -282,7 +283,7 @@ dependencies/deps.zip
 /Chess
 /test
 /Release.zip
-
+/ShaderTool/Test/Resources
 /ShaderTool/bin
 /ShaderTool/obj
 /TGEditor/TGEditor.exe
@@ -296,3 +297,5 @@ dependencies/deps.zip
 /TGEngine/resources/Resources.json
 /TGEngine/resources/Resources.tgr
 *.spv
+ShaderTool/Test/ShaderPipes.cpp
+ShaderTool/Test/ShaderPipes.hpp

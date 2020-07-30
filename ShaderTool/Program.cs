@@ -16,6 +16,8 @@ namespace ShaderTool {
         public static int Execute(string id, string[] arg) {
             switch (id) {
                 case "setcwd":
+                    if (arg == null || arg.Length != 1)
+                        return NOT_ENOUGH_PARAMS;
                     CWD = arg[0];
                     ResourcesFolder = Path.Combine(CWD, "Resources");
                     return 0;

@@ -154,9 +154,12 @@ namespace ShaderTool.Command {
             if (!AssertName(mapName))
                 return WRONG_PARAMS;
 
-            if (!File.Exists(mapFilePath))
-                File.Create(mapFilePath).Close();
+            if (File.Exists(mapFilePath)) {
+                Console.WriteLine("Map {0} already exists", mapName);
+                return WRONG_PARAMS;
+            }
 
+            File.Create(mapFilePath).Close();
             MapData newMap = new MapData();
 
             // GetParams() sets the value to null instead of leaving an empty array if the length is 0

@@ -46,6 +46,9 @@ namespace ShaderTool.Command {
         }
 
         private static int MaterialSetColor(string[] args) {
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
+
             Load();
 
             string name = args[0];
@@ -70,7 +73,8 @@ namespace ShaderTool.Command {
         }
 
         public static int MaterialSetTexture(string[] args) {
-            AssertValues(args, 2);
+            if (!AssertValues(args, 2))
+                return NOT_ENOUGH_PARAMS;
 
             Load();
 
@@ -125,7 +129,7 @@ namespace ShaderTool.Command {
         }
 
         public static int MaterialAdd(string[] args) {
-            if (!AssertValues(args))
+            if (!AssertValues(args, 2))
                 return NOT_ENOUGH_PARAMS;
 
             if (Cache.MATERIALS.Count > 255) { // max number of materials is 256 as the index is provided as a byte
@@ -140,25 +144,28 @@ namespace ShaderTool.Command {
 
             if (Cache.MATERIALS.ContainsKey(name)) {
                 Console.WriteLine("Material {0} already exists!", name);
-                return ALREADY_EXIST;
+                return WRONG_PARAMS;
             }
 
             MaterialData newMaterial = new MaterialData();
 
-            if (args.Length > 1 && Texture.GetExistingTextureNames().Contains(args[1]))
-                newMaterial.diffuseTexture = args[1];
+            if (!Texture.GetExistingTextureNames().Contains(args[1])) {
+                Console.WriteLine("Texture {0} does not exist", args[1]);
+                return WRONG_PARAMS;
+            }
+            newMaterial.diffuseTexture = args[1];
 
             if (args.Length == 3) {
                 uint output;
                 if (!uint.TryParse(args[2], System.Globalization.NumberStyles.HexNumber, null, out output)) {
                     Console.WriteLine("{0} is not a hex number!", args[2]);
-                } else {
-                    float r = ((output & 0xFF000000) >> 24) / 255.0f;
-                    float g = ((output & 0x00FF0000) >> 16) / 255.0f;
-                    float b = ((output & 0x0000FF00) >> 8) / 255.0f;
-                    float a = ((output & 0x000000FF) / 255.0f);
-                    newMaterial.color = new float[] { r, g, b, a };
+                    return WRONG_PARAMS;
                 }
+                float r = ((output & 0xFF000000) >> 24) / 255.0f;
+                float g = ((output & 0x00FF0000) >> 16) / 255.0f;
+                float b = ((output & 0x0000FF00) >> 8) / 255.0f;
+                float a = ((output & 0x000000FF) / 255.0f);
+                newMaterial.color = new float[] { r, g, b, a };
             }
 
             Cache.MATERIALS.Add(name, newMaterial);

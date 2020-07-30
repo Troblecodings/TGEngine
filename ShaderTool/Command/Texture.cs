@@ -57,10 +57,13 @@ namespace ShaderTool.Command {
             if (!Directory.Exists(Program.ResourcesFolder))
                 Directory.CreateDirectory(Program.ResourcesFolder);
 
+            int returncode = SUCCESS;
+
             foreach (string texturePath in texturePaths) {
 
                 if (!File.Exists(texturePath)) {
                     Console.WriteLine("Texture '{0}' could not be found, skipping", texturePath);
+                    returncode = WRONG_PARAMS;
                     continue;
                 }
 
@@ -68,15 +71,15 @@ namespace ShaderTool.Command {
 
                 if (GetExistingTextureNames().Contains(fileName)) {
                     Console.WriteLine("Texture '{0}' already exists, skipping", fileName);
+                    returncode = WRONG_PARAMS;
                     continue;
                 }
 
                 File.Copy(texturePath, Texture.GetFilePath(fileName));
                 Console.WriteLine("Texture '{0}' was successfully added!", fileName);
-
             }
 
-            return SUCCESS;
+            return returncode;
         }
 
         public static int TextureRm(string[] args) {
@@ -87,13 +90,13 @@ namespace ShaderTool.Command {
             // If the file name contains a space then it's being taken care of with this
             string fileName = string.Join(" ", args);
 
-            if (!GetExistingTextureNames().Contains(fileName)) {
+            string path = GetFilePath(fileName);
+            if (!File.Exists(path)) {
                 Console.WriteLine("Texture '{0}' was not found!", fileName);
                 return WRONG_PARAMS;
-            } else {
-                File.Delete(GetFilePath(fileName));
             }
 
+            File.Delete(path);
             Console.WriteLine("Texture '{0}' was successfully removed!", fileName);
             return SUCCESS;
 
