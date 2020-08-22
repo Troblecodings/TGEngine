@@ -12,21 +12,33 @@ import platform
 
 osn = platform.system()
 if osn == "linux":
-    def clear(): os.system("clear")
+
+    def clear():
+        os.system("clear")
 else:
-    def clear(): os.system("cls")
+
+    def clear():
+        os.system("cls")
 
 
 vulkan = os.getenv("VULKAN_SDK")
 dependencies_file = None
 msg = None
 
+
 def isValidFile(name):
-    return name.endswith(".h") or name.endswith(".xml") or name.endswith(".hpp") or name.endswith(".md") or name.endswith(".cpp") or name.endswith(".c") or name.endswith(".bat") or name.endswith(".py") or name.endswith(".html") or name.endswith(".cs")
+    return name.endswith(".h") or name.endswith(".xml") or name.endswith(
+        ".hpp") or name.endswith(".md") or name.endswith(
+            ".cpp") or name.endswith(".c") or name.endswith(
+                ".bat") or name.endswith(".py") or name.endswith(
+                    ".html") or name.endswith(".cs")
+
 
 def wrt(vk, src, tp=""):
     print(".", end="", flush=True)
-    dependencies_file.write(vk + src, arcname=tp+src, compress_type=zipfile.ZIP_DEFLATED)
+    dependencies_file.write(vk + src,
+                            arcname=tp + src,
+                            compress_type=zipfile.ZIP_DEFLATED)
 
 
 def wrtdir(vk, src, tp=""):
@@ -36,15 +48,19 @@ def wrtdir(vk, src, tp=""):
         else:
             wrt(vk, src + str2, tp)
 
+
 files = 0
 loc = 0
+
+
 def find(path):
     global files
     global loc
     global msg
     data = os.listdir(path)
     for file in data:
-        if "stb" not in path and "dependencies" not in path and "fbx" not in path and os.path.isdir(path + "/" + file):
+        if "stb" not in path and "dependencies" not in path and "fbx" not in path and os.path.isdir(
+                path + "/" + file):
             find(path + "/" + file)
         elif isValidFile(file):
             files += 1
@@ -58,10 +74,17 @@ def callback(cob, size, total):
 
 
 def updateSubmodules():
-    p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"], cwd=os.getcwd())
+    p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"],
+                         cwd=os.getcwd())
     p.wait()
-    p = subprocess.Popen("git submodule foreach git pull origin master", cwd=os.getcwd())
+    p = subprocess.Popen("git submodule foreach git pull origin master",
+                         cwd=os.getcwd())
     p.wait()
+
+
+def retrieve(url, filename):
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0"})) as response, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(response, out_file)
 
 def trigger(id):
     global msg
@@ -76,23 +99,24 @@ def trigger(id):
         elif id == 1:
             if not os.path.exists("dependencies"):
                 os.mkdir("dependencies")
-            print("Thanks to David Quenzer for giving me access to his cloud storage!")
+            print(
+                "Thanks to David Quenzer for giving me access to his cloud storage!"
+            )
             updateSubmodules()
             print("Checking version!")
             version = ""
             if os.path.exists("dependencies/dependencie_version.txt"):
-                with open("dependencies/dependencie_version.txt") as versionfile:
-                    version = versionfile.read();
-            urllib.request.urlretrieve("http://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
-                                       "dependencies/dependencie_version.txt", callback)
+                with open(
+                        "dependencies/dependencie_version.txt") as versionfile:
+                    version = versionfile.read()
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
             with open("dependencies/dependencie_version.txt") as versionfile:
                 if versionfile.read() == version:
                     msg = "Already up to date!"
                     clear()
                     return
             print("Downloading... this can take a while")
-            urllib.request.urlretrieve("http://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1",
-                                       "Dependencies.zip", callback)
+            retrieve("https://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1", "Dependencies.zip")
             print("Finished download         ")
             print("Deleting old")
             if os.path.exists("dependencies"):
@@ -101,8 +125,7 @@ def trigger(id):
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
-            urllib.request.urlretrieve("http://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1",
-                                       "dependencies/dependencie_version.txt", callback)
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()
@@ -127,19 +150,24 @@ def trigger(id):
             dependencies_file = zipfile.ZipFile("Release.zip", mode="w")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.lib")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Release\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Release\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run",
+                "\\x64\\Release\\TGEngine.lib")
+            wrt(os.getcwd() + "\\TGEngine\\run",
+                "\\x86\\Release\\TGEngine.lib")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.pdb")
             wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.pdb")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Release\\TGEngine.pdb")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Release\\TGEngine.pdb")
+            wrt(os.getcwd() + "\\TGEngine\\run",
+                "\\x64\\Release\\TGEngine.pdb")
+            wrt(os.getcwd() + "\\TGEngine\\run",
+                "\\x86\\Release\\TGEngine.pdb")
             wrt(os.getcwd(), "\\LICENSE")
             dependencies_file.close()
             msg = "Finished!"
             clear()
         elif id == 5:
             find(os.getcwd())
-            msg = "Found " + str(files) + " files\nWith " + str(loc) + " lines of code"
+            msg = "Found " + str(files) + " files\nWith " + str(
+                loc) + " lines of code"
             clear()
             return
         elif id == 6:
@@ -152,7 +180,9 @@ def trigger(id):
             prname = input()
             os.mkdir(prname)
             for x in os.listdir("default_project"):
-                shutil.copyfile("default_project/" + x, prname + "/" + x.replace("%projectname%", prname))
+                shutil.copyfile(
+                    "default_project/" + x,
+                    prname + "/" + x.replace("%projectname%", prname))
             for x in os.listdir(prname):
                 fls = ""
                 with open(prname + "/" + x, "r") as file:
