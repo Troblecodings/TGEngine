@@ -77,7 +77,7 @@ def updateSubmodules():
     p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"],
                          cwd=os.getcwd())
     p.wait()
-    p = subprocess.Popen("git submodule foreach git pull origin master",
+    p = subprocess.Popen(["git", "submodule", "foreach", "git", "pull", "origin", "master"],
                          cwd=os.getcwd())
     p.wait()
 
