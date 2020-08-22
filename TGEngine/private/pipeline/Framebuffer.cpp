@@ -1,8 +1,8 @@
-#include "Framebuffer.hpp"
-#include "window/Window.hpp"
-#include "RenderPass.hpp"
-#include "Swapchain.hpp"
-#include "PrePipeline.hpp"
+#include "../../public/pipeline/Framebuffer.hpp"
+#include "../../public/pipeline/window/Window.hpp"
+#include "../../public/pipeline/RenderPass.hpp"
+#include "../../public/pipeline/Swapchain.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
 
 VkFramebuffer* frameBuffer;
 VkImageView* imageView;

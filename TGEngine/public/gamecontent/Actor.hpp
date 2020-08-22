@@ -1,9 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include "../Error.hpp"
-#include "../util/VectorUtil.hpp"
-#include "Material.hpp"
+#include "../../public/Error.hpp"
+#include "../../public/util/VectorUtil.hpp"
+#include "../../public/gamecontent/Material.hpp"
 
 namespace tge::gmc {
 

@@ -1,8 +1,8 @@
-#include "CommandBuffer.hpp"
-#include "../gamecontent/Actor.hpp"
-#include "window/Window.hpp"
-#include "../io/Resource.hpp"
-#include "../io/Font.hpp"
+#include "../../public/pipeline/CommandBuffer.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/pipeline/window/Window.hpp"
+#include "../../public/io/Resource.hpp"
+#include "../../public/io/Font.hpp"
 
 VkCommandPool commandPool;
 VkFence singelTimeCommandBufferFence;

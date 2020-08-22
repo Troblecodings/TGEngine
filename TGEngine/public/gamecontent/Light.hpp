@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "../pipeline/buffer/UniformBuffer.hpp"
-#include "Actor.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/buffer/UniformBuffer.hpp"
+#include "../../public/gamecontent/Actor.hpp"
 
 namespace tge {
 	namespace gmc {

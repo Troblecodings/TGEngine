@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Stdbase.hpp"
+#include "../../public/Stdbase.hpp"
 #include <functional>
 
 extern uint32_t imageIndex;

@@ -1,4 +1,4 @@
-#include "Font.hpp"
+#include "../../public/io/Font.hpp"
 
 namespace tge::fnt {
 

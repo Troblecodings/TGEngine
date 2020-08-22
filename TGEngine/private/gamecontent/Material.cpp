@@ -1,6 +1,6 @@
-#include "Material.hpp"
-#include "../pipeline/Device.hpp"
-#include "../pipeline/buffer/UniformBuffer.hpp"
+#include "../../public/gamecontent/Material.hpp"
+#include "../../public/pipeline/Device.hpp"
+#include "../../public/pipeline/buffer/UniformBuffer.hpp"
 
 namespace tge::gmc {
 

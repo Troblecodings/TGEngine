@@ -1,4 +1,4 @@
-#include "ShaderPipes.hpp"
+#include "../../public/resources/ShaderPipes.hpp"
 // Auto generated / Don't change
 
 VkPipelineShaderStageCreateInfo ColorOnlyNormalShader[2];

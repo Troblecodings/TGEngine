@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "Device.hpp"
-#include "PrePipeline.hpp"
-#include "Framebuffer.hpp"
-#include "CommandBuffer.hpp"
-#include "Pipe.hpp"
-#include "RenderPass.hpp"
-#include "DepthStencil.hpp"
-#include "../gamecontent/camera/Camera.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/Device.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
+#include "../../public/pipeline/Framebuffer.hpp"
+#include "../../public/pipeline/CommandBuffer.hpp"
+#include "../../public/pipeline/Pipe.hpp"
+#include "../../public/pipeline/RenderPass.hpp"
+#include "../../public/pipeline/DepthStencil.hpp"
+#include "../../public/gamecontent/camera/Camera.hpp"
 
 extern VkSwapchainKHR swapchain;
 extern VkImage* swapchainImages;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Stdbase.hpp"
+#include "../../public/Stdbase.hpp"
 
 #define printExtend(x) cout << "width:" << x.width << " height:" << x.height << endl; 
 

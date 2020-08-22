@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Memory.hpp"
-#include "../Descriptors.hpp"
+#include "../../../public/pipeline/buffer/Memory.hpp"
+#include "../../../public/pipeline/Descriptors.hpp"
 
 namespace tge::buf {
 

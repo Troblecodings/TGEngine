@@ -1,5 +1,5 @@
 #pragma once
-#include "ShaderData.hpp"
+#include "../../public/resources/ShaderData.hpp"
 // Auto generated / Don't change
 
 extern VkPipelineShaderStageCreateInfo ColorOnlyNormalShader[2];

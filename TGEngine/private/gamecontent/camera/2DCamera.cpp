@@ -1,6 +1,6 @@
-#include "2DCamera.hpp"
-#include "../../pipeline/buffer/UniformBuffer.hpp"
-#include "../../pipeline/window/Window.hpp"
+#include "../../../public/gamecontent/camera/2DCamera.hpp"
+#include "../../../public/pipeline/buffer/UniformBuffer.hpp"
+#include "../../../public/pipeline/window/Window.hpp"
 
 using namespace tge::buf;
 

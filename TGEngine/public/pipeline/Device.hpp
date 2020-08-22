@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Instance.hpp"
-#include "../vlib/VulkanBuffer.hpp"
+#include "../../public/pipeline/Instance.hpp"
+#include "../../public/vlib/VulkanBuffer.hpp"
 
 extern VkPhysicalDevice physicalDevice;
 extern VkPhysicalDeviceProperties deviceProperties;

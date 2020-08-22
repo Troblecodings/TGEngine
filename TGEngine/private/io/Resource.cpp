@@ -1,8 +1,8 @@
-#include "Resource.hpp"
-#include "../io/Files.hpp"
-#include "../io/Font.hpp"
-#include "../gamecontent/Actor.hpp"
-#include "../pipeline/CommandBuffer.hpp"
+#include "../../public/io/Resource.hpp"
+#include "../../public/io/Files.hpp"
+#include "../../public/io/Font.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/pipeline/CommandBuffer.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace tge::io {

@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
-#include "Device.hpp"
+#include "../../public/pipeline/Device.hpp"
 
 struct ShaderPipe {
 

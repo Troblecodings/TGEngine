@@ -1,5 +1,5 @@
-#include "StaticCamera.hpp"
-#include "../../pipeline/window/Window.hpp"
+#include "../../../public/gamecontent/camera/StaticCamera.hpp"
+#include "../../../public/pipeline/window/Window.hpp"
 
 namespace tge {
 	namespace gmc {

@@ -1,6 +1,6 @@
-#include "Texturebuffer.hpp"
-#include "../CommandBuffer.hpp"
-#include "../Descriptors.hpp"
+#include "../../../public/pipeline/buffer/Texturebuffer.hpp"
+#include "../../../public/pipeline/CommandBuffer.hpp"
+#include "../../../public/pipeline/Descriptors.hpp"
 
 namespace tge::tex {
 

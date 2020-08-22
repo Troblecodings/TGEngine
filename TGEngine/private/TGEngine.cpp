@@ -1,10 +1,10 @@
-#include "TGEngine.hpp"
-#include "gamecontent/Light.hpp"
-#include "pipeline/window/Window.hpp"
-#include "pipeline/buffer/UniformBuffer.hpp"
-#include "io/Resource.hpp"
-#include "resources/ShaderData.hpp"
-#include "io/Font.hpp"
+#include "../public/TGEngine.hpp"
+#include "../public/gamecontent/Light.hpp"
+#include "../public/pipeline/window/Window.hpp"
+#include "../public/pipeline/buffer/UniformBuffer.hpp"
+#include "../public/io/Resource.hpp"
+#include "../public/resources/ShaderData.hpp"
+#include "../public/io/Font.hpp"
 
 using namespace std;
 using namespace tge::tex;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "Device.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/Device.hpp"
 #include <algorithm>
 
 extern VkSurfaceFormatKHR usedSurfaceFormat;

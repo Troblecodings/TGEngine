@@ -1,5 +1,5 @@
-#include "PrePipeline.hpp"
-#include "window/Window.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 
 VkSurfaceFormatKHR usedSurfaceFormat;
 VkFormat usedDepthFormat = VK_FORMAT_UNDEFINED;

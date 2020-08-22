@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-#include "../Error.hpp"
+#include "../../public/Error.hpp"
 
 #ifdef _WIN32
 #include <direct.h>

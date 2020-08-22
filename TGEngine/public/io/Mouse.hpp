@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../util/VectorUtil.hpp"
+#include "../../public/util/VectorUtil.hpp"
 
 #include <glm/glm.hpp>
 

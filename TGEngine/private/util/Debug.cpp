@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Debug.hpp"
+#include "../../public/util/Debug.hpp"
 
 using namespace std;
 

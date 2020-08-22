@@ -3,12 +3,12 @@
 #include <vector>
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
-#include "../stb/stb_truetype.h"
-#include "../pipeline/buffer/Memory.hpp"
-#include "../gamecontent/Actor.hpp"
-#include "../drawlib/Quad.hpp"
-#include "../pipeline/CommandBuffer.hpp"
-#include "../pipeline/window/Window.hpp"
+#include "../../public/stb/stb_truetype.h"
+#include "../../public/pipeline/buffer/Memory.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/drawlib/Quad.hpp"
+#include "../../public/pipeline/CommandBuffer.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 #include <type_traits>
 
 namespace tge::fnt {

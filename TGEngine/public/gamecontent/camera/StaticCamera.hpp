@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Stdbase.hpp"
-#include "Camera.hpp"
+#include "../../../public/Stdbase.hpp"
+#include "../../../public/gamecontent/camera/Camera.hpp"
 
 namespace tge {
 	namespace gmc {

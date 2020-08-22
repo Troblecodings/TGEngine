@@ -1,4 +1,4 @@
-#include "RenderPass.hpp"
+#include "../../public/pipeline/RenderPass.hpp"
 
 VkRenderPass renderPass;
 

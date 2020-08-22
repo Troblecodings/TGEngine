@@ -1,4 +1,4 @@
-#include "Memory.hpp"
+#include "../../../public/pipeline/buffer/Memory.hpp"
 
 namespace tge::buf {
 

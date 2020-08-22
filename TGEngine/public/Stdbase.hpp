@@ -11,11 +11,11 @@
 #include <vector>
 #include <string>
 #include <thread>
-#include "io/Properties.hpp"
-#include "util/Math.hpp"
+#include "../public/io/Properties.hpp"
+#include "../public/util/Math.hpp"
 #include <glm/glm.hpp>
-#include "util/TGVertex.hpp"
-#include "Error.hpp"
+#include "../public/util/TGVertex.hpp"
+#include "../public/Error.hpp"
 
 extern tge::pro::Properties tgeproperties;
 extern uint32_t imageCount;

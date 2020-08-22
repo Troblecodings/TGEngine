@@ -1,4 +1,4 @@
-#include "StagingBuffer.hpp"
+#include "../../../public/pipeline/buffer/StagingBuffer.hpp"
 
 std::vector<StagingBuffer*> staging_buffer;
 

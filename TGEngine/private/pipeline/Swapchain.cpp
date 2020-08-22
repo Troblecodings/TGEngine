@@ -1,10 +1,10 @@
-#include "Swapchain.hpp"
-#include "window/Window.hpp"
-#include "../gamecontent/Actor.hpp"
-#include "../resources/ShaderPipes.hpp"
-#include "../gamecontent/PlayerController.hpp"
-#include "../pipeline/Pipe.hpp"
-#include "../pipeline/Draw.hpp"
+#include "../../public/pipeline/Swapchain.hpp"
+#include "../../public/pipeline/window/Window.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/resources/ShaderPipes.hpp"
+#include "../../public/gamecontent/PlayerController.hpp"
+#include "../../public/pipeline/Pipe.hpp"
+#include "../../public/pipeline/Draw.hpp"
 
 VkImage* swapchainImages;
 VkSwapchainKHR swapchain;

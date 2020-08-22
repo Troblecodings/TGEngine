@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Stdbase.hpp"
-#include "pipeline/Pipeline.hpp"
-#include "pipeline/Draw.hpp"
-#include "gamecontent/Actor.hpp"
-#include "gamecontent/camera/Camera.hpp"
+#include "../public/Stdbase.hpp"
+#include "../public/pipeline/Pipeline.hpp"
+#include "../public/pipeline/Draw.hpp"
+#include "../public/gamecontent/Actor.hpp"
+#include "../public/gamecontent/camera/Camera.hpp"
 
 void initEngine();
 

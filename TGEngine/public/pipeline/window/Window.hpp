@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../../Stdbase.hpp"
-#include "../Instance.hpp"
+#include "../../../public/Stdbase.hpp"
+#include "../../../public/pipeline/Instance.hpp"
 #include <string>
-#include "../../io/Mouse.hpp"
-#include "../../io/Keyboard.hpp"
-#include "../../gamecontent/PlayerController.hpp"
+#include "../../../public/io/Mouse.hpp"
+#include "../../../public/io/Keyboard.hpp"
+#include "../../../public/gamecontent/PlayerController.hpp"
 
 namespace tge::win {
 

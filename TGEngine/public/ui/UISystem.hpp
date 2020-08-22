@@ -3,8 +3,8 @@
 #include <vector>
 #include <functional>
 #include <future>
-#include "../io/Font.hpp"
-#include "../drawlib/Quad.hpp"
+#include "../../public/io/Font.hpp"
+#include "../../public/drawlib/Quad.hpp"
 
 namespace tge::ui {
 

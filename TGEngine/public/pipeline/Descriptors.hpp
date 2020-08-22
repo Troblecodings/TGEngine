@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "Device.hpp"
-#include "../pipeline/buffer/Memory.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/Device.hpp"
+#include "../../public/pipeline/buffer/Memory.hpp"
 
 extern VkPipelineLayout pipelineLayout;
 extern VkDescriptorSet mainDescriptorSets[3];

@@ -1,4 +1,4 @@
-#include "Instance.hpp"
+#include "../../public/pipeline/Instance.hpp"
 
 VkResult lastResult;
 VkInstance instance;

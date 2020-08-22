@@ -1,5 +1,5 @@
-#include "UniformBuffer.hpp"
-#include "../../gamecontent/Material.hpp"
+#include "../../../public/pipeline/buffer/UniformBuffer.hpp"
+#include "../../../public/gamecontent/Material.hpp"
 
 namespace tge::buf {
 

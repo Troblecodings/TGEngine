@@ -1,5 +1,5 @@
-#include "Device.hpp"
-#include "window/Window.hpp"
+#include "../../public/pipeline/Device.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 
 VkPhysicalDevice physicalDevice;
 VkPhysicalDeviceProperties deviceProperties;

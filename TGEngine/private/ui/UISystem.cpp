@@ -1,7 +1,7 @@
-#include "UISystem.hpp"
-#include "../pipeline/window/Window.hpp"
+#include "../../public/ui/UISystem.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 #include <string>
-#include "../pipeline/Draw.hpp"
+#include "../../public/pipeline/Draw.hpp"
 
 using namespace tge::win;
 

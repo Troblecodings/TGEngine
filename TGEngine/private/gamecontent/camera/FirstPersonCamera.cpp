@@ -1,5 +1,5 @@
-#include "FirstPersonCamera.hpp"
-#include "../../pipeline/window/Window.hpp"
+#include "../../../public/gamecontent/camera/FirstPersonCamera.hpp"
+#include "../../../public/pipeline/window/Window.hpp"
 
 namespace tge {
 	namespace gmc {

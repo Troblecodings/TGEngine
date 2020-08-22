@@ -1,5 +1,5 @@
-#include "DepthStencil.hpp"
-#include "window/Window.hpp"
+#include "../../public/pipeline/DepthStencil.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 
 VkImage depthImage;
 VkImageView depthImageView;

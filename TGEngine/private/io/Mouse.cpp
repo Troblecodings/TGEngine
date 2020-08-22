@@ -1,4 +1,4 @@
-#include "Mouse.hpp"
+#include "../../public/io/Mouse.hpp"
 
 namespace tge::io {
 

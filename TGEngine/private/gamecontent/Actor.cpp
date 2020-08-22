@@ -1,6 +1,6 @@
-#include "Actor.hpp"
-#include "../pipeline/Descriptors.hpp"
-#include "../TGEngine.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/pipeline/Descriptors.hpp"
+#include "../../public/TGEngine.hpp"
 
 namespace tge::gmc {
 

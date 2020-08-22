@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "PrePipeline.hpp"
-#include "../vlib/VulkanBuffer.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
+#include "../../public/vlib/VulkanBuffer.hpp"
 
 extern VkImage depthImage;
 extern VkImageView depthImageView;

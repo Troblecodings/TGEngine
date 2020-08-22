@@ -1,10 +1,10 @@
 #pragma once
-#include "../../Stdbase.hpp"
+#include "../../../public/Stdbase.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "../Actor.hpp"
+#include "../../../public/gamecontent/Actor.hpp"
 
 namespace tge {
 	namespace gmc {

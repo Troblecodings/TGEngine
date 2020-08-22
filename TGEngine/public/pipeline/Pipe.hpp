@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "../resources/ShaderPipes.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/resources/ShaderPipes.hpp"
 
 namespace tge::pip {
 

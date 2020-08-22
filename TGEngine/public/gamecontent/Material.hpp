@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "../io/Files.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/io/Files.hpp"
 
 namespace tge::gmc {
 

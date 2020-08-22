@@ -1,7 +1,7 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include "VectorUtil.hpp"
+#include "../../public/util/glm/glm.hpp"
+#include "../../public/util/VectorUtil.hpp"
 
 struct TGVertex {
 	glm::vec3 position;

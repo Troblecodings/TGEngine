@@ -1,4 +1,4 @@
-#include "PlayerController.hpp"
+#include "../../public/gamecontent/PlayerController.hpp"
 
 namespace tge {
 	namespace gmc {

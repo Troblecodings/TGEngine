@@ -1,7 +1,7 @@
-#include "Camera.hpp"
-#include "../../io/Mouse.hpp"
-#include "../../io/Keyboard.hpp"
-#include "../../pipeline/buffer/UniformBuffer.hpp"
+#include "../../../public/gamecontent/camera/Camera.hpp"
+#include "../../../public/io/Mouse.hpp"
+#include "../../../public/io/Keyboard.hpp"
+#include "../../../public/pipeline/buffer/UniformBuffer.hpp"
 
 namespace tge {
 	namespace gmc {

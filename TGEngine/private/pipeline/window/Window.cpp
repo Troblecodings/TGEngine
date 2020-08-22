@@ -1,6 +1,6 @@
-#include "Window.hpp"
-#include "../../ui/UISystem.hpp"
-#include "../../io/Keyboard.hpp"
+#include "../../../public/pipeline/window/Window.hpp"
+#include "../../../public/ui/UISystem.hpp"
+#include "../../../public/io/Keyboard.hpp"
 
 namespace tge::win {
 

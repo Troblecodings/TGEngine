@@ -2,8 +2,8 @@
 
 #include <map>
 #include <string>
-#include "../Error.hpp"
-#include "Files.hpp"
+#include "../../public/Error.hpp"
+#include "../../public/io/Files.hpp"
 #include <stdio.h>
 #include <iostream>
 

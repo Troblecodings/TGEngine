@@ -1,5 +1,5 @@
-#include "Descriptors.hpp"
-#include "buffer/UniformBuffer.hpp"
+#include "../../public/pipeline/Descriptors.hpp"
+#include "../../public/pipeline/buffer/UniformBuffer.hpp"
 
 VkPipelineLayout pipelineLayout;
 VkDescriptorSet mainDescriptorSets[3];

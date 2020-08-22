@@ -1,8 +1,8 @@
-#include "Pipe.hpp"
-#include "RenderPass.hpp"
-#include "Descriptors.hpp"
-#include "PrePipeline.hpp"
-#include "window/Window.hpp"
+#include "../../public/pipeline/Pipe.hpp"
+#include "../../public/pipeline/RenderPass.hpp"
+#include "../../public/pipeline/Descriptors.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 
 namespace tge::pip {
 

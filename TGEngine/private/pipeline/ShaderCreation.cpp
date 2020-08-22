@@ -1,5 +1,5 @@
-#include "ShaderCreation.hpp"
-#include "Pipe.hpp"
+#include "../../public/pipeline/ShaderCreation.hpp"
+#include "../../public/pipeline/Pipe.hpp"
 
 VkPipelineShaderStageCreateInfo createShader(const unsigned char data[], VkShaderStageFlagBits flag, uint32_t size) {
 	VkShaderModule shader_module;

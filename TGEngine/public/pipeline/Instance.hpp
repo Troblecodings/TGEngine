@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "../util/VectorUtil.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/util/VectorUtil.hpp"
 
 extern VkResult lastResult;
 extern VkInstance instance;

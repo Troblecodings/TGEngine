@@ -1,4 +1,4 @@
-#include "Properties.hpp"
+#include "../../public/io/Properties.hpp"
 
 namespace tge::pro {
 

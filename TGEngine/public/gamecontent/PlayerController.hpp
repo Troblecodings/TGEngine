@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Stdbase.hpp"
+#include "../../public/Stdbase.hpp"
 
 namespace tge {
 	namespace gmc {

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "Device.hpp"
-#include "RenderPass.hpp"
-#include "Framebuffer.hpp"
-#include "Pipe.hpp"
-#include "Descriptors.hpp"
-#include "buffer/StagingBuffer.hpp"
-#include "../vlib/VulkanCommandBuffer.hpp"
-#include "../gamecontent/Material.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/Device.hpp"
+#include "../../public/pipeline/RenderPass.hpp"
+#include "../../public/pipeline/Framebuffer.hpp"
+#include "../../public/pipeline/Pipe.hpp"
+#include "../../public/pipeline/Descriptors.hpp"
+#include "../../public/pipeline/buffer/StagingBuffer.hpp"
+#include "../../public/vlib/VulkanCommandBuffer.hpp"
+#include "../../public/gamecontent/Material.hpp"
 
 #define SINGLE_TIME_COMMAND_BUFFER commandBuffer[imageCount]
 

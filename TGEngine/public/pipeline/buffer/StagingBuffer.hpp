@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Stdbase.hpp"
-#include "../../vlib/VulkanBuffer.hpp"
-#include "../../pipeline/Device.hpp"
-#include "Memory.hpp"
+#include "../../../public/Stdbase.hpp"
+#include "../../../public/vlib/VulkanBuffer.hpp"
+#include "../../../public/pipeline/Device.hpp"
+#include "../../../public/pipeline/buffer/Memory.hpp"
 
 /*
  * Holds information to create a staging buffer.

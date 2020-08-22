@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../io/Files.hpp"
-#include "vulkan/vulkan.h"
-#include "../Device.hpp"
+#include "../../../public/io/Files.hpp"
+#include "../../../public/pipeline/buffer/vulkan/vulkan.h"
+#include "../../../public/pipeline/Device.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
 #include "../../../stb/stb_image.h"

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../pipeline/Device.hpp"
-#include "../../vlib/VulkanBuffer.hpp"
+#include "../../../public/pipeline/Device.hpp"
+#include "../../../public/vlib/VulkanBuffer.hpp"
 
 namespace tge::buf {
 

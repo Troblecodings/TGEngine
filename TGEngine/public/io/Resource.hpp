@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "../gamecontent/Material.hpp"
-#include "../gamecontent/Actor.hpp"
-#include "../pipeline/buffer/Texturebuffer.hpp"
-#include "../pipeline/buffer/Memory.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/gamecontent/Material.hpp"
+#include "../../public/gamecontent/Actor.hpp"
+#include "../../public/pipeline/buffer/Texturebuffer.hpp"
+#include "../../public/pipeline/buffer/Memory.hpp"
 
 namespace tge::io {
 

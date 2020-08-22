@@ -1,5 +1,5 @@
 #pragma once
-#include "../pipeline/ShaderCreation.hpp"
+#include "../../public/pipeline/ShaderCreation.hpp"
 void initShader();
 void destroyShader();
 

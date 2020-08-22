@@ -1,6 +1,6 @@
-#include "Draw.hpp"
-#include "Swapchain.hpp"
-#include "window/Window.hpp"
+#include "../../public/pipeline/Draw.hpp"
+#include "../../public/pipeline/Swapchain.hpp"
+#include "../../public/pipeline/window/Window.hpp"
 
 uint32_t imageIndex;
 VkFence drawFence;

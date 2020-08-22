@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Stdbase.hpp"
-#include "PrePipeline.hpp"
-#include "Swapchain.hpp"
+#include "../../public/Stdbase.hpp"
+#include "../../public/pipeline/PrePipeline.hpp"
+#include "../../public/pipeline/Swapchain.hpp"
 
 extern VkRenderPass renderPass;
 
