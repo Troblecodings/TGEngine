@@ -14,7 +14,6 @@
 #include "../public/io/Properties.hpp"
 #include "../public/util/Math.hpp"
 #include <glm/glm.hpp>
-#include "../public/util/TGVertex.hpp"
 #include "../public/Error.hpp"
 
 extern tge::pro::Properties tgeproperties;
@@ -32,8 +31,10 @@ TGERROR(lastResult)\
  */
 #define TGE_ASSERT(assertion, action) if(assertion) { action }
 
-#ifdef _WIN32
-#define TGE_CRASH(message, code) MessageBox(NULL, message, L"Error!", MB_ICONERROR | MB_OK); TGERROR(code);
+#if defined(_WIN32) && defined(UNICODE)
+#define TGE_CRASH(message, code) MessageBox(NULL, L##message, L"Error!", MB_ICONERROR | MB_OK); TGERROR(code);
+#elif defined(_WIN32)
+#define TGE_CRASH(message, code) MessageBox(NULL, message, "Error!", MB_ICONERROR | MB_OK); TGERROR(code);
 #else
 #define TGE_CRASH(message, code)  
 #endif

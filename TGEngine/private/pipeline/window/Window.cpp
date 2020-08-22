@@ -171,11 +171,12 @@ namespace tge::win {
 		if (isDecorated) {
 			//Char unicode conversation
 			const char* ch = tgeproperties.getStringOrDefault("app_name", "TGEngine");
+#ifdef UNICODE
 			size_t conv = strlen(ch) + 1;
 			wchar_t* wc = new wchar_t[conv];
 			mbstowcs_s(&conv, wc, conv, ch, _TRUNCATE);
 			wc[conv] = '\0';
-
+#endif
 			DWORD style = WS_CLIPSIBLINGS | WS_CAPTION;
 			if (!isConsumingInput) {
 				style |= WS_SYSMENU;
@@ -189,13 +190,19 @@ namespace tge::win {
 			if (tgeproperties.getBooleanOrDefault("resizeable", true)) {
 				style |= WS_SIZEBOX;
 			}
-			winHWND = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, (LPCWCHAR)wc, style, win::mainWindowX, win::mainWindowY, win::mainWindowWidth + 16, win::mainWindowHeight + 39, nullptr, nullptr, systemModule, nullptr);
+			winHWND = CreateWindowEx(WS_EX_APPWINDOW, TG_MAIN_WINDOW_HANDLE, 
+#ifdef UNICODE
+				wc,
+#else
+				ch,
+#endif
+				style, win::mainWindowX, win::mainWindowY, win::mainWindowWidth + 16, win::mainWindowHeight + 39, nullptr, nullptr, systemModule, nullptr);
 		}
 		else {
 			winHWND = CreateWindowEx(WS_EX_LEFT, TG_MAIN_WINDOW_HANDLE, nullptr, WS_POPUP | WS_VISIBLE | WS_SYSMENU, win::mainWindowX, win::mainWindowY, win::mainWindowWidth, win::mainWindowHeight, nullptr, nullptr, systemModule, nullptr);
 		}
 
-		TGE_ASSERT(!winHWND, TGE_CRASH(L"Window creation failed, sorry!", -400));
+		TGE_ASSERT(!winHWND, TGE_CRASH("Window creation failed, sorry!", -400));
 
 		ShowWindow(winHWND, SW_SHOW);
 		UpdateWindow(winHWND);
@@ -223,14 +230,14 @@ namespace tge::win {
 		}
 		Rid[1].hwndTarget = winHWND;
 		if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE) {
-			TGE_CRASH(L"Can not register raw input device!", -401)
+			TGE_CRASH("Can not register raw input device!", -401)
 		}
 #endif
 	}
 
 	void createWindowClass() {
 
-		TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemModule), TGE_CRASH(L"Couldn't get window module handle!", -402));
+		TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemModule), TGE_CRASH("Couldn't get window module handle!", -402));
 
 		WNDCLASSEX  wndclass = {
 			sizeof(WNDCLASSEX),
@@ -247,7 +254,7 @@ namespace tge::win {
 			NULL
 		};
 
-		TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH(L"Couldn't register window class!", -403));
+		TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH("Couldn't register window class!", -403));
 	}
 
 	void destroyWindows() {

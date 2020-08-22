@@ -3,6 +3,8 @@
 project ("TGTools")
 set (CMAKE_CXX_STANDARD 20)
 
+include_directories("../dependencies/Include" "../dependencies/Third-Party/Include")
+
 add_library (TGEngine STATIC 
 	"public/Error.hpp"
 	"public/Stdbase.hpp"
@@ -43,7 +45,7 @@ add_library (TGEngine STATIC
 	"public/ui/UISystem.hpp"
 	"public/util/Debug.hpp"
 	"public/util/Math.hpp"
-	"public/util/TGVertex.hpp"
+	
 	"public/util/VectorUtil.hpp"
 	"private/Stdbase.cpp"
 	"private/TGEngine.cpp"
@@ -80,11 +82,11 @@ add_library (TGEngine STATIC
 	"private/pipeline/buffer/UniformBuffer.cpp"
 	"private/pipeline/window/Window.cpp"
 	"private/resources/ShaderData.cpp"
-	"private/resources/ShaderData.hpp"
+	"public/resources/ShaderData.hpp"
 	"private/resources/ShaderPipes.cpp"
-	"private/resources/ShaderPipes.hpp"
+	"public/resources/ShaderPipes.hpp"
 	"private/ui/UISystem.cpp"
 	"private/util/Debug.cpp"
-	"private/util/TGVertex.cpp"
+	
 	"private/util/VectorUtil.cpp"
 )

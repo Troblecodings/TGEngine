@@ -37,7 +37,12 @@ namespace tge::win {
 #include <Windows.h>
 #include <tchar.h>
 #include <windowsx.h>
+
+#ifdef UNICODE
 #define TG_MAIN_WINDOW_HANDLE L"TGHANDLE"
+#else
+#define TG_MAIN_WINDOW_HANDLE "TGHANDLE"
+#endif
 
     extern HMODULE systemModule;
     extern HWND winHWND;
