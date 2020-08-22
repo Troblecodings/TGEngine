@@ -1,4 +1,4 @@
-#include "Light.hpp"
+#include "../../public/gamecontent/Light.hpp"
 
 namespace tge {
 	namespace gmc {

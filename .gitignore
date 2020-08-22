@@ -29,6 +29,7 @@ bld/
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
+./TGEngine/out
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -296,3 +297,4 @@ dependencies/deps.zip
 /TGEngine/resources/Resources.json
 /TGEngine/resources/Resources.tgr
 *.spv
+/TGEngine/out
