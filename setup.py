@@ -11,14 +11,14 @@ from shutil import copyfile
 import platform
 
 osn = platform.system()
-if osn == "linux":
-
-    def clear():
-        os.system("clear")
-else:
+if osn == "windows":
 
     def clear():
         os.system("cls")
+else:
+
+    def clear():
+        os.system("clear")
 
 
 vulkan = os.getenv("VULKAN_SDK")
