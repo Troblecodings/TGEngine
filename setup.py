@@ -11,12 +11,10 @@ from shutil import copyfile
 import platform
 
 osn = platform.system()
-if osn == "windows":
-
+if osn == "Windows":
     def clear():
         os.system("cls")
 else:
-
     def clear():
         os.system("clear")
 
@@ -105,12 +103,12 @@ def trigger(id):
             updateSubmodules()
             print("Checking version!")
             version = ""
-            if os.path.exists("dependencies/dependencie_version.txt"):
-                with open(
-                        "dependencies/dependencie_version.txt") as versionfile:
+            VERSION_FILE = "./dependencies/dependencie_version.txt"
+            if os.path.exists(VERSION_FILE):
+                with open(VERSION_FILE) as versionfile:
                     version = versionfile.read()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
-            with open("dependencies/dependencie_version.txt") as versionfile:
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
+            with open(VERSION_FILE) as versionfile:
                 if versionfile.read() == version:
                     msg = "Already up to date!"
                     clear()
