@@ -123,7 +123,7 @@ def trigger(id):
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
             dependencies_file.extractall(path="dependencies\\")
             dependencies_file.close()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()
