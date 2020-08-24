@@ -24,7 +24,7 @@ namespace tge::fnt {
 		extern std::vector<tge::fnt::Font> fonts;
 		extern std::vector<tge::buf::BufferObject> fontBufferObjects;
 
-		constexpr float homogenHeight(const Font* pFont) {
+		inline const float homogenHeight(const Font* pFont) {
 			return pFont->fontheight / tge::win::mainWindowHeight;
 		}
 
