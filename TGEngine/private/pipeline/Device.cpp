@@ -36,7 +36,7 @@ void createDevice() {
 	std::vector<VkQueueFamilyProperties> queueFamailyProperties(count);
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, queueFamailyProperties.data());
 	count = 0;
-	for each (VkQueueFamilyProperties currentQueueFamily in queueFamailyProperties) {
+	for (VkQueueFamilyProperties currentQueueFamily : queueFamailyProperties) {
 		if ((currentQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT) {
 			queueIndex = count;
 			queueFamily = currentQueueFamily;
@@ -73,7 +73,7 @@ void createDevice() {
 	for (uint32_t i = 0; i < extensionCount; i++) {
 		VkExtensionProperties extension = usableExtensionNames[i];
 		OUT_LV_DEBUG("Available " << extension.extensionName);
-		for each (const char* name in extensionsEnable) {
+		for (const char* name : extensionsEnable) {
 			if (strcmp(extension.extensionName, name) == 0) {
 				enabledExtensionNames.push_back(name);
 				OUT_LV_DEBUG("Active " << name);

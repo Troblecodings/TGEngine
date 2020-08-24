@@ -33,7 +33,7 @@ namespace tge::io {
     void loadResourceFile(const char* name) noexcept;
 
     /*
-     * This will destroy all vulkan tide ressources of the map
+     * This will destroy all vulkan ressources of the map
      */
     void destroyResource() noexcept;
 

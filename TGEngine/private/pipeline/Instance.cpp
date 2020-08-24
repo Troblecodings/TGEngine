@@ -37,7 +37,7 @@ void createInstance() {
 	for (uint32_t i = 0; i < layerCount; i++) {
 		VkLayerProperties layer = layerProperties[i];
 		OUT_LV_DEBUG("Available " << layer.layerName);
-		for each (const char* name in layersToEnable) {
+		for (const char* name : layersToEnable) {
 			if (strcmp(layer.layerName, name) == 0) {
 				enabledLayerNames.push_back(name);
 				OUT_LV_DEBUG("Activate Layer: " << name);
@@ -65,7 +65,7 @@ void createInstance() {
 	for (uint32_t i = 0; i < extensionCount; i++) {
 		VkExtensionProperties extension = usableExtensionNames[i];
 		OUT_LV_DEBUG("Available " << extension.extensionName);
-		for each (const char* name in extensionsToEnable) {
+		for (const char* name : extensionsToEnable) {
 			if (strcmp(extension.extensionName, name) == 0) {
 				enabledExtensionNames.push_back(name);
 				OUT_LV_DEBUG("Active " << name);
