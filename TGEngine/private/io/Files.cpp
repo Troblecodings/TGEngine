@@ -16,10 +16,9 @@ namespace tge {
 				ASSERT_NONE_NULL_DB((*name != 0), "Filename is empty!", TG_ERR_DB_EMPTY_STRING)
 				ASSERT_NONE_NULL_DB(mode, "Mode is null [" << name << "] !", TG_ERR_DB_NULLPTR)
 				ASSERT_NONE_NULL_DB((*mode != 0), "Mode is empty [" << name << "] !", TG_ERR_DB_EMPTY_STRING)
-				File file;
-			errno_t err = fopen_s(&file, name, mode);
-			ASSERT_NONE_NULL_DB(!err, "Can not open file [" << name << "]!", TG_ERR_DB_FILE_NOT_FOUND)
-				return file;
+			File file = fopen(name, mode);
+			ASSERT_NONE_NULL_DB(!file, "Can not open file [" << name << "]!", TG_ERR_DB_FILE_NOT_FOUND)
+			return file;
 		}
 
 		File readFileSize(const char* name, const char* mode, long* fileLength) {
