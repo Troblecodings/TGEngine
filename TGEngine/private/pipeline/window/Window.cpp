@@ -239,9 +239,8 @@ namespace tge::win {
 #endif
 	}
 
-#ifdef _WIN32
 	void createWindowClass() {
-
+#ifdef _WIN32
 		TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemModule), TGE_CRASH("Couldn't get window module handle!", -402));
 
 		WNDCLASSEX  wndclass = {
@@ -260,8 +259,8 @@ namespace tge::win {
 		};
 
 		TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH("Couldn't register window class!", -403));
-	}
 #endif
+	}
 
 	void destroyWindows() {
 #if defined(_WIN32) || defined(_WIN64)

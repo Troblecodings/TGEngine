@@ -49,11 +49,6 @@ namespace tge::win {
 	extern HCURSOR winHCURSOR;
 
 	LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	/*
-	 * Creates the actual window
-	 * Attention! Much platform code here!
-	 */
-	void createWindowClass();
 #endif
 
 	/*
@@ -65,6 +60,12 @@ namespace tge::win {
 	 * Destroys all windows
 	 */
 	void destroyWindows();
+
+	/*
+	 * Creates the actual window
+	 * Attention! Much platform code here!
+	 */
+	void createWindowClass();
 
 	/*
 	 * Create surfaces for each created window
