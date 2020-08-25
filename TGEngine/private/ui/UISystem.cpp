@@ -2,6 +2,7 @@
 #include "../../public/pipeline/window/Window.hpp"
 #include <string>
 #include "../../public/pipeline/Draw.hpp"
+#include "../../public/ui/KeyboardLayout.hpp"
 
 using namespace tge::win;
 
@@ -47,15 +48,15 @@ namespace tge::ui {
 					return;
 				stringBuffer[stringBuffer.length() - 1] = (char)vkey + (isShiftNotPressed * 0x20);
 				stringBuffer.push_back('_');
-			} else if (vkey == VK_SHIFT) {
+			} else if (vkey == key::SHIFT) {
 				isShiftNotPressed = pressed;
 				return;
-			} else if (vkey == VK_BACK) {
+			} else if (vkey == key::BACK) {
 				if (pressed || stringBuffer.length() < 2)
 					return;
 				stringBuffer[stringBuffer.length() - 2] = '_';
 				stringBuffer.pop_back();
-			} else if (vkey == VK_RETURN) {
+			} else if (vkey == key::RETURN) {
 				exit = true;
 				fnt::destroyStrings(createdStringId);
 				executionQueue.push_back(fillCommandBuffer);
