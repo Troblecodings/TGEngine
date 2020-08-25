@@ -16,7 +16,7 @@ void createInstance() {
 	applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
 	// Layer list
-	constexpr char* layersToEnable[] = {
+	constexpr const char* layersToEnable[] = {
 	#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
 		"VK_LAYER_LUNARG_assistant_layer",
@@ -47,7 +47,7 @@ void createInstance() {
 	}
 
 	// Extension list
-	const char* extensionsToEnable[] = {
+	constexpr const char* extensionsToEnable[] = {
 #ifdef DEBUG
 	VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
 #endif // DEBUG
