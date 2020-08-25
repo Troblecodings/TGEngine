@@ -83,11 +83,11 @@ namespace tge::pro {
 					stage = 6;
 				} else if (stage == 5) {
 					namebuf = new char[buffer.size() + 1];
-					strcpy_s(namebuf, buffer.size() + 1, buffer.c_str());
+					strcpy(namebuf, buffer.c_str());
 					stage = 2;
 				} else if (stage == 6) {
 					valuebuf = new char[buffer.size() + 1];
-					strcpy_s(valuebuf, buffer.size() + 1, buffer.c_str());
+					strcpy(valuebuf, buffer.c_str());
 					stage = 2;
 				}
 				buffer.clear();
