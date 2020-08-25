@@ -16,8 +16,8 @@ void createInstance() {
 	applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
 	// Layer list
-	const char* layersToEnable[] = {
-		#ifdef DEBUG 
+	constexpr char* layersToEnable[] = {
+	#ifdef DEBUG 
 		"VK_LAYER_LUNARG_standard_validation",
 		"VK_LAYER_LUNARG_assistant_layer",
 		"VK_LAYER_LUNARG_monitor",
@@ -51,8 +51,10 @@ void createInstance() {
 #ifdef DEBUG
 	VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
 #endif // DEBUG
-	VK_KHR_SURFACE_EXTENSION_NAME,
-	VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+#ifdef _WIN32
+	VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+#endif // _WIN
+	VK_KHR_SURFACE_EXTENSION_NAME
 	};
 
 	//Validation for the intance extensions

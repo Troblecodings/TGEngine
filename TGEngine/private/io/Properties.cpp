@@ -5,7 +5,7 @@ namespace tge::pro {
 	using namespace std;
 	using namespace tge::nio;
 
-	Properties readProperties(char* path) {
+	Properties readProperties(const char* path) {
 		Properties rtProperties;
 		File file = open(path, "rb");
 
@@ -100,7 +100,7 @@ namespace tge::pro {
 		return rtProperties;
 	}
 
-	char* Properties::getStringOrDefault(const char* name, char* def) {
+	const char* Properties::getStringOrDefault(const char* name, const char* def) {
 		for (size_t i = 0; i < this->stringNames.size(); i++)
 			if (strcmp(this->stringNames[i], name) == 0)
 				return this->strings[i];
@@ -128,7 +128,7 @@ namespace tge::pro {
 		return def;
 	}
 
-	char* Properties::getString(const char* name) {
+	const char* Properties::getString(const char* name) {
 		return this->getStringOrDefault(name, "");
 	}
 
@@ -144,7 +144,7 @@ namespace tge::pro {
 		return this->getIntOrDefault(name, 0);
 	}
 
-	void Properties::addString(const char* name, char* value) {
+	void Properties::addString(const char* name, const char* value) {
 		this->stringNames.push_back(name);
 		this->strings.push_back(value);
 	}
