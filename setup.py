@@ -11,14 +11,12 @@ from shutil import copyfile
 import platform
 
 osn = platform.system()
-if osn == "linux":
-
-    def clear():
-        os.system("clear")
-else:
-
+if osn == "Windows":
     def clear():
         os.system("cls")
+else:
+    def clear():
+        os.system("clear")
 
 
 vulkan = os.getenv("VULKAN_SDK")
@@ -77,7 +75,7 @@ def updateSubmodules():
     p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"],
                          cwd=os.getcwd())
     p.wait()
-    p = subprocess.Popen("git submodule foreach git pull origin master",
+    p = subprocess.Popen(["git", "submodule", "foreach", "git", "pull", "origin", "master"],
                          cwd=os.getcwd())
     p.wait()
 
@@ -105,12 +103,12 @@ def trigger(id):
             updateSubmodules()
             print("Checking version!")
             version = ""
-            if os.path.exists("dependencies/dependencie_version.txt"):
-                with open(
-                        "dependencies/dependencie_version.txt") as versionfile:
+            VERSION_FILE = "./dependencies/dependencie_version.txt"
+            if os.path.exists(VERSION_FILE):
+                with open(VERSION_FILE) as versionfile:
                     version = versionfile.read()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
-            with open("dependencies/dependencie_version.txt") as versionfile:
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
+            with open(VERSION_FILE) as versionfile:
                 if versionfile.read() == version:
                     msg = "Already up to date!"
                     clear()
@@ -123,9 +121,9 @@ def trigger(id):
                 shutil.rmtree("dependencies")
             print("Extracting Archive")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
-            dependencies_file.extractall(path="dependencies\\")
+            dependencies_file.extractall(path="./dependencies/")
             dependencies_file.close()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", "dependencies/dependencie_version.txt")
+            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
             os.remove("Dependencies.zip")
             msg = "Finished!"
             clear()

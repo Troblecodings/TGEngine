@@ -20,7 +20,7 @@ void createStagingBuffer(StagingBuffer* buffer) {
 }
 
 void destroyStagingBuffer() {
-	for each (StagingBuffer * buffer in staging_buffer) {
+	for (StagingBuffer* buffer : staging_buffer) {
 		vkFreeMemory(device, buffer->staging_buffer_device_memory, nullptr);
 		vkDestroyBuffer(device, buffer->staging_buffer, nullptr);
 	}

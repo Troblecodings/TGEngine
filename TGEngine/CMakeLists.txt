@@ -89,4 +89,4 @@ add_library (TGEngine STATIC
 	"private/util/Debug.cpp"
 	
 	"private/util/VectorUtil.cpp"
-)
+ "public/ui/KeyboardLayout.hpp")

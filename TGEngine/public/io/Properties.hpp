@@ -18,7 +18,7 @@ namespace tge::pro {
 	 */
 	struct Properties {
 		//name vectors
-		std::vector<char*> strings;
+		std::vector<const char*> strings;
 		std::vector<bool>  bools;
 		std::vector<int>   ints;
 		std::vector<float> floats;
@@ -31,7 +31,7 @@ namespace tge::pro {
 		/*
 		 * Gets the value or returns 0, false or an empty string
 		 */
-		char* getString(const char* name);
+		const char* getString(const char* name);
 		bool  getBoolean(const char* name);
 		float getFloat(const char* name);
 		int   getInt(const char* name);
@@ -39,7 +39,7 @@ namespace tge::pro {
 		/*
 		 * Gets the value or returns the default in case it can't find the name
 		 */
-		char* getStringOrDefault(const char* name, char* def);
+		const char* getStringOrDefault(const char* name, const char* def);
 		bool  getBooleanOrDefault(const char* name, bool def);
 		float getFloatOrDefault(const char* name, float def);
 		int   getIntOrDefault(const char* name, int def);
@@ -47,7 +47,7 @@ namespace tge::pro {
 		/*
 		 * Add values to the tgeproperties
 		 */
-		void addString(const char* name, char* value);
+		void addString(const char* name, const char* value);
 		void addBoolean(const char* name, bool value);
 		void addFloat(const char* name, float value);
 		void addInt(const char* name, int value);
@@ -63,5 +63,5 @@ namespace tge::pro {
 	*    <float name="testfloat" value="0.9"/>
 	*  </xml>
 	*/
-	Properties readProperties(char* path);
+	Properties readProperties(const char* path);
 }

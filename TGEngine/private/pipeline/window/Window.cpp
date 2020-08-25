@@ -140,20 +140,24 @@ namespace tge::win {
 		isConsumingInput = tgeproperties.getBooleanOrDefault("consumesinput", false);
 
 		if (isFullscreen) {
+#ifdef _WIN32
 			const HWND hDesktop = GetDesktopWindow();
 			RECT desktop;
 			GetWindowRect(hDesktop, &desktop);
 			mainWindowHeight = desktop.bottom;
 			mainWindowWidth = desktop.right;
+#endif
 		}
 		else if (tgeproperties.getBooleanOrDefault("center", true)) {
+#ifdef _WIN32
 			const HWND hDesktop = GetDesktopWindow();
 			RECT desktop;
 			GetWindowRect(hDesktop, &desktop);
-			mainWindowHeight = tgeproperties.getIntOrDefault("height", 400);
-			mainWindowWidth = tgeproperties.getIntOrDefault("width", 400);
 			mainWindowX = desktop.right / 2 - mainWindowWidth / 2;
 			mainWindowY = desktop.bottom / 2 - mainWindowHeight / 2;
+#endif
+			mainWindowHeight = tgeproperties.getIntOrDefault("height", 400);
+			mainWindowWidth = tgeproperties.getIntOrDefault("width", 400);
 		}
 		else {
 			mainWindowHeight = tgeproperties.getIntOrDefault("height", 400);
@@ -236,7 +240,7 @@ namespace tge::win {
 	}
 
 	void createWindowClass() {
-
+#ifdef _WIN32
 		TGE_ASSERT(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemModule), TGE_CRASH("Couldn't get window module handle!", -402));
 
 		WNDCLASSEX  wndclass = {
@@ -255,6 +259,7 @@ namespace tge::win {
 		};
 
 		TGE_ASSERT(!RegisterClassEx(&wndclass), TGE_CRASH("Couldn't register window class!", -403));
+#endif
 	}
 
 	void destroyWindows() {
