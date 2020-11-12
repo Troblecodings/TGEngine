@@ -297,6 +297,7 @@ namespace tge::io {
 		SIZE_CHECK;
 	}
 
+	
 	inline static void loadResourceFileV2(File file) noexcept {
 		std::vector<TextureInputInfo> textureInputInfos;
 
@@ -327,6 +328,71 @@ namespace tge::io {
 		return;
 	}
 
+	template<class Lambda, class LambdaInit, class T>
+	inline bool readBlock(File file, std::vector<T>& vector, Lambda l, LambdaInit i) {
+		uint32_t count = 0;
+		fread(&count, sizeof(uint32_t), 1, file);
+		vector.reserve(count);
+		for (uint32_t i = 0; i < count; i++) {
+			vector.push_back(l(i));
+		}
+		uint32_t reserved = 0;
+		fread(&reserved, sizeof(uint32_t), 1, file);
+		if constexpr (!std::is_null_pointer_v<i>) {
+			i(count);
+		}
+		return reserved == 0xFFFFFFFF;
+ 	}
+
+	template<class T, class Lambda>
+	inline bool readBlock(File file, std::vector<T>& vector, Lambda l) {
+		readBlock(file, vector, l, nullptr);
+	}
+
+	struct BufferPairs {
+		BufferInputInfo inputInfo;
+		BufferObject copyFromBuffer = { VK_NULL_HANDLE, VK_NULL_HANDLE };
+	};
+
+	inline bool loadBuffer(File file, std::vector<BufferPairs>& bufferInfos) {
+		return readBlock(file, bufferInfos, [=](auto index) {
+			BufferPairs pair;
+			BufferInputInfo& bufferInfo = pair.inputInfo;
+			fread(&bufferInfo.bufferUsageFlag, sizeof(size_t), 1, file);
+			fread(&bufferInfo.size, sizeof(size_t), 1, file);
+			bufferInfo.memoryIndex = vlibDeviceLocalMemoryIndex;
+			bufferInfo.flags = VK_SHADER_STAGE_ALL;
+
+			size_t size;
+			fread(&size, sizeof(size_t), 1, file);
+			if (size > bufferInfo.size)
+				return false;
+
+			if (size != 0) {
+				BufferInputInfo info = BufferInputInfo(bufferInfo);
+				info.memoryIndex = vlibDeviceHostVisibleCoherentIndex;
+				createBuffers(&info, 1, &pair.copyFromBuffer);
+				void* rawmemory;
+				CHECKFAIL(vkMapMemory(device, object.memory, 0, VK_WHOLE_SIZE, 0, &rawmemory));
+				fread(rawmemory, 1, size, file);
+				vkUnmapMemory(device, object.memory);
+			}
+			return pair;
+		}, [=](auto count)  { 
+			for (auto& info : bufferInfos) {
+				info.copyFromBuffer;
+			}
+		});
+	}
+
+	inline static void loadResourceFileV3(File file) {
+		std::vector<TextureInputInfo> textureInfos;
+		loadTexturesV2(file, textureInfos);
+
+		std::vector<BufferInputInfo> bufferInfos;
+		std::vector<BufferObject> bufferObjects;
+	}
+
 	void loadResourceFile(const char* name) noexcept {
 		File file = open(name, "rb");
 
@@ -343,6 +409,8 @@ namespace tge::io {
 			OUT_LV_DEBUG("Support for version 1 was removed, skipping!");
 		} else if (header == TGR_VERSION_2) {
 			loadResourceFileV2(file);
+		} else if (header == TGR_VERSION_3) {
+			loadResourceFileV3(file);
 		} else {
 			OUT_LV_DEBUG("Header does not match with the parser versions, skipping!");
 			return;

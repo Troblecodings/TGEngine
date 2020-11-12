@@ -24,3 +24,16 @@ extern VkMemoryAllocateInfo vlibBufferMemoryAllocateInfo;
 extern VkBufferCopy vlibBufferCopy;
 extern uint32_t vlibDeviceLocalMemoryIndex;
 extern uint32_t vlibDeviceHostVisibleCoherentIndex;
+
+inline VkBufferCreateInfo bufferCreateInfo(size_t size, VkBufferUsageFlags flags) {
+	VkBufferCreateInfo createInfo;
+	createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	createInfo.pNext = nullptr;
+	createInfo.flags = 0;
+	createInfo.size = size;
+	createInfo.usage = flags;
+	createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	createInfo.queueFamilyIndexCount = 0;
+	createInfo.pQueueFamilyIndices = nullptr;
+	return createInfo;
+}
