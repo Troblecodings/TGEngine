@@ -3,8 +3,6 @@
 project ("TGTools")
 set (CMAKE_CXX_STANDARD 20)
 
-include_directories("../dependencies/Include" "../dependencies/Third-Party/Include")
-
 add_library (TGEngine STATIC 
 	"public/Error.hpp"
 	"public/Stdbase.hpp"
@@ -87,6 +85,14 @@ add_library (TGEngine STATIC
 	"public/resources/ShaderPipes.hpp"
 	"private/ui/UISystem.cpp"
 	"private/util/Debug.cpp"
-	
+	"public/vlib/VulkanBuffer.hpp"
+	"public/vlib/VulkanCommandBuffer.hpp"
+	"public/vlib/VulkanPipeline.hpp"
+	"private/vlib/VulkanBuffer.cpp"
+	"private/vlib/VulkanCommandBuffer.cpp"
+	"private/vlib/VulkanPipeline.cpp"
 	"private/util/VectorUtil.cpp"
- "public/ui/KeyboardLayout.hpp")
+	"public/ui/KeyboardLayout.hpp"
+ )
+
+target_include_directories(TGEngine PUBLIC "../dependencies/Include" "../dependencies/Third-Party/Include")
