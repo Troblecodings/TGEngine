@@ -14,13 +14,13 @@ namespace tge::fnt {
 		const auto offsetend = offset + 1;
 #ifdef DEBUG
 		if (offsetend >= fontBufferObjects.size()) {
-			TGE_CRASH(L"Odd destroy ID (greater then size)", TG_ERR_DB_NULLPTR)
+			TGE_CRASH("Odd destroy ID (greater then size)", TG_ERR_DB_NULLPTR)
 		}
 #endif // DEBUG
 		tge::buf::BufferObject buffer = fontBufferObjects[offset];
 #ifdef DEBUG
 		if (buffer.memory == VK_NULL_HANDLE) {
-			TGE_CRASH(L"Text already destroyed!", TG_ERR_DB_NULLPTR)
+			TGE_CRASH("Text already destroyed!", TG_ERR_DB_NULLPTR)
 		}
 #endif // DEBUG
 		vkDestroyBuffer(device, buffer.buffer, nullptr);
@@ -30,7 +30,7 @@ namespace tge::fnt {
 		buffer = fontBufferObjects[offsetend];
 #ifdef DEBUG
 		if (buffer.memory == VK_NULL_HANDLE) {
-			TGE_CRASH(L"Text already destroyed!", TG_ERR_DB_NULLPTR)
+			TGE_CRASH("Text already destroyed!", TG_ERR_DB_NULLPTR)
 		}
 #endif // DEBUG
 		vkDestroyBuffer(device, buffer.buffer, nullptr);

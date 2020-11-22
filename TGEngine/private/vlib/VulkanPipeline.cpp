@@ -35,7 +35,7 @@ VkPipelineViewportStateCreateInfo vlibViewportState = {
 // Vertex binding
 VkVertexInputBindingDescription vlibVertexBufferBinding = {
 	0,
-	VERTEX_SIZE,
+	0,
 	VK_VERTEX_INPUT_RATE_VERTEX
 };
 
