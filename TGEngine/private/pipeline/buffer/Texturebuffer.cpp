@@ -86,7 +86,6 @@ namespace tge::tex {
 			CHECKFAIL(vkMapMemory(device, memorylist[i], 0, tmp_size, 0, &memory));
 			memcpy(memory, tex.data, tmp_size);
 			vkUnmapMemory(device, memorylist[i]);
-			delete[] tex.data;
 
 			VkImageViewCreateInfo imageViewCreateInfo;
 			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
