@@ -3,7 +3,7 @@
 namespace tge {
 	namespace gmc {
 
-		void(*playercontroller)(Input);
+		void(*playercontroller)(Input) = [](auto in) {};
 
 	}
 }
