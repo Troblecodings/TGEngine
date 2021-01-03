@@ -93,6 +93,6 @@ add_library (TGEngine STATIC
 	"private/vlib/VulkanPipeline.cpp"
 	"private/util/VectorUtil.cpp"
 	"public/ui/KeyboardLayout.hpp"
- )
+  "public/kernel/Kernel.hpp" "private/kernel/Kernel.cpp")
 
 target_include_directories(TGEngine PUBLIC "../dependencies/Include" "../dependencies/Third-Party/Include")
