@@ -67,18 +67,18 @@ namespace tge::kernel
 		~Kernel() = default;
 
 		[[nodiscard]]
-		auto initialize(std::optional<std::vector<std::unique_ptr<ISubsystem>>&&> _systems = std::nullopt) -> bool;
+		auto initialize(std::optional<std::vector<std::unique_ptr<ISubsystem>>&&> _systems = std::nullopt) const -> bool;
 		
 		[[nodiscard]]
-		auto run() -> std::uint_fast32_t;
+		auto run() const -> std::uint_fast32_t;
 	
 	private:
 		Kernel() noexcept;
 
-		void shutdown();
+		void shutdown() const;
 		
 		[[nodiscard]]
-		auto tick() -> bool;
+		auto tick() const -> bool;
 		
 		class Pimpl;
 		std::unique_ptr<Pimpl> sys_;
