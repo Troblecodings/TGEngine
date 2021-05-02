@@ -6,7 +6,7 @@
 
 namespace tge::graphics {
 
-constexpr std::array layerToEnable = {"VK_LAYER_LUNARG_standard_validation",
+constexpr std::array layerToEnable = {"VK_LAYER_KHRONOS_validation",
                                       "VK_LAYER_VALVE_steam_overlay",
                                       "VK_LAYER_NV_optimus"};
 
@@ -36,7 +36,8 @@ main::Error GraphicsModule::init() {
   for (const auto &layer : layerInfos) {
     const auto lname = layer.layerName.data();
     const auto enditr = layerToEnable.end();
-    if (std::find(layerToEnable.begin(), enditr, lname) != enditr)
+    if (std::find_if(layerToEnable.begin(), enditr,
+                     [&](auto in) { return strcmp(lname, in) == 0; }) != enditr)
       layerEnabled.push_back(lname);
   }
 
@@ -45,7 +46,8 @@ main::Error GraphicsModule::init() {
   for (const auto &extension : extensionInfos) {
     const auto lname = extension.extensionName.data();
     const auto enditr = extensionToEnable.end();
-    if (std::find(extensionToEnable.begin(), enditr, lname) != enditr)
+    if (std::find_if(extensionToEnable.begin(), enditr,
+                     [&](auto in) { return strcmp(lname, in) == 0; }) != enditr)
       extensionEnabled.push_back(lname);
   }
 
@@ -62,9 +64,9 @@ main::Error GraphicsModule::init() {
   };
 
   const auto physicalDevices = this->vkInstance.enumeratePhysicalDevices();
-  this->physicalDevice =
-      *std::max_element(physicalDevices.begin(), physicalDevices.end(),
-                        [&](auto p1, auto p2) { return getScore(p1) < getScore(p2); });
+  this->physicalDevice = *std::max_element(
+      physicalDevices.begin(), physicalDevices.end(),
+      [&](auto p1, auto p2) { return getScore(p1) < getScore(p2); });
 
   // just one queue for now
   const auto queueFamilys = this->physicalDevice.getQueueFamilyProperties();
@@ -91,8 +93,8 @@ main::Error GraphicsModule::init() {
 }
 
 void GraphicsModule::destroy() {
-  vkInstance.destroy();
   device.destroy();
+  vkInstance.destroy();
 }
 
 main::Module *getNewModule() { return new GraphicsModule(); }

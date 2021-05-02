@@ -3,7 +3,7 @@
 project ("TGEngine")
 set (CMAKE_CXX_STANDARD 20)
 
-add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608)
+add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest")
 
 add_library (TGEngine STATIC
 	# public
