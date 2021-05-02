@@ -10,13 +10,13 @@ bool isInitialized = false;
 Error init() {
   if (isInitialized)
     return error = Error::ALREADY_INITIALIZED;
-  isInitialized = true;
   modules.push_back(graphics::getNewModule());
   for (auto mod : modules) {
     error = mod->init();
     if (error != Error::NONE)
       return error;
   }
+  isInitialized = true;
   return error = Error::NONE;
 }
 
