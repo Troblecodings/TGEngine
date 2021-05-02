@@ -8,12 +8,17 @@ bool hasDestroy = false;
 
 using namespace tge::main;
 
+double alltime = 0;
+
 class TestModule : public tge::main::Module {
   Error init() {
     hasInit = true;
     return Error::NONE;
   }
-  void tick(double time) { hasTick = true; }
+  void tick(double time) {
+    hasTick = true;
+    alltime += time;
+  }
   void destroy() { hasDestroy = true; }
 };
 
@@ -51,9 +56,14 @@ TEST(EngineMain, InitAndTickTest) {
   ASSERT_EQ(start(), Error::ALREADY_RUNNING);
   ASSERT_TRUE(hasInit);
   ASSERT_TRUE(hasTick);
+  while (alltime < 5)
+    continue;
 }
 
 TEST(EngineMain, Exit) {
+  alltime = 0;
+  while (alltime < 5)
+    continue;
   ASSERT_NO_FATAL_FAILURE(tge::main::requestExit());
   while (!finishedExit)
     continue;
