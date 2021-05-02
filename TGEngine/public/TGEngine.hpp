@@ -1,11 +1,21 @@
 #pragma once
 
-#include "../public/Stdbase.hpp"
-#include "../public/pipeline/Pipeline.hpp"
-#include "../public/pipeline/Draw.hpp"
-#include "../public/gamecontent/Actor.hpp"
-#include "../public/gamecontent/camera/Camera.hpp"
+#include <chrono>
+#include <vector>
+#include "Module.hpp"
+#include "graphics/GraphicsModule.hpp"
+#include "Error.hpp"
 
-void initEngine();
+namespace tge::main {
 
-void startTGEngine();
+extern std::vector<Module*> modules;
+
+Error init();
+
+Error start();
+
+void requestExit();
+
+Error lastError();
+
+} // namespace tge::main
