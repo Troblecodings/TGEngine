@@ -9,7 +9,10 @@ bool hasDestroy = false;
 using namespace tge::main;
 
 class TestModule : public tge::main::Module {
-  void init() { hasInit = true; }
+  Error init() {
+    hasInit = true;
+    return Error::NONE;
+  }
   void tick(double time) { hasTick = true; }
   void destroy() { hasDestroy = true; }
 };

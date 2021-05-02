@@ -2,9 +2,9 @@
 
 #include <chrono>
 #include <vector>
+#include "Error.hpp"
 #include "Module.hpp"
 #include "graphics/GraphicsModule.hpp"
-#include "Error.hpp"
 
 namespace tge::main {
 

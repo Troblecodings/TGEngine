@@ -6,15 +6,17 @@ std::vector<Module *> modules;
 bool exitRequest = false;
 bool isRunning = false;
 bool isInitialized = false;
-Error error = Error::NONE;
 
 Error init() {
   if (isInitialized)
     return error = Error::ALREADY_INITIALIZED;
   isInitialized = true;
-  modules.push_back(new graphics::GraphicsModule());
-  for (auto mod : modules)
-    mod->init();
+  modules.push_back(graphics::getNewModule());
+  for (auto mod : modules) {
+    error = mod->init();
+    if (error != Error::NONE)
+      return error;
+  }
   return error = Error::NONE;
 }
 

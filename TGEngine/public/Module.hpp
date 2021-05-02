@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Error.hpp"
+
 namespace tge::main {
 
 class Module {
 public:
-  virtual void init() {}
+  virtual Error init() { return Error::NONE; }
 
   virtual void tick(double deltatime) {}
 
