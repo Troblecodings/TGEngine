@@ -8,10 +8,13 @@ bool exitRequest = false;
 bool isRunning = false;
 bool isInitialized = false;
 
+graphics::APILayer *usedApiLayer;
+
 Error init() {
   if (isInitialized)
     return error = Error::ALREADY_INITIALIZED;
-  modules.push_back(graphics::getNewModule());
+  usedApiLayer = (graphics::APILayer *) graphics::getNewModule();
+  modules.push_back((main::Module *)usedApiLayer);
   for (auto mod : modules) {
     error = mod->init();
     if (error != Error::NONE)
@@ -53,5 +56,7 @@ Error start() {
 void requestExit() { exitRequest = true; }
 
 Error lastError() { return error; }
+
+graphics::APILayer *getAPILayer() { return usedApiLayer; }
 
 } // namespace tge::main

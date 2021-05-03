@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../../public/Module.hpp"
+#include <vector>
+#include <array>
+#include <string>
 
 #ifndef APPLICATION_NAME
 #define APPLICATION_NAME "unknown"
@@ -11,6 +14,8 @@
 #endif
 
 namespace tge::graphics {
+
+uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames);
 
 main::Module *getNewModule();
 

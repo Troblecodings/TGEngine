@@ -1,5 +1,6 @@
 #include <TGEngine.hpp>
 #include <graphics/GameGraphicsModule.hpp>
+#include <graphics/VulkanGraphicsModule.hpp>
 #include <gtest/gtest.h>
 #include <thread>
 
@@ -49,6 +50,10 @@ int main() {
 TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
   Material mat;
+  mat.costumShaderCount = 2;
+  std::vector<std::string> test = {"test.vert", "test.frag"};
+  ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
+  ASSERT_NE(mat.costumShaderData, nullptr);
   materials.push_back(mat);
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);
   ASSERT_EQ(init(), Error::NONE);

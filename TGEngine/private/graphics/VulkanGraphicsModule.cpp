@@ -1,18 +1,131 @@
 #include "../../public/graphics/VulkanGraphicsModule.hpp"
 
 #include "../../public/Error.hpp"
+#include <array>
+#include <glslang/Public/ShaderLang.h>
+#include <glslang/SPIRV/GlslangToSpv.h>
 #include <iostream>
+
 #ifdef WIN32
 #include <Windows.h>
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 0
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
 #include "../../public/graphics/GameGraphicsModule.hpp"
-#include <array>
+
+#include "../../public/Util.hpp"
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
 namespace tge::graphics {
+
+const TBuiltInResource DefaultTBuiltInResource = {
+    /* .MaxLights = */ 32,
+    /* .MaxClipPlanes = */ 6,
+    /* .MaxTextureUnits = */ 32,
+    /* .MaxTextureCoords = */ 32,
+    /* .MaxVertexAttribs = */ 64,
+    /* .MaxVertexUniformComponents = */ 4096,
+    /* .MaxVaryingFloats = */ 64,
+    /* .MaxVertexTextureImageUnits = */ 32,
+    /* .MaxCombinedTextureImageUnits = */ 80,
+    /* .MaxTextureImageUnits = */ 32,
+    /* .MaxFragmentUniformComponents = */ 4096,
+    /* .MaxDrawBuffers = */ 32,
+    /* .MaxVertexUniformVectors = */ 128,
+    /* .MaxVaryingVectors = */ 8,
+    /* .MaxFragmentUniformVectors = */ 16,
+    /* .MaxVertexOutputVectors = */ 16,
+    /* .MaxFragmentInputVectors = */ 15,
+    /* .MinProgramTexelOffset = */ -8,
+    /* .MaxProgramTexelOffset = */ 7,
+    /* .MaxClipDistances = */ 8,
+    /* .MaxComputeWorkGroupCountX = */ 65535,
+    /* .MaxComputeWorkGroupCountY = */ 65535,
+    /* .MaxComputeWorkGroupCountZ = */ 65535,
+    /* .MaxComputeWorkGroupSizeX = */ 1024,
+    /* .MaxComputeWorkGroupSizeY = */ 1024,
+    /* .MaxComputeWorkGroupSizeZ = */ 64,
+    /* .MaxComputeUniformComponents = */ 1024,
+    /* .MaxComputeTextureImageUnits = */ 16,
+    /* .MaxComputeImageUniforms = */ 8,
+    /* .MaxComputeAtomicCounters = */ 8,
+    /* .MaxComputeAtomicCounterBuffers = */ 1,
+    /* .MaxVaryingComponents = */ 60,
+    /* .MaxVertexOutputComponents = */ 64,
+    /* .MaxGeometryInputComponents = */ 64,
+    /* .MaxGeometryOutputComponents = */ 128,
+    /* .MaxFragmentInputComponents = */ 128,
+    /* .MaxImageUnits = */ 8,
+    /* .MaxCombinedImageUnitsAndFragmentOutputs = */ 8,
+    /* .MaxCombinedShaderOutputResources = */ 8,
+    /* .MaxImageSamples = */ 0,
+    /* .MaxVertexImageUniforms = */ 0,
+    /* .MaxTessControlImageUniforms = */ 0,
+    /* .MaxTessEvaluationImageUniforms = */ 0,
+    /* .MaxGeometryImageUniforms = */ 0,
+    /* .MaxFragmentImageUniforms = */ 8,
+    /* .MaxCombinedImageUniforms = */ 8,
+    /* .MaxGeometryTextureImageUnits = */ 16,
+    /* .MaxGeometryOutputVertices = */ 256,
+    /* .MaxGeometryTotalOutputComponents = */ 1024,
+    /* .MaxGeometryUniformComponents = */ 1024,
+    /* .MaxGeometryVaryingComponents = */ 64,
+    /* .MaxTessControlInputComponents = */ 128,
+    /* .MaxTessControlOutputComponents = */ 128,
+    /* .MaxTessControlTextureImageUnits = */ 16,
+    /* .MaxTessControlUniformComponents = */ 1024,
+    /* .MaxTessControlTotalOutputComponents = */ 4096,
+    /* .MaxTessEvaluationInputComponents = */ 128,
+    /* .MaxTessEvaluationOutputComponents = */ 128,
+    /* .MaxTessEvaluationTextureImageUnits = */ 16,
+    /* .MaxTessEvaluationUniformComponents = */ 1024,
+    /* .MaxTessPatchComponents = */ 120,
+    /* .MaxPatchVertices = */ 32,
+    /* .MaxTessGenLevel = */ 64,
+    /* .MaxViewports = */ 16,
+    /* .MaxVertexAtomicCounters = */ 0,
+    /* .MaxTessControlAtomicCounters = */ 0,
+    /* .MaxTessEvaluationAtomicCounters = */ 0,
+    /* .MaxGeometryAtomicCounters = */ 0,
+    /* .MaxFragmentAtomicCounters = */ 8,
+    /* .MaxCombinedAtomicCounters = */ 8,
+    /* .MaxAtomicCounterBindings = */ 1,
+    /* .MaxVertexAtomicCounterBuffers = */ 0,
+    /* .MaxTessControlAtomicCounterBuffers = */ 0,
+    /* .MaxTessEvaluationAtomicCounterBuffers = */ 0,
+    /* .MaxGeometryAtomicCounterBuffers = */ 0,
+    /* .MaxFragmentAtomicCounterBuffers = */ 1,
+    /* .MaxCombinedAtomicCounterBuffers = */ 1,
+    /* .MaxAtomicCounterBufferSize = */ 16384,
+    /* .MaxTransformFeedbackBuffers = */ 4,
+    /* .MaxTransformFeedbackInterleavedComponents = */ 64,
+    /* .MaxCullDistances = */ 8,
+    /* .MaxCombinedClipAndCullDistances = */ 8,
+    /* .MaxSamples = */ 4,
+    /* .maxMeshOutputVerticesNV = */ 256,
+    /* .maxMeshOutputPrimitivesNV = */ 512,
+    /* .maxMeshWorkGroupSizeX_NV = */ 32,
+    /* .maxMeshWorkGroupSizeY_NV = */ 1,
+    /* .maxMeshWorkGroupSizeZ_NV = */ 1,
+    /* .maxTaskWorkGroupSizeX_NV = */ 32,
+    /* .maxTaskWorkGroupSizeY_NV = */ 1,
+    /* .maxTaskWorkGroupSizeZ_NV = */ 1,
+    /* .maxMeshViewCountNV = */ 4,
+    /* .maxDualSourceDrawBuffersEXT = */ 1,
+
+    /* .limits = */
+    {
+        /* .nonInductiveForLoops = */ 1,
+        /* .whileLoops = */ 1,
+        /* .doWhileLoops = */ 1,
+        /* .generalUniformIndexing = */ 1,
+        /* .generalAttributeMatrixVectorIndexing = */ 1,
+        /* .generalVaryingIndexing = */ 1,
+        /* .generalSamplerIndexing = */ 1,
+        /* .generalVariableIndexing = */ 1,
+        /* .generalConstantMatrixVectorIndexing = */ 1,
+    }};
 
 constexpr std::array layerToEnable = {"VK_LAYER_KHRONOS_validation",
                                       "VK_LAYER_VALVE_steam_overlay",
@@ -73,7 +186,64 @@ private:
 
   main::Error pushMaterials(const size_t materialcount,
                             const Material *materials);
+
+  GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
 };
+
+struct CustomeVulkanShader {
+  ShaderStageFlags language;
+  std::vector<uint32_t> data;
+};
+
+inline EShLanguage getLang(std::string &str) {
+  if (str.compare("vert") == 0)
+    return EShLanguage::EShLangVertex;
+  if (str.compare("frag") == 0)
+    return EShLanguage::EShLangFragment;
+  return EShLangAnyHit;
+}
+
+inline ShaderStageFlags getStageFromLang(const EShLanguage lang) {
+  if (lang == EShLanguage::EShLangVertex)
+    return ShaderStageFlagBits::eVertex;
+  if (lang == EShLanguage::EShLangFragment)
+    return ShaderStageFlagBits::eFragment;
+  return ShaderStageFlagBits::eAll;
+}
+
+uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
+  CustomeVulkanShader *shaderArray =
+      new CustomeVulkanShader[shadernames.size()];
+  glslang::InitializeProcess();
+
+  for (size_t i = 0; i < shadernames.size(); i++) {
+    const std::string &shname = shadernames[i];
+    std::string abrivation = shname.substr(shname.size() - 4);
+    fs::path pth(shname);
+    const auto langName = getLang(abrivation);
+    shaderArray[i].language = getStageFromLang(langName);
+    const auto rawInputdata = util::wholeFile(pth);
+    if (rawInputdata == nullptr)
+      return nullptr;
+    glslang::TShader shader(langName);
+    shader.setStrings((const char *const *)(&rawInputdata), 1);
+    shader.setEnvInput(glslang::EShSourceGlsl, langName,
+                       glslang::EShClientVulkan, 100);
+    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
+    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
+    if (!shader.parse(&DefaultTBuiltInResource, 450, true,
+                      EShMessages::EShMsgVulkanRules))
+      return nullptr;
+    printf(shader.getInfoLog());
+
+    shaderArray[i].data = {};
+    shaderArray[i].data.reserve(100);
+    const auto interm = shader.getIntermediate();
+    glslang::GlslangToSpv(*interm, shaderArray[i].data);
+  }
+  glslang::FinalizeProcess();
+  return (uint8_t *)shaderArray;
+}
 
 #ifdef WIN32
 
@@ -118,6 +288,29 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
 
 main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                 const Material *materials) {
+  for (size_t i = 0; i < materialcount; i++) {
+    const auto &material = materials[i];
+
+    const CustomeVulkanShader *shaderRawData = [&] {
+      if (material.costumShaderCount != 0) {
+        return (const CustomeVulkanShader *)material.costumShaderData;
+      } else
+        throw std::runtime_error("Currently unsupported!");
+    }();
+    const auto shaderCount = [&] { return material.costumShaderCount; }();
+
+    for (size_t j = 0; j < shaderCount; j++) {
+      const auto shaderData = shaderRawData[j];
+
+      const ShaderModuleCreateInfo shaderModuleCreateInfo(
+          {}, shaderData.data.size() * sizeof(uint32_t),
+          shaderData.data.data());
+      device.createShaderModule(shaderModuleCreateInfo);
+    }
+
+    const GraphicsPipelineCreateInfo gpipeCreateInfo({}, shaderCount);
+    pipelineCreateInfos.push_back(gpipeCreateInfo);
+  }
   return main::Error::NONE;
 }
 #endif // WIN32

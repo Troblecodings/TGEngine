@@ -9,17 +9,20 @@ namespace tge::graphics {
 using Color = float[4];
 
 struct Material {
-  Color color = { 1, 1, 1, 1};
+  Color color = {1, 1, 1, 1};
 
-  uint32_t costumShaderCount = 0;       // API dependent
-  uint8_t **costumShaderData = nullptr; // API dependent
+  uint32_t costumShaderCount = 0;      // API dependent
+  uint8_t *costumShaderData = nullptr; // API dependent
 };
 extern std::vector<Material> materials;
+
+class GameGraphicsModule;
 
 struct APILayer { // Interface
 
   virtual main::Error pushMaterials(const size_t materialcount,
                                     const Material *materials) = 0;
+  virtual GameGraphicsModule *getGraphicsModule() = 0;
 };
 
 struct WindowProperties {
