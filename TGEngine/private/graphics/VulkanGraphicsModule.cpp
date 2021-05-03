@@ -1,13 +1,14 @@
-#include "../../public/graphics/GraphicsModule.hpp"
+#include "../../public/graphics/VulkanGraphicsModule.hpp"
 
 #include "../../public/Error.hpp"
 #include <iostream>
 #ifdef WIN32
 #include <Windows.h>
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 0
-#define VK_USE_PLATFORM_WIN32_KHR
+#define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
 #include <vulkan/vulkan.hpp>
+#include "../../public/graphics/GameGraphicsModule.hpp"
 
 namespace tge::graphics {
 
@@ -36,8 +37,11 @@ Result verror = Result::eSuccess;
     printf("Vulkan error %d!", (uint32_t)verror);                              \
   }
 
-class VulkanGraphicsModule : public tge::main::Module {
+class VulkanGraphicsModule : public tge::main::Module, public APILayer {
+public:
+  VulkanGraphicsModule() : gamegraphics(GameGraphicsModule(this)){};
 
+private:
   Instance instance;
   PhysicalDevice physicalDevice;
   Device device;
@@ -55,6 +59,7 @@ class VulkanGraphicsModule : public tge::main::Module {
   Queue queue;
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
+  GameGraphicsModule gamegraphics;
 
   main::Error init();
 
@@ -63,6 +68,8 @@ class VulkanGraphicsModule : public tge::main::Module {
   void destroy();
 
   main::Error createWindowAndGetSurface();
+
+  main::Error pushMaterials(size_t materialcount, Material *materials);
 };
 
 #ifdef WIN32
@@ -100,6 +107,11 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
 
   Win32SurfaceCreateInfoKHR surfaceCreateInfo({}, systemHandle, window);
   surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
+  return main::Error::NONE;
+}
+
+main::Error VulkanGraphicsModule::pushMaterials(size_t materialcount,
+                                          Material *materials) {
   return main::Error::NONE;
 }
 #endif // WIN32

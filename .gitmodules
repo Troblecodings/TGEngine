@@ -1,6 +1,0 @@
-[submodule "tinygltf"]
-	path = tinygltf
-	url = https://github.com/syoyo/tinygltf
-[submodule "stb"]
-	path = stb
-	url = https://github.com/nothings/stb

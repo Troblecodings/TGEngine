@@ -8,9 +8,16 @@ add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATIO
 add_library (TGEngine STATIC
 	# public
 	"public/TGEngine.hpp"
+	"public/graphics/VulkanGraphicsModule.hpp"
+	"public/Module.hpp"
+	"public/Error.hpp"
+	"public/graphics/GameGraphicsModule.hpp"
 	# private
 	"private/TGEngine.cpp"
-  "public/graphics/GraphicsModule.hpp" "private/graphics/GraphicsModule.cpp" "public/Module.hpp" "public/Error.hpp" "private/Error.cpp")
+	"private/Error.cpp"
+    "private/graphics/VulkanGraphicsModule.cpp"     
+    "private/graphics/GameGraphicsModule.cpp"
+)
 
 include(FetchContent)
 FetchContent_Declare(

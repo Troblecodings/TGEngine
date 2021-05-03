@@ -1,4 +1,5 @@
 #include "../public/TGEngine.hpp"
+#include "../public/graphics/VulkanGraphicsModule.hpp"
 
 namespace tge::main {
 

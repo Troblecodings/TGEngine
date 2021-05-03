@@ -4,7 +4,6 @@
 #include <vector>
 #include "Error.hpp"
 #include "Module.hpp"
-#include "graphics/GraphicsModule.hpp"
 
 namespace tge::main {
 
