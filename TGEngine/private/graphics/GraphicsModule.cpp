@@ -26,17 +26,39 @@ constexpr std::array extensionToEnable = {"VK_KHR_SURFACE_EXTENSION_NAME",
 
 using namespace vk;
 
-class GraphicsModule : public tge::main::Module {
+std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
+Result verror = Result::eSuccess;
+
+#define VERROR(rslt)                                                           \
+  if (rslt != Result::eSuccess) {                                              \
+    verror = rslt;                                                             \
+    main::error = main::Error::VULKAN_ERROR;                                   \
+    printf("Vulkan error %d!", (uint32_t)verror);                              \
+  }
+
+class VulkanGraphicsModule : public tge::main::Module {
 
   Instance instance;
   PhysicalDevice physicalDevice;
   Device device;
   SurfaceKHR surface;
-  char *window;
+  char *window = nullptr;
   SurfaceFormatKHR format;
   SwapchainKHR swapchain;
+  std::vector<Image> images;
+  RenderPass renderpass;
+  std::vector<ImageView> imageviews;
+  Framebuffer framebuffer;
+  CommandPool pool;
+  std::vector<CommandBuffer> cmdbuffer;
+  std::vector<Pipeline> pipelines;
+  Queue queue;
+  Semaphore waitSemaphore;
+  Semaphore signalSemaphore;
 
   main::Error init();
+
+  void tick(double time);
 
   void destroy();
 
@@ -49,7 +71,7 @@ LRESULT CALLBACK callback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
-main::Error GraphicsModule::createWindowAndGetSurface() {
+main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   HMODULE systemHandle;
   if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemHandle))
     return main::Error::NO_MODULE_HANDLE;
@@ -82,7 +104,7 @@ main::Error GraphicsModule::createWindowAndGetSurface() {
 }
 #endif // WIN32
 
-main::Error GraphicsModule::init() {
+main::Error VulkanGraphicsModule::init() {
 
   const ApplicationInfo applicationInfo(APPLICATION_NAME, APPLICATION_VERSION,
                                         ENGINE_NAME, ENGINE_VERSION,
@@ -135,6 +157,7 @@ main::Error GraphicsModule::init() {
   if (queueFamilyItr == enditr)
     return main::Error::NO_GRAPHIC_QUEUE_FOUND;
 
+  const uint32_t queueFamilyIndex = std::distance(bgnitr, queueFamilyItr);
   const auto queueFamily = *queueFamilyItr;
   std::vector<float> priorities(queueFamily.queueCount);
   std::fill(priorities.begin(), priorities.end(), 0.0f);
@@ -143,7 +166,8 @@ main::Error GraphicsModule::init() {
   const DeviceQueueCreateInfo queueCreateInfo(
       {}, queueIndex, queueFamily.queueCount, priorities.data());
 
-  const auto devextensions = physicalDevice.enumerateDeviceExtensionProperties();
+  const auto devextensions =
+      physicalDevice.enumerateDeviceExtensionProperties();
   const auto devextEndItr = devextensions.end();
   const auto fndDevExtItr = std::find_if(
       devextensions.begin(), devextEndItr, [](ExtensionProperties prop) {
@@ -157,11 +181,13 @@ main::Error GraphicsModule::init() {
                                           &name);
   this->device = this->physicalDevice.createDevice(deviceCreateInfo);
 
+  queue = device.getQueue(queueFamilyIndex, queueIndex);
+
   auto localError = createWindowAndGetSurface();
   if (localError != main::Error::NONE)
     return localError;
 
-  if(!physicalDevice.getSurfaceSupportKHR(queueIndex, surface))
+  if (!physicalDevice.getSurfaceSupportKHR(queueIndex, surface))
     return main::Error::NO_SURFACE_SUPPORT;
 
   const auto properties = physicalDevice.getProperties();
@@ -181,11 +207,11 @@ main::Error GraphicsModule::init() {
   const auto presentModesEndItr = presentModes.end();
   const auto fndPresentMode = std::find(
       presentModes.begin(), presentModesEndItr, PresentModeKHR::eMailbox);
-  if (fndPresentMode == presentModesEndItr)
+  if (fndPresentMode == presentModesEndItr) // Maybe relax?
     return main::Error::PRESENTMODE_NOT_FOUND;
   const auto presentMode = *fndPresentMode;
 
-  SwapchainCreateInfoKHR swapchainCreateInfo(
+  const SwapchainCreateInfoKHR swapchainCreateInfo(
       {}, surface, 3, format.format, format.colorSpace,
       capabilities.currentExtent, 1, ImageUsageFlagBits::eColorAttachment,
       SharingMode::eExclusive, 0, nullptr,
@@ -194,10 +220,95 @@ main::Error GraphicsModule::init() {
 
   swapchain = device.createSwapchainKHR(swapchainCreateInfo);
 
+  images = device.getSwapchainImagesKHR(swapchain);
+
+  const AttachmentDescription defaultColorAttachment(
+      {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
+      AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
+      AttachmentStoreOp::eDontCare, ImageLayout::eGeneral,
+      ImageLayout::ePresentSrcKHR);
+  const std::array attachments = {
+      defaultColorAttachment, defaultColorAttachment, defaultColorAttachment};
+
+  const std::array colorAttachments = {
+      AttachmentReference(0, ImageLayout::eGeneral),
+      AttachmentReference(1, ImageLayout::eGeneral),
+      AttachmentReference(2, ImageLayout::eGeneral)};
+
+  const std::array subpassDescriptions = {
+      SubpassDescription({}, PipelineBindPoint::eGraphics, 0, {},
+                         colorAttachments.size(), colorAttachments.data())};
+
+  const std::array subpassDependencies = {SubpassDependency(
+      VK_SUBPASS_EXTERNAL, 0, PipelineStageFlagBits::eTopOfPipe,
+      PipelineStageFlagBits::eAllGraphics, (AccessFlagBits)0,
+      AccessFlagBits::eInputAttachmentRead |
+          AccessFlagBits::eColorAttachmentRead |
+          AccessFlagBits::eColorAttachmentWrite)};
+
+  const RenderPassCreateInfo renderPassCreateInfo(
+      {}, attachments.size(), attachments.data(), subpassDescriptions.size(),
+      subpassDescriptions.data());
+  renderpass = device.createRenderPass(renderPassCreateInfo);
+
+  imageviews.reserve(images.size());
+  for (auto im : images) {
+    const ImageViewCreateInfo imageviewCreateInfo(
+        {}, im, ImageViewType::e2D, format.format, {},
+        ImageSubresourceRange(ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+    const auto imview = device.createImageView(imageviewCreateInfo);
+    imageviews.push_back(imview);
+  }
+
+  const FramebufferCreateInfo framebufferCreateInfo(
+      {}, renderpass, imageviews.size(), imageviews.data(),
+      capabilities.currentExtent.width, capabilities.currentExtent.height, 1);
+  framebuffer = device.createFramebuffer(framebufferCreateInfo);
+
+  const CommandPoolCreateInfo commandPoolCreateInfo(
+      CommandPoolCreateFlagBits::eResetCommandBuffer, queueIndex);
+  pool = device.createCommandPool(commandPoolCreateInfo);
+
+  const CommandBufferAllocateInfo cmdBufferAllocInfo(
+      pool, CommandBufferLevel::ePrimary, imageviews.size());
+  cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
+
+  const auto piperesult = device.createGraphicsPipelines({}, pipelineCreateInfos);
+  VERROR(piperesult.result);
+  pipelines = piperesult.value;
+
+  const SemaphoreCreateInfo semaphoreCreateInfo;
+  device.createSemaphore(semaphoreCreateInfo);
+
   return main::Error::NONE;
 }
 
-void GraphicsModule::destroy() {
+void VulkanGraphicsModule::tick(double time) {
+  auto nextimage =
+      device.acquireNextImageKHR(swapchain, INT64_MAX, waitSemaphore, {});
+  VERROR(nextimage.result);
+
+  const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
+  const SubmitInfo submitInfo(1, &waitSemaphore, &stageFlag, 1,
+                              &cmdbuffer[nextimage.value], 1, &signalSemaphore);
+  queue.submit(submitInfo, {});
+
+  const PresentInfoKHR presentInfo(1, &signalSemaphore, 1, &swapchain, &nextimage.value, nullptr);
+  const Result result = queue.presentKHR(presentInfo);
+  VERROR(result);
+}
+
+void VulkanGraphicsModule::destroy() {
+  device.destroySemaphore(waitSemaphore);
+  device.destroySemaphore(signalSemaphore);
+  for (auto pipe : pipelines)
+    device.destroyPipeline(pipe);
+  device.freeCommandBuffers(pool, cmdbuffer);
+  device.destroyCommandPool(pool);
+  device.destroyFramebuffer(framebuffer);
+  for (auto imv : imageviews)
+    device.destroyImageView(imv);
+  device.destroyRenderPass(renderpass);
   device.destroySwapchainKHR(swapchain);
 #ifdef WIN32
   DestroyWindow((HWND)(*this->window));
@@ -207,6 +318,6 @@ void GraphicsModule::destroy() {
   instance.destroy();
 }
 
-main::Module *getNewModule() { return new GraphicsModule(); }
+main::Module *getNewModule() { return new VulkanGraphicsModule(); }
 
 } // namespace tge::graphics
