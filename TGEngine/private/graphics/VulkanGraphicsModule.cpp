@@ -7,8 +7,10 @@
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 0
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
-#include <vulkan/vulkan.hpp>
 #include "../../public/graphics/GameGraphicsModule.hpp"
+#include <array>
+#include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace tge::graphics {
 
@@ -69,7 +71,8 @@ private:
 
   main::Error createWindowAndGetSurface();
 
-  main::Error pushMaterials(size_t materialcount, Material *materials);
+  main::Error pushMaterials(const size_t materialcount,
+                            const Material *materials);
 };
 
 #ifdef WIN32
@@ -83,6 +86,8 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemHandle))
     return main::Error::NO_MODULE_HANDLE;
 
+  const auto windowProperties = gamegraphics.getWindowProperties();
+
   WNDCLASSEX wndclass;
   FillMemory(&wndclass, sizeof(WNDCLASSEX), 0);
   wndclass.cbSize = sizeof(WNDCLASSEX);
@@ -95,10 +100,11 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   if (!regWndClass)
     return main::Error::COULD_NOT_CREATE_WINDOW_CLASS;
 
-  auto window =
-      CreateWindowEx(WS_EX_APPWINDOW, (LPCSTR)regWndClass, APPLICATION_NAME,
-                     WS_CLIPSIBLINGS | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU, 0,
-                     0, 800, 800, NULL, NULL, systemHandle, NULL);
+  auto window = CreateWindowEx(
+      WS_EX_APPWINDOW, (LPCSTR)regWndClass, APPLICATION_NAME,
+      WS_CLIPSIBLINGS | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU,
+      windowProperties.x, windowProperties.y, windowProperties.width,
+      windowProperties.height, NULL, NULL, systemHandle, NULL);
   if (!window)
     return main::Error::COULD_NOT_CREATE_WINDOW;
   this->window = (char *)&window;
@@ -110,8 +116,8 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   return main::Error::NONE;
 }
 
-main::Error VulkanGraphicsModule::pushMaterials(size_t materialcount,
-                                          Material *materials) {
+main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
+                                                const Material *materials) {
   return main::Error::NONE;
 }
 #endif // WIN32
@@ -169,7 +175,7 @@ main::Error VulkanGraphicsModule::init() {
   if (queueFamilyItr == enditr)
     return main::Error::NO_GRAPHIC_QUEUE_FOUND;
 
-  const uint32_t queueFamilyIndex = std::distance(bgnitr, queueFamilyItr);
+  const auto queueFamilyIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
   const auto queueFamily = *queueFamilyItr;
   std::vector<float> priorities(queueFamily.queueCount);
   std::fill(priorities.begin(), priorities.end(), 0.0f);
@@ -247,9 +253,9 @@ main::Error VulkanGraphicsModule::init() {
       AttachmentReference(1, ImageLayout::eGeneral),
       AttachmentReference(2, ImageLayout::eGeneral)};
 
-  const std::array subpassDescriptions = {
-      SubpassDescription({}, PipelineBindPoint::eGraphics, 0, {},
-                         colorAttachments.size(), colorAttachments.data())};
+  const std::array subpassDescriptions = {SubpassDescription(
+      {}, PipelineBindPoint::eGraphics, 0, {},
+      (uint32_t)colorAttachments.size(), colorAttachments.data())};
 
   const std::array subpassDependencies = {SubpassDependency(
       VK_SUBPASS_EXTERNAL, 0, PipelineStageFlagBits::eTopOfPipe,
@@ -259,8 +265,8 @@ main::Error VulkanGraphicsModule::init() {
           AccessFlagBits::eColorAttachmentWrite)};
 
   const RenderPassCreateInfo renderPassCreateInfo(
-      {}, attachments.size(), attachments.data(), subpassDescriptions.size(),
-      subpassDescriptions.data());
+      {}, (uint32_t)attachments.size(), attachments.data(),
+      (uint32_t)subpassDescriptions.size(), subpassDescriptions.data());
   renderpass = device.createRenderPass(renderPassCreateInfo);
 
   imageviews.reserve(images.size());
@@ -273,7 +279,7 @@ main::Error VulkanGraphicsModule::init() {
   }
 
   const FramebufferCreateInfo framebufferCreateInfo(
-      {}, renderpass, imageviews.size(), imageviews.data(),
+      {}, renderpass, (uint32_t)imageviews.size(), imageviews.data(),
       capabilities.currentExtent.width, capabilities.currentExtent.height, 1);
   framebuffer = device.createFramebuffer(framebufferCreateInfo);
 
@@ -282,15 +288,21 @@ main::Error VulkanGraphicsModule::init() {
   pool = device.createCommandPool(commandPoolCreateInfo);
 
   const CommandBufferAllocateInfo cmdBufferAllocInfo(
-      pool, CommandBufferLevel::ePrimary, imageviews.size());
+      pool, CommandBufferLevel::ePrimary, (uint32_t)imageviews.size());
   cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
 
-  const auto piperesult = device.createGraphicsPipelines({}, pipelineCreateInfos);
+  main::error = gamegraphics.init();
+  if (main::error != main::Error::NONE)
+    return main::error;
+
+  const auto piperesult =
+      device.createGraphicsPipelines({}, pipelineCreateInfos);
   VERROR(piperesult.result);
   pipelines = piperesult.value;
 
   const SemaphoreCreateInfo semaphoreCreateInfo;
-  device.createSemaphore(semaphoreCreateInfo);
+  waitSemaphore = device.createSemaphore(semaphoreCreateInfo);
+  signalSemaphore = device.createSemaphore(semaphoreCreateInfo);
 
   return main::Error::NONE;
 }
@@ -305,7 +317,8 @@ void VulkanGraphicsModule::tick(double time) {
                               &cmdbuffer[nextimage.value], 1, &signalSemaphore);
   queue.submit(submitInfo, {});
 
-  const PresentInfoKHR presentInfo(1, &signalSemaphore, 1, &swapchain, &nextimage.value, nullptr);
+  const PresentInfoKHR presentInfo(1, &signalSemaphore, 1, &swapchain,
+                                   &nextimage.value, nullptr);
   const Result result = queue.presentKHR(presentInfo);
   VERROR(result);
 }

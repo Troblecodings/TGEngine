@@ -1,4 +1,5 @@
 #include <TGEngine.hpp>
+#include <graphics/GameGraphicsModule.hpp>
 #include <gtest/gtest.h>
 #include <thread>
 
@@ -7,6 +8,7 @@ bool hasTick = false;
 bool hasDestroy = false;
 
 using namespace tge::main;
+using namespace tge::graphics;
 
 double alltime = 0;
 
@@ -46,6 +48,8 @@ int main() {
 
 TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
+  Material mat;
+  materials.push_back(mat);
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);
   ASSERT_EQ(init(), Error::NONE);
   ASSERT_EQ(init(), Error::ALREADY_INITIALIZED);
