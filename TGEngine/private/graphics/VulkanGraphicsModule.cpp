@@ -2,13 +2,8 @@
 
 #include "../../public/Error.hpp"
 #include <array>
-#include <spirv-headers/GLSL.std.450.h>
-#include <spirv-tools/libspirv.h>
-#include <spirv-tools/linker.hpp>
-#include <glslang/MachineIndependent/localintermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
-#include <glslang/OSDependent/osinclude.h>
 
 #include <iostream>
 
@@ -21,11 +16,12 @@
 
 #include "../../public/Util.hpp"
 #include <vector>
+#define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
 #include <vulkan/vulkan.hpp>
 
 namespace tge::graphics {
 
-const TBuiltInResource DefaultTBuiltInResource = {
+constexpr TBuiltInResource DefaultTBuiltInResource = {
     /* .MaxLights = */ 32,
     /* .MaxClipPlanes = */ 6,
     /* .MaxTextureUnits = */ 32,
@@ -375,7 +371,7 @@ main::Error VulkanGraphicsModule::init() {
     return main::Error::NO_GRAPHIC_QUEUE_FOUND;
 
   const auto queueFamilyIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
-  const auto queueFamily = *queueFamilyItr;
+  const auto &queueFamily = *queueFamilyItr;
   std::vector<float> priorities(queueFamily.queueCount);
   std::fill(priorities.begin(), priorities.end(), 0.0f);
 

@@ -5,6 +5,8 @@ set (CMAKE_CXX_STANDARD 20)
 
 add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest")
 
+add_link_options("/ignore:4099")
+
 add_library (TGEngine STATIC
 	# public
 	"public/TGEngine.hpp"
@@ -22,28 +24,29 @@ add_library (TGEngine STATIC
 )
 
 include(FetchContent)
-FetchContent_Declare(
+FETCHCONTENT_DECLARE(
   googletest
   URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
 )
-FetchContent_Declare(
-  glslang
-  URL https://github.com/KhronosGroup/glslang/archive/refs/tags/master-tot.zip
+message("Downloading vulkansdk")
+FETCHCONTENT_DECLARE(
+	vulkansdk
+	URL https://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1
 
-  INSTALL_COMMAND "python ${glslang_SOURCE_DIR}/update_glslang_sources.py"
+	BUILD_COMMAND ""
 )
-target_include_directories(TGEngine PUBLIC "${glslang_SOURCE_DIR}/")
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-FetchContent_MakeAvailable(glslang)
+FETCHCONTENT_MAKEAVAILABLE(googletest)
+FETCHCONTENT_MAKEAVAILABLE(vulkansdk)
+include_directories("${vulkansdk_SOURCE_DIR}/Include" "${vulkansdk_SOURCE_DIR}/Third-Party/Include")
+link_directories("${vulkansdk_SOURCE_DIR}/Lib" "${vulkansdk_SOURCE_DIR}/Third-Party/Bin")
 
 add_executable(TGEngineTest "test/TGTest.cpp")
-target_include_directories(TGEngineTest PUBLIC "public" "../dependencies/Include" "../dependencies/Third-Party/Include")
-target_link_libraries(TGEngineTest PUBLIC TGEngine gtest_main glslang SPIRV
-	"${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/Third-Party/Bin/SDL2.lib"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/Lib/vulkan-1.lib"
-)
+target_include_directories(TGEngineTest PUBLIC "public")
+add_custom_command(TARGET TGEngineTest PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/test/shader/ $<TARGET_FILE_DIR:TGEngineTest>)
+target_link_libraries(TGEngineTest PUBLIC TGEngine gtest_main glslang SPIRV SPIRV-Tools SPIRV-Tools-opt shaderc_combined OSDependent MachineIndependent OGLCompiler SDL2 vulkan-1)
 add_test(NAME TGEngineTest COMMAND TGEngineTest)
 
-target_include_directories(TGEngine PUBLIC "../dependencies/Include" "../dependencies/Third-Party/Include")

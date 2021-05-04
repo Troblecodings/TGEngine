@@ -31,9 +31,10 @@ Error err;
 bool finishedExit = false;
 bool finishedTest = false;
 
+__attribute__((optnone))
 int main() {
-  testing::InitGoogleTest();
   auto thr = std::thread([rt = &exitCode, rt2 = &finishedTest]() {
+    testing::InitGoogleTest();
     *rt = RUN_ALL_TESTS();
     *rt2 = true;
   });

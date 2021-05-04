@@ -132,8 +132,6 @@ def trigger(id):
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
             updateSubmodules()
-            wrtdir(vulkan, "\\Bin\\")
-            wrtdir(vulkan, "\\Bin32\\")
             wrtdir(vulkan, "\\Include\\")
             wrtdir(vulkan, "\\Lib\\")
             wrtdir(vulkan, "\\Lib32\\")
