@@ -2,8 +2,14 @@
 
 #include "../../public/Error.hpp"
 #include <array>
+#include <spirv-headers/GLSL.std.450.h>
+#include <spirv-tools/libspirv.h>
+#include <spirv-tools/linker.hpp>
+#include <glslang/MachineIndependent/localintermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
+#include <glslang/OSDependent/osinclude.h>
+
 #include <iostream>
 
 #ifdef WIN32
