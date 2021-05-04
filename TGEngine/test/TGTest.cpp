@@ -54,14 +54,17 @@ int main() {
   return exitCode;
 }
 
-TEST(EngineMain, Start) {
-  tge::main::modules.push_back(new TestModule());
+TEST(Shader, LoadAndCompile) {
   Material mat;
   mat.costumShaderCount = 2;
   std::vector<std::string> test = {"test.vert", "test.frag"};
   ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
   materials.push_back(mat);
+}
+
+TEST(EngineMain, Start) {
+  tge::main::modules.push_back(new TestModule());
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);
   ASSERT_EQ(init(), Error::NONE);
   ASSERT_EQ(init(), Error::ALREADY_INITIALIZED);

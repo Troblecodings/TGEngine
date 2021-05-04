@@ -2,6 +2,7 @@
 
 #include "../../public/Error.hpp"
 #include <array>
+#include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 
@@ -17,6 +18,7 @@
 #include "../../public/Util.hpp"
 #include <vector>
 #define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
+#include <unordered_set>
 #include <vulkan/vulkan.hpp>
 
 namespace tge::graphics {
@@ -177,6 +179,7 @@ private:
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
   GameGraphicsModule gamegraphics;
+  std::vector<ShaderModule> shaderModules;
 
   main::Error init();
 
@@ -193,8 +196,9 @@ private:
 };
 
 struct CustomeVulkanShader {
-  ShaderStageFlags language;
+  ShaderStageFlagBits language;
   std::vector<uint32_t> data;
+  uint8_t *costumData;
 };
 
 inline EShLanguage getLang(std::string &str) {
@@ -205,13 +209,63 @@ inline EShLanguage getLang(std::string &str) {
   return EShLangAnyHit;
 }
 
-inline ShaderStageFlags getStageFromLang(const EShLanguage lang) {
-  if (lang == EShLanguage::EShLangVertex)
+inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
+  switch (lang) {
+  case EShLanguage::EShLangVertex:
     return ShaderStageFlagBits::eVertex;
-  if (lang == EShLanguage::EShLangFragment)
+  case EShLanguage::EShLangFragment:
     return ShaderStageFlagBits::eFragment;
+  }
   return ShaderStageFlagBits::eAll;
 }
+
+inline Format getFormatFromElf(glslang::TLayoutFormat format) {
+  switch (format) {
+  default:
+    break;
+  }
+}
+
+struct ShaderAnalizer : public glslang::TIntermTraverser {
+
+  ShaderAnalizer() : glslang::TIntermTraverser(false, true) {
+    inputs.reserve(10);
+  }
+
+  struct Input {
+    uint32_t layoutLocation;
+    uint32_t binding;
+    Format format;
+
+    bool operator==(const Input &in) const noexcept {
+      return in.binding == binding && in.format == format &&
+             in.layoutLocation == layoutLocation;
+    }
+  };
+  struct InputHash {
+    std::size_t operator()(const Input &s) const noexcept {
+      std::size_t h1 = std::hash<uint32_t>{}(s.binding);
+      std::size_t h2 = std::hash<uint32_t>{}(s.layoutLocation);
+      std::size_t h3 = std::hash<uint64_t>{}((uint64_t)s.format);
+      return (h1 ^ (h2 << 1)) ^ (h3 << 2);
+    }
+  };
+  std::unordered_set<Input, InputHash> inputs;
+
+#define NO_BINDING_GIVEN 65535
+#define NO_LAYOUT_GIVEN 4095
+
+  void visitSymbol(glslang::TIntermSymbol *symbol) {
+    const auto &qualifier = symbol->getQualifier();
+    if (qualifier.layoutLocation < 4095) {
+      if (qualifier.storage == glslang::TStorageQualifier::EvqVaryingIn) {
+        printf("Format %d\n");
+        inputs.emplace(
+            Input{qualifier.layoutLocation, qualifier.layoutBinding});
+      }
+    }
+  }
+};
 
 uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
   CustomeVulkanShader *shaderArray =
@@ -236,11 +290,17 @@ uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
     if (!shader.parse(&DefaultTBuiltInResource, 450, true,
                       EShMessages::EShMsgVulkanRules))
       return nullptr;
-    printf(shader.getInfoLog());
+    printf("%s", shader.getInfoLog());
 
     shaderArray[i].data = {};
     shaderArray[i].data.reserve(100);
     const auto interm = shader.getIntermediate();
+    const auto node = interm->getTreeRoot();
+    if (langName == EShLangVertex) { // currently only vertex analization
+      ShaderAnalizer analizer;
+      node->traverse(&analizer);
+    }
+
     glslang::GlslangToSpv(*interm, shaderArray[i].data);
   }
   glslang::FinalizeProcess();
@@ -301,16 +361,23 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     }();
     const auto shaderCount = [&] { return material.costumShaderCount; }();
 
+    const auto firstIndex = shaderModules.size();
+
+    std::vector<PipelineShaderStageCreateInfo> pipelineShaderStage(shaderCount);
     for (size_t j = 0; j < shaderCount; j++) {
       const auto shaderData = shaderRawData[j];
 
       const ShaderModuleCreateInfo shaderModuleCreateInfo(
           {}, shaderData.data.size() * sizeof(uint32_t),
           shaderData.data.data());
-      device.createShaderModule(shaderModuleCreateInfo);
+      const auto shaderModule =
+          device.createShaderModule(shaderModuleCreateInfo);
+      shaderModules.push_back(shaderModule);
+      pipelineShaderStage[j] = PipelineShaderStageCreateInfo(
+          {}, shaderData.language, shaderModule, "main");
     }
 
-    const GraphicsPipelineCreateInfo gpipeCreateInfo({}, shaderCount);
+    const GraphicsPipelineCreateInfo gpipeCreateInfo({}, pipelineShaderStage);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
   }
   return main::Error::NONE;
@@ -523,6 +590,8 @@ void VulkanGraphicsModule::destroy() {
   device.destroySemaphore(signalSemaphore);
   for (auto pipe : pipelines)
     device.destroyPipeline(pipe);
+  for (auto shader : shaderModules)
+    device.destroyShaderModule(shader);
   device.freeCommandBuffers(pool, cmdbuffer);
   device.destroyCommandPool(pool);
   device.destroyFramebuffer(framebuffer);
