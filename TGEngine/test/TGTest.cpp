@@ -4,6 +4,10 @@
 #include <gtest/gtest.h>
 #include <thread>
 
+#if defined(_MSC_VER) and not defined(__clang__)
+#pragma optimize("", off)
+#endif // MSVC
+
 bool hasInit = false;
 bool hasTick = false;
 bool hasDestroy = false;
@@ -31,7 +35,9 @@ Error err;
 bool finishedExit = false;
 bool finishedTest = false;
 
+#ifdef __clang__
 __attribute__((optnone))
+#endif // __clang__
 int main() {
   auto thr = std::thread([rt = &exitCode, rt2 = &finishedTest]() {
     testing::InitGoogleTest();
