@@ -219,11 +219,14 @@ inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
   return ShaderStageFlagBits::eAll;
 }
 
-inline Format getFormatFromElf(glslang::TLayoutFormat format) {
-  switch (format) {
-  default:
-    break;
+inline Format getFormatFromElf(const glslang::TType &format) {
+  if(format.isVector() && format.getBasicType() == glslang::TBasicType::EbtFloat) {
+    if (format.getVectorSize() == 2)
+      return Format::eR32G32Sfloat;
+    if (format.getVectorSize() == 4)
+      return Format::eR32G32B32A32Sfloat;
   }
+  return Format::eUndefined;
 }
 
 struct ShaderAnalizer : public glslang::TIntermTraverser {
@@ -259,9 +262,8 @@ struct ShaderAnalizer : public glslang::TIntermTraverser {
     const auto &qualifier = symbol->getQualifier();
     if (qualifier.layoutLocation < 4095) {
       if (qualifier.storage == glslang::TStorageQualifier::EvqVaryingIn) {
-        printf("Format %d\n");
-        inputs.emplace(
-            Input{qualifier.layoutLocation, qualifier.layoutBinding});
+        inputs.emplace(Input{qualifier.layoutLocation, qualifier.layoutBinding,
+                             getFormatFromElf(symbol->getType())});
       }
     }
   }
@@ -296,9 +298,11 @@ uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
     shaderArray[i].data.reserve(100);
     const auto interm = shader.getIntermediate();
     const auto node = interm->getTreeRoot();
-    if (langName == EShLangVertex) { // currently only vertex analization
+    if (langName == EShLangVertex) { // currently only vertex analyzation
       ShaderAnalizer analizer;
       node->traverse(&analizer);
+      // TODO ADD CUSTOM DATA
+      //shaderArray[i].costumData = new VertexInputAttributeDescription();
     }
 
     glslang::GlslangToSpv(*interm, shaderArray[i].data);
