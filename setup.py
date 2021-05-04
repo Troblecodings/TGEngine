@@ -67,23 +67,6 @@ def find(path):
                 loc += len(fl.readline())
 
 
-def callback(cob, size, total):
-    print(str(round(((cob * size) / total) * 100, 1)) + "%", end="\r")
-
-
-def updateSubmodules():
-    p = subprocess.Popen(["git", "submodule", "update", "--init", "-f"],
-                         cwd=os.getcwd())
-    p.wait()
-    p = subprocess.Popen(["git", "submodule", "foreach", "git", "pull", "origin", "master"],
-                         cwd=os.getcwd())
-    p.wait()
-
-
-def retrieve(url, filename):
-    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0"})) as response, open(filename, 'wb') as out_file:
-        shutil.copyfileobj(response, out_file)
-
 def trigger(id):
     global msg
     global dependencies_file
@@ -95,40 +78,6 @@ def trigger(id):
         if id == 0:
             exit(0)
         elif id == 1:
-            if not os.path.exists("dependencies"):
-                os.mkdir("dependencies")
-            print(
-                "Thanks to David Quenzer for giving me access to his cloud storage!"
-            )
-            updateSubmodules()
-            print("Checking version!")
-            version = ""
-            VERSION_FILE = "./dependencies/dependencie_version.txt"
-            if os.path.exists(VERSION_FILE):
-                with open(VERSION_FILE) as versionfile:
-                    version = versionfile.read()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
-            with open(VERSION_FILE) as versionfile:
-                if versionfile.read() == version:
-                    msg = "Already up to date!"
-                    clear()
-                    return
-            print("Downloading... this can take a while")
-            retrieve("https://seafile.media-dienste.de/f/85da9d3e98b347a490f6/?dl=1", "Dependencies.zip")
-            print("Finished download         ")
-            print("Deleting old")
-            if os.path.exists("dependencies"):
-                shutil.rmtree("dependencies")
-            print("Extracting Archive")
-            dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="r")
-            dependencies_file.extractall(path="./dependencies/")
-            dependencies_file.close()
-            retrieve("https://seafile.media-dienste.de/f/fd8adf05cce34c5086d0/?dl=1", VERSION_FILE)
-            os.remove("Dependencies.zip")
-            msg = "Finished!"
-            clear()
-            return
-        elif id == 2:
             print("Starting... this can take a while")
             dependencies_file = zipfile.ZipFile("Dependencies.zip", mode="w")
             updateSubmodules()
@@ -141,52 +90,10 @@ def trigger(id):
             msg = "Finished!"
             clear()
             return
-        elif id == 4:
-            print("Starting deployment...")
-            dependencies_file = zipfile.ZipFile("Release.zip", mode="w")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run",
-                "\\x64\\Release\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run",
-                "\\x86\\Release\\TGEngine.lib")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x64\\Debug\\TGEngine.pdb")
-            wrt(os.getcwd() + "\\TGEngine\\run", "\\x86\\Debug\\TGEngine.pdb")
-            wrt(os.getcwd() + "\\TGEngine\\run",
-                "\\x64\\Release\\TGEngine.pdb")
-            wrt(os.getcwd() + "\\TGEngine\\run",
-                "\\x86\\Release\\TGEngine.pdb")
-            wrt(os.getcwd(), "\\LICENSE")
-            dependencies_file.close()
-            msg = "Finished!"
-            clear()
-        elif id == 5:
+        elif id == 2:
             find(os.getcwd())
             msg = "Found " + str(files) + " files\nWith " + str(
                 loc) + " lines of code"
-            clear()
-            return
-        elif id == 6:
-            updateSubmodules()
-            msg = "Finished!"
-            clear()
-            return
-        elif id == 7:
-            print("Put in project name")
-            prname = input()
-            os.mkdir(prname)
-            for x in os.listdir("default_project"):
-                shutil.copyfile(
-                    "default_project/" + x,
-                    prname + "/" + x.replace("%projectname%", prname))
-            for x in os.listdir(prname):
-                fls = ""
-                with open(prname + "/" + x, "r") as file:
-                    for line in file:
-                        fls += line.replace("%projectname%", prname) + "\n"
-                with open(prname + "/" + x, "w") as file:
-                    file.write(fls)
-            msg = "Finished!"
             clear()
             return
     except IOError or ValueError:
@@ -204,19 +111,14 @@ if len(sys.argv) > 1:
 
 while True:
     print("=============================")
-    print("       DEPENDENCIES 2.7      ")
+    print("       DEPENDENCIES 3.0      ")
     print("=============================")
     print("")
     if msg is not None:
         print(msg)
         print("")
     print("1. Get all dependencies")
-    print("2. Pack dependencies")
-    print("3. Build draco")
-    print("4. Deploy engine")
-    print("5. Get states")
-    print("6. Get git dependencies only")
-    print("7. Create project")
+    print("2. Get states")
     print("0. Close")
     try:
         trigger(int(input()))
