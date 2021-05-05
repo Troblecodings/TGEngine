@@ -195,12 +195,6 @@ private:
   GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
 };
 
-struct CustomeVulkanShader {
-  ShaderStageFlagBits language;
-  std::vector<uint32_t> data;
-  uint8_t *costumData;
-};
-
 inline EShLanguage getLang(std::string &str) {
   if (str.compare("vert") == 0)
     return EShLanguage::EShLangVertex;
@@ -228,6 +222,12 @@ inline Format getFormatFromElf(const glslang::TType &format) {
   }
   return Format::eUndefined;
 }
+
+struct CustomeVulkanShader {
+  ShaderStageFlagBits language;
+  std::vector<uint32_t> data;
+  uint8_t *costumData;
+};
 
 struct ShaderAnalizer : public glslang::TIntermTraverser {
 
@@ -269,20 +269,19 @@ struct ShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
-uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
-  CustomeVulkanShader *shaderArray =
-      new CustomeVulkanShader[shadernames.size()];
+CustomeVulkanShader* __implLoadShaderPipeAndCompile(const size_t rawDataCount, const uint8_t** shaderRawData, const EShLanguage* lang) {
+  CustomeVulkanShader *shaderArray = new CustomeVulkanShader[rawDataCount];
   glslang::InitializeProcess();
+  util::OnExit e1(glslang::FinalizeProcess);
 
-  for (size_t i = 0; i < shadernames.size(); i++) {
-    const std::string &shname = shadernames[i];
-    std::string abrivation = shname.substr(shname.size() - 4);
-    fs::path pth(shname);
-    const auto langName = getLang(abrivation);
+  for (size_t i = 0; i < rawDataCount; i++) {
+    const auto langName = lang[i];
     shaderArray[i].language = getStageFromLang(langName);
-    const auto rawInputdata = util::wholeFile(pth);
-    if (rawInputdata == nullptr)
+    const auto rawInputdata = shaderRawData[i];
+    if (rawInputdata == nullptr) {
+      delete[] shaderArray;
       return nullptr;
+    }
     glslang::TShader shader(langName);
     shader.setStrings((const char *const *)(&rawInputdata), 1);
     shader.setEnvInput(glslang::EShSourceGlsl, langName,
@@ -307,8 +306,26 @@ uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
 
     glslang::GlslangToSpv(*interm, shaderArray[i].data);
   }
-  glslang::FinalizeProcess();
-  return (uint8_t *)shaderArray;
+
+  return shaderArray;
+}
+
+uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
+  EShLanguage *languageArrays = new EShLanguage[shadernames.size()];
+  uint8_t **dataArrays = new uint8_t *[shadernames.size()];
+  for (size_t i = 0; i < shadernames.size(); i++) {
+    const std::string &shname = shadernames[i];
+    std::string abrivation = shname.substr(shname.size() - 4);
+    languageArrays[i] = getLang(abrivation);
+    dataArrays[i] = util::wholeFile(fs::path(shname));
+  }
+  const auto loadedPipes = __implLoadShaderPipeAndCompile(
+      shadernames.size(), dataArrays, languageArrays);
+  delete[] languageArrays;
+  for (size_t i = 0; i < shadernames.size(); i++)
+    delete[] dataArrays[i];
+  delete[] dataArrays;
+  return (uint8_t *)loadedPipes;
 }
 
 #ifdef WIN32
