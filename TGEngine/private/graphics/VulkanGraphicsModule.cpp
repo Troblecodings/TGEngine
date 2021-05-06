@@ -200,7 +200,7 @@ inline EShLanguage getLang(const std::string &str) {
     return EShLanguage::EShLangVertex;
   if (str.compare("frag") == 0)
     return EShLanguage::EShLangFragment;
-  return EShLangAnyHit;
+  throw std::runtime_error(std::string("Couldn't find EShLanguage for ") + str);
 }
 
 inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
@@ -210,7 +210,9 @@ inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
   case EShLanguage::EShLangFragment:
     return ShaderStageFlagBits::eFragment;
   }
-  return ShaderStageFlagBits::eAll;
+  throw std::runtime_error(
+      std::string("Couldn't find ShaderStageFlagBits for EShLanguage ") +
+      std::to_string(lang));
 }
 
 inline Format getFormatFromElf(const glslang::TType &format) {
@@ -221,48 +223,71 @@ inline Format getFormatFromElf(const glslang::TType &format) {
     if (format.getVectorSize() == 4)
       return Format::eR32G32B32A32Sfloat;
   }
-  return Format::eUndefined;
+  throw std::runtime_error(std::string("Couldn't find Format for TType ") +
+                           format.getTypeName().c_str());
+}
+
+inline uint32_t getSizeFromFormat(const Format format) {
+  switch (format) {
+  case Format::eR32G32Sfloat:
+    return 8;
+  case Format::eR32G32B32A32Sfloat:
+    return 16;
+  }
+  throw std::runtime_error(std::string("Couldn't find size for Format ") +
+                           std::to_string((size_t)format));
 }
 
 struct VulkanShaderPipe {
   std::vector<std::pair<std::vector<uint32_t>, ShaderStageFlagBits>> shader;
+  std::vector<VertexInputBindingDescription> vertexInputBindings;
+  std::vector<VertexInputAttributeDescription> vertexInputAttributes;
 };
 
 struct ShaderAnalizer : public glslang::TIntermTraverser {
 
-  ShaderAnalizer() : glslang::TIntermTraverser(false, true) {
-    inputs.reserve(10);
+  VulkanShaderPipe *shaderPipe;
+
+  ShaderAnalizer(VulkanShaderPipe *pipe)
+      : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe) {
+    ioVars.reserve(10);
   }
-
-  struct Input {
-    uint32_t layoutLocation;
-    uint32_t binding;
-    Format format;
-
-    bool operator==(const Input &in) const noexcept {
-      return in.binding == binding && in.format == format &&
-             in.layoutLocation == layoutLocation;
-    }
-  };
-  struct InputHash {
-    std::size_t operator()(const Input &s) const noexcept {
-      std::size_t h1 = std::hash<uint32_t>{}(s.binding);
-      std::size_t h2 = std::hash<uint32_t>{}(s.layoutLocation);
-      std::size_t h3 = std::hash<uint64_t>{}((uint64_t)s.format);
-      return (h1 ^ (h2 << 1)) ^ (h3 << 2);
-    }
-  };
-  std::unordered_set<Input, InputHash> inputs;
+  std::unordered_set<size_t> ioVars;
 
 #define NO_BINDING_GIVEN 65535
 #define NO_LAYOUT_GIVEN 4095
 
   void visitSymbol(glslang::TIntermSymbol *symbol) {
     const auto &qualifier = symbol->getQualifier();
-    if (qualifier.layoutLocation < 4095) {
+    if (ioVars.contains(symbol->getId()))
+      return;
+    ioVars.emplace(symbol->getId());
+    if (qualifier.layoutLocation < NO_LAYOUT_GIVEN) {
       if (qualifier.storage == glslang::TStorageQualifier::EvqVaryingIn) {
-        inputs.emplace(Input{qualifier.layoutLocation, qualifier.layoutBinding,
-                             getFormatFromElf(symbol->getType())});
+        const auto bind = qualifier.layoutBinding == NO_BINDING_GIVEN
+                              ? 0
+                              : qualifier.layoutBinding;
+        shaderPipe->vertexInputAttributes.push_back(
+            VertexInputAttributeDescription(
+                qualifier.layoutLocation, bind,
+                getFormatFromElf(symbol->getType())));
+      }
+    }
+  }
+
+  void post() {
+    std::vector<size_t> bindingId;
+    bindingId.reserve(10);
+    const auto beginItr = shaderPipe->vertexInputAttributes.begin();
+    const auto endItr = shaderPipe->vertexInputAttributes.end();
+    for (auto &vert : shaderPipe->vertexInputAttributes) {
+      for (auto itr = beginItr; itr != endItr; itr++) {
+        if (itr->location < vert.location)
+          vert.offset += getSizeFromFormat(itr->format);
+      }
+      if (std::find(bindingId.begin(), bindingId.end(), vert.binding) ==
+          bindingId.end()) {
+        shaderPipe->vertexInputBindings.
       }
     }
   }
@@ -297,8 +322,9 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
     const auto interm = shader.getIntermediate();
     const auto node = interm->getTreeRoot();
     if (langName == EShLangVertex) { // currently only vertex analyzation
-      ShaderAnalizer analizer;
+      ShaderAnalizer analizer(shaderPipe);
       node->traverse(&analizer);
+      analizer.post();
       // TODO ADD CUSTOM DATA
       // shaderArray[i].costumData = new VertexInputAttributeDescription();
     }
@@ -319,8 +345,7 @@ uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
     const std::string abrivation = name.substr(name.size() - 4);
     auto path = fs::path(name);
     vector.push_back(
-        std::pair(std::move(util::wholeFile(path)),
-                               getLang(abrivation)));
+        std::pair(std::move(util::wholeFile(path)), getLang(abrivation)));
   }
   const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
   return (uint8_t *)loadedPipes;
@@ -378,12 +403,11 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
     std::vector<PipelineShaderStageCreateInfo> pipelineShaderStage;
     pipelineShaderStage.reserve(shaderPipe->shader.size());
-    for (const auto &shaderPair : shaderPipe->shader){
+    for (const auto &shaderPair : shaderPipe->shader) {
       const auto &shaderData = shaderPair.first;
 
       const ShaderModuleCreateInfo shaderModuleCreateInfo(
-          {}, shaderData.size() * sizeof(uint32_t),
-          shaderData.data());
+          {}, shaderData.size() * sizeof(uint32_t), shaderData.data());
       const auto shaderModule =
           device.createShaderModule(shaderModuleCreateInfo);
       shaderModules.push_back(shaderModule);
