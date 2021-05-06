@@ -14,10 +14,10 @@ template <Callable C> class OnExit {
   const C call;
 
 public:
-  OnExit(const C cin) : call(cin) {}
-  ~OnExit() { call(); }
+  constexpr OnExit(const C cin) : call(cin) {}
+  constexpr ~OnExit() { call(); }
 };
 
-uint8_t *wholeFile(fs::path &path);
+std::unique_ptr<uint8_t[]> wholeFile(fs::path &path);
 
 } // namespace tge::util

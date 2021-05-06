@@ -195,7 +195,7 @@ private:
   GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
 };
 
-inline EShLanguage getLang(std::string &str) {
+inline EShLanguage getLang(const std::string &str) {
   if (str.compare("vert") == 0)
     return EShLanguage::EShLangVertex;
   if (str.compare("frag") == 0)
@@ -214,7 +214,8 @@ inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
 }
 
 inline Format getFormatFromElf(const glslang::TType &format) {
-  if(format.isVector() && format.getBasicType() == glslang::TBasicType::EbtFloat) {
+  if (format.isVector() &&
+      format.getBasicType() == glslang::TBasicType::EbtFloat) {
     if (format.getVectorSize() == 2)
       return Format::eR32G32Sfloat;
     if (format.getVectorSize() == 4)
@@ -223,10 +224,8 @@ inline Format getFormatFromElf(const glslang::TType &format) {
   return Format::eUndefined;
 }
 
-struct CustomeVulkanShader {
-  ShaderStageFlagBits language;
-  std::vector<uint32_t> data;
-  uint8_t *costumData;
+struct VulkanShaderPipe {
+  std::vector<std::pair<std::vector<uint32_t>, ShaderStageFlagBits>> shader;
 };
 
 struct ShaderAnalizer : public glslang::TIntermTraverser {
@@ -269,21 +268,23 @@ struct ShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
-CustomeVulkanShader* __implLoadShaderPipeAndCompile(const size_t rawDataCount, const uint8_t** shaderRawData, const EShLanguage* lang) {
-  CustomeVulkanShader *shaderArray = new CustomeVulkanShader[rawDataCount];
+VulkanShaderPipe *__implLoadShaderPipeAndCompile(
+    std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> &vector) {
+  VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
   glslang::InitializeProcess();
   util::OnExit e1(glslang::FinalizeProcess);
+  shaderPipe->shader.reserve(vector.size());
 
-  for (size_t i = 0; i < rawDataCount; i++) {
-    const auto langName = lang[i];
-    shaderArray[i].language = getStageFromLang(langName);
-    const auto rawInputdata = shaderRawData[i];
-    if (rawInputdata == nullptr) {
-      delete[] shaderArray;
+  for (auto &pair : vector) {
+    const auto data = std::move(pair.first);
+    const auto langName = pair.second;
+    if (data.get() == nullptr) {
+      delete shaderPipe;
       return nullptr;
     }
     glslang::TShader shader(langName);
-    shader.setStrings((const char *const *)(&rawInputdata), 1);
+    const auto ptr = data.get();
+    shader.setStrings((const char *const *)(&ptr), 1);
     shader.setEnvInput(glslang::EShSourceGlsl, langName,
                        glslang::EShClientVulkan, 100);
     shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
@@ -293,38 +294,35 @@ CustomeVulkanShader* __implLoadShaderPipeAndCompile(const size_t rawDataCount, c
       return nullptr;
     printf("%s", shader.getInfoLog());
 
-    shaderArray[i].data = {};
-    shaderArray[i].data.reserve(100);
     const auto interm = shader.getIntermediate();
     const auto node = interm->getTreeRoot();
     if (langName == EShLangVertex) { // currently only vertex analyzation
       ShaderAnalizer analizer;
       node->traverse(&analizer);
       // TODO ADD CUSTOM DATA
-      //shaderArray[i].costumData = new VertexInputAttributeDescription();
+      // shaderArray[i].costumData = new VertexInputAttributeDescription();
     }
 
-    glslang::GlslangToSpv(*interm, shaderArray[i].data);
+    const auto index = shaderPipe->shader.size();
+    shaderPipe->shader.push_back(
+        std::pair(std::vector<uint32_t>(), getStageFromLang(langName)));
+    glslang::GlslangToSpv(*interm, shaderPipe->shader[index].first);
   }
 
-  return shaderArray;
+  return shaderPipe;
 }
 
 uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
-  EShLanguage *languageArrays = new EShLanguage[shadernames.size()];
-  uint8_t **dataArrays = new uint8_t *[shadernames.size()];
-  for (size_t i = 0; i < shadernames.size(); i++) {
-    const std::string &shname = shadernames[i];
-    std::string abrivation = shname.substr(shname.size() - 4);
-    languageArrays[i] = getLang(abrivation);
-    dataArrays[i] = util::wholeFile(fs::path(shname));
+  std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> vector;
+  vector.reserve(shadernames.size());
+  for (const auto &name : shadernames) {
+    const std::string abrivation = name.substr(name.size() - 4);
+    auto path = fs::path(name);
+    vector.push_back(
+        std::pair(std::move(util::wholeFile(path)),
+                               getLang(abrivation)));
   }
-  const auto loadedPipes = __implLoadShaderPipeAndCompile(
-      shadernames.size(), dataArrays, languageArrays);
-  delete[] languageArrays;
-  for (size_t i = 0; i < shadernames.size(); i++)
-    delete[] dataArrays[i];
-  delete[] dataArrays;
+  const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
   return (uint8_t *)loadedPipes;
 }
 
@@ -374,28 +372,23 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
 
-    const CustomeVulkanShader *shaderRawData = [&] {
-      if (material.costumShaderCount != 0) {
-        return (const CustomeVulkanShader *)material.costumShaderData;
-      } else
-        throw std::runtime_error("Currently unsupported!");
-    }();
-    const auto shaderCount = [&] { return material.costumShaderCount; }();
+    const auto shaderPipe = (VulkanShaderPipe *)material.costumShaderData;
 
     const auto firstIndex = shaderModules.size();
 
-    std::vector<PipelineShaderStageCreateInfo> pipelineShaderStage(shaderCount);
-    for (size_t j = 0; j < shaderCount; j++) {
-      const auto shaderData = shaderRawData[j];
+    std::vector<PipelineShaderStageCreateInfo> pipelineShaderStage;
+    pipelineShaderStage.reserve(shaderPipe->shader.size());
+    for (const auto &shaderPair : shaderPipe->shader){
+      const auto &shaderData = shaderPair.first;
 
       const ShaderModuleCreateInfo shaderModuleCreateInfo(
-          {}, shaderData.data.size() * sizeof(uint32_t),
-          shaderData.data.data());
+          {}, shaderData.size() * sizeof(uint32_t),
+          shaderData.data());
       const auto shaderModule =
           device.createShaderModule(shaderModuleCreateInfo);
       shaderModules.push_back(shaderModule);
-      pipelineShaderStage[j] = PipelineShaderStageCreateInfo(
-          {}, shaderData.language, shaderModule, "main");
+      pipelineShaderStage.push_back(PipelineShaderStageCreateInfo(
+          {}, shaderPair.second, shaderModule, "main"));
     }
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo({}, pipelineShaderStage);
