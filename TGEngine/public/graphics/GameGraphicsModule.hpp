@@ -22,6 +22,11 @@ struct APILayer { // Interface
 
   virtual main::Error pushMaterials(const size_t materialcount,
                                     const Material *materials) = 0;
+
+  virtual main::Error pushVertexData(const size_t dataCount,
+                                     const uint8_t **data,
+                                     const size_t *dataSizes) = 0;
+
   virtual GameGraphicsModule *getGraphicsModule() = 0;
 };
 

@@ -2,9 +2,11 @@
 
 project ("TGEngine")
 set (CMAKE_CXX_STANDARD 20)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
-add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest")
+add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest" DEBUG)
 
+add_compile_options("/D_ITERATOR_DEBUG_LEVEL=0" "/MD" "/EHa")
 add_link_options("/ignore:4099")
 
 add_library (TGEngine STATIC
@@ -27,6 +29,7 @@ include(FetchContent)
 FETCHCONTENT_DECLARE(
   googletest
   URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+  CMAKE_ARGS "-DCMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded"
 )
 message("Downloading vulkansdk")
 FETCHCONTENT_DECLARE(
