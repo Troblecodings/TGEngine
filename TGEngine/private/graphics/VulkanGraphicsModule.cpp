@@ -187,6 +187,7 @@ private:
   uint32_t memoryTypeDeviceLocal;
   std::vector<Buffer> bufferList;
   std::vector<DeviceMemory> bufferMemoryList;
+  Viewport viewport;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -493,9 +494,9 @@ main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
 
   device.destroyFence(fence);
 
-  for (auto mem : tempMemory)
+  for (const auto mem : tempMemory)
     device.freeMemory(mem);
-  for (auto buf : tempBuffer)
+  for (const auto buf : tempBuffer)
     device.destroyBuffer(buf);
 
   return main::Error::NONE;
@@ -739,6 +740,9 @@ main::Error VulkanGraphicsModule::init() {
       (uint32_t)subpassDescriptions.size(), subpassDescriptions.data());
   renderpass = device.createRenderPass(renderPassCreateInfo);
 
+  viewport = Viewport(0, 0, capabilities.currentExtent.width,
+                      capabilities.currentExtent.height, 0, 1);
+
   imageviews.reserve(images.size());
   for (auto im : images) {
     const ImageViewCreateInfo imageviewCreateInfo(
@@ -748,8 +752,7 @@ main::Error VulkanGraphicsModule::init() {
     imageviews.push_back(imview);
 
     const FramebufferCreateInfo framebufferCreateInfo(
-        {}, renderpass, 1, &imview, capabilities.currentExtent.width,
-        capabilities.currentExtent.height, 1);
+        {}, renderpass, 1, &imview, viewport.width, viewport.height, 1);
     framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
   }
 
@@ -765,11 +768,8 @@ main::Error VulkanGraphicsModule::init() {
   if (main::error != main::Error::NONE)
     return main::error;
 
-  const Viewport viewport(0, 0, capabilities.currentExtent.width,
-                          capabilities.currentExtent.height, 0, 1);
-
-  const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, 1,
-                                                                   &viewport);
+  const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({},
+                                                                   viewport);
 
   for (auto &pipeline : pipelineCreateInfos) {
     pipeline.pViewportState = &pipelineViewportCreateInfo;
@@ -792,9 +792,27 @@ void VulkanGraphicsModule::tick(double time) {
       device.acquireNextImageKHR(swapchain, INT64_MAX, waitSemaphore, {});
   VERROR(nextimage.result);
 
+  const auto currentBuffer = cmdbuffer[nextimage.value];
+  if (1) { // For now rerecord every tick
+    const std::array clearColor = {1, 1, 1, 1};
+    const ClearValue clearValue(clearColor);
+
+    const CommandBufferBeginInfo cmdBufferBeginInfo;
+    currentBuffer.begin(cmdBufferBeginInfo);
+
+    const RenderPassBeginInfo renderPassBeginInfo(
+        renderpass, framebuffer[nextimage.value],
+        {{0, 0}, {viewport.width, viewport.height}}, clearValue);
+    currentBuffer.beginRenderPass(renderPassBeginInfo,
+                                  SubpassContents::eInline);
+
+    currentBuffer.endRenderPass();
+    currentBuffer.end();
+  }
+
   const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
-  const SubmitInfo submitInfo(1, &waitSemaphore, &stageFlag, 1,
-                              &cmdbuffer[nextimage.value], 1, &signalSemaphore);
+  const SubmitInfo submitInfo(1, &waitSemaphore, &stageFlag, 1, &currentBuffer,
+                              1, &signalSemaphore);
   queue.submit(submitInfo, {});
 
   const PresentInfoKHR presentInfo(1, &signalSemaphore, 1, &swapchain,
