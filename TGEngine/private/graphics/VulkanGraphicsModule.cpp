@@ -210,6 +210,21 @@ private:
   GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
 };
 
+inline void waitForImageTransition(
+    const CommandBuffer &curBuffer, const ImageLayout oldLayout,
+    const ImageLayout newLayout, const uint32_t queueFamily, const Image image,
+    const ImageSubresourceRange &subresource,
+    const PipelineStageFlags srcFlags = PipelineStageFlagBits::eTopOfPipe,
+    const AccessFlags srcAccess = AccessFlagBits::eNoneKHR,
+    const PipelineStageFlags dstFlags = PipelineStageFlagBits::eAllGraphics,
+    const AccessFlags dstAccess = AccessFlagBits::eNoneKHR) {
+  const ImageMemoryBarrier imageMemoryBarrier(srcAccess, dstAccess, oldLayout,
+                                              newLayout, queueFamily,
+                                              queueFamily, image, subresource);
+  curBuffer.pipelineBarrier(srcFlags, dstFlags, DependencyFlagBits::eByRegion,
+                            {}, {}, imageMemoryBarrier);
+}
+
 inline EShLanguage getLang(const std::string &str) {
   if (str.compare("vert") == 0)
     return EShLanguage::EShLangVertex;
@@ -425,6 +440,20 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   return main::Error::NONE;
 }
 
+inline void submitAndWait(const Device &device, const Queue &queue,
+                          const CommandBuffer &cmdBuf) {
+  const FenceCreateInfo fenceCreateInfo;
+  const auto fence = device.createFence(fenceCreateInfo);
+
+  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
+  queue.submit(submitInfo, fence);
+
+  const Result result = device.waitForFences(fence, true, UINT64_MAX);
+  VERROR(result);
+
+  device.destroyFence(fence);
+}
+
 main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
                                                  const uint8_t **data,
                                                  const size_t *dataSizes) {
@@ -483,16 +512,7 @@ main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
 
   cmdBuf.end();
 
-  const FenceCreateInfo fenceCreateInfo;
-  const auto fence = device.createFence(fenceCreateInfo);
-
-  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
-  queue.submit(submitInfo, fence);
-
-  const Result result = device.waitForFences(fence, true, UINT64_MAX);
-  VERROR(result);
-
-  device.destroyFence(fence);
+  submitAndWait(device, queue, cmdBuf);
 
   for (const auto mem : tempMemory)
     device.freeMemory(mem);
@@ -718,8 +738,8 @@ main::Error VulkanGraphicsModule::init() {
   const std::array attachments = {AttachmentDescription(
       {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
       AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
-      AttachmentStoreOp::eDontCare, ImageLayout::eGeneral,
-      ImageLayout::eColorAttachmentOptimal)};
+      AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
+      ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
@@ -744,17 +764,6 @@ main::Error VulkanGraphicsModule::init() {
                       capabilities.currentExtent.height, 0, 1);
 
   imageviews.reserve(images.size());
-  for (auto im : images) {
-    const ImageViewCreateInfo imageviewCreateInfo(
-        {}, im, ImageViewType::e2D, format.format, {},
-        ImageSubresourceRange(ImageAspectFlagBits::eColor, 0, 1, 0, 1));
-    const auto imview = device.createImageView(imageviewCreateInfo);
-    imageviews.push_back(imview);
-
-    const FramebufferCreateInfo framebufferCreateInfo(
-        {}, renderpass, 1, &imview, viewport.width, viewport.height, 1);
-    framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
-  }
 
   const CommandPoolCreateInfo commandPoolCreateInfo(
       CommandPoolCreateFlagBits::eResetCommandBuffer, queueIndex);
@@ -763,6 +772,19 @@ main::Error VulkanGraphicsModule::init() {
   const CommandBufferAllocateInfo cmdBufferAllocInfo(
       pool, CommandBufferLevel::ePrimary, (uint32_t)imageviews.size() + 1);
   cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
+
+  for (auto im : images) {
+    const ImageViewCreateInfo imageviewCreateInfo(
+        {}, im, ImageViewType::e2D, format.format, {},
+        ImageSubresourceRange(ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+
+    const auto imview = device.createImageView(imageviewCreateInfo);
+    imageviews.push_back(imview);
+
+    const FramebufferCreateInfo framebufferCreateInfo(
+        {}, renderpass, 1, &imview, viewport.width, viewport.height, 1);
+    framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
+  }
 
   main::error = gamegraphics.init();
   if (main::error != main::Error::NONE)
@@ -794,15 +816,19 @@ void VulkanGraphicsModule::tick(double time) {
 
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
-    const std::array clearColor = {1, 1, 1, 1};
+    const std::array clearColor = {1, 0, 1, 1};
     const ClearValue clearValue(clearColor);
 
-    const CommandBufferBeginInfo cmdBufferBeginInfo;
+    const CommandBufferInheritanceInfo inharitanceInfo(
+        renderpass, 0, framebuffer[nextimage.value]);
+    const CommandBufferBeginInfo cmdBufferBeginInfo(
+        CommandBufferUsageFlagBits::eSimultaneousUse, &inharitanceInfo);
     currentBuffer.begin(cmdBufferBeginInfo);
 
     const RenderPassBeginInfo renderPassBeginInfo(
         renderpass, framebuffer[nextimage.value],
-        {{0, 0}, {viewport.width, viewport.height}}, clearValue);
+        {{0, 0}, {(uint32_t)viewport.width, (uint32_t)viewport.height}},
+        clearValue);
     currentBuffer.beginRenderPass(renderPassBeginInfo,
                                   SubpassContents::eInline);
 
