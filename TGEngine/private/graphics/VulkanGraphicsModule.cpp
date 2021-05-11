@@ -187,8 +187,10 @@ private:
   uint32_t memoryTypeHostVisibleCoherent;
   uint32_t memoryTypeDeviceLocal;
   std::vector<Buffer> bufferList;
+  std::vector<size_t> bufferSizeList;
   std::vector<DeviceMemory> bufferMemoryList;
   Viewport viewport;
+  std::vector<CommandBuffer> secondaryCommandBuffer;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -205,8 +207,11 @@ private:
   main::Error pushMaterials(const size_t materialcount,
                             const Material *materials);
 
-  main::Error pushVertexData(const size_t dataCount, const uint8_t **data,
-                             const size_t *dataSizes);
+  main::Error pushData(const size_t dataCount, const uint8_t **data,
+                       const size_t *dataSizes, const DataType type);
+
+  main::Error pushRender(const size_t renderInfoCount,
+                         const RenderInfo *renderInfos);
 
   GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
 };
@@ -342,6 +347,20 @@ struct ShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
+inline void submitAndWait(const Device &device, const Queue &queue,
+                          const CommandBuffer &cmdBuf) {
+  const FenceCreateInfo fenceCreateInfo;
+  const auto fence = device.createFence(fenceCreateInfo);
+
+  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
+  queue.submit(submitInfo, fence);
+
+  const Result result = device.waitForFences(fence, true, UINT64_MAX);
+  VERROR(result);
+
+  device.destroyFence(fence);
+}
+
 VulkanShaderPipe *__implLoadShaderPipeAndCompile(
     std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> &vector) {
   VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
@@ -404,6 +423,21 @@ constexpr PipelineInputAssemblyStateCreateInfo
 
 main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                 const Material *materials) {
+
+  const Rect2D siccor({0, 0},
+                      {(uint32_t)viewport.width, (uint32_t)viewport.height});
+  const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, viewport,
+                                                                   siccor);
+
+  const PipelineMultisampleStateCreateInfo multisampleCreateInfo(
+      {}, SampleCountFlagBits::e1, false, 1);
+  const PipelineColorBlendAttachmentState blendAttachment(
+      true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
+      BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
+      (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags);
+  const PipelineColorBlendStateCreateInfo colorBlendState(
+      {}, false, LogicOp::eClear, 1, &blendAttachment);
+
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
 
@@ -426,38 +460,71 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
     shaderPipe->rasterization.lineWidth = 1;
     shaderPipe->rasterization.depthBiasEnable = false;
-    shaderPipe->rasterization.rasterizerDiscardEnable = true;
-    shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
+    shaderPipe->rasterization.rasterizerDiscardEnable = false;
+    shaderPipe->rasterization.cullMode = CullModeFlagBits::eFrontAndBack;
 
     const auto layout =
         device.createPipelineLayout(shaderPipe->layoutCreateInfo);
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
-        &inputAssemblyCreateInfo, {}, {}, &shaderPipe->rasterization, {}, {},
-        {}, {}, layout, renderpass, 0);
+        &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
+        &shaderPipe->rasterization, &multisampleCreateInfo, {},
+        &colorBlendState, {}, layout, renderpass, 0);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
   }
+
+  const auto piperesult =
+      device.createGraphicsPipelines({}, pipelineCreateInfos);
+  VERROR(piperesult.result);
+  pipelines = piperesult.value;
+
   return main::Error::NONE;
 }
 
-inline void submitAndWait(const Device &device, const Queue &queue,
-                          const CommandBuffer &cmdBuf) {
-  const FenceCreateInfo fenceCreateInfo;
-  const auto fence = device.createFence(fenceCreateInfo);
+main::Error VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
+                                             const RenderInfo *renderInfos) {
+  const CommandBufferAllocateInfo commandBufferAllocate(
+      pool, CommandBufferLevel::eSecondary, 1);
+  const CommandBuffer cmdBuf =
+      device.allocateCommandBuffers(commandBufferAllocate).back();
 
-  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
-  queue.submit(submitInfo, fence);
+  const CommandBufferInheritanceInfo inheritance(renderpass, 0);
+  const CommandBufferBeginInfo beginInfo(
+      CommandBufferUsageFlagBits::eSimultaneousUse |
+          CommandBufferUsageFlagBits::eRenderPassContinue,
+      &inheritance);
+  cmdBuf.begin(beginInfo);
+  for (size_t i = 0; i < renderInfoCount; i++) {
+    const auto &info = renderInfos[i];
 
-  const Result result = device.waitForFences(fence, true, UINT64_MAX);
-  VERROR(result);
+    std::vector<Buffer> vertexBuffer;
+    vertexBuffer.reserve(info.vertexBuffer.size());
+    std::vector<DeviceSize> vertexOffsets(info.vertexBuffer.size());
+    std::fill(vertexOffsets.begin(), vertexOffsets.end(), 0);
 
-  device.destroyFence(fence);
+    for (auto vertId : info.vertexBuffer) {
+      vertexBuffer.push_back(bufferList[vertId]);
+    }
+
+    cmdBuf.bindVertexBuffers(0, vertexBuffer, vertexOffsets);
+
+    cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], 0, IndexType::eUint32);
+
+    cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
+                        pipelines[info.materialId]);
+
+    cmdBuf.drawIndexed(info.indexCount, info.instanceCount, 0, 0, 0);
+  }
+  cmdBuf.end();
+  secondaryCommandBuffer.push_back(cmdBuf);
+  return main::Error::NONE;
 }
 
-main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
-                                                 const uint8_t **data,
-                                                 const size_t *dataSizes) {
+main::Error VulkanGraphicsModule::pushData(const size_t dataCount,
+                                           const uint8_t **data,
+                                           const size_t *dataSizes,
+                                           const DataType type) {
   std::vector<DeviceMemory> tempMemory;
   tempMemory.reserve(dataCount);
   std::vector<Buffer> tempBuffer;
@@ -468,11 +535,14 @@ main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
   const auto firstMemIndex = bufferMemoryList.size();
   bufferMemoryList.reserve(firstMemIndex + dataCount);
 
-  const auto cmdBuf = cmdbuffer[cmdbuffer.size() - 1];
+  const auto cmdBuf = cmdbuffer.back();
 
   const CommandBufferBeginInfo beginInfo(
       CommandBufferUsageFlagBits::eOneTimeSubmit);
   cmdBuf.begin(beginInfo);
+
+  const BufferUsageFlagBits bufferUsage =
+      (BufferUsageFlagBits)(64 << (uint32_t)type);
 
   for (size_t i = 0; i < dataCount; i++) {
     const auto size = dataSizes[i];
@@ -495,8 +565,7 @@ main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
     device.unmapMemory(hostVisibleMemory);
 
     const BufferCreateInfo bufferLocalCreateInfo(
-        {}, size,
-        BufferUsageFlagBits::eTransferDst | BufferUsageFlagBits::eVertexBuffer,
+        {}, size, BufferUsageFlagBits::eTransferDst | bufferUsage,
         SharingMode::eExclusive);
     const auto localBuffer = device.createBuffer(bufferLocalCreateInfo);
     bufferList.push_back(localBuffer);
@@ -506,6 +575,7 @@ main::Error VulkanGraphicsModule::pushVertexData(const size_t dataCount,
     const auto localMem = device.allocateMemory(allocLocalInfo);
     device.bindBufferMemory(localBuffer, localMem, 0);
     bufferMemoryList.push_back(localMem);
+    bufferSizeList.push_back(size);
 
     const BufferCopy copyInfo(0, 0, size);
     cmdBuf.copyBuffer(intermBuffer, localBuffer, copyInfo);
@@ -791,24 +861,12 @@ main::Error VulkanGraphicsModule::init() {
   if (main::error != main::Error::NONE)
     return main::error;
 
-  const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({},
-                                                                   viewport);
-
-  for (auto &pipeline : pipelineCreateInfos) {
-    pipeline.pViewportState = &pipelineViewportCreateInfo;
-  }
-
-  const auto piperesult =
-      device.createGraphicsPipelines({}, pipelineCreateInfos);
-  VERROR(piperesult.result);
-  pipelines = piperesult.value;
+  const FenceCreateInfo fenceCreateInfo;
+  commandBufferFence = device.createFence(fenceCreateInfo);
 
   const SemaphoreCreateInfo semaphoreCreateInfo;
   waitSemaphore = device.createSemaphore(semaphoreCreateInfo);
   signalSemaphore = device.createSemaphore(semaphoreCreateInfo);
-
-  const FenceCreateInfo fenceCreateInfo;
-  commandBufferFence = device.createFence(fenceCreateInfo);
 
   return main::Error::NONE;
 }
@@ -832,8 +890,8 @@ void VulkanGraphicsModule::tick(double time) {
         {{0, 0}, {(uint32_t)viewport.width, (uint32_t)viewport.height}},
         clearValue);
     currentBuffer.beginRenderPass(renderPassBeginInfo,
-                                  SubpassContents::eInline);
-
+                                  SubpassContents::eSecondaryCommandBuffers);
+    currentBuffer.executeCommands(secondaryCommandBuffer);
     currentBuffer.endRenderPass();
     currentBuffer.end();
   }
@@ -859,6 +917,7 @@ void VulkanGraphicsModule::destroy() {
   device.destroyFence(commandBufferFence);
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
+  device.freeCommandBuffers(pool, secondaryCommandBuffer);
   for (auto &pipeInfo : pipelineCreateInfos)
     device.destroyPipelineLayout(pipeInfo.layout);
   for (auto mem : bufferMemoryList)

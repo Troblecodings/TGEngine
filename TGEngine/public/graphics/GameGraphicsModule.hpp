@@ -11,21 +11,33 @@ using Color = float[4];
 struct Material {
   Color color = {1, 1, 1, 1};
 
-  uint32_t costumShaderCount = 0;      // API dependent
   uint8_t *costumShaderData = nullptr; // API dependent
 };
+
+struct RenderInfo {
+  std::vector<uint32_t> vertexBuffer;
+  uint32_t indexBuffer;
+  uint32_t materialId;
+  uint32_t indexCount;
+  uint32_t instanceCount = 1;
+};
+
 extern std::vector<Material> materials;
 
 class GameGraphicsModule;
+
+enum class DataType { IndexData, VertexData };
 
 struct APILayer { // Interface
 
   virtual main::Error pushMaterials(const size_t materialcount,
                                     const Material *materials) = 0;
 
-  virtual main::Error pushVertexData(const size_t dataCount,
-                                     const uint8_t **data,
-                                     const size_t *dataSizes) = 0;
+  virtual main::Error pushData(const size_t dataCount, const uint8_t **data,
+                               const size_t *dataSizes,
+                               const DataType type) = 0;
+
+  virtual main::Error pushRender(const size_t renderInfoCount, const RenderInfo* renderInfos) = 0;
 
   virtual GameGraphicsModule *getGraphicsModule() = 0;
 };

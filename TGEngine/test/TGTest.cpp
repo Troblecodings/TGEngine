@@ -56,7 +56,6 @@ int main() {
 
 TEST(Shader, LoadAndCompile) {
   Material mat;
-  mat.costumShaderCount = 2;
   std::vector<std::string> test = {"test.vert", "test.frag"};
   ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
