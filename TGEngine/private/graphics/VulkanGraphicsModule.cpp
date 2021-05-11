@@ -181,6 +181,7 @@ private:
   Queue queue;
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
+  Fence commandBufferFence;
   GameGraphicsModule gamegraphics;
   std::vector<ShaderModule> shaderModules;
   uint32_t memoryTypeHostVisibleCoherent;
@@ -770,7 +771,7 @@ main::Error VulkanGraphicsModule::init() {
   pool = device.createCommandPool(commandPoolCreateInfo);
 
   const CommandBufferAllocateInfo cmdBufferAllocInfo(
-      pool, CommandBufferLevel::ePrimary, (uint32_t)imageviews.size() + 1);
+      pool, CommandBufferLevel::ePrimary, (uint32_t)images.size() + 1);
   cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
 
   for (auto im : images) {
@@ -806,23 +807,24 @@ main::Error VulkanGraphicsModule::init() {
   waitSemaphore = device.createSemaphore(semaphoreCreateInfo);
   signalSemaphore = device.createSemaphore(semaphoreCreateInfo);
 
+  const FenceCreateInfo fenceCreateInfo;
+  commandBufferFence = device.createFence(fenceCreateInfo);
+
   return main::Error::NONE;
 }
 
 void VulkanGraphicsModule::tick(double time) {
   auto nextimage =
-      device.acquireNextImageKHR(swapchain, INT64_MAX, waitSemaphore, {});
+      device.acquireNextImageKHR(swapchain, UINT64_MAX, waitSemaphore, {});
   VERROR(nextimage.result);
 
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
-    const std::array clearColor = {1, 0, 1, 1};
+    const std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
     const ClearValue clearValue(clearColor);
 
-    const CommandBufferInheritanceInfo inharitanceInfo(
-        renderpass, 0, framebuffer[nextimage.value]);
     const CommandBufferBeginInfo cmdBufferBeginInfo(
-        CommandBufferUsageFlagBits::eSimultaneousUse, &inharitanceInfo);
+        CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
     currentBuffer.begin(cmdBufferBeginInfo);
 
     const RenderPassBeginInfo renderPassBeginInfo(
@@ -837,19 +839,32 @@ void VulkanGraphicsModule::tick(double time) {
   }
 
   const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
-  const SubmitInfo submitInfo(1, &waitSemaphore, &stageFlag, 1, &currentBuffer,
-                              1, &signalSemaphore);
-  queue.submit(submitInfo, {});
+  const SubmitInfo submitInfo(waitSemaphore, stageFlag, currentBuffer,
+                              signalSemaphore);
+  queue.submit(submitInfo, commandBufferFence);
 
-  const PresentInfoKHR presentInfo(1, &signalSemaphore, 1, &swapchain,
-                                   &nextimage.value, nullptr);
+  const PresentInfoKHR presentInfo(signalSemaphore, swapchain, nextimage.value,
+                                   nullptr);
   const Result result = queue.presentKHR(presentInfo);
   VERROR(result);
+
+  device.waitForFences(commandBufferFence, true, UINT64_MAX);
+
+  currentBuffer.reset();
+
+  device.resetFences(commandBufferFence);
 }
 
 void VulkanGraphicsModule::destroy() {
+  device.destroyFence(commandBufferFence);
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
+  for (auto &pipeInfo : pipelineCreateInfos)
+    device.destroyPipelineLayout(pipeInfo.layout);
+  for (auto mem : bufferMemoryList)
+    device.freeMemory(mem);
+  for (auto buf : bufferList)
+    device.destroyBuffer(buf);
   for (auto pipe : pipelines)
     device.destroyPipeline(pipe);
   for (auto shader : shaderModules)
