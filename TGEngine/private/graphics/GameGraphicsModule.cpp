@@ -8,9 +8,9 @@ std::vector<Material> materials;
 
 main::Error GameGraphicsModule::init() {
   apiLayer->pushMaterials(materials.size(), materials.data());
-  const std::array vertData = {0.0f, 0.0f, 0.0f, 1.0f, //
-                               1.0f, 0.0f, 0.0f, 1.0f, //
-                               1.0f, 1.0f, 0.0f, 1.0f};
+  const std::array vertData = {0.0f, 0.0f, 0.2f, 1.0f, //
+                               1.0f, 0.0f, 0.2f, 1.0f, //
+                               1.0f, 1.0f, 0.2f, 1.0f};
   const std::array dptr = {vertData.data()};
   const std::array size = {vertData.size() * sizeof(float)};
   apiLayer->pushData(1, (const uint8_t **)dptr.data(), size.data(),

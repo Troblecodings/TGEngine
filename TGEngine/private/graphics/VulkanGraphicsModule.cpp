@@ -461,7 +461,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.lineWidth = 1;
     shaderPipe->rasterization.depthBiasEnable = false;
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
-    shaderPipe->rasterization.cullMode = CullModeFlagBits::eFrontAndBack;
+    shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
     const auto layout =
         device.createPipelineLayout(shaderPipe->layoutCreateInfo);
@@ -820,11 +820,8 @@ main::Error VulkanGraphicsModule::init() {
       (uint32_t)colorAttachments.size(), colorAttachments.data())};
 
   const std::array subpassDependencies = {SubpassDependency(
-      VK_SUBPASS_EXTERNAL, 0, PipelineStageFlagBits::eTopOfPipe,
-      PipelineStageFlagBits::eAllGraphics, (AccessFlagBits)0,
-      AccessFlagBits::eInputAttachmentRead |
-          AccessFlagBits::eColorAttachmentRead |
-          AccessFlagBits::eColorAttachmentWrite)};
+      0, VK_SUBPASS_EXTERNAL, PipelineStageFlagBits::eAllGraphics,
+      PipelineStageFlagBits::eTopOfPipe, (AccessFlagBits)0, (AccessFlagBits)0)};
 
   const RenderPassCreateInfo renderPassCreateInfo(
       {}, (uint32_t)attachments.size(), attachments.data(),
@@ -846,7 +843,7 @@ main::Error VulkanGraphicsModule::init() {
 
   for (auto im : images) {
     const ImageViewCreateInfo imageviewCreateInfo(
-        {}, im, ImageViewType::e2D, format.format, {},
+        {}, im, ImageViewType::e2D, format.format, ComponentMapping(),
         ImageSubresourceRange(ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 
     const auto imview = device.createImageView(imageviewCreateInfo);
