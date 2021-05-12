@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../public/Module.hpp"
+#include "GameGraphicsModule.hpp"
 #include <vector>
 #include <array>
 #include <string>
@@ -17,6 +18,6 @@ namespace tge::graphics {
 
 uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames);
 
-main::Module *getNewModule();
+APILayer *getNewVulkanModule(GameGraphicsModule* mod);
 
 } // namespace tge::graphics

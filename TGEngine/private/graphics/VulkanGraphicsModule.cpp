@@ -13,7 +13,6 @@
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
-#include "../../public/graphics/GameGraphicsModule.hpp"
 
 #include "../../public/Util.hpp"
 #include <vector>
@@ -159,9 +158,10 @@ Result verror = Result::eSuccess;
     printf("Vulkan error %d!", (uint32_t)verror);                              \
   }
 
-class VulkanGraphicsModule : public tge::main::Module, public APILayer {
+class VulkanGraphicsModule : public APILayer {
 public:
-  VulkanGraphicsModule() : gamegraphics(GameGraphicsModule(this)){};
+  VulkanGraphicsModule(const GameGraphicsModule *graphicsModule)
+      : APILayer(graphicsModule) {}
 
 private:
   Instance instance;
@@ -182,7 +182,7 @@ private:
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
   Fence commandBufferFence;
-  GameGraphicsModule gamegraphics;
+  GameGraphicsModule *gamegraphics;
   std::vector<ShaderModule> shaderModules;
   uint32_t memoryTypeHostVisibleCoherent;
   uint32_t memoryTypeDeviceLocal;
@@ -196,24 +196,22 @@ private:
   DebugUtilsMessengerEXT debugMessenger;
 #endif
 
-  main::Error init();
+  main::Error init() override;
 
-  void tick(double time);
+  void tick(double time) override;
 
-  void destroy();
+  void destroy() override;
 
   main::Error createWindowAndGetSurface();
 
   main::Error pushMaterials(const size_t materialcount,
-                            const Material *materials);
+                            const Material *materials) override;
 
   main::Error pushData(const size_t dataCount, const uint8_t **data,
-                       const size_t *dataSizes, const DataType type);
+                       const size_t *dataSizes, const DataType type) override;
 
   main::Error pushRender(const size_t renderInfoCount,
-                         const RenderInfo *renderInfos);
-
-  GameGraphicsModule *getGraphicsModule() { return &gamegraphics; }
+                         const RenderInfo *renderInfos) override;
 };
 
 inline void waitForImageTransition(
@@ -604,7 +602,7 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemHandle))
     return main::Error::NO_MODULE_HANDLE;
 
-  const auto windowProperties = gamegraphics.getWindowProperties();
+  const auto windowProperties = gamegraphics->getWindowProperties();
 
   WNDCLASSEX wndclass;
   FillMemory(&wndclass, sizeof(WNDCLASSEX), 0);
@@ -854,10 +852,6 @@ main::Error VulkanGraphicsModule::init() {
     framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
   }
 
-  main::error = gamegraphics.init();
-  if (main::error != main::Error::NONE)
-    return main::error;
-
   const FenceCreateInfo fenceCreateInfo;
   commandBufferFence = device.createFence(fenceCreateInfo);
 
@@ -948,6 +942,8 @@ void VulkanGraphicsModule::destroy() {
   instance.destroy();
 }
 
-main::Module *getNewModule() { return new VulkanGraphicsModule(); }
+APILayer *getNewVulkanModule(GameGraphicsModule *mod) {
+  return new VulkanGraphicsModule(mod);
+}
 
 } // namespace tge::graphics

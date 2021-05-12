@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../public/Error.hpp"
+#include "../../public/Module.hpp"
 #include "stdint.h"
 #include <vector>
 
@@ -28,7 +29,15 @@ class GameGraphicsModule;
 
 enum class DataType { IndexData, VertexData };
 
-struct APILayer { // Interface
+class APILayer : public main::Module { // Interface
+protected:
+  const GameGraphicsModule *graphicsModule;
+
+public:
+  APILayer(const GameGraphicsModule *graphicsModule)
+      : graphicsModule(graphicsModule) {}
+
+  virtual ~APILayer() {}
 
   virtual main::Error pushMaterials(const size_t materialcount,
                                     const Material *materials) = 0;
@@ -37,9 +46,10 @@ struct APILayer { // Interface
                                const size_t *dataSizes,
                                const DataType type) = 0;
 
-  virtual main::Error pushRender(const size_t renderInfoCount, const RenderInfo* renderInfos) = 0;
+  virtual main::Error pushRender(const size_t renderInfoCount,
+                                 const RenderInfo *renderInfos) = 0;
 
-  virtual GameGraphicsModule *getGraphicsModule() = 0;
+  const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };
 
 struct WindowProperties {
@@ -51,16 +61,19 @@ struct WindowProperties {
   int height = 800;        // Ignored if fullscreenmode != 0
 };
 
-class GameGraphicsModule {
+class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
 
 public:
-  GameGraphicsModule(APILayer *apiLayer) : apiLayer(apiLayer) {}
+  GameGraphicsModule(APILayer *(*apiLayerCallback)(GameGraphicsModule *))
+      : apiLayer(apiLayerCallback(this)) {}
 
   main::Error init();
 
   WindowProperties getWindowProperties();
+
+  APILayer *getAPILayer() { return apiLayer;  }
 };
 
 } // namespace tge::graphics
