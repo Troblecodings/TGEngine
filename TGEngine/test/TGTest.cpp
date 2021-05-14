@@ -66,6 +66,38 @@ TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);
   ASSERT_EQ(init(), Error::NONE);
+  APILayer *apiLayer = getAPILayer();
+  ASSERT_EQ(apiLayer->pushMaterials(materials.size(), materials.data()),
+            Error::NONE);
+  const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
+                               1.0f, 0.0f, 0.2f, 1.0f,  //
+                               1.0f, 1.0f, 0.2f, 1.0f,  //
+                               -1.0f, 1.0f, 0.2f, 1.0f, //
+                                                        //
+                               -1.0f, 0.0f, 0.1f, 1.0f, //
+                               1.0f, 0.0f, 0.1f, 1.0f,  //
+                               1.0f, 1.0f, 0.1f, 1.0f,  //
+                               -1.0f, 1.0f, 0.1f, 1.0f};
+  const std::array dptr = {vertData.data()};
+  const std::array size = {vertData.size() * sizeof(float)};
+  ASSERT_EQ(apiLayer->pushData(1, (const uint8_t **)dptr.data(), size.data(),
+                               DataType::VertexData),
+            Error::NONE);
+
+  const std::array indexData = {0, 1, 2, 2, 3, 0};
+  const std::array indexdptr = {indexData.data()};
+  const std::array indexsize = {indexData.size() * sizeof(int)};
+  ASSERT_EQ(apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
+                               indexsize.data(), DataType::IndexData),
+            Error::NONE);
+
+  RenderInfo renderInfo;
+  renderInfo.indexBuffer = 1;
+  renderInfo.materialId = 0;
+  renderInfo.indexCount = indexData.size();
+  renderInfo.vertexBuffer.push_back(0);
+  ASSERT_EQ(apiLayer->pushRender(1, &renderInfo), Error::NONE);
+
   ASSERT_EQ(init(), Error::ALREADY_INITIALIZED);
   finishedInit = true;
 }
