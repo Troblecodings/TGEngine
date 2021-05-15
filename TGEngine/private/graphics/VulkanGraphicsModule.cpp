@@ -5,8 +5,8 @@
 #include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
-
 #include <iostream>
+#include <mutex>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -170,6 +170,7 @@ private:
   SurfaceKHR surface;
   char *window = nullptr;
   SurfaceFormatKHR format;
+  SurfaceFormatKHR depthFormat;
   SwapchainKHR swapchain;
   std::vector<Image> images;
   RenderPass renderpass;
@@ -191,6 +192,10 @@ private:
   std::vector<DeviceMemory> bufferMemoryList;
   Viewport viewport;
   std::vector<CommandBuffer> secondaryCommandBuffer;
+  std::mutex commandBufferRecording; // protects secondaryCommandBuffer from
+                                     // memory invalidation
+  Image depthImage;
+  ImageView depthImageView;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -515,6 +520,7 @@ main::Error VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     cmdBuf.drawIndexed(info.indexCount, info.instanceCount, 0, 0, 0);
   }
   cmdBuf.end();
+  const std::lock_guard onExitUnlock(commandBufferRecording);
   secondaryCommandBuffer.push_back(cmdBuf);
   return main::Error::NONE;
 }
@@ -650,7 +656,7 @@ VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 #endif
 
 main::Error VulkanGraphicsModule::init() {
-
+#pragma region Instance
   const ApplicationInfo applicationInfo(APPLICATION_NAME, APPLICATION_VERSION,
                                         ENGINE_NAME, ENGINE_VERSION,
                                         VK_API_VERSION_1_0);
@@ -695,7 +701,9 @@ main::Error VulkanGraphicsModule::init() {
   debugMessenger = instance.createDebugUtilsMessengerEXT(
       debugUtilsMsgCreateInfo, nullptr, stat);
 #endif
+#pragma endregion
 
+#pragma region Device
   constexpr auto getScore = [](auto physDevice) {
     const auto properties = physDevice.getProperties();
     return properties.limits.maxImageDimension2D +
@@ -741,7 +749,9 @@ main::Error VulkanGraphicsModule::init() {
   const DeviceCreateInfo deviceCreateInfo({}, 1, &queueCreateInfo, 0, {}, 1,
                                           &name);
   this->device = this->physicalDevice.createDevice(deviceCreateInfo);
+#pragma endregion
 
+#pragma region Queue, Surface, Prepipe
   queue = device.getQueue(queueFamilyIndex, queueIndex);
 
   const auto localError = createWindowAndGetSurface();
@@ -754,13 +764,21 @@ main::Error VulkanGraphicsModule::init() {
   const auto properties = physicalDevice.getProperties();
   const auto surfaceFormat = physicalDevice.getSurfaceFormatsKHR(surface);
   const auto surfEndItr = surfaceFormat.end();
-  const auto fitr = std::find_if(
-      surfaceFormat.begin(), surfEndItr, [](SurfaceFormatKHR format) {
+  const auto surfBeginItr = surfaceFormat.begin();
+  const auto fitr =
+      std::find_if(surfBeginItr, surfEndItr, [](SurfaceFormatKHR format) {
         return format.format == Format::eB8G8R8A8Unorm;
       });
   if (fitr == surfEndItr)
     return main::Error::FORMAT_NOT_FOUND;
   format = *fitr;
+  const auto depthfitr =
+      std::find_if(surfBeginItr, surfEndItr, [](SurfaceFormatKHR format) {
+        return format.format == Format::e;
+      });
+  if (depthfitr == surfEndItr)
+    return main::Error::FORMAT_NOT_FOUND;
+  depthFormat = *depthfitr;
 
   const auto memoryProperties = physicalDevice.getMemoryProperties();
   const auto memBeginItr = memoryProperties.memoryTypes.begin();
@@ -792,7 +810,9 @@ main::Error VulkanGraphicsModule::init() {
       fndPresentMode = presentModesBeginItr;
   }
   const auto presentMode = *fndPresentMode;
+#pragma endregion
 
+#pragma region Swapchain
   const SwapchainCreateInfoKHR swapchainCreateInfo(
       {}, surface, 3, format.format, format.colorSpace,
       capabilities.currentExtent, 1, ImageUsageFlagBits::eColorAttachment,
@@ -803,6 +823,9 @@ main::Error VulkanGraphicsModule::init() {
   swapchain = device.createSwapchainKHR(swapchainCreateInfo);
 
   images = device.getSwapchainImagesKHR(swapchain);
+#pragma endregion
+
+#pragma region Renderpass
 
   const std::array attachments = {AttachmentDescription(
       {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
@@ -825,6 +848,9 @@ main::Error VulkanGraphicsModule::init() {
       {}, (uint32_t)attachments.size(), attachments.data(),
       (uint32_t)subpassDescriptions.size(), subpassDescriptions.data());
   renderpass = device.createRenderPass(renderPassCreateInfo);
+#pragma endregion
+
+#pragma region CommandBuffer
 
   viewport = Viewport(0, 0, capabilities.currentExtent.width,
                       capabilities.currentExtent.height, 0, 1);
@@ -838,6 +864,17 @@ main::Error VulkanGraphicsModule::init() {
   const CommandBufferAllocateInfo cmdBufferAllocInfo(
       pool, CommandBufferLevel::ePrimary, (uint32_t)images.size() + 1);
   cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
+#pragma endregion
+
+#pragma region ImageViews and Framebuffer
+
+  const ImageCreateInfo depthImageCreateInfo(
+      {}, ImageType::e2D, format.format, {viewport.width, viewport.height, 1},
+      1, 1);
+  depthImage = device.createImage(depthImageCreateInfo);
+
+  const ImageViewCreateInfo depthImageViewCreateInfo(
+      {}, depthImage, ImageViewType::e2D, format.format);
 
   for (auto im : images) {
     const ImageViewCreateInfo imageviewCreateInfo(
@@ -847,18 +884,22 @@ main::Error VulkanGraphicsModule::init() {
     const auto imview = device.createImageView(imageviewCreateInfo);
     imageviews.push_back(imview);
 
+    const std::array attachments = {imview};
+
     const FramebufferCreateInfo framebufferCreateInfo(
-        {}, renderpass, 1, &imview, viewport.width, viewport.height, 1);
+        {}, renderpass, attachments, viewport.width, viewport.height, 1);
     framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
   }
+#pragma endregion
 
+#pragma region Vulkan Mutex
   const FenceCreateInfo fenceCreateInfo;
   commandBufferFence = device.createFence(fenceCreateInfo);
 
   const SemaphoreCreateInfo semaphoreCreateInfo;
   waitSemaphore = device.createSemaphore(semaphoreCreateInfo);
   signalSemaphore = device.createSemaphore(semaphoreCreateInfo);
-
+#pragma endregion
   return main::Error::NONE;
 }
 
@@ -869,7 +910,7 @@ void VulkanGraphicsModule::tick(double time) {
 
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
-    const std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
+    constexpr std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
     const ClearValue clearValue(clearColor);
 
     const CommandBufferBeginInfo cmdBufferBeginInfo(
@@ -882,6 +923,7 @@ void VulkanGraphicsModule::tick(double time) {
         clearValue);
     currentBuffer.beginRenderPass(renderPassBeginInfo,
                                   SubpassContents::eSecondaryCommandBuffers);
+    const std::lock_guard onExitUnlock(commandBufferRecording);
     currentBuffer.executeCommands(secondaryCommandBuffer);
     currentBuffer.endRenderPass();
     currentBuffer.end();
