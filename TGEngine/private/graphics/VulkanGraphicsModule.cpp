@@ -170,7 +170,7 @@ private:
   SurfaceKHR surface;
   char *window = nullptr;
   SurfaceFormatKHR format;
-  SurfaceFormatKHR depthFormat;
+  Format depthFormat = Format::eUndefined;
   SwapchainKHR swapchain;
   std::vector<Image> images;
   RenderPass renderpass;
@@ -772,13 +772,20 @@ main::Error VulkanGraphicsModule::init() {
   if (fitr == surfEndItr)
     return main::Error::FORMAT_NOT_FOUND;
   format = *fitr;
-  const auto depthfitr =
-      std::find_if(surfBeginItr, surfEndItr, [](SurfaceFormatKHR format) {
-        return format.format == Format::e;
-      });
-  if (depthfitr == surfEndItr)
+
+  constexpr std::array potentialDepthFormat = {
+      Format::eD32Sfloat, Format::eD32SfloatS8Uint, Format::eD24UnormS8Uint,
+      Format::eD16Unorm, Format::eD16UnormS8Uint};
+  for (const Format pDF : potentialDepthFormat) {
+    const FormatProperties fProp = physicalDevice.getFormatProperties(pDF);
+    if (fProp.optimalTilingFeatures &
+        FormatFeatureFlagBits::eDepthStencilAttachment) {
+      depthFormat = pDF;
+      break;
+    }
+  }
+  if (depthFormat == Format::eUndefined)
     return main::Error::FORMAT_NOT_FOUND;
-  depthFormat = *depthfitr;
 
   const auto memoryProperties = physicalDevice.getMemoryProperties();
   const auto memBeginItr = memoryProperties.memoryTypes.begin();
@@ -869,8 +876,8 @@ main::Error VulkanGraphicsModule::init() {
 #pragma region ImageViews and Framebuffer
 
   const ImageCreateInfo depthImageCreateInfo(
-      {}, ImageType::e2D, format.format, {viewport.width, viewport.height, 1},
-      1, 1);
+      {}, ImageType::e2D, format.format,
+      {(uint32_t)viewport.width, (uint32_t)viewport.height, 1}, 1, 1);
   depthImage = device.createImage(depthImageCreateInfo);
 
   const ImageViewCreateInfo depthImageViewCreateInfo(

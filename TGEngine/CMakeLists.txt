@@ -29,7 +29,6 @@ include(FetchContent)
 FETCHCONTENT_DECLARE(
   googletest
   URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-  CMAKE_ARGS "-DCMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded"
 )
 message("Downloading vulkansdk")
 FETCHCONTENT_DECLARE(
