@@ -20,4 +20,6 @@ Error lastError();
 
 graphics::APILayer *getAPILayer();
 
+graphics::GameGraphicsModule *getGameGraphicsModule();
+
 } // namespace tge::main

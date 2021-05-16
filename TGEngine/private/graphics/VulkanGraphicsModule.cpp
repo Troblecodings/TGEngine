@@ -195,6 +195,7 @@ private:
   std::mutex commandBufferRecording; // protects secondaryCommandBuffer from
                                      // memory invalidation
   Image depthImage;
+  DeviceMemory depthImageMemory;
   ImageView depthImageView;
 
 #ifdef DEBUG
@@ -427,19 +428,24 @@ constexpr PipelineInputAssemblyStateCreateInfo
 main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                 const Material *materials) {
 
-  const Rect2D siccor({0, 0},
+  const Rect2D scissor({0, 0},
                       {(uint32_t)viewport.width, (uint32_t)viewport.height});
   const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, viewport,
-                                                                   siccor);
+                                                                   scissor);
 
   const PipelineMultisampleStateCreateInfo multisampleCreateInfo(
       {}, SampleCountFlagBits::e1, false, 1);
+
   const PipelineColorBlendAttachmentState blendAttachment(
       true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
       BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
       (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags);
+
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, 1, &blendAttachment);
+
+  const PipelineDepthStencilStateCreateInfo pipeDepthState(
+      {}, true, true, CompareOp::eGreaterOrEqual, false, false, {}, {}, 0, 1);
 
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
@@ -472,7 +478,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
         &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
-        &shaderPipe->rasterization, &multisampleCreateInfo, {},
+        &shaderPipe->rasterization, &multisampleCreateInfo, &pipeDepthState,
         &colorBlendState, {}, layout, renderpass, 0);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
   }
@@ -773,20 +779,6 @@ main::Error VulkanGraphicsModule::init() {
     return main::Error::FORMAT_NOT_FOUND;
   format = *fitr;
 
-  constexpr std::array potentialDepthFormat = {
-      Format::eD32Sfloat, Format::eD32SfloatS8Uint, Format::eD24UnormS8Uint,
-      Format::eD16Unorm, Format::eD16UnormS8Uint};
-  for (const Format pDF : potentialDepthFormat) {
-    const FormatProperties fProp = physicalDevice.getFormatProperties(pDF);
-    if (fProp.optimalTilingFeatures &
-        FormatFeatureFlagBits::eDepthStencilAttachment) {
-      depthFormat = pDF;
-      break;
-    }
-  }
-  if (depthFormat == Format::eUndefined)
-    return main::Error::FORMAT_NOT_FOUND;
-
   const auto memoryProperties = physicalDevice.getMemoryProperties();
   const auto memBeginItr = memoryProperties.memoryTypes.begin();
   const auto memEndItr = memoryProperties.memoryTypes.end();
@@ -804,6 +796,8 @@ main::Error VulkanGraphicsModule::init() {
       std::distance(memBeginItr, hostVisibleFindItr);
 
   const auto capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+  viewport = Viewport(0, 0, capabilities.currentExtent.width,
+                      capabilities.currentExtent.height, 0, 1);
 
   const auto presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
   const auto presentModesEndItr = presentModes.end();
@@ -832,36 +826,79 @@ main::Error VulkanGraphicsModule::init() {
   images = device.getSwapchainImagesKHR(swapchain);
 #pragma endregion
 
+#pragma region Depth Attachment
+  constexpr std::array potentialDepthFormat = {
+      Format::eD32Sfloat, Format::eD32SfloatS8Uint, Format::eD24UnormS8Uint,
+      Format::eD16Unorm, Format::eD16UnormS8Uint};
+  for (const Format pDF : potentialDepthFormat) {
+    const FormatProperties fProp = physicalDevice.getFormatProperties(pDF);
+    if (fProp.optimalTilingFeatures &
+        FormatFeatureFlagBits::eDepthStencilAttachment) {
+      depthFormat = pDF;
+      break;
+    }
+  }
+  if (depthFormat == Format::eUndefined)
+    return main::Error::FORMAT_NOT_FOUND;
+
+  const ImageCreateInfo depthImageCreateInfo(
+      {}, ImageType::e2D, depthFormat,
+      {(uint32_t)viewport.width, (uint32_t)viewport.height, 1}, 1, 1,
+      SampleCountFlagBits::e1, ImageTiling::eOptimal,
+      ImageUsageFlagBits::eDepthStencilAttachment);
+  depthImage = device.createImage(depthImageCreateInfo);
+
+  const MemoryRequirements imageMemReq =
+      device.getImageMemoryRequirements(depthImage);
+
+  const MemoryAllocateInfo memAllocInfo(imageMemReq.size,
+                                        memoryTypeDeviceLocal);
+  depthImageMemory = device.allocateMemory(memAllocInfo);
+
+  device.bindImageMemory(depthImage, depthImageMemory, 0);
+
+  const ImageSubresourceRange subresourceRange(ImageAspectFlagBits::eDepth, 0,
+                                               1, 0, 1);
+
+  const ImageViewCreateInfo depthImageViewCreateInfo(
+      {}, depthImage, ImageViewType::e2D, depthFormat, {}, subresourceRange);
+  depthImageView = device.createImageView(depthImageViewCreateInfo);
+#pragma endregion
+
 #pragma region Renderpass
 
-  const std::array attachments = {AttachmentDescription(
-      {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
-      AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
-      AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
-      ImageLayout::ePresentSrcKHR)};
+  const std::array attachments = {
+      AttachmentDescription(
+          {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
+          AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
+          ImageLayout::ePresentSrcKHR),
+      AttachmentDescription(
+          {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, AttachmentLoadOp::eClear,
+          AttachmentStoreOp::eStore, ImageLayout::eUndefined,
+          ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
 
-  const std::array subpassDescriptions = {SubpassDescription(
-      {}, PipelineBindPoint::eGraphics, 0, {},
-      (uint32_t)colorAttachments.size(), colorAttachments.data())};
+  constexpr AttachmentReference depthAttachment(
+      1, ImageLayout::eDepthStencilAttachmentOptimal);
+
+  const std::array subpassDescriptions = {
+      SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
+                         {}, &depthAttachment)};
 
   const std::array subpassDependencies = {SubpassDependency(
       0, VK_SUBPASS_EXTERNAL, PipelineStageFlagBits::eAllGraphics,
       PipelineStageFlagBits::eTopOfPipe, (AccessFlagBits)0, (AccessFlagBits)0)};
 
-  const RenderPassCreateInfo renderPassCreateInfo(
-      {}, (uint32_t)attachments.size(), attachments.data(),
-      (uint32_t)subpassDescriptions.size(), subpassDescriptions.data());
+  const RenderPassCreateInfo renderPassCreateInfo({}, attachments,
+                                                  subpassDescriptions);
   renderpass = device.createRenderPass(renderPassCreateInfo);
 #pragma endregion
 
 #pragma region CommandBuffer
-
-  viewport = Viewport(0, 0, capabilities.currentExtent.width,
-                      capabilities.currentExtent.height, 0, 1);
-
   imageviews.reserve(images.size());
 
   const CommandPoolCreateInfo commandPoolCreateInfo(
@@ -874,15 +911,6 @@ main::Error VulkanGraphicsModule::init() {
 #pragma endregion
 
 #pragma region ImageViews and Framebuffer
-
-  const ImageCreateInfo depthImageCreateInfo(
-      {}, ImageType::e2D, format.format,
-      {(uint32_t)viewport.width, (uint32_t)viewport.height, 1}, 1, 1);
-  depthImage = device.createImage(depthImageCreateInfo);
-
-  const ImageViewCreateInfo depthImageViewCreateInfo(
-      {}, depthImage, ImageViewType::e2D, format.format);
-
   for (auto im : images) {
     const ImageViewCreateInfo imageviewCreateInfo(
         {}, im, ImageViewType::e2D, format.format, ComponentMapping(),
@@ -891,7 +919,7 @@ main::Error VulkanGraphicsModule::init() {
     const auto imview = device.createImageView(imageviewCreateInfo);
     imageviews.push_back(imview);
 
-    const std::array attachments = {imview};
+    const std::array attachments = {imview, depthImageView};
 
     const FramebufferCreateInfo framebufferCreateInfo(
         {}, renderpass, attachments, viewport.width, viewport.height, 1);
@@ -954,6 +982,9 @@ void VulkanGraphicsModule::tick(double time) {
 }
 
 void VulkanGraphicsModule::destroy() {
+  device.destroyImageView(depthImageView);
+  device.freeMemory(depthImageMemory);
+  device.destroyImage(depthImage);
   device.destroyFence(commandBufferFence);
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);

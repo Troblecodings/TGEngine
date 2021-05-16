@@ -62,4 +62,6 @@ Error lastError() { return error; }
 
 graphics::APILayer *getAPILayer() { return usedApiLayer; }
 
+graphics::GameGraphicsModule *getGameGraphicsModule() { return gameModule; }
+
 } // namespace tge::main
