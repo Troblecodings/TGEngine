@@ -6,9 +6,9 @@ namespace tge::graphics {
 
 std::vector<Material> materials;
 
-main::Error GameGraphicsModule::init() {
-  return main::Error::NONE;
-}
+main::Error GameGraphicsModule::init() { return main::Error::NONE; }
+
+void GameGraphicsModule::destroy() { materials.clear(); }
 
 WindowProperties GameGraphicsModule::getWindowProperties() {
   return WindowProperties();

@@ -51,8 +51,10 @@ Error start() {
     mod->destroy();
     delete mod;
   }
+  modules.clear();
   isRunning = false;
   isInitialized = false;
+  exitRequest = false;
   return error = Error::NONE;
 }
 

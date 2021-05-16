@@ -148,7 +148,6 @@ constexpr std::array extensionToEnable = {VK_KHR_SURFACE_EXTENSION_NAME
 
 using namespace vk;
 
-std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
 Result verror = Result::eSuccess;
 
 #define VERROR(rslt)                                                           \
@@ -197,6 +196,7 @@ private:
   Image depthImage;
   DeviceMemory depthImageMemory;
   ImageView depthImageView;
+  std::vector<PipelineLayout> pipelineLayouts;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -429,7 +429,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                 const Material *materials) {
 
   const Rect2D scissor({0, 0},
-                      {(uint32_t)viewport.width, (uint32_t)viewport.height});
+                       {(uint32_t)viewport.width, (uint32_t)viewport.height});
   const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, viewport,
                                                                    scissor);
 
@@ -446,6 +446,10 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
   const PipelineDepthStencilStateCreateInfo pipeDepthState(
       {}, true, true, CompareOp::eGreaterOrEqual, false, false, {}, {}, 0, 1);
+  
+  std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
+  pipelineCreateInfos.reserve(materialcount);
+  pipelineLayouts.reserve(materialcount);
 
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
@@ -454,6 +458,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
     const auto firstIndex = shaderModules.size();
 
+    shaderPipe->pipelineShaderStage.clear();
     shaderPipe->pipelineShaderStage.reserve(shaderPipe->shader.size());
     for (const auto &shaderPair : shaderPipe->shader) {
       const auto &shaderData = shaderPair.first;
@@ -474,6 +479,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
     const auto layout =
         device.createPipelineLayout(shaderPipe->layoutCreateInfo);
+    pipelineLayouts.push_back(layout);
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
@@ -624,12 +630,16 @@ main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
   wndclass.hInstance = systemHandle;
   wndclass.lpszClassName = ENGINE_NAME;
 
-  auto regWndClass = RegisterClassEx(&wndclass);
-  if (!regWndClass)
-    return main::Error::COULD_NOT_CREATE_WINDOW_CLASS;
+  LPCSTR regWndClass = (LPCSTR)RegisterClassEx(&wndclass);
+  if (!regWndClass) {
+    if (GetLastError() == ERROR_CLASS_ALREADY_EXISTS)
+      regWndClass = ENGINE_NAME;
+    else
+      return main::Error::COULD_NOT_CREATE_WINDOW_CLASS;
+  }
 
   auto window = CreateWindowEx(
-      WS_EX_APPWINDOW, (LPCSTR)regWndClass, APPLICATION_NAME,
+      WS_EX_APPWINDOW, regWndClass, APPLICATION_NAME,
       WS_CLIPSIBLINGS | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU,
       windowProperties.x, windowProperties.y, windowProperties.width,
       windowProperties.height, NULL, NULL, systemHandle, NULL);
@@ -946,7 +956,8 @@ void VulkanGraphicsModule::tick(double time) {
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
     constexpr std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
-    const ClearValue clearValue(clearColor);
+    const std::array clearValue = {ClearValue(clearColor),
+                                   ClearValue(ClearDepthStencilValue(0.0f, 0))};
 
     const CommandBufferBeginInfo cmdBufferBeginInfo(
         CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
@@ -989,8 +1000,8 @@ void VulkanGraphicsModule::destroy() {
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
   device.freeCommandBuffers(pool, secondaryCommandBuffer);
-  for (auto &pipeInfo : pipelineCreateInfos)
-    device.destroyPipelineLayout(pipeInfo.layout);
+  for (auto pipeLayout : pipelineLayouts)
+    device.destroyPipelineLayout(pipeLayout);
   for (auto mem : bufferMemoryList)
     device.freeMemory(mem);
   for (auto buf : bufferList)

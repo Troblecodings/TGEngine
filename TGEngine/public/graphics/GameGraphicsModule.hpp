@@ -23,8 +23,6 @@ struct RenderInfo {
   uint32_t instanceCount = 1;
 };
 
-extern std::vector<Material> materials;
-
 class GameGraphicsModule;
 
 enum class DataType { IndexData, VertexData };
@@ -61,6 +59,8 @@ struct WindowProperties {
   int height = 800;        // Ignored if fullscreenmode != 0
 };
 
+extern std::vector<Material> materials;
+
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
@@ -69,11 +69,13 @@ public:
   GameGraphicsModule(APILayer *(*apiLayerCallback)(GameGraphicsModule *))
       : apiLayer(apiLayerCallback(this)) {}
 
-  main::Error init();
+  main::Error init() override;
+
+  void destroy() override;
 
   WindowProperties getWindowProperties();
 
-  APILayer *getAPILayer() { return apiLayer;  }
+  APILayer *getAPILayer() { return apiLayer; }
 };
 
 } // namespace tge::graphics
