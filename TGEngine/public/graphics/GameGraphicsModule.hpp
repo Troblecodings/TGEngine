@@ -3,6 +3,7 @@
 #include "../../public/Error.hpp"
 #include "../../public/Module.hpp"
 #include "stdint.h"
+#include <string>
 #include <vector>
 
 namespace tge::graphics {
@@ -68,6 +69,14 @@ class GameGraphicsModule : public main::Module {
 public:
   GameGraphicsModule(APILayer *(*apiLayerCallback)(GameGraphicsModule *))
       : apiLayer(apiLayerCallback(this)) {}
+
+  main::Error loadModel(const uint8_t *bytes, const size_t size,
+                        const bool binary, const std::string &baseDir);
+
+  main::Error loadModel(const uint8_t *bytes, const size_t size,
+                        const bool binary) {
+    loadModel(bytes, size, binary, "");
+  }
 
   main::Error init() override;
 

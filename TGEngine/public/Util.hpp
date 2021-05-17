@@ -18,6 +18,7 @@ public:
   constexpr ~OnExit() { call(); }
 };
 
-std::unique_ptr<uint8_t[]> wholeFile(fs::path &path);
+std::unique_ptr<uint8_t[]> wholeFile(const fs::path &path,
+                                     size_t *out = nullptr);
 
 } // namespace tge::util

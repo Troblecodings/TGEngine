@@ -446,7 +446,7 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
   const PipelineDepthStencilStateCreateInfo pipeDepthState(
       {}, true, true, CompareOp::eGreaterOrEqual, false, false, {}, {}, 0, 1);
-  
+
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
   pipelineLayouts.reserve(materialcount);
@@ -455,8 +455,6 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     const auto &material = materials[i];
 
     const auto shaderPipe = (VulkanShaderPipe *)material.costumShaderData;
-
-    const auto firstIndex = shaderModules.size();
 
     shaderPipe->pipelineShaderStage.clear();
     shaderPipe->pipelineShaderStage.reserve(shaderPipe->shader.size());
@@ -586,7 +584,7 @@ main::Error VulkanGraphicsModule::pushData(const size_t dataCount,
     const auto localBuffer = device.createBuffer(bufferLocalCreateInfo);
     bufferList.push_back(localBuffer);
     const auto memRequLocal = device.getBufferMemoryRequirements(localBuffer);
-    const MemoryAllocateInfo allocLocalInfo(memRequ.size,
+    const MemoryAllocateInfo allocLocalInfo(memRequLocal.size,
                                             memoryTypeDeviceLocal);
     const auto localMem = device.allocateMemory(allocLocalInfo);
     device.bindBufferMemory(localBuffer, localMem, 0);
@@ -777,7 +775,6 @@ main::Error VulkanGraphicsModule::init() {
   if (!physicalDevice.getSurfaceSupportKHR(queueIndex, surface))
     return main::Error::NO_SURFACE_SUPPORT;
 
-  const auto properties = physicalDevice.getProperties();
   const auto surfaceFormat = physicalDevice.getSurfaceFormatsKHR(surface);
   const auto surfEndItr = surfaceFormat.end();
   const auto surfBeginItr = surfaceFormat.begin();
@@ -903,8 +900,8 @@ main::Error VulkanGraphicsModule::init() {
       0, VK_SUBPASS_EXTERNAL, PipelineStageFlagBits::eAllGraphics,
       PipelineStageFlagBits::eTopOfPipe, (AccessFlagBits)0, (AccessFlagBits)0)};
 
-  const RenderPassCreateInfo renderPassCreateInfo({}, attachments,
-                                                  subpassDescriptions);
+  const RenderPassCreateInfo renderPassCreateInfo(
+      {}, attachments, subpassDescriptions, subpassDependencies);
   renderpass = device.createRenderPass(renderPassCreateInfo);
 #pragma endregion
 
@@ -985,7 +982,8 @@ void VulkanGraphicsModule::tick(double time) {
   const Result result = queue.presentKHR(presentInfo);
   VERROR(result);
 
-  device.waitForFences(commandBufferFence, true, UINT64_MAX);
+  const Result waitresult = device.waitForFences(commandBufferFence, true, UINT64_MAX);
+  VERROR(waitresult);
 
   currentBuffer.reset();
 

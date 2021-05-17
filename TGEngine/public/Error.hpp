@@ -15,7 +15,8 @@ enum class Error {
   FORMAT_NOT_FOUND,
   SWAPCHAIN_EXT_NOT_FOUND,
   NO_SURFACE_SUPPORT,
-  VULKAN_ERROR
+  VULKAN_ERROR,
+  GLTF_LOADER_ERROR
 };
 
 extern Error error;
