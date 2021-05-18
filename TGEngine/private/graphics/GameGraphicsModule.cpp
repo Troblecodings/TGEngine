@@ -31,6 +31,17 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
     return main::Error::GLTF_LOADER_ERROR;
   }
 
+  if (!warning.empty()) {
+    printf("[GLTF][WARN]: %s\n", warning.c_str());
+  }
+
+  std::vector<const uint8_t *> ptr;
+  std::vector<const size_t> sizes;
+
+  for (const auto &x : model.accessors) {
+    
+  }
+
   return main::Error::NONE;
 }
 

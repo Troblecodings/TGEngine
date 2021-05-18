@@ -38,14 +38,14 @@ public:
 
   virtual ~APILayer() {}
 
-  virtual main::Error pushMaterials(const size_t materialcount,
+  virtual size_t pushMaterials(const size_t materialcount,
                                     const Material *materials) = 0;
 
-  virtual main::Error pushData(const size_t dataCount, const uint8_t **data,
+  virtual size_t pushData(const size_t dataCount, const uint8_t **data,
                                const size_t *dataSizes,
                                const DataType type) = 0;
 
-  virtual main::Error pushRender(const size_t renderInfoCount,
+  virtual void pushRender(const size_t renderInfoCount,
                                  const RenderInfo *renderInfos) = 0;
 
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };

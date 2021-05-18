@@ -210,13 +210,13 @@ private:
 
   main::Error createWindowAndGetSurface();
 
-  main::Error pushMaterials(const size_t materialcount,
+  size_t pushMaterials(const size_t materialcount,
                             const Material *materials) override;
 
-  main::Error pushData(const size_t dataCount, const uint8_t **data,
+  size_t pushData(const size_t dataCount, const uint8_t **data,
                        const size_t *dataSizes, const DataType type) override;
 
-  main::Error pushRender(const size_t renderInfoCount,
+  void pushRender(const size_t renderInfoCount,
                          const RenderInfo *renderInfos) override;
 };
 
@@ -425,7 +425,7 @@ constexpr PipelineInputAssemblyStateCreateInfo
     inputAssemblyCreateInfo({}, PrimitiveTopology::eTriangleList,
                             false); // For now constexpr
 
-main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
+size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                 const Material *materials) {
 
   const Rect2D scissor({0, 0},
@@ -490,12 +490,13 @@ main::Error VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   const auto piperesult =
       device.createGraphicsPipelines({}, pipelineCreateInfos);
   VERROR(piperesult.result);
-  pipelines = piperesult.value;
-
-  return main::Error::NONE;
+  const auto indexOffset = pipelines.size();
+  pipelines.resize(indexOffset + piperesult.value.size());
+  std::copy(piperesult.value.cbegin(), piperesult.value.cend(), pipelines.begin() + indexOffset);
+  return indexOffset;
 }
 
-main::Error VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
+void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
                                              const RenderInfo *renderInfos) {
   const CommandBufferAllocateInfo commandBufferAllocate(
       pool, CommandBufferLevel::eSecondary, 1);
@@ -532,10 +533,9 @@ main::Error VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
   cmdBuf.end();
   const std::lock_guard onExitUnlock(commandBufferRecording);
   secondaryCommandBuffer.push_back(cmdBuf);
-  return main::Error::NONE;
 }
 
-main::Error VulkanGraphicsModule::pushData(const size_t dataCount,
+size_t VulkanGraphicsModule::pushData(const size_t dataCount,
                                            const uint8_t **data,
                                            const size_t *dataSizes,
                                            const DataType type) {
@@ -604,7 +604,7 @@ main::Error VulkanGraphicsModule::pushData(const size_t dataCount,
   for (const auto buf : tempBuffer)
     device.destroyBuffer(buf);
 
-  return main::Error::NONE;
+  return firstIndex;
 }
 
 #ifdef WIN32
