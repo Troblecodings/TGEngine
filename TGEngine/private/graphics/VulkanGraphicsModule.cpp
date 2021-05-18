@@ -211,13 +211,13 @@ private:
   main::Error createWindowAndGetSurface();
 
   size_t pushMaterials(const size_t materialcount,
-                            const Material *materials) override;
+                       const Material *materials) override;
 
   size_t pushData(const size_t dataCount, const uint8_t **data,
-                       const size_t *dataSizes, const DataType type) override;
+                  const size_t *dataSizes, const DataType type) override;
 
   void pushRender(const size_t renderInfoCount,
-                         const RenderInfo *renderInfos) override;
+                  const RenderInfo *renderInfos) override;
 };
 
 inline void waitForImageTransition(
@@ -426,7 +426,7 @@ constexpr PipelineInputAssemblyStateCreateInfo
                             false); // For now constexpr
 
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
-                                                const Material *materials) {
+                                           const Material *materials) {
 
   const Rect2D scissor({0, 0},
                        {(uint32_t)viewport.width, (uint32_t)viewport.height});
@@ -492,12 +492,13 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   VERROR(piperesult.result);
   const auto indexOffset = pipelines.size();
   pipelines.resize(indexOffset + piperesult.value.size());
-  std::copy(piperesult.value.cbegin(), piperesult.value.cend(), pipelines.begin() + indexOffset);
+  std::copy(piperesult.value.cbegin(), piperesult.value.cend(),
+            pipelines.begin() + indexOffset);
   return indexOffset;
 }
 
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
-                                             const RenderInfo *renderInfos) {
+                                      const RenderInfo *renderInfos) {
   const CommandBufferAllocateInfo commandBufferAllocate(
       pool, CommandBufferLevel::eSecondary, 1);
   const CommandBuffer cmdBuf =
@@ -536,9 +537,9 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
 }
 
 size_t VulkanGraphicsModule::pushData(const size_t dataCount,
-                                           const uint8_t **data,
-                                           const size_t *dataSizes,
-                                           const DataType type) {
+                                      const uint8_t **data,
+                                      const size_t *dataSizes,
+                                      const DataType type) {
   std::vector<DeviceMemory> tempMemory;
   tempMemory.reserve(dataCount);
   std::vector<Buffer> tempBuffer;
@@ -555,8 +556,8 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
       CommandBufferUsageFlagBits::eOneTimeSubmit);
   cmdBuf.begin(beginInfo);
 
-  const BufferUsageFlagBits bufferUsage =
-      (BufferUsageFlagBits)(64 << (uint32_t)type);
+  const BufferUsageFlags bufferUsage =
+      BufferUsageFlagBits::eVertexBuffer | BufferUsageFlagBits::eIndexBuffer;
 
   for (size_t i = 0; i < dataCount; i++) {
     const auto size = dataSizes[i];
@@ -982,7 +983,8 @@ void VulkanGraphicsModule::tick(double time) {
   const Result result = queue.presentKHR(presentInfo);
   VERROR(result);
 
-  const Result waitresult = device.waitForFences(commandBufferFence, true, UINT64_MAX);
+  const Result waitresult =
+      device.waitForFences(commandBufferFence, true, UINT64_MAX);
   VERROR(waitresult);
 
   currentBuffer.reset();
@@ -1017,7 +1019,9 @@ void VulkanGraphicsModule::destroy() {
   device.destroyRenderPass(renderpass);
   device.destroySwapchainKHR(swapchain);
 #ifdef WIN32
-  DestroyWindow((HWND)(*this->window));
+  HWND wnd = (HWND)(*this->window);
+  ShowWindow(wnd, SW_HIDE);
+  DestroyWindow(wnd);
 #endif // WIN32
   device.destroy();
   instance.destroySurfaceKHR(surface);

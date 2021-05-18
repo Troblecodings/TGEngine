@@ -35,8 +35,8 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
     printf("[GLTF][WARN]: %s\n", warning.c_str());
   }
 
-  std::vector<const uint8_t *> ptr;
-  std::vector<const size_t> sizes;
+  std::vector<uint8_t *> ptr;
+  std::vector<size_t> sizes;
 
   for (const auto &x : model.accessors) {
     
