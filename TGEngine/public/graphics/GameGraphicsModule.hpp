@@ -75,7 +75,7 @@ public:
 
   main::Error loadModel(const uint8_t *bytes, const size_t size,
                         const bool binary) {
-    loadModel(bytes, size, binary, "");
+    return loadModel(bytes, size, binary, "");
   }
 
   main::Error init() override;

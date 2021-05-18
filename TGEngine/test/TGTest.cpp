@@ -37,6 +37,7 @@ int main() {
     syncMutex.lock();
     testing::InitGoogleTest();
     *rt = RUN_ALL_TESTS();
+    syncMutex.unlock();
   });
   thr.detach();
   while (!testExitRequest) {
