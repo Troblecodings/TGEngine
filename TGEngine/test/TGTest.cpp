@@ -61,7 +61,9 @@ TEST(Shader, LoadAndCompile) {
 void defaultTestData() {
   materials.push_back(mat);
   APILayer *apiLayer = getAPILayer();
-  ASSERT_NO_THROW(apiLayer->pushMaterials(materials.size(), materials.data()));
+  size_t materialOffset;
+  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(materials.size(),
+                                                        materials.data()));
   const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
                                1.0f, 0.0f, 0.2f, 1.0f,  //
                                1.0f, 1.0f, 0.2f, 1.0f,  //
@@ -73,7 +75,9 @@ void defaultTestData() {
                                -1.0f, 1.0f, 0.1f, 1.0f};
   const std::array dptr = {vertData.data()};
   const std::array size = {vertData.size() * sizeof(float)};
-  ASSERT_NO_THROW(apiLayer->pushData(1, (const uint8_t **)dptr.data(),
+  size_t dataOffset;
+  ASSERT_NO_THROW(dataOffset = apiLayer->pushData(
+      1, (const uint8_t **)dptr.data(),
                                      size.data(), DataType::VertexData));
 
   const std::array indexData = {0, 1, 2, 2, 3, 0};
@@ -83,10 +87,10 @@ void defaultTestData() {
                                      indexsize.data(), DataType::IndexData));
 
   RenderInfo renderInfo;
-  renderInfo.indexBuffer = 1;
-  renderInfo.materialId = 0;
+  renderInfo.indexBuffer = 1 + dataOffset;
+  renderInfo.materialId = materialOffset;
   renderInfo.indexCount = indexData.size();
-  renderInfo.vertexBuffer.push_back(0);
+  renderInfo.vertexBuffer.push_back(dataOffset);
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
 }
 

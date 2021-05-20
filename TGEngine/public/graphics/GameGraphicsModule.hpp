@@ -17,16 +17,18 @@ struct Material {
 };
 
 struct RenderInfo {
-  std::vector<uint32_t> vertexBuffer;
-  uint32_t indexBuffer;
-  uint32_t materialId;
-  uint32_t indexCount;
-  uint32_t instanceCount = 1;
+  std::vector<size_t> vertexBuffer;
+  size_t indexBuffer;
+  size_t materialId;
+  size_t indexCount;
+  size_t instanceCount = 1;
+  size_t indexOffset = 0;
+  std::vector<size_t> vertexOffsets;
 };
 
 class GameGraphicsModule;
 
-enum class DataType { IndexData, VertexData };
+enum class DataType { IndexData, VertexData, VertexIndexData };
 
 class APILayer : public main::Module { // Interface
 protected:
@@ -39,14 +41,13 @@ public:
   virtual ~APILayer() {}
 
   virtual size_t pushMaterials(const size_t materialcount,
-                                    const Material *materials) = 0;
+                               const Material *materials) = 0;
 
   virtual size_t pushData(const size_t dataCount, const uint8_t **data,
-                               const size_t *dataSizes,
-                               const DataType type) = 0;
+                          const size_t *dataSizes, const DataType type) = 0;
 
   virtual void pushRender(const size_t renderInfoCount,
-                                 const RenderInfo *renderInfos) = 0;
+                          const RenderInfo *renderInfos) = 0;
 
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };

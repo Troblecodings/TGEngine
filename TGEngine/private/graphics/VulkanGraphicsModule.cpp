@@ -427,7 +427,8 @@ constexpr PipelineInputAssemblyStateCreateInfo
 
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                            const Material *materials) {
-
+  if (materialcount == 0)
+    return -1;
   const Rect2D scissor({0, 0},
                        {(uint32_t)viewport.width, (uint32_t)viewport.height});
   const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, viewport,
@@ -511,20 +512,25 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       &inheritance);
   cmdBuf.begin(beginInfo);
   for (size_t i = 0; i < renderInfoCount; i++) {
-    const auto &info = renderInfos[i];
+    auto &info = renderInfos[i];
 
     std::vector<Buffer> vertexBuffer;
     vertexBuffer.reserve(info.vertexBuffer.size());
-    std::vector<DeviceSize> vertexOffsets(info.vertexBuffer.size());
-    std::fill(vertexOffsets.begin(), vertexOffsets.end(), 0);
 
     for (auto vertId : info.vertexBuffer) {
       vertexBuffer.push_back(bufferList[vertId]);
     }
 
-    cmdBuf.bindVertexBuffers(0, vertexBuffer, vertexOffsets);
+    if (info.vertexOffsets.size() == 0) {
+      std::vector<size_t> offsets(vertexBuffer.size());
+      std::fill(offsets.begin(), offsets.end(), 0);
+      cmdBuf.bindVertexBuffers(0, vertexBuffer, offsets);
+    } else {
+      cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
+    }
 
-    cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], 0, IndexType::eUint32);
+    cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
+                           IndexType::eUint32);
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
@@ -536,10 +542,20 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
   secondaryCommandBuffer.push_back(cmdBuf);
 }
 
+inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
+  if (type == DataType::VertexIndexData)
+    return BufferUsageFlagBits::eVertexBuffer |
+           BufferUsageFlagBits::eIndexBuffer;
+  return (BufferUsageFlags)(64 << (uint32_t)type);
+}
+
 size_t VulkanGraphicsModule::pushData(const size_t dataCount,
                                       const uint8_t **data,
                                       const size_t *dataSizes,
                                       const DataType type) {
+  if (dataCount == 0)
+    return -1;
+
   std::vector<DeviceMemory> tempMemory;
   tempMemory.reserve(dataCount);
   std::vector<Buffer> tempBuffer;
@@ -556,8 +572,7 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
       CommandBufferUsageFlagBits::eOneTimeSubmit);
   cmdBuf.begin(beginInfo);
 
-  const BufferUsageFlags bufferUsage =
-      BufferUsageFlagBits::eVertexBuffer | BufferUsageFlagBits::eIndexBuffer;
+  const BufferUsageFlags bufferUsage = getUsageFlagsFromDataType(type);
 
   for (size_t i = 0; i < dataCount; i++) {
     const auto size = dataSizes[i];
