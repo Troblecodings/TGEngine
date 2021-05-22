@@ -1,4 +1,5 @@
 #include <TGEngine.hpp>
+#include <Util.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
 #include <gtest/gtest.h>
@@ -63,7 +64,7 @@ void defaultTestData() {
   APILayer *apiLayer = getAPILayer();
   size_t materialOffset;
   ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(materials.size(),
-                                                        materials.data()));
+                                                           materials.data()));
   const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
                                1.0f, 0.0f, 0.2f, 1.0f,  //
                                1.0f, 1.0f, 0.2f, 1.0f,  //
@@ -76,9 +77,9 @@ void defaultTestData() {
   const std::array dptr = {vertData.data()};
   const std::array size = {vertData.size() * sizeof(float)};
   size_t dataOffset;
-  ASSERT_NO_THROW(dataOffset = apiLayer->pushData(
-      1, (const uint8_t **)dptr.data(),
-                                     size.data(), DataType::VertexData));
+  ASSERT_NO_THROW(dataOffset =
+                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
+                                         size.data(), DataType::VertexData));
 
   const std::array indexData = {0, 1, 2, 2, 3, 0};
   const std::array indexdptr = {indexData.data()};
@@ -135,6 +136,24 @@ TEST(EngineMain, Restart) {
   ASSERT_EQ(init(), Error::NONE);
 
   defaultTestData();
+  syncMutex.unlock();
+  alltime = 0;
+  while (alltime < 5)
+    continue;
+  exitWaitCheck();
+}
+
+TEST(EngineMain, SimpleModel) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  size_t size;
+  const auto dataPtr = tge::util::wholeFile("Triangle.gltf", &size);
+  ASSERT_TRUE(dataPtr);
+  ASSERT_NO_THROW(
+      getGameGraphicsModule()->loadModel(dataPtr.get(), size, false));
+
   syncMutex.unlock();
   alltime = 0;
   while (alltime < 5)

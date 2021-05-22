@@ -371,6 +371,21 @@ inline void submitAndWait(const Device &device, const Queue &queue,
   device.destroyFence(fence);
 }
 
+void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
+                              const glslang::TIntermediate *interm,
+                              const EShLanguage langName) {
+  const auto node = interm->getTreeRoot();
+  if (langName == EShLangVertex) { // currently only vertex analyzation
+    ShaderAnalizer analizer(shaderPipe);
+    node->traverse(&analizer);
+    analizer.post();
+  }
+
+  shaderPipe->shader.push_back(
+      std::pair(std::vector<uint32_t>(), getStageFromLang(langName)));
+  glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
+}
+
 VulkanShaderPipe *__implLoadShaderPipeAndCompile(
     std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> &vector) {
   VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
@@ -381,7 +396,7 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
   for (auto &pair : vector) {
     const auto data = std::move(pair.first);
     const auto langName = pair.second;
-    if (data.get() == nullptr) {
+    if (!data) {
       delete shaderPipe;
       return nullptr;
     }
@@ -398,17 +413,7 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
     printf("%s", shader.getInfoLog());
 
     const auto interm = shader.getIntermediate();
-    const auto node = interm->getTreeRoot();
-    if (langName == EShLangVertex) { // currently only vertex analyzation
-      ShaderAnalizer analizer(shaderPipe);
-      node->traverse(&analizer);
-      analizer.post();
-    }
-
-    const auto index = shaderPipe->shader.size();
-    shaderPipe->shader.push_back(
-        std::pair(std::vector<uint32_t>(), getStageFromLang(langName)));
-    glslang::GlslangToSpv(*interm, shaderPipe->shader[index].first);
+    __implIntermToVulkanPipe(shaderPipe, interm, langName);
   }
 
   return shaderPipe;
@@ -537,7 +542,7 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
 
     cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
                            (IndexType)info.indexSize);
-    
+
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
 

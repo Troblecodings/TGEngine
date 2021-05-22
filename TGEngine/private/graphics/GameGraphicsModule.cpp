@@ -108,9 +108,6 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
 }
 
 main::Error GameGraphicsModule::init() {
-  size_t size;
-  const auto dataPtr = util::wholeFile("Triangle.gltf", &size);
-  loadModel(dataPtr.get(), size, false);
   return main::Error::NONE;
 }
 
