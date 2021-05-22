@@ -63,8 +63,7 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
       apiLayer->pushMaterials(materials.size(), materials.data());
   if (materialFirstIndex == -1) {
     const Material defMat = {{}, pipe};
-    materialFirstIndex =
-        apiLayer->pushMaterials(1, &defMat);
+    materialFirstIndex = apiLayer->pushMaterials(1, &defMat);
   }
 
   std::vector<RenderInfo> renderInfos;
@@ -86,6 +85,8 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
         bufferIndicies.push_back(vertView.buffer + dataFirstIndex);
         bufferOffsets.push_back(vertOffset);
       }
+      const IndexSize indextype =
+          indexView.byteStride == 4 ? IndexSize::UINT32 : IndexSize::UINT16;
 
       const RenderInfo renderInfo = {bufferIndicies,
                                      indexView.buffer + dataFirstIndex,
@@ -95,6 +96,7 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
                                      indexAccesor.count,
                                      1,
                                      indexOffset,
+                                     indextype,
                                      bufferOffsets};
 
       renderInfos.push_back(renderInfo);

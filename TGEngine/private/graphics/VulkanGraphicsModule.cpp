@@ -258,24 +258,30 @@ inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
 inline Format getFormatFromElf(const glslang::TType &format) {
   if (format.isVector() &&
       format.getBasicType() == glslang::TBasicType::EbtFloat) {
-    if (format.getVectorSize() == 2)
+    switch (format.getVectorSize()) {
+    case 2:
       return Format::eR32G32Sfloat;
-    if (format.getVectorSize() == 4)
+    case 3:
+      return Format::eR32G32B32Sfloat;
+    case 4:
       return Format::eR32G32B32A32Sfloat;
+    }
   }
-  throw std::runtime_error(std::string("Couldn't find Format for TType ") +
-                           format.getTypeName().c_str());
+  throw std::runtime_error(std::string("Couldn't find Format for TType" +
+                                       format.getCompleteString()));
 }
 
 inline uint32_t getSizeFromFormat(const Format format) {
   switch (format) {
   case Format::eR32G32Sfloat:
     return 8;
+  case Format::eR32G32B32Sfloat:
+    return 12;
   case Format::eR32G32B32A32Sfloat:
     return 16;
   }
   throw std::runtime_error(std::string("Couldn't find size for Format ") +
-                           std::to_string((size_t)format));
+                           to_string(format));
 }
 
 struct VulkanShaderPipe {
@@ -530,8 +536,8 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     }
 
     cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
-                           IndexType::eUint32);
-
+                           (IndexType)info.indexSize);
+    
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
 

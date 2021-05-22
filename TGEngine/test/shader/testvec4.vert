@@ -1,11 +1,11 @@
 #version 460
 
-layout(location=0) in vec3 inpos;
+layout(location=0) in vec4 inpos;
 
 out gl_PerVertex {
 	vec4 gl_Position;
 };
 
 void main() {
-	gl_Position = vec4(inpos, 1);
+	gl_Position = inpos;
 }

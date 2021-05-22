@@ -16,6 +16,8 @@ struct Material {
   uint8_t *costumShaderData = nullptr; // API dependent
 };
 
+enum class IndexSize { UINT16, UINT32 };
+
 struct RenderInfo {
   std::vector<size_t> vertexBuffer;
   size_t indexBuffer;
@@ -23,6 +25,7 @@ struct RenderInfo {
   size_t indexCount;
   size_t instanceCount = 1;
   size_t indexOffset = 0;
+  IndexSize indexSize = IndexSize::UINT32;
   std::vector<size_t> vertexOffsets;
 };
 

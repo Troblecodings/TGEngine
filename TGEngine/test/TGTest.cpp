@@ -53,7 +53,7 @@ int main() {
 Material mat;
 
 TEST(Shader, LoadAndCompile) {
-  std::vector<std::string> test = {"test.vert", "test.frag"};
+  std::vector<std::string> test = {"testvec4.vert", "test.frag"};
   ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
