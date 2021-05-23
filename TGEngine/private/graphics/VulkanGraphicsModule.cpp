@@ -8,6 +8,8 @@
 #include <iostream>
 #include <mutex>
 
+#include "../../public/graphics/WindowModule.hpp"
+
 #ifdef WIN32
 #include <Windows.h>
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
@@ -158,16 +160,12 @@ Result verror = Result::eSuccess;
   }
 
 class VulkanGraphicsModule : public APILayer {
-public:
-  VulkanGraphicsModule(const GameGraphicsModule *graphicsModule)
-      : APILayer(graphicsModule) {}
 
 private:
   Instance instance;
   PhysicalDevice physicalDevice;
   Device device;
   SurfaceKHR surface;
-  char *window = nullptr;
   SurfaceFormatKHR format;
   Format depthFormat = Format::eUndefined;
   SwapchainKHR swapchain;
@@ -182,7 +180,6 @@ private:
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
   Fence commandBufferFence;
-  GameGraphicsModule *gamegraphics;
   std::vector<ShaderModule> shaderModules;
   uint32_t memoryTypeHostVisibleCoherent;
   uint32_t memoryTypeDeviceLocal;
@@ -634,53 +631,6 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
   return firstIndex;
 }
 
-#ifdef WIN32
-
-LRESULT CALLBACK callback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-  return DefWindowProc(hWnd, Msg, wParam, lParam);
-}
-
-main::Error VulkanGraphicsModule::createWindowAndGetSurface() {
-  HMODULE systemHandle;
-  if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, nullptr, &systemHandle))
-    return main::Error::NO_MODULE_HANDLE;
-
-  const auto windowProperties = gamegraphics->getWindowProperties();
-
-  WNDCLASSEX wndclass;
-  FillMemory(&wndclass, sizeof(WNDCLASSEX), 0);
-  wndclass.cbSize = sizeof(WNDCLASSEX);
-  wndclass.style = CS_ENABLE | CS_OWNDC | CS_HREDRAW;
-  wndclass.lpfnWndProc = callback;
-  wndclass.hInstance = systemHandle;
-  wndclass.lpszClassName = ENGINE_NAME;
-
-  LPCSTR regWndClass = (LPCSTR)RegisterClassEx(&wndclass);
-  if (!regWndClass) {
-    if (GetLastError() == ERROR_CLASS_ALREADY_EXISTS)
-      regWndClass = ENGINE_NAME;
-    else
-      return main::Error::COULD_NOT_CREATE_WINDOW_CLASS;
-  }
-
-  auto window = CreateWindowEx(
-      WS_EX_APPWINDOW, regWndClass, APPLICATION_NAME,
-      WS_CLIPSIBLINGS | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU,
-      windowProperties.x, windowProperties.y, windowProperties.width,
-      windowProperties.height, NULL, NULL, systemHandle, NULL);
-  if (!window)
-    return main::Error::COULD_NOT_CREATE_WINDOW;
-  this->window = (char *)&window;
-  ShowWindow(window, SW_SHOW);
-  UpdateWindow(window);
-
-  Win32SurfaceCreateInfoKHR surfaceCreateInfo({}, systemHandle, window);
-  surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
-  return main::Error::NONE;
-}
-
-#endif // WIN32
-
 #ifdef DEBUG
 VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                       VkDebugUtilsMessageTypeFlagsEXT messageTypes,
@@ -795,9 +745,12 @@ main::Error VulkanGraphicsModule::init() {
 #pragma region Queue, Surface, Prepipe
   queue = device.getQueue(queueFamilyIndex, queueIndex);
 
-  const auto localError = createWindowAndGetSurface();
-  if (localError != main::Error::NONE)
-    return localError;
+  const auto winM = graphicsModule->getWindowModule();
+#ifdef WIN32
+  Win32SurfaceCreateInfoKHR surfaceCreateInfo({}, (HINSTANCE)winM->hInstance,
+                                              (HWND)winM->hWnd);
+  surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
+#endif // WIN32
 
   if (!physicalDevice.getSurfaceSupportKHR(queueIndex, surface))
     return main::Error::NO_SURFACE_SUPPORT;
@@ -1044,11 +997,6 @@ void VulkanGraphicsModule::destroy() {
     device.destroyImageView(imv);
   device.destroyRenderPass(renderpass);
   device.destroySwapchainKHR(swapchain);
-#ifdef WIN32
-  HWND wnd = (HWND)(*this->window);
-  ShowWindow(wnd, SW_HIDE);
-  DestroyWindow(wnd);
-#endif // WIN32
   device.destroy();
   instance.destroySurfaceKHR(surface);
 #ifdef DEBUG
@@ -1061,8 +1009,6 @@ void VulkanGraphicsModule::destroy() {
   instance.destroy();
 }
 
-APILayer *getNewVulkanModule(GameGraphicsModule *mod) {
-  return new VulkanGraphicsModule(mod);
-}
+APILayer *getNewVulkanModule() { return new VulkanGraphicsModule(); }
 
 } // namespace tge::graphics

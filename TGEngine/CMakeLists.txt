@@ -23,7 +23,7 @@ add_library (TGEngine STATIC
     "private/graphics/VulkanGraphicsModule.cpp"     
     "private/graphics/GameGraphicsModule.cpp"
     "private/Util.cpp"
-)
+ "private/graphics/WindowModule.cpp")
 
 include(FetchContent)
 FETCHCONTENT_DECLARE(

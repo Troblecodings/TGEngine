@@ -10,13 +10,17 @@ bool isInitialized = false;
 
 graphics::APILayer *usedApiLayer;
 graphics::GameGraphicsModule *gameModule;
+graphics::WindowModule *winModule;
 
 Error init() {
   if (isInitialized)
     return error = Error::ALREADY_INITIALIZED;
-  gameModule = new graphics::GameGraphicsModule(graphics::getNewVulkanModule);
-  usedApiLayer = gameModule->getAPILayer();
+  winModule = new graphics::WindowModule();
+  modules.push_back(winModule);
+  usedApiLayer = graphics::getNewVulkanModule();
   modules.push_back(usedApiLayer);
+  gameModule = new graphics::GameGraphicsModule(usedApiLayer, winModule);
+  usedApiLayer->setGameGraphicsModule(gameModule);
   modules.push_back(gameModule);
   for (auto mod : modules) {
     error = mod->init();

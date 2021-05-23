@@ -113,8 +113,4 @@ main::Error GameGraphicsModule::init() {
 
 void GameGraphicsModule::destroy() { materials.clear(); }
 
-WindowProperties GameGraphicsModule::getWindowProperties() {
-  return WindowProperties();
-}
-
 } // namespace tge::graphics

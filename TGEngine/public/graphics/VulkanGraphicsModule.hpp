@@ -18,6 +18,6 @@ namespace tge::graphics {
 
 uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames);
 
-APILayer *getNewVulkanModule(GameGraphicsModule* mod);
+APILayer *getNewVulkanModule();
 
 } // namespace tge::graphics

@@ -2,6 +2,7 @@
 
 #include "../../public/Error.hpp"
 #include "../../public/Module.hpp"
+#include "WindowModule.hpp"
 #include "stdint.h"
 #include <string>
 #include <vector>
@@ -35,11 +36,12 @@ enum class DataType { IndexData, VertexData, VertexIndexData };
 
 class APILayer : public main::Module { // Interface
 protected:
-  const GameGraphicsModule *graphicsModule;
+  GameGraphicsModule *graphicsModule;
 
 public:
-  APILayer(const GameGraphicsModule *graphicsModule)
-      : graphicsModule(graphicsModule) {}
+  void setGameGraphicsModule(GameGraphicsModule *graphicsModule) {
+    this->graphicsModule = graphicsModule;
+  }
 
   virtual ~APILayer() {}
 
@@ -55,24 +57,16 @@ public:
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };
 
-struct WindowProperties {
-  bool centered = false;   // Not implemented
-  int x = 0;               // Ignored if centered
-  int y = 0;               // Ignored if centered
-  char fullscreenmode = 0; // Not implemented
-  int width = 800;         // Ignored if fullscreenmode != 0
-  int height = 800;        // Ignored if fullscreenmode != 0
-};
-
 extern std::vector<Material> materials;
 
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
+  WindowModule *windowModule;
 
 public:
-  GameGraphicsModule(APILayer *(*apiLayerCallback)(GameGraphicsModule *))
-      : apiLayer(apiLayerCallback(this)) {}
+  GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
+      : apiLayer(apiLayer), windowModule(winModule) {}
 
   main::Error loadModel(const uint8_t *bytes, const size_t size,
                         const bool binary, const std::string &baseDir);
@@ -86,9 +80,9 @@ public:
 
   void destroy() override;
 
-  WindowProperties getWindowProperties();
-
   APILayer *getAPILayer() { return apiLayer; }
+
+  WindowModule *getWindowModule() { return windowModule; }
 };
 
 } // namespace tge::graphics
