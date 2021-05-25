@@ -10,7 +10,6 @@ namespace tge::graphics {
 
 #ifdef WIN32
 LRESULT CALLBACK callback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-  printf("%d", Msg);
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
@@ -61,11 +60,7 @@ void windowsPoolMessages(WindowModule *winModule) {
 }
 
 void windowsDestroy(WindowModule *winModule) {
-  if (!DestroyWindow((HWND)winModule->hWnd)) {
-    std::string error =
-        "Error destroying window: " + std::to_string(GetLastError());
-    throw std::runtime_error(error);
-  }
+  DestroyWindow((HWND)winModule->hWnd);
 }
 
 #endif // WIN32
@@ -73,14 +68,16 @@ void windowsDestroy(WindowModule *winModule) {
 main::Error WindowModule::init() {
 #ifdef WIN32
   osThread = std::thread([winM = this] {
-    std::lock_guard lg(winM->osMutex);
+    winM->osMutex.lock();
     windowsInit(winM);
+    winM->osMutex.unlock();
     while (!winM->closeRequest) {
       windowsPoolMessages(winM);
     }
     windowsDestroy(winM);
   });
   osThread.detach();
+  std::lock_guard lg(this->osMutex);
 #endif // WIN32
   return main::Error::NONE;
 }
