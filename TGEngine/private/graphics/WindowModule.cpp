@@ -13,17 +13,14 @@ LRESULT CALLBACK callback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
   printf("%d", Msg);
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
-#endif // WIN32
 
-main::Error WindowModule::init() {
-
-#ifdef WIN32
+main::Error windowsInit(WindowModule *winModule) {
   HMODULE systemHandle = GetModuleHandle(nullptr);
   if (!systemHandle)
     return main::Error::NO_MODULE_HANDLE;
-  this->hInstance = systemHandle;
+  winModule->hInstance = systemHandle;
 
-  const auto windowProperties = this->getWindowProperties();
+  const auto windowProperties = winModule->getWindowProperties();
 
   WNDCLASSEX wndclass;
   FillMemory(&wndclass, sizeof(WNDCLASSEX), 0);
@@ -48,32 +45,51 @@ main::Error WindowModule::init() {
       windowProperties.height, NULL, NULL, systemHandle, NULL);
   if (!window)
     return main::Error::COULD_NOT_CREATE_WINDOW;
-  this->hWnd = window;
+  winModule->hWnd = window;
   ShowWindow(window, SW_SHOW);
   UpdateWindow(window);
-#endif // WIN32
-
   return main::Error::NONE;
 }
 
-void WindowModule::tick(double deltatime) {
-#ifdef WIN32
+void windowsPoolMessages(WindowModule *winModule) {
   MSG msg;
-  const HWND wnd = (HWND)this->hWnd;
+  const HWND wnd = (HWND)winModule->hWnd;
   while (PeekMessage(&msg, wnd, 0, 0, PM_REMOVE)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
-  printf("Tickdone");
-#endif
 }
 
-void WindowModule::destroy() {
+void windowsDestroy(WindowModule *winModule) {
+  if (!DestroyWindow((HWND)winModule->hWnd)) {
+    std::string error =
+        "Error destroying window: " + std::to_string(GetLastError());
+    throw std::runtime_error(error);
+  }
+}
+
+#endif // WIN32
+
+main::Error WindowModule::init() {
 #ifdef WIN32
-  ShowWindow((HWND)this->hWnd, SW_HIDE);
-  if(!DestroyWindow((HWND)this->hWnd))
-    throw std::runtime_error(std::to_string(GetLastError()));
-#endif
+  osThread = std::thread([winM = this] {
+    std::lock_guard lg(winM->osMutex);
+    windowsInit(winM);
+    while (!winM->closeRequest) {
+      windowsPoolMessages(winM);
+    }
+    windowsDestroy(winM);
+  });
+  osThread.detach();
+#endif // WIN32
+  return main::Error::NONE;
+}
+
+void WindowModule::tick(double deltatime) {}
+
+void WindowModule::destroy() {
+  this->closeRequest = true;
+  std::lock_guard lg(this->osMutex);
 }
 
 WindowProperties WindowModule::getWindowProperties() {

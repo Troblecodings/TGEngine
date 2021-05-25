@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../Module.hpp"
+#include <thread>
+#include <mutex>
 
 namespace tge::graphics {
 
@@ -18,6 +20,9 @@ class WindowModule : public main::Module {
 public:
   void* hInstance;
   void* hWnd;
+  bool closeRequest = false;
+  std::thread osThread;
+  std::mutex osMutex;
 
   main::Error init() override;
 

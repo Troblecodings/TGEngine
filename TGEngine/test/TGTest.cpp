@@ -151,8 +151,8 @@ TEST(EngineMain, SimpleModel) {
   size_t size;
   const auto dataPtr = tge::util::wholeFile("Triangle.gltf", &size);
   ASSERT_TRUE(dataPtr);
-  ASSERT_NO_THROW(
-      getGameGraphicsModule()->loadModel(dataPtr.get(), size, false));
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(dataPtr.get(), size, false),
+            Error::NONE);
 
   syncMutex.unlock();
   alltime = 0;
