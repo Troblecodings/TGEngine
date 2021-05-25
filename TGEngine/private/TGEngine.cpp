@@ -45,7 +45,7 @@ Error start() {
     for (auto mod : modules)
       mod->tick(deltatime);
 
-    if (exitRequest)
+    if (exitRequest || winModule->closeRequest)
       break;
     auto endpoint = steady_clock::now();
     deltatime = duration_cast<duration<double>>(endpoint - startpoint).count();

@@ -54,6 +54,10 @@ void windowsPoolMessages(WindowModule *winModule) {
   MSG msg;
   const HWND wnd = (HWND)winModule->hWnd;
   while (PeekMessage(&msg, wnd, 0, 0, PM_REMOVE)) {
+    if (msg.message == WM_CLOSE) {
+      winModule->closeRequest = true;
+      continue;
+    }
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
