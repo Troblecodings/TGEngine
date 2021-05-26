@@ -78,6 +78,7 @@ main::Error WindowModule::init() {
     while (!winM->closeRequest) {
       windowsPoolMessages(winM);
     }
+    std::lock_guard lg(winM->osMutex);
     windowsDestroy(winM);
   });
   osThread.detach();
