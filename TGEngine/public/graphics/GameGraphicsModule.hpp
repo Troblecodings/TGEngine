@@ -30,6 +30,26 @@ struct RenderInfo {
   std::vector<size_t> vertexOffsets;
 };
 
+struct TextureInfo {};
+
+enum class FilterSetting { NEAREST, LINEAR };
+
+enum class AddressMode {
+  REPEAT,
+  MIRROR_REPEAT,
+  CLAMP_TO_EDGE,
+  CLAMP_TO_BORDER,
+  MIRROR_CLAMP_TO_EDGE
+};
+
+struct SamplerInfo {
+  FilterSetting minFilter;
+  FilterSetting magFilter;
+  AddressMode uMode;
+  AddressMode vMode;
+  int anisotropy = 0;
+};
+
 class GameGraphicsModule;
 
 enum class DataType { IndexData, VertexData, VertexIndexData };
@@ -53,6 +73,11 @@ public:
 
   virtual void pushRender(const size_t renderInfoCount,
                           const RenderInfo *renderInfos) = 0;
+
+  virtual size_t pushSampler(const SamplerInfo &sampler) = 0;
+
+  virtual size_t pushTexture(const size_t textureCount,
+                             const TextureInfo *textures) = 0;
 
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };

@@ -14,6 +14,23 @@ std::vector<Material> materials;
 
 using namespace tinygltf;
 
+AddressMode gltfToAPI(int in, AddressMode def) {
+  switch (in) {
+  case TINYGLTF_TEXTURE_WRAP_REPEAT:
+    return AddressMode::REPEAT;
+  case TINYGLTF_TEXTURE_WRAP_CLAMP_TO_EDGE:
+    return AddressMode::CLAMP_TO_EDGE;
+  case TINYGLTF_TEXTURE_WRAP_MIRRORED_REPEAT:
+    return AddressMode::MIRROR_REPEAT;
+  }
+  return def;
+}
+
+FilterSetting gltfToAPI(int in, FilterSetting def) {
+  return (in >= 0 ? (FilterSetting)(in - TINYGLTF_TEXTURE_FILTER_NEAREST)
+                  : def);
+}
+
 main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
                                           const size_t size, const bool binary,
                                           const std::string &baseDir) {
@@ -66,6 +83,17 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
     materialFirstIndex = apiLayer->pushMaterials(1, &defMat);
   }
 
+  size_t samplerIndex = 0;
+  for (const auto &smplr : model.samplers) {
+    const SamplerInfo samplerInfo = {
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.wrapS, AddressMode::REPEAT),
+        gltfToAPI(smplr.wrapT, AddressMode::REPEAT)};
+    samplerIndex = apiLayer->pushSampler(samplerInfo);
+  }
+  samplerIndex -= model.samplers.size() - 1;
+
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
   for (const auto &mesh : model.meshes) {
@@ -107,9 +135,7 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
   return main::Error::NONE;
 }
 
-main::Error GameGraphicsModule::init() {
-  return main::Error::NONE;
-}
+main::Error GameGraphicsModule::init() { return main::Error::NONE; }
 
 void GameGraphicsModule::destroy() { materials.clear(); }
 

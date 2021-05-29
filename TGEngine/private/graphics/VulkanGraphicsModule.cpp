@@ -194,6 +194,7 @@ private:
   DeviceMemory depthImageMemory;
   ImageView depthImageView;
   std::vector<PipelineLayout> pipelineLayouts;
+  std::vector<Sampler> sampler;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -205,8 +206,6 @@ private:
 
   void destroy() override;
 
-  main::Error createWindowAndGetSurface();
-
   size_t pushMaterials(const size_t materialcount,
                        const Material *materials) override;
 
@@ -215,6 +214,11 @@ private:
 
   void pushRender(const size_t renderInfoCount,
                   const RenderInfo *renderInfos) override;
+
+  size_t pushSampler(const SamplerInfo &sampler) override;
+
+  size_t pushTexture(const size_t textureCount,
+                     const TextureInfo *textures) override;
 };
 
 inline void waitForImageTransition(
@@ -630,6 +634,21 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
 
   return firstIndex;
 }
+
+size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
+  const auto position = this->sampler.size();
+  const SamplerCreateInfo samplerCreateInfo(
+      {}, (Filter)sampler.minFilter, (Filter)sampler.magFilter,
+      SamplerMipmapMode::eLinear, (SamplerAddressMode)sampler.uMode,
+      (SamplerAddressMode)sampler.vMode, (SamplerAddressMode)sampler.vMode, 0,
+      sampler.anisotropy, sampler.anisotropy);
+  const auto smplr = device.createSampler(samplerCreateInfo);
+  this->sampler.push_back(smplr);
+  return position;
+}
+
+size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
+                                         const TextureInfo *textures) {}
 
 #ifdef DEBUG
 VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
