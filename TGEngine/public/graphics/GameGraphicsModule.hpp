@@ -30,7 +30,10 @@ struct RenderInfo {
   std::vector<size_t> vertexOffsets;
 };
 
-struct TextureInfo {};
+struct TextureInfo {
+  std::vector<uint8_t> data;
+
+};
 
 enum class FilterSetting { NEAREST, LINEAR };
 
@@ -93,12 +96,12 @@ public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
       : apiLayer(apiLayer), windowModule(winModule) {}
 
-  main::Error loadModel(const uint8_t *bytes, const size_t size,
+  main::Error loadModel(const std::vector<uint8_t> &data,
                         const bool binary, const std::string &baseDir);
 
-  main::Error loadModel(const uint8_t *bytes, const size_t size,
+  main::Error loadModel(const std::vector<uint8_t> &data,
                         const bool binary) {
-    return loadModel(bytes, size, binary, "");
+    return loadModel(data, binary, "");
   }
 
   main::Error init() override;

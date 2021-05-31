@@ -148,11 +148,9 @@ TEST(EngineMain, SimpleModel) {
 
   ASSERT_EQ(init(), Error::NONE);
 
-  size_t size;
-  const auto dataPtr = tge::util::wholeFile("Triangle.gltf", &size);
-  ASSERT_TRUE(dataPtr);
-  ASSERT_EQ(getGameGraphicsModule()->loadModel(dataPtr.get(), size, false),
-            Error::NONE);
+  const auto data = tge::util::wholeFile("Triangle.gltf");
+  ASSERT_FALSE(data.empty());
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false), Error::NONE);
 
   syncMutex.unlock();
   alltime = 0;

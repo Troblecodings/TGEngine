@@ -29,16 +29,14 @@ main::Error windowsInit(WindowModule *winModule) {
   wndclass.hInstance = systemHandle;
   wndclass.lpszClassName = ENGINE_NAME;
 
-  LPCSTR regWndClass = (LPCSTR)RegisterClassEx(&wndclass);
+  auto regWndClass = RegisterClassEx(&wndclass);
   if (!regWndClass) {
-    if (GetLastError() == ERROR_CLASS_ALREADY_EXISTS)
-      regWndClass = ENGINE_NAME;
-    else
+    if (GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
       return main::Error::COULD_NOT_CREATE_WINDOW_CLASS;
   }
 
   auto window = CreateWindowEx(
-      WS_EX_APPWINDOW, regWndClass, APPLICATION_NAME,
+      WS_EX_APPWINDOW, ENGINE_NAME, APPLICATION_NAME,
       WS_CLIPSIBLINGS | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU,
       windowProperties.x, windowProperties.y, windowProperties.width,
       windowProperties.height, NULL, NULL, systemHandle, NULL);

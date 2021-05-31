@@ -3,19 +3,17 @@
 
 namespace tge::util {
 
-std::unique_ptr<uint8_t[]> wholeFile(const fs::path &path, size_t *out) {
+std::vector<uint8_t> wholeFile(const fs::path &path) {
   std::ifstream inputstream(path,
                             std::ios::ate | std::ios::in | std::ios::binary);
   if (!inputstream)
-    return nullptr;
-  const auto size = inputstream.tellg();
+    return {};
+  const size_t size = (size_t)inputstream.tellg();
   inputstream.seekg(0, SEEK_SET);
-  std::unique_ptr<uint8_t[]> fileData(new uint8_t[(size_t)size + 1]);
-  inputstream.read((char *)fileData.get(), size);
+  std::vector<uint8_t> fileData(size + 1);
+  inputstream.read((char *)fileData.data(), size);
   fileData[size] = 0;
-  if (out != nullptr)
-    *out = size;
-  return std::move(fileData);
+  return fileData;
 }
 
 } // namespace tge::util

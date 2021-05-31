@@ -14,7 +14,7 @@ std::vector<Material> materials;
 
 using namespace tinygltf;
 
-AddressMode gltfToAPI(int in, AddressMode def) {
+inline AddressMode gltfToAPI(int in, AddressMode def) {
   switch (in) {
   case TINYGLTF_TEXTURE_WRAP_REPEAT:
     return AddressMode::REPEAT;
@@ -26,13 +26,13 @@ AddressMode gltfToAPI(int in, AddressMode def) {
   return def;
 }
 
-FilterSetting gltfToAPI(int in, FilterSetting def) {
+inline FilterSetting gltfToAPI(int in, FilterSetting def) {
   return (in >= 0 ? (FilterSetting)(in - TINYGLTF_TEXTURE_FILTER_NEAREST)
                   : def);
 }
 
-main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
-                                          const size_t size, const bool binary,
+main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
+                                          const bool binary,
                                           const std::string &baseDir) {
   TinyGLTF loader;
   std::string error;
@@ -40,10 +40,11 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
   Model model;
 
   const bool rst =
-      binary ? loader.LoadBinaryFromMemory(&model, &error, &warning, bytes,
-                                           size, baseDir)
+      binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
+                                           data.data(), data.size(), baseDir)
              : loader.LoadASCIIFromString(&model, &error, &warning,
-                                          (const char *)bytes, size, baseDir);
+                                          (const char *)data.data(),
+                                          data.size(), baseDir);
   if (!rst) {
     printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
            error.c_str(), warning.c_str());
@@ -67,6 +68,24 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
       apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
                          DataType::VertexIndexData);
 
+  size_t samplerIndex = 0;
+  for (const auto &smplr : model.samplers) {
+    const SamplerInfo samplerInfo = {
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.wrapS, AddressMode::REPEAT),
+        gltfToAPI(smplr.wrapT, AddressMode::REPEAT)};
+    samplerIndex = apiLayer->pushSampler(samplerInfo);
+  }
+  samplerIndex -= model.samplers.size() - 1;
+
+  for (const auto &img : model.images) {
+    const auto view = img.bufferView;
+    if (view >= 0) {
+      throw std::runtime_error("Not supported!");
+    }
+  }
+
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
   std::vector<std::string> test = {"test.vert", "test.frag"};
@@ -82,17 +101,6 @@ main::Error GameGraphicsModule::loadModel(const uint8_t *bytes,
     const Material defMat = {{}, pipe};
     materialFirstIndex = apiLayer->pushMaterials(1, &defMat);
   }
-
-  size_t samplerIndex = 0;
-  for (const auto &smplr : model.samplers) {
-    const SamplerInfo samplerInfo = {
-        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
-        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
-        gltfToAPI(smplr.wrapS, AddressMode::REPEAT),
-        gltfToAPI(smplr.wrapT, AddressMode::REPEAT)};
-    samplerIndex = apiLayer->pushSampler(samplerInfo);
-  }
-  samplerIndex -= model.samplers.size() - 1;
 
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);

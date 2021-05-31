@@ -250,10 +250,11 @@ inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
     return ShaderStageFlagBits::eVertex;
   case EShLanguage::EShLangFragment:
     return ShaderStageFlagBits::eFragment;
+  default:
+    throw std::runtime_error(
+        std::string("Couldn't find ShaderStageFlagBits for EShLanguage ") +
+        std::to_string(lang));
   }
-  throw std::runtime_error(
-      std::string("Couldn't find ShaderStageFlagBits for EShLanguage ") +
-      std::to_string(lang));
 }
 
 inline Format getFormatFromElf(const glslang::TType &format) {
@@ -280,9 +281,10 @@ inline uint32_t getSizeFromFormat(const Format format) {
     return 12;
   case Format::eR32G32B32A32Sfloat:
     return 16;
+  default:
+    throw std::runtime_error(std::string("Couldn't find size for Format ") +
+                             to_string(format));
   }
-  throw std::runtime_error(std::string("Couldn't find size for Format ") +
-                           to_string(format));
 }
 
 struct VulkanShaderPipe {
@@ -388,29 +390,33 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
 }
 
 VulkanShaderPipe *__implLoadShaderPipeAndCompile(
-    std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> &vector) {
+    std::vector<std::pair<std::vector<uint8_t>, EShLanguage>> &vector) {
+  if (vector.size() == 0)
+    return nullptr;
   VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
   glslang::InitializeProcess();
   util::OnExit e1(glslang::FinalizeProcess);
   shaderPipe->shader.reserve(vector.size());
 
   for (auto &pair : vector) {
-    const auto data = std::move(pair.first);
+    const auto &data = pair.first;
     const auto langName = pair.second;
-    if (!data) {
+    if (data.empty()) {
       delete shaderPipe;
       return nullptr;
     }
     glslang::TShader shader(langName);
-    const auto ptr = data.get();
+    const auto ptr = data.data();
     shader.setStrings((const char *const *)(&ptr), 1);
     shader.setEnvInput(glslang::EShSourceGlsl, langName,
                        glslang::EShClientVulkan, 100);
     shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
     shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
     if (!shader.parse(&DefaultTBuiltInResource, 450, true,
-                      EShMessages::EShMsgVulkanRules))
+                      EShMessages::EShMsgVulkanRules)) {
+      printf("======== Shader compile error ==========\n\n%s", shader.getInfoLog());
       return nullptr;
+    }
     printf("%s", shader.getInfoLog());
 
     const auto interm = shader.getIntermediate();
@@ -421,13 +427,12 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
 }
 
 uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
-  std::vector<std::pair<std::unique_ptr<uint8_t[]>, EShLanguage>> vector;
+  std::vector<std::pair<std::vector<uint8_t>, EShLanguage>> vector;
   vector.reserve(shadernames.size());
   for (const auto &name : shadernames) {
     const std::string abrivation = name.substr(name.size() - 4);
     auto path = fs::path(name);
-    vector.push_back(
-        std::pair(std::move(util::wholeFile(path)), getLang(abrivation)));
+    vector.push_back(std::pair(util::wholeFile(path), getLang(abrivation)));
   }
   const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
   return (uint8_t *)loadedPipes;
@@ -462,7 +467,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
-  pipelineLayouts.reserve(materialcount);
+  pipelineLayouts.reserve(materialcount + pipelineLayouts.size());
 
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
@@ -607,7 +612,9 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
     device.unmapMemory(hostVisibleMemory);
 
     const BufferCreateInfo bufferLocalCreateInfo(
-        {}, size, BufferUsageFlagBits::eTransferDst | bufferUsage,
+        {}, size,
+        BufferUsageFlagBits::eTransferDst | BufferUsageFlagBits::eTransferSrc |
+            bufferUsage,
         SharingMode::eExclusive);
     const auto localBuffer = device.createBuffer(bufferLocalCreateInfo);
     bufferList.push_back(localBuffer);

@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <stdint.h>
 #include <type_traits>
+#include <vector>
 
 namespace fs = std::filesystem;
 
@@ -18,7 +19,6 @@ public:
   constexpr ~OnExit() { call(); }
 };
 
-std::unique_ptr<uint8_t[]> wholeFile(const fs::path &path,
-                                     size_t *out = nullptr);
+std::vector<uint8_t> wholeFile(const fs::path &path);
 
 } // namespace tge::util
