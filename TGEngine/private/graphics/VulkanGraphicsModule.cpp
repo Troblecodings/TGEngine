@@ -295,20 +295,22 @@ struct VulkanShaderPipe {
   PipelineVertexInputStateCreateInfo inputStateCreateInfo;
   PipelineRasterizationStateCreateInfo rasterization;
   PipelineLayoutCreateInfo layoutCreateInfo;
+  std::vector<DescriptorSetLayoutCreateInfo> descriptorLayout;
+  std::vector<std::vector<DescriptorSetLayoutBinding>> descriptorLayoutBindings;
 };
 
-struct ShaderAnalizer : public glslang::TIntermTraverser {
+#define NO_BINDING_GIVEN 65535
+#define NO_LAYOUT_GIVEN 4095
+
+struct VertexShaderAnalizer : public glslang::TIntermTraverser {
 
   VulkanShaderPipe *shaderPipe;
 
-  ShaderAnalizer(VulkanShaderPipe *pipe)
+  VertexShaderAnalizer(VulkanShaderPipe *pipe)
       : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe) {
     ioVars.reserve(10);
   }
   std::unordered_set<size_t> ioVars;
-
-#define NO_BINDING_GIVEN 65535
-#define NO_LAYOUT_GIVEN 4095
 
   void visitSymbol(glslang::TIntermSymbol *symbol) {
     const auto &qualifier = symbol->getQualifier();
@@ -360,6 +362,49 @@ struct ShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
+inline DescriptorType getDescTypeFromELF(const glslang::TType &type) {
+  if (type.getBasicType() == glslang::TBasicType::EbtSampler)
+    return DescriptorType::eSampler;
+  throw std::runtime_error("Descriptor could not be found for: " +
+                           std::string(type.getCompleteString()));
+}
+
+struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
+
+  VulkanShaderPipe *shaderPipe;
+  const ShaderStageFlags flags;
+
+  GeneralShaderAnalizer(VulkanShaderPipe *pipe, ShaderStageFlags flags)
+      : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe),
+        flags(flags) {
+    shaderPipe->descriptorLayoutBindings.reserve(10);
+    shaderPipe->descriptorLayoutBindings.push_back({});
+    shaderPipe->descriptorLayoutBindings.back().reserve(20);
+    shaderPipe->descriptorLayout.reserve(10);
+  }
+
+  void visitSymbol(glslang::TIntermSymbol *symbol) {
+    const auto &type = symbol->getType();
+    const auto &quali = type.getQualifier();
+    if (quali.isUniformOrBuffer() && quali.layoutBinding < NO_BINDING_GIVEN) {
+      std::cout << type.getCompleteString() << " " << type.getBasicType()
+                << std::endl;
+
+      const DescriptorSetLayoutBinding descBinding(
+          quali.layoutBinding, getDescTypeFromELF(type), 1, flags);
+      shaderPipe->descriptorLayoutBindings.back().push_back(descBinding);
+    }
+  }
+
+  void post() {
+    const auto &vec = shaderPipe->descriptorLayoutBindings.back();
+    if (!vec.empty()) {
+      const DescriptorSetLayoutCreateInfo setLayoutCreateInfo({}, vec.back());
+      shaderPipe->descriptorLayout.push_back(setLayoutCreateInfo);
+    }
+  }
+};
+
 inline void submitAndWait(const Device &device, const Queue &queue,
                           const CommandBuffer &cmdBuf) {
   const FenceCreateInfo fenceCreateInfo;
@@ -378,14 +423,17 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
                               const glslang::TIntermediate *interm,
                               const EShLanguage langName) {
   const auto node = interm->getTreeRoot();
-  if (langName == EShLangVertex) { // currently only vertex analyzation
-    ShaderAnalizer analizer(shaderPipe);
+  if (langName == EShLangVertex) {
+    VertexShaderAnalizer analizer(shaderPipe);
     node->traverse(&analizer);
     analizer.post();
   }
+  const auto flags = getStageFromLang(langName);
+  GeneralShaderAnalizer generalAnalizer(shaderPipe, flags);
+  node->traverse(&generalAnalizer);
+  generalAnalizer.post();
 
-  shaderPipe->shader.push_back(
-      std::pair(std::vector<uint32_t>(), getStageFromLang(langName)));
+  shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
 }
 
@@ -414,7 +462,8 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
     shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
     if (!shader.parse(&DefaultTBuiltInResource, 450, true,
                       EShMessages::EShMsgVulkanRules)) {
-      printf("======== Shader compile error ==========\n\n%s", shader.getInfoLog());
+      printf("======== Shader compile error ==========\n\n%s",
+             shader.getInfoLog());
       return nullptr;
     }
     printf("%s", shader.getInfoLog());
