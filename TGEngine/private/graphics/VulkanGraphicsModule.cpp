@@ -1,21 +1,17 @@
 #include "../../public/graphics/VulkanGraphicsModule.hpp"
-
 #include "../../public/Error.hpp"
+#include "../../public/graphics/WindowModule.hpp"
 #include <array>
 #include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <iostream>
 #include <mutex>
-
-#include "../../public/graphics/WindowModule.hpp"
-
 #ifdef WIN32
 #include <Windows.h>
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
-
 #include "../../public/Util.hpp"
 #include <vector>
 #define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
@@ -294,7 +290,6 @@ struct VulkanShaderPipe {
   std::vector<VertexInputAttributeDescription> vertexInputAttributes;
   PipelineVertexInputStateCreateInfo inputStateCreateInfo;
   PipelineRasterizationStateCreateInfo rasterization;
-  PipelineLayoutCreateInfo layoutCreateInfo;
   std::vector<DescriptorSetLayoutCreateInfo> descriptorLayout;
   std::vector<std::vector<DescriptorSetLayoutBinding>> descriptorLayoutBindings;
 };
@@ -362,9 +357,17 @@ struct VertexShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
-inline DescriptorType getDescTypeFromELF(const glslang::TType &type) {
-  if (type.getBasicType() == glslang::TBasicType::EbtSampler)
-    return DescriptorType::eSampler;
+inline std::pair<DescriptorType, uint32_t>
+getDescTypeFromELF(const glslang::TType &type) {
+  const auto count = type.isArray() ? type.getOuterArraySize() : 1;
+  if (type.getBasicType() == glslang::TBasicType::EbtSampler) {
+    const auto sampler = type.getSampler();
+    if (sampler.isPureSampler() || sampler.isCombined())
+      return std::pair(DescriptorType::eSampler, count);
+    return std::pair(DescriptorType::eSampledImage, count);
+  } else if (type.getBasicType() == glslang::TBasicType::EbtBlock) {
+    return std::pair(DescriptorType::eUniformBuffer, count);
+  }
   throw std::runtime_error("Descriptor could not be found for: " +
                            std::string(type.getCompleteString()));
 }
@@ -387,11 +390,9 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
     const auto &type = symbol->getType();
     const auto &quali = type.getQualifier();
     if (quali.isUniformOrBuffer() && quali.layoutBinding < NO_BINDING_GIVEN) {
-      std::cout << type.getCompleteString() << " " << type.getBasicType()
-                << std::endl;
-
+      const auto desc = getDescTypeFromELF(type);
       const DescriptorSetLayoutBinding descBinding(
-          quali.layoutBinding, getDescTypeFromELF(type), 1, flags);
+          quali.layoutBinding, desc.first, desc.second, flags);
       shaderPipe->descriptorLayoutBindings.back().push_back(descBinding);
     }
   }
@@ -542,8 +543,14 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
     shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
-    const auto layout =
-        device.createPipelineLayout(shaderPipe->layoutCreateInfo);
+    std::vector<DescriptorSetLayout> descLayout;
+    for (const auto &l : shaderPipe->descriptorLayout) {
+      const auto descL = device.createDescriptorSetLayout(l);
+      descLayout.push_back(descL);
+    }
+
+    const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
+    const auto layout = device.createPipelineLayout(layoutCreateInfo);
     pipelineLayouts.push_back(layout);
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
