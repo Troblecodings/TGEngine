@@ -32,7 +32,9 @@ struct RenderInfo {
 
 struct TextureInfo {
   std::vector<uint8_t> data;
-
+  uint64_t width;
+  uint64_t height;
+  uint64_t channel;
 };
 
 enum class FilterSetting { NEAREST, LINEAR };

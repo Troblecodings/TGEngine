@@ -191,6 +191,9 @@ private:
   ImageView depthImageView;
   std::vector<PipelineLayout> pipelineLayouts;
   std::vector<Sampler> sampler;
+  std::vector<Image> textureImages;
+  std::vector<DeviceMemory> textureMemorys;
+  std::vector<ImageView> textureImageViews;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -711,7 +714,81 @@ size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
 }
 
 size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
-                                         const TextureInfo *textures) {}
+                                         const TextureInfo *textures) {
+  if (textureCount == 0 || textures == 0)
+    throw std::runtime_error("Invalid API usage in Vulkan pushTexture!");
+
+  const size_t firstIndex = textureImages.size();
+
+  std::vector<Image> intermImages;
+  std::vector<DeviceMemory> intermMemorys;
+  std::vector<ImageCopy> intermCopys;
+  intermImages.reserve(textureCount);
+  intermMemorys.reserve(textureCount);
+  intermCopys.reserve(textureCount);
+
+  textureImages.reserve(firstIndex + textureCount);
+  textureMemorys.reserve(firstIndex + textureCount);
+  textureImageViews.reserve(firstIndex + textureCount);
+
+  const auto cmd = this->cmdbuffer.back();
+
+  const CommandBufferBeginInfo beginInfo({}, {});
+  cmd.begin(beginInfo);
+
+  for (size_t i = 0; i < textureCount; i++) {
+    const TextureInfo &tex = textures[i];
+
+    const Extent3D ext = {tex.width, tex.height, 1};
+    const Format format =
+        tex.channel == 4 ? Format::eR8G8B8A8Unorm : Format::eR8G8B8Unorm;
+
+    const ImageCreateInfo intermImageCreate(
+        {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
+        ImageTiling::eOptimal, ImageUsageFlagBits::eTransferSrc,
+        SharingMode::eExclusive, {});
+    const auto intermImage = device.createImage(intermImageCreate);
+    intermImages.push_back(intermImage);
+    const auto memRequ = device.getImageMemoryRequirements(intermImage);
+    const MemoryAllocateInfo intermMemAllocInfo(memRequ.size,
+                                                memoryTypeHostVisibleCoherent);
+    const auto intermMemory = device.allocateMemory(intermMemAllocInfo);
+    intermMemorys.push_back(intermMemory);
+    device.bindImageMemory(intermImage, intermMemory, 0);
+
+    const ImageCreateInfo imageCreate(
+        {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
+        ImageTiling::eOptimal,
+        ImageUsageFlagBits::eTransferDst | ImageUsageFlagBits::eColorAttachment,
+        SharingMode::eExclusive, {});
+    const auto image = device.createImage(imageCreate);
+    textureImages.push_back(image);
+    const auto memRequ = device.getImageMemoryRequirements(intermImage);
+    const MemoryAllocateInfo memAllocInfo(memRequ.size,
+                                          memoryTypeHostVisibleCoherent);
+    const auto memory = device.allocateMemory(memAllocInfo);
+    textureMemorys.push_back(memory);
+    device.bindImageMemory(intermImage, intermMemory, 0);
+
+    intermCopys.push_back({{ImageAspectFlagBits::eColor, 0, 0, 1},
+                           {},
+                           {ImageAspectFlagBits::eColor, 0, 0, 1},
+                           {},
+                           ext});
+    cmd.copyImage(intermImage, ImageLayout::eUndefined, image,
+                  ImageLayout::eUndefined, intermCopys.back());
+  }
+
+  cmd.end();
+
+  constexpr PipelineStageFlags pipeStage = PipelineStageFlagBits::eAllGraphics;
+  const SubmitInfo submitInfo({}, pipeStage, cmd, {});
+  device.resetFences(commandBufferFence);
+  queue.submit(submitInfo, commandBufferFence);
+  device.waitForFences(commandBufferFence, true, UINT64_MAX);
+
+  return firstIndex;
+}
 
 #ifdef DEBUG
 VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
