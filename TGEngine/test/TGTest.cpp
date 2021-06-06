@@ -6,6 +6,8 @@
 #include <mutex>
 #include <thread>
 
+#define DEFAULT_TIME 1
+
 bool hasInit = false;
 bool hasTick = false;
 bool hasDestroy = false;
@@ -15,6 +17,12 @@ using namespace tge::graphics;
 
 double alltime = 0;
 std::mutex syncMutex;
+
+inline void waitForTime() {
+  alltime = 0;
+  while (alltime < DEFAULT_TIME)
+    continue;
+}
 
 class TestModule : public tge::main::Module {
   Error init() {
@@ -109,8 +117,7 @@ TEST(EngineMain, Start) {
 TEST(EngineMain, InitAndTickTest) {
   ASSERT_TRUE(hasInit);
   ASSERT_TRUE(hasTick);
-  while (alltime < 5)
-    continue;
+  waitForTime();
   ASSERT_EQ(start(), Error::ALREADY_RUNNING);
 }
 
@@ -122,24 +129,26 @@ void exitWaitCheck() {
 }
 
 TEST(EngineMain, Exit) {
-  alltime = 0;
-  while (alltime < 5)
-    continue;
   exitWaitCheck();
 }
 
 TEST(EngineMain, Restart) {
   ASSERT_EQ(materials.size(), 0);
   ASSERT_EQ(modules.size(), 0);
+}
+
+TEST(EngineMain, Sampler) {
   tge::main::modules.push_back(new TestModule());
 
   ASSERT_EQ(init(), Error::NONE);
 
+  const SamplerInfo sampler = {FilterSetting::LINEAR, FilterSetting::LINEAR,
+                               AddressMode::REPEAT, AddressMode::REPEAT, 0};
+  ASSERT_NO_THROW(getAPILayer()->pushSampler(sampler));
+  
   defaultTestData();
   syncMutex.unlock();
-  alltime = 0;
-  while (alltime < 5)
-    continue;
+  waitForTime();
   exitWaitCheck();
 }
 
@@ -153,9 +162,7 @@ TEST(EngineMain, SimpleModel) {
   ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false), Error::NONE);
 
   syncMutex.unlock();
-  alltime = 0;
-  while (alltime < 5)
-    continue;
+  waitForTime();
   testExitRequest = true;
   exitWaitCheck();
 }
