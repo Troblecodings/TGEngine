@@ -32,9 +32,9 @@ struct RenderInfo {
 
 struct TextureInfo {
   std::vector<uint8_t> data;
-  uint64_t width;
-  uint64_t height;
-  uint64_t channel;
+  uint32_t width;
+  uint32_t height;
+  uint32_t channel;
 };
 
 enum class FilterSetting { NEAREST, LINEAR };
@@ -105,6 +105,8 @@ public:
                         const bool binary) {
     return loadModel(data, binary, "");
   }
+
+  uint32_t loadTextures(const std::vector<std::vector<uint8_t>> &data);
 
   main::Error init() override;
 

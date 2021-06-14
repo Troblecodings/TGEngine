@@ -749,8 +749,8 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
         SharingMode::eExclusive, {});
     const auto intermImage = device.createImage(intermImageCreate);
     intermImages.push_back(intermImage);
-    const auto memRequ = device.getImageMemoryRequirements(intermImage);
-    const MemoryAllocateInfo intermMemAllocInfo(memRequ.size,
+    const auto memRequIntern = device.getImageMemoryRequirements(intermImage);
+    const MemoryAllocateInfo intermMemAllocInfo(memRequIntern.size,
                                                 memoryTypeHostVisibleCoherent);
     const auto intermMemory = device.allocateMemory(intermMemAllocInfo);
     intermMemorys.push_back(intermMemory);
@@ -785,7 +785,15 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   const SubmitInfo submitInfo({}, pipeStage, cmd, {});
   device.resetFences(commandBufferFence);
   queue.submit(submitInfo, commandBufferFence);
-  device.waitForFences(commandBufferFence, true, UINT64_MAX);
+  const Result result =
+      device.waitForFences(commandBufferFence, true, UINT64_MAX);
+  VERROR(result);
+
+  for (auto mem : intermMemorys)
+    device.freeMemory(mem);
+
+  for (auto img : intermImages)
+    device.destroyImage(img);
 
   return firstIndex;
 }

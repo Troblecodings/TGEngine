@@ -147,4 +147,21 @@ main::Error GameGraphicsModule::init() { return main::Error::NONE; }
 
 void GameGraphicsModule::destroy() { materials.clear(); }
 
+uint32_t GameGraphicsModule::loadTextures(
+    const std::vector<std::vector<uint8_t>> &data) {
+  std::vector<TextureInfo> textureInfos;
+
+  for (const auto &dataIn : data) {
+    TextureInfo info;
+    const auto ptr =
+        stbi_load_from_memory(dataIn.data(), dataIn.size(), (int *)&info.width,
+                              (int *)&info.height, (int *)&info.channel, 0);
+    textureInfos.push_back(info);
+    auto &dt = textureInfos.back().data;
+    dt.resize(info.width * info.channel * info.height);
+    std::memcpy(dt.data(), ptr, dt.size());
+  }
+  return apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
+}
+
 } // namespace tge::graphics

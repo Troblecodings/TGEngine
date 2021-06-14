@@ -128,16 +128,14 @@ void exitWaitCheck() {
   ASSERT_EQ(err, Error::NONE);
 }
 
-TEST(EngineMain, Exit) {
-  exitWaitCheck();
-}
+TEST(EngineMain, Exit) { exitWaitCheck(); }
 
 TEST(EngineMain, Restart) {
   ASSERT_EQ(materials.size(), 0);
   ASSERT_EQ(modules.size(), 0);
 }
 
-TEST(EngineMain, Sampler) {
+TEST(EngineMain, SamplerAndTextures) {
   tge::main::modules.push_back(new TestModule());
 
   ASSERT_EQ(init(), Error::NONE);
@@ -145,7 +143,11 @@ TEST(EngineMain, Sampler) {
   const SamplerInfo sampler = {FilterSetting::LINEAR, FilterSetting::LINEAR,
                                AddressMode::REPEAT, AddressMode::REPEAT, 0};
   ASSERT_NO_THROW(getAPILayer()->pushSampler(sampler));
-  
+
+  std::vector<std::vector<uint8_t>> vec = {tge::util::wholeFile("test.png")};
+
+  ASSERT_NO_THROW(getGameGraphicsModule()->loadTextures(vec));
+
   defaultTestData();
   syncMutex.unlock();
   waitForTime();
