@@ -144,6 +144,8 @@ TEST(EngineMain, SamplerAndTextures) {
                                AddressMode::REPEAT, AddressMode::REPEAT, 0};
   ASSERT_NO_THROW(getAPILayer()->pushSampler(sampler));
 
+  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"test3c.png"}), std::runtime_error);
+
   ASSERT_NO_THROW(getGameGraphicsModule()->loadTextures({"test.png"}));
 
   defaultTestData();

@@ -151,15 +151,20 @@ uint32_t GameGraphicsModule::loadTextures(
     const std::vector<std::vector<uint8_t>> &data) {
   std::vector<TextureInfo> textureInfos;
 
+  util::OnExit onExit([&] {
+    for (const auto &tex : textureInfos)
+      free(tex.data);
+  });
+
   for (const auto &dataIn : data) {
     TextureInfo info;
-    const auto ptr =
+    info.data =
         stbi_load_from_memory(dataIn.data(), dataIn.size(), (int *)&info.width,
                               (int *)&info.height, (int *)&info.channel, 0);
+    info.size = info.width * info.height * info.channel;
     textureInfos.push_back(info);
-    auto &dt = textureInfos.back().data;
-    dt.resize(info.width * info.channel * info.height);
-    std::memcpy(dt.data(), ptr, dt.size());
+    if(info.channel == 3)
+      throw std::runtime_error("Texture with 3 channels not supported!");
   }
   return apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
 }

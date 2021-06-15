@@ -762,7 +762,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     intermMemorys.push_back(intermMemory);
     device.bindImageMemory(intermImage, intermMemory, 0);
     const auto handle = device.mapMemory(intermMemory, 0, VK_WHOLE_SIZE, {});
-    std::memcpy(handle, tex.data.data(), tex.data.size());
+    std::memcpy(handle, tex.data, tex.size);
     device.unmapMemory(intermMemory);
 
     const ImageCreateInfo imageCreate(

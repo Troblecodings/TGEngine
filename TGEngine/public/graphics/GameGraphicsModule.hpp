@@ -31,7 +31,8 @@ struct RenderInfo {
 };
 
 struct TextureInfo {
-  std::vector<uint8_t> data;
+  uint8_t* data;
+  uint32_t size;
   uint32_t width;
   uint32_t height;
   uint32_t channel;
