@@ -164,4 +164,13 @@ uint32_t GameGraphicsModule::loadTextures(
   return apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
 }
 
+uint32_t GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
+  std::vector<std::vector<uint8_t>> data;
+  data.reserve(names.size());
+  for (const auto &name : names) {
+    data.push_back(util::wholeFile(name));
+  }
+  return loadTextures(data);
+}
+
 } // namespace tge::graphics

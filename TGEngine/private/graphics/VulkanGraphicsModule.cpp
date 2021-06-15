@@ -727,6 +727,13 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   intermMemorys.reserve(textureCount);
   intermCopys.reserve(textureCount);
 
+  util::OnExit exitHandle([&] {
+    for (auto mem : intermMemorys)
+      device.freeMemory(mem);
+    for (auto img : intermImages)
+      device.destroyImage(img);
+  });
+
   textureImages.reserve(firstIndex + textureCount);
   textureMemorys.reserve(firstIndex + textureCount);
   textureImageViews.reserve(firstIndex + textureCount);
@@ -740,8 +747,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const TextureInfo &tex = textures[i];
 
     const Extent3D ext = {tex.width, tex.height, 1};
-    const Format format =
-        tex.channel == 4 ? Format::eR8G8B8A8Unorm : Format::eR8G8B8Unorm;
+    const Format format = Format::eR8G8B8A8Unorm;
 
     const ImageCreateInfo intermImageCreate(
         {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
@@ -755,6 +761,9 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const auto intermMemory = device.allocateMemory(intermMemAllocInfo);
     intermMemorys.push_back(intermMemory);
     device.bindImageMemory(intermImage, intermMemory, 0);
+    const auto handle = device.mapMemory(intermMemory, 0, VK_WHOLE_SIZE, {});
+    std::memcpy(handle, tex.data.data(), tex.data.size());
+    device.unmapMemory(intermMemory);
 
     const ImageCreateInfo imageCreate(
         {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
@@ -788,13 +797,6 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   const Result result =
       device.waitForFences(commandBufferFence, true, UINT64_MAX);
   VERROR(result);
-
-  for (auto mem : intermMemorys)
-    device.freeMemory(mem);
-
-  for (auto img : intermImages)
-    device.destroyImage(img);
-
   return firstIndex;
 }
 
@@ -907,6 +909,13 @@ main::Error VulkanGraphicsModule::init() {
   const DeviceCreateInfo deviceCreateInfo({}, 1, &queueCreateInfo, 0, {}, 1,
                                           &name);
   this->device = this->physicalDevice.createDevice(deviceCreateInfo);
+
+  const auto c4Props =
+      this->physicalDevice.getFormatProperties(Format::eR8G8B8A8Unorm);
+  if (!(c4Props.optimalTilingFeatures &
+        FormatFeatureFlagBits::eColorAttachment))
+    return main::Error::FORMAT_NOT_SUPPORTED;
+
 #pragma endregion
 
 #pragma region Queue, Surface, Prepipe

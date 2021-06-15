@@ -144,9 +144,7 @@ TEST(EngineMain, SamplerAndTextures) {
                                AddressMode::REPEAT, AddressMode::REPEAT, 0};
   ASSERT_NO_THROW(getAPILayer()->pushSampler(sampler));
 
-  std::vector<std::vector<uint8_t>> vec = {tge::util::wholeFile("test.png")};
-
-  ASSERT_NO_THROW(getGameGraphicsModule()->loadTextures(vec));
+  ASSERT_NO_THROW(getGameGraphicsModule()->loadTextures({"test.png"}));
 
   defaultTestData();
   syncMutex.unlock();

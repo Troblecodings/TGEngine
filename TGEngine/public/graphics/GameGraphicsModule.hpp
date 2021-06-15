@@ -108,6 +108,8 @@ public:
 
   uint32_t loadTextures(const std::vector<std::vector<uint8_t>> &data);
 
+  uint32_t loadTextures(const std::vector<std::string> &names);
+
   main::Error init() override;
 
   void destroy() override;
