@@ -720,9 +720,9 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
 
   const size_t firstIndex = textureImages.size();
 
-  std::vector<Image> intermImages;
+  std::vector<Buffer> intermImages;
   std::vector<DeviceMemory> intermMemorys;
-  std::vector<ImageCopy> intermCopys;
+  std::vector<BufferImageCopy> intermCopys;
   intermImages.reserve(textureCount);
   intermMemorys.reserve(textureCount);
   intermCopys.reserve(textureCount);
@@ -731,7 +731,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     for (auto mem : intermMemorys)
       device.freeMemory(mem);
     for (auto img : intermImages)
-      device.destroyImage(img);
+      device.destroyBuffer(img);
   });
 
   textureImages.reserve(firstIndex + textureCount);
@@ -749,18 +749,17 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const Extent3D ext = {tex.width, tex.height, 1};
     const Format format = Format::eR8G8B8A8Unorm;
 
-    const ImageCreateInfo intermImageCreate(
-        {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
-        ImageTiling::eOptimal, ImageUsageFlagBits::eTransferSrc,
+    const BufferCreateInfo intermImageCreate(
+        {}, tex.size, BufferUsageFlagBits::eTransferSrc,
         SharingMode::eExclusive, {});
-    const auto intermImage = device.createImage(intermImageCreate);
+    const auto intermImage = device.createBuffer(intermImageCreate);
     intermImages.push_back(intermImage);
-    const auto memRequIntern = device.getImageMemoryRequirements(intermImage);
+    const auto memRequIntern = device.getBufferMemoryRequirements(intermImage);
     const MemoryAllocateInfo intermMemAllocInfo(memRequIntern.size,
                                                 memoryTypeHostVisibleCoherent);
     const auto intermMemory = device.allocateMemory(intermMemAllocInfo);
     intermMemorys.push_back(intermMemory);
-    device.bindImageMemory(intermImage, intermMemory, 0);
+    device.bindBufferMemory(intermImage, intermMemory, 0);
     const auto handle = device.mapMemory(intermMemory, 0, VK_WHOLE_SIZE, {});
     std::memcpy(handle, tex.data, tex.size);
     device.unmapMemory(intermMemory);
@@ -772,26 +771,25 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
         SharingMode::eExclusive, {});
     const auto image = device.createImage(imageCreate);
     textureImages.push_back(image);
-    const auto memRequ = device.getImageMemoryRequirements(intermImage);
+    const auto memRequ = device.getImageMemoryRequirements(image);
     const MemoryAllocateInfo memAllocInfo(memRequ.size,
-                                          memoryTypeHostVisibleCoherent);
+                                          memoryTypeDeviceLocal);
     const auto memory = device.allocateMemory(memAllocInfo);
     textureMemorys.push_back(memory);
-    device.bindImageMemory(intermImage, intermMemory, 0);
+    device.bindImageMemory(image, memory, 0);
 
-    intermCopys.push_back({{ImageAspectFlagBits::eColor, 0, 0, 1},
-                           {},
+    intermCopys.push_back({0, ext.width, ext.height,
                            {ImageAspectFlagBits::eColor, 0, 0, 1},
                            {},
                            ext});
-    cmd.copyImage(intermImage, ImageLayout::eUndefined, image,
+    cmd.copyBufferToImage(intermImage, image,
                   ImageLayout::eUndefined, intermCopys.back());
   }
 
   cmd.end();
 
   constexpr PipelineStageFlags pipeStage = PipelineStageFlagBits::eAllGraphics;
-  const SubmitInfo submitInfo({}, pipeStage, cmd, {});
+  const SubmitInfo submitInfo({}, {}, cmd, {});
   device.resetFences(commandBufferFence);
   queue.submit(submitInfo, commandBufferFence);
   const Result result =
@@ -918,7 +916,7 @@ main::Error VulkanGraphicsModule::init() {
 
 #pragma endregion
 
-#pragma region Queue, Surface, Prepipe
+#pragma region Queue, Surface, Prepipe, MemTypes
   queue = device.getQueue(queueFamilyIndex, queueIndex);
 
   const auto winM = graphicsModule->getWindowModule();
@@ -945,18 +943,18 @@ main::Error VulkanGraphicsModule::init() {
   const auto memoryProperties = physicalDevice.getMemoryProperties();
   const auto memBeginItr = memoryProperties.memoryTypes.begin();
   const auto memEndItr = memoryProperties.memoryTypes.end();
-  const auto deviceLocalFindItr =
-      std::find_if(memBeginItr, memEndItr, [](auto &type) {
-        return type.propertyFlags & (MemoryPropertyFlagBits::eDeviceLocal);
-      });
-  memoryTypeDeviceLocal = std::distance(memBeginItr, deviceLocalFindItr);
-  const auto hostVisibleFindItr =
-      std::find_if(memBeginItr, memEndItr, [](auto &type) {
-        return type.propertyFlags & (MemoryPropertyFlagBits::eHostVisible |
-                                     MemoryPropertyFlagBits::eHostCoherent);
-      });
+
+  const auto findMemoryIndex = [&](auto prop) {
+    const auto findItr = std::find_if(memBeginItr, memEndItr, [&](auto &type) {
+      return type.propertyFlags & (prop);
+    });
+    return std::distance(memBeginItr, findItr);
+  };
+
+  memoryTypeDeviceLocal = findMemoryIndex(MemoryPropertyFlagBits::eDeviceLocal);
   memoryTypeHostVisibleCoherent =
-      std::distance(memBeginItr, hostVisibleFindItr);
+      findMemoryIndex(MemoryPropertyFlagBits::eHostVisible |
+                      MemoryPropertyFlagBits::eHostCoherent);
 
   const auto capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
   viewport = Viewport(0, 0, capabilities.currentExtent.width,
