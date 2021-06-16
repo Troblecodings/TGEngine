@@ -173,6 +173,7 @@ private:
   std::vector<CommandBuffer> cmdbuffer;
   std::vector<Pipeline> pipelines;
   Queue queue;
+  uint32_t queueIndex;
   Semaphore waitSemaphore;
   Semaphore signalSemaphore;
   Fence commandBufferFence;
@@ -720,17 +721,17 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
 
   const size_t firstIndex = textureImages.size();
 
-  std::vector<Buffer> intermImages;
+  std::vector<Buffer> intermBuffers;
   std::vector<DeviceMemory> intermMemorys;
   std::vector<BufferImageCopy> intermCopys;
-  intermImages.reserve(textureCount);
+  intermBuffers.reserve(textureCount);
   intermMemorys.reserve(textureCount);
   intermCopys.reserve(textureCount);
 
   util::OnExit exitHandle([&] {
     for (auto mem : intermMemorys)
       device.freeMemory(mem);
-    for (auto img : intermImages)
+    for (auto img : intermBuffers)
       device.destroyBuffer(img);
   });
 
@@ -749,17 +750,17 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const Extent3D ext = {tex.width, tex.height, 1};
     const Format format = Format::eR8G8B8A8Unorm;
 
-    const BufferCreateInfo intermImageCreate(
+    const BufferCreateInfo intermBufferCreate(
         {}, tex.size, BufferUsageFlagBits::eTransferSrc,
         SharingMode::eExclusive, {});
-    const auto intermImage = device.createBuffer(intermImageCreate);
-    intermImages.push_back(intermImage);
-    const auto memRequIntern = device.getBufferMemoryRequirements(intermImage);
+    const auto intermBuffer = device.createBuffer(intermBufferCreate);
+    intermBuffers.push_back(intermBuffer);
+    const auto memRequIntern = device.getBufferMemoryRequirements(intermBuffer);
     const MemoryAllocateInfo intermMemAllocInfo(memRequIntern.size,
                                                 memoryTypeHostVisibleCoherent);
     const auto intermMemory = device.allocateMemory(intermMemAllocInfo);
     intermMemorys.push_back(intermMemory);
-    device.bindBufferMemory(intermImage, intermMemory, 0);
+    device.bindBufferMemory(intermBuffer, intermMemory, 0);
     const auto handle = device.mapMemory(intermMemory, 0, VK_WHOLE_SIZE, {});
     std::memcpy(handle, tex.data, tex.size);
     device.unmapMemory(intermMemory);
@@ -782,19 +783,29 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
                            {ImageAspectFlagBits::eColor, 0, 0, 1},
                            {},
                            ext});
-    cmd.copyBufferToImage(intermImage, image,
-                  ImageLayout::eUndefined, intermCopys.back());
+
+    const ImageViewCreateInfo imageViewCreateInfo({}, image, ImageViewType::e2D, format, {},
+        {ImageAspectFlagBits::eColor, 0, 1, 0, 1});
+    const auto imageView = device.createImageView(imageViewCreateInfo);
+    textureImageViews.push_back(imageView);
+
+    waitForImageTransition(cmd, ImageLayout::eUndefined,
+                           ImageLayout::eTransferDstOptimal, queueIndex, image,
+                           imageViewCreateInfo.subresourceRange);
+
+    cmd.copyBufferToImage(intermBuffer, image,
+                  ImageLayout::eTransferDstOptimal, intermCopys.back());
   }
 
   cmd.end();
 
-  constexpr PipelineStageFlags pipeStage = PipelineStageFlagBits::eAllGraphics;
   const SubmitInfo submitInfo({}, {}, cmd, {});
-  device.resetFences(commandBufferFence);
   queue.submit(submitInfo, commandBufferFence);
   const Result result =
       device.waitForFences(commandBufferFence, true, UINT64_MAX);
   VERROR(result);
+  device.resetFences(commandBufferFence);
+  
   return firstIndex;
 }
 
@@ -889,7 +900,7 @@ main::Error VulkanGraphicsModule::init() {
   std::vector<float> priorities(queueFamily.queueCount);
   std::fill(priorities.begin(), priorities.end(), 0.0f);
 
-  const auto queueIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
+  queueIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
   const DeviceQueueCreateInfo queueCreateInfo(
       {}, queueIndex, queueFamily.queueCount, priorities.data());
 
@@ -1129,6 +1140,7 @@ void VulkanGraphicsModule::tick(double time) {
   const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
   const SubmitInfo submitInfo(waitSemaphore, stageFlag, currentBuffer,
                               signalSemaphore);
+
   queue.submit(submitInfo, commandBufferFence);
 
   const PresentInfoKHR presentInfo(signalSemaphore, swapchain, nextimage.value,
@@ -1141,7 +1153,6 @@ void VulkanGraphicsModule::tick(double time) {
   VERROR(waitresult);
 
   currentBuffer.reset();
-
   device.resetFences(commandBufferFence);
 }
 
@@ -1153,6 +1164,14 @@ void VulkanGraphicsModule::destroy() {
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
   device.freeCommandBuffers(pool, secondaryCommandBuffer);
+  for (auto imag : textureImages)
+    device.destroyImage(imag);
+  for (auto mem : textureMemorys)
+    device.freeMemory(mem);
+  for (auto imView : textureImageViews)
+    device.destroyImageView(imView);
+  for (auto samp : sampler)
+    device.destroySampler(samp);
   for (auto pipeLayout : pipelineLayouts)
     device.destroyPipelineLayout(pipeLayout);
   for (auto mem : bufferMemoryList)
