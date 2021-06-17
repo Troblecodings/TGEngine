@@ -18,6 +18,11 @@
 #include <unordered_set>
 #include <vulkan/vulkan.hpp>
 
+_CONSTEXPR20_CONTAINER std::string operator""_str(const char *chr,
+                                                  std::size_t size) {
+  return std::string(chr, size);
+}
+
 namespace tge::graphics {
 
 constexpr TBuiltInResource DefaultTBuiltInResource = {
@@ -155,6 +160,8 @@ Result verror = Result::eSuccess;
     printf("Vulkan error %d!", (uint32_t)verror);                              \
   }
 
+struct VulkanShaderPipe;
+
 class VulkanGraphicsModule : public APILayer {
 
 private:
@@ -195,6 +202,7 @@ private:
   std::vector<Image> textureImages;
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
+  std::vector<VulkanShaderPipe *> shaderPipes;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
@@ -219,6 +227,8 @@ private:
 
   size_t pushTexture(const size_t textureCount,
                      const TextureInfo *textures) override;
+
+  void *loadShader(const MaterialType type) override;
 };
 
 inline void waitForImageTransition(
@@ -296,6 +306,9 @@ struct VulkanShaderPipe {
   PipelineRasterizationStateCreateInfo rasterization;
   std::vector<DescriptorSetLayoutCreateInfo> descriptorLayout;
   std::vector<std::vector<DescriptorSetLayoutBinding>> descriptorLayoutBindings;
+  std::vector<DescriptorSet> descriptorSets;
+  DescriptorPool descPool;
+  PipelineLayout layout;
 };
 
 #define NO_BINDING_GIVEN 65535
@@ -380,6 +393,7 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
 
   VulkanShaderPipe *shaderPipe;
   const ShaderStageFlags flags;
+  std::unordered_set<uint32_t> uset;
 
   GeneralShaderAnalizer(VulkanShaderPipe *pipe, ShaderStageFlags flags)
       : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe),
@@ -388,23 +402,28 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
     shaderPipe->descriptorLayoutBindings.push_back({});
     shaderPipe->descriptorLayoutBindings.back().reserve(20);
     shaderPipe->descriptorLayout.reserve(10);
+    uset.reserve(10);
   }
 
   void visitSymbol(glslang::TIntermSymbol *symbol) {
     const auto &type = symbol->getType();
     const auto &quali = type.getQualifier();
-    if (quali.isUniformOrBuffer() && quali.layoutBinding < NO_BINDING_GIVEN) {
+    if (quali.layoutBinding < NO_BINDING_GIVEN) {
+      if (uset.contains(quali.layoutBinding))
+        return;
+      uset.insert(quali.layoutBinding);
       const auto desc = getDescTypeFromELF(type);
       const DescriptorSetLayoutBinding descBinding(
           quali.layoutBinding, desc.first, desc.second, flags);
       shaderPipe->descriptorLayoutBindings.back().push_back(descBinding);
+      std::cout << type.getCompleteString() << std::endl;
     }
   }
 
   void post() {
     const auto &vec = shaderPipe->descriptorLayoutBindings.back();
     if (!vec.empty()) {
-      const DescriptorSetLayoutCreateInfo setLayoutCreateInfo({}, vec.back());
+      const DescriptorSetLayoutCreateInfo setLayoutCreateInfo({}, vec);
       shaderPipe->descriptorLayout.push_back(setLayoutCreateInfo);
     }
   }
@@ -480,7 +499,7 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
   return shaderPipe;
 }
 
-uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
+void *loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) {
   std::vector<std::pair<std::vector<uint8_t>, EShLanguage>> vector;
   vector.reserve(shadernames.size());
   for (const auto &name : shadernames) {
@@ -495,6 +514,25 @@ uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames) {
 constexpr PipelineInputAssemblyStateCreateInfo
     inputAssemblyCreateInfo({}, PrimitiveTopology::eTriangleList,
                             false); // For now constexpr
+
+const std::array shaderNames = {
+    std::vector({"testvec4.vert"_str, "test.frag"_str}),
+    std::vector({"testUV.vert"_str, "testTexture.frag"_str})};
+
+void *VulkanGraphicsModule::loadShader(const MaterialType type) {
+  const auto idx = (size_t)type;
+  if (shaderPipes.size() > idx) {
+    const auto pipe = shaderPipes[idx];
+    if (pipe != nullptr)
+      return pipe;
+  } else {
+    shaderPipes.resize(idx + 1);
+  }
+  auto &vert = shaderNames[idx];
+  const auto ptr = loadShaderPipeAndCompile(vert);
+  shaderPipes[idx] = (VulkanShaderPipe *)ptr;
+  return ptr;
+}
 
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                            const Material *materials) {
@@ -530,6 +568,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
     shaderPipe->pipelineShaderStage.clear();
     shaderPipe->pipelineShaderStage.reserve(shaderPipe->shader.size());
+
     for (const auto &shaderPair : shaderPipe->shader) {
       const auto &shaderData = shaderPair.first;
 
@@ -548,20 +587,37 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
     std::vector<DescriptorSetLayout> descLayout;
+    std::vector<DescriptorPoolSize> descPoolSizes;
     for (const auto &l : shaderPipe->descriptorLayout) {
       const auto descL = device.createDescriptorSetLayout(l);
       descLayout.push_back(descL);
+      for (size_t i = 0; i < l.bindingCount; i++) {
+        const auto &binding = l.pBindings[i];
+        descPoolSizes.push_back(
+            {binding.descriptorType, binding.descriptorCount});
+      }
+    }
+
+    if (!descLayout.empty()) {
+      const DescriptorPoolCreateInfo descPoolCreateInfo({}, descLayout.size(),
+                                                        descPoolSizes);
+      shaderPipe->descPool = device.createDescriptorPool(descPoolCreateInfo);
+
+      const DescriptorSetAllocateInfo descSetAllocInfo(shaderPipe->descPool,
+                                                       descLayout);
+      shaderPipe->descriptorSets =
+          device.allocateDescriptorSets(descSetAllocInfo);
     }
 
     const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
-    const auto layout = device.createPipelineLayout(layoutCreateInfo);
-    pipelineLayouts.push_back(layout);
+    shaderPipe->layout = device.createPipelineLayout(layoutCreateInfo);
+    pipelineLayouts.push_back(shaderPipe->layout);
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
         &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
         &shaderPipe->rasterization, &multisampleCreateInfo, &pipeDepthState,
-        &colorBlendState, {}, layout, renderpass, 0);
+        &colorBlendState, {}, shaderPipe->layout, renderpass, 0);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
   }
 
@@ -604,6 +660,14 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, offsets);
     } else {
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
+    }
+
+    const auto &material = materials[info.materialId];
+    const auto shaderPipe = (VulkanShaderPipe *)material.costumShaderData;
+    if (!shaderPipe->descriptorSets.empty()) {
+      cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics,
+                                shaderPipe->layout, 0,
+                                shaderPipe->descriptorSets, {});
     }
 
     cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
@@ -750,9 +814,9 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const Extent3D ext = {tex.width, tex.height, 1};
     const Format format = Format::eR8G8B8A8Unorm;
 
-    const BufferCreateInfo intermBufferCreate(
-        {}, tex.size, BufferUsageFlagBits::eTransferSrc,
-        SharingMode::eExclusive, {});
+    const BufferCreateInfo intermBufferCreate({}, tex.size,
+                                              BufferUsageFlagBits::eTransferSrc,
+                                              SharingMode::eExclusive, {});
     const auto intermBuffer = device.createBuffer(intermBufferCreate);
     intermBuffers.push_back(intermBuffer);
     const auto memRequIntern = device.getBufferMemoryRequirements(intermBuffer);
@@ -773,18 +837,20 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const auto image = device.createImage(imageCreate);
     textureImages.push_back(image);
     const auto memRequ = device.getImageMemoryRequirements(image);
-    const MemoryAllocateInfo memAllocInfo(memRequ.size,
-                                          memoryTypeDeviceLocal);
+    const MemoryAllocateInfo memAllocInfo(memRequ.size, memoryTypeDeviceLocal);
     const auto memory = device.allocateMemory(memAllocInfo);
     textureMemorys.push_back(memory);
     device.bindImageMemory(image, memory, 0);
 
-    intermCopys.push_back({0, ext.width, ext.height,
+    intermCopys.push_back({0,
+                           ext.width,
+                           ext.height,
                            {ImageAspectFlagBits::eColor, 0, 0, 1},
                            {},
                            ext});
 
-    const ImageViewCreateInfo imageViewCreateInfo({}, image, ImageViewType::e2D, format, {},
+    const ImageViewCreateInfo imageViewCreateInfo(
+        {}, image, ImageViewType::e2D, format, {},
         {ImageAspectFlagBits::eColor, 0, 1, 0, 1});
     const auto imageView = device.createImageView(imageViewCreateInfo);
     textureImageViews.push_back(imageView);
@@ -793,8 +859,8 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
                            ImageLayout::eTransferDstOptimal, queueIndex, image,
                            imageViewCreateInfo.subresourceRange);
 
-    cmd.copyBufferToImage(intermBuffer, image,
-                  ImageLayout::eTransferDstOptimal, intermCopys.back());
+    cmd.copyBufferToImage(intermBuffer, image, ImageLayout::eTransferDstOptimal,
+                          intermCopys.back());
   }
 
   cmd.end();
@@ -805,7 +871,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
       device.waitForFences(commandBufferFence, true, UINT64_MAX);
   VERROR(result);
   device.resetFences(commandBufferFence);
-  
+
   return firstIndex;
 }
 
@@ -814,6 +880,10 @@ VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                       VkDebugUtilsMessageTypeFlagsEXT messageTypes,
                       const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                       void *pUserData) {
+  if (messageSeverity == (VkDebugUtilsMessageSeverityFlagBitsEXT)
+                             DebugUtilsMessageSeverityFlagBitsEXT::eVerbose) {
+    return VK_FALSE;
+  }
   std::string severity =
       to_string((DebugUtilsMessageSeverityFlagBitsEXT)messageSeverity);
   std::string type = to_string((DebugUtilsMessageTypeFlagBitsEXT)messageTypes);

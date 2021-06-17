@@ -16,7 +16,7 @@
 
 namespace tge::graphics {
 
-uint8_t *loadShaderPipeAndCompile(std::vector<std::string> &shadernames);
+void *loadShaderPipeAndCompile(const std::vector<std::string> &shadernames);
 
 APILayer *getNewVulkanModule();
 

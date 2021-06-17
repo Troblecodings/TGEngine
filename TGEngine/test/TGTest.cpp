@@ -142,13 +142,49 @@ TEST(EngineMain, SamplerAndTextures) {
 
   const SamplerInfo sampler = {FilterSetting::LINEAR, FilterSetting::LINEAR,
                                AddressMode::REPEAT, AddressMode::REPEAT, 0};
-  ASSERT_NO_THROW(getAPILayer()->pushSampler(sampler));
+  APILayer *apiLayer = getAPILayer();
 
-  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"test3c.png"}), std::runtime_error);
+  TextureMaterial texMat;
 
-  ASSERT_NO_THROW(getGameGraphicsModule()->loadTextures({"test.png"}));
+  ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
 
-  defaultTestData();
+  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"test3c.png"}),
+               std::runtime_error);
+
+  ASSERT_NO_THROW(texMat.textureIndex =
+                      getGameGraphicsModule()->loadTextures({"test.png"}));
+
+  const Material mat(texMat, apiLayer);
+
+  size_t materialOffset;
+  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
+  const std::array vertData = {
+      0.0f, 0.0f, -1.0f, 0.0f, 0.2f, 1.0f, //
+      1.0f, 0.0f, 1.0f,  0.0f, 0.2f, 1.0f, //
+      1.0f, 1.0f, 1.0f,  1.0f, 0.2f, 1.0f, //
+      0.0f, 1.0f, -1.0f, 1.0f, 0.2f, 1.0f, //
+  };
+
+  const std::array dptr = {vertData.data()};
+  const std::array size = {vertData.size() * sizeof(float)};
+  size_t dataOffset;
+  ASSERT_NO_THROW(dataOffset =
+                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
+                                         size.data(), DataType::VertexData));
+
+  const std::array indexData = {0, 1, 2, 2, 3, 0};
+  const std::array indexdptr = {indexData.data()};
+  const std::array indexsize = {indexData.size() * sizeof(int)};
+  ASSERT_NO_THROW(apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
+                                     indexsize.data(), DataType::IndexData));
+
+  RenderInfo renderInfo;
+  renderInfo.indexBuffer = 1 + dataOffset;
+  renderInfo.materialId = materialOffset;
+  renderInfo.indexCount = indexData.size();
+  renderInfo.vertexBuffer.push_back(dataOffset);
+  ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
+
   syncMutex.unlock();
   waitForTime();
   exitWaitCheck();

@@ -92,13 +92,13 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
   const auto pipe = loadShaderPipeAndCompile(test);
   for (const auto &mat : model.materials) {
     // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
-    const Material nmMat = {{}, pipe};
+    const Material nmMat(pipe);
     materials.push_back(nmMat);
   }
   size_t materialFirstIndex =
       apiLayer->pushMaterials(materials.size(), materials.data());
   if (materialFirstIndex == -1) {
-    const Material defMat = {{}, pipe};
+    const Material defMat(pipe);
     materialFirstIndex = apiLayer->pushMaterials(1, &defMat);
   }
 

@@ -11,11 +11,17 @@ namespace tge::graphics {
 
 using Color = float[4];
 
-struct Material {
-  Color color = {1, 1, 1, 1};
-
-  uint8_t *costumShaderData = nullptr; // API dependent
+enum class MaterialType {
+    None,
+    TextureOnly
 };
+
+struct TextureMaterial {
+  uint32_t textureIndex;
+  uint32_t samplerIndex;
+};
+
+class Material;
 
 enum class IndexSize { UINT16, UINT32 };
 
@@ -85,7 +91,27 @@ public:
   virtual size_t pushTexture(const size_t textureCount,
                              const TextureInfo *textures) = 0;
 
+  virtual void *loadShader(const MaterialType type) = 0;
+
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
+};
+
+struct Material {
+
+  Material(const TextureMaterial texture, APILayer *layer)
+      : type(MaterialType::TextureOnly), data({texture}) {
+    costumShaderData = layer->loadShader(type);
+  }
+
+  Material(void *costumShaderData) : costumShaderData(costumShaderData) {}
+
+  Material() = default;
+
+  MaterialType type = MaterialType::None;
+  union data {
+    TextureMaterial textureMaterial;
+  } data;
+  void *costumShaderData = nullptr; // API dependent
 };
 
 extern std::vector<Material> materials;
