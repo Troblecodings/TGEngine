@@ -204,6 +204,8 @@ private:
   std::vector<ImageView> textureImageViews;
   std::vector<VulkanShaderPipe *> shaderPipes;
 
+  bool isInitialiazed = false;
+
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
 #endif
@@ -534,10 +536,15 @@ void *VulkanGraphicsModule::loadShader(const MaterialType type) {
   return ptr;
 }
 
+#define DEBUG_CALL_CHECK(assertion)                                            \
+  if (!this->isInitialiazed || (assertion)) {                                  \
+    throw std::runtime_error("Debug assertion failed!");                       \
+  }
+
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                            const Material *materials) {
-  if (materialcount == 0)
-    return -1;
+  DEBUG_CALL_CHECK(materialcount == 0 || materials == nullptr);
+
   const Rect2D scissor({0, 0},
                        {(uint32_t)viewport.width, (uint32_t)viewport.height});
   const PipelineViewportStateCreateInfo pipelineViewportCreateInfo({}, viewport,
@@ -607,6 +614,22 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                                        descLayout);
       shaderPipe->descriptorSets =
           device.allocateDescriptorSets(descSetAllocInfo);
+
+      if (material.type == MaterialType::TextureOnly) {
+        const auto texMat = material.data.textureMaterial;
+
+        const DescriptorImageInfo descImageInfo(
+            sampler[texMat.samplerIndex],
+            textureImageViews[texMat.textureIndex]);
+
+        const std::array sets = {
+            WriteDescriptorSet(shaderPipe->descriptorSets[0], 0, 0,
+                               DescriptorType::eSampler, descImageInfo),
+            WriteDescriptorSet(shaderPipe->descriptorSets[0], 1, 0,
+                               DescriptorType::eSampledImage, descImageInfo),
+        };
+        device.updateDescriptorSets(sets, {});
+      }
     }
 
     const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
@@ -633,6 +656,8 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
                                       const RenderInfo *renderInfos) {
+  DEBUG_CALL_CHECK(renderInfoCount == 0 || renderInfos == nullptr);
+
   const CommandBufferAllocateInfo commandBufferAllocate(
       pool, CommandBufferLevel::eSecondary, 1);
   const CommandBuffer cmdBuf =
@@ -694,8 +719,7 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
                                       const uint8_t **data,
                                       const size_t *dataSizes,
                                       const DataType type) {
-  if (dataCount == 0)
-    return -1;
+  DEBUG_CALL_CHECK(dataCount == 0 || data == nullptr || dataSizes == nullptr);
 
   std::vector<DeviceMemory> tempMemory;
   tempMemory.reserve(dataCount);
@@ -780,8 +804,7 @@ size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
 
 size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
                                          const TextureInfo *textures) {
-  if (textureCount == 0 || textures == 0)
-    throw std::runtime_error("Invalid API usage in Vulkan pushTexture!");
+  DEBUG_CALL_CHECK(textureCount == 0 || textures == nullptr);
 
   const size_t firstIndex = textureImages.size();
 
@@ -832,7 +855,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     const ImageCreateInfo imageCreate(
         {}, ImageType::e2D, format, ext, 1, 1, SampleCountFlagBits::e1,
         ImageTiling::eOptimal,
-        ImageUsageFlagBits::eTransferDst | ImageUsageFlagBits::eColorAttachment,
+        ImageUsageFlagBits::eTransferDst | ImageUsageFlagBits::eSampled,
         SharingMode::eExclusive, {});
     const auto image = device.createImage(imageCreate);
     textureImages.push_back(image);
@@ -861,6 +884,13 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
 
     cmd.copyBufferToImage(intermBuffer, image, ImageLayout::eTransferDstOptimal,
                           intermCopys.back());
+  }
+
+  for (size_t i = 0; i < textureCount; i++) {
+    waitForImageTransition(cmd, ImageLayout::eTransferDstOptimal,
+                           ImageLayout::eShaderReadOnlyOptimal, queueIndex,
+                           textureImages[firstIndex + i],
+                           {ImageAspectFlagBits::eColor, 0, 1, 0, 1});
   }
 
   cmd.end();
@@ -1177,6 +1207,8 @@ main::Error VulkanGraphicsModule::init() {
   waitSemaphore = device.createSemaphore(semaphoreCreateInfo);
   signalSemaphore = device.createSemaphore(semaphoreCreateInfo);
 #pragma endregion
+
+  this->isInitialiazed = true;
   return main::Error::NONE;
 }
 
@@ -1227,6 +1259,7 @@ void VulkanGraphicsModule::tick(double time) {
 }
 
 void VulkanGraphicsModule::destroy() {
+  this->isInitialiazed = false;
   device.destroyImageView(depthImageView);
   device.freeMemory(depthImageMemory);
   device.destroyImage(depthImage);

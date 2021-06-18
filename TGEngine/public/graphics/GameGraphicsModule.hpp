@@ -21,7 +21,7 @@ struct TextureMaterial {
   uint32_t samplerIndex;
 };
 
-class Material;
+struct Material;
 
 enum class IndexSize { UINT16, UINT32 };
 
