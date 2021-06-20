@@ -203,6 +203,7 @@ private:
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
   std::vector<VulkanShaderPipe *> shaderPipes;
+  std::vector<std::vector<DescriptorSet>> descriptorSets;
 
   bool isInitialiazed = false;
 
@@ -308,9 +309,6 @@ struct VulkanShaderPipe {
   PipelineRasterizationStateCreateInfo rasterization;
   std::vector<DescriptorSetLayoutCreateInfo> descriptorLayout;
   std::vector<std::vector<DescriptorSetLayoutBinding>> descriptorLayoutBindings;
-  std::vector<DescriptorSet> descriptorSets;
-  DescriptorPool descPool;
-  PipelineLayout layout;
 };
 
 #define NO_BINDING_GIVEN 65535
@@ -605,15 +603,16 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       }
     }
 
+    std::vector<DescriptorSet> descSet;
+
     if (!descLayout.empty()) {
       const DescriptorPoolCreateInfo descPoolCreateInfo({}, descLayout.size(),
                                                         descPoolSizes);
-      shaderPipe->descPool = device.createDescriptorPool(descPoolCreateInfo);
+      const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
 
-      const DescriptorSetAllocateInfo descSetAllocInfo(shaderPipe->descPool,
+      const DescriptorSetAllocateInfo descSetAllocInfo(descPool,
                                                        descLayout);
-      shaderPipe->descriptorSets =
-          device.allocateDescriptorSets(descSetAllocInfo);
+      descSet = device.allocateDescriptorSets(descSetAllocInfo);
 
       if (material.type == MaterialType::TextureOnly) {
         const auto texMat = material.data.textureMaterial;
@@ -624,24 +623,25 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
             ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
-            WriteDescriptorSet(shaderPipe->descriptorSets[0], 0, 0,
+            WriteDescriptorSet(descSet[0], 0, 0,
                                DescriptorType::eSampler, descImageInfo),
-            WriteDescriptorSet(shaderPipe->descriptorSets[0], 1, 0,
+            WriteDescriptorSet(descSet[0], 1, 0,
                                DescriptorType::eSampledImage, descImageInfo),
         };
         device.updateDescriptorSets(sets, {});
       }
     }
+    descriptorSets.push_back(descSet);
 
     const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
-    shaderPipe->layout = device.createPipelineLayout(layoutCreateInfo);
-    pipelineLayouts.push_back(shaderPipe->layout);
+    const auto pipeLayout = device.createPipelineLayout(layoutCreateInfo);
+    pipelineLayouts.push_back(pipeLayout);
 
     const GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
         &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
         &shaderPipe->rasterization, &multisampleCreateInfo, &pipeDepthState,
-        &colorBlendState, {}, shaderPipe->layout, renderpass, 0);
+        &colorBlendState, {}, pipeLayout, renderpass, 0);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
   }
 
@@ -688,12 +688,11 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
     }
 
-    const auto &material = materials[info.materialId];
-    const auto shaderPipe = (VulkanShaderPipe *)material.costumShaderData;
-    if (!shaderPipe->descriptorSets.empty()) {
-      cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics,
-                                shaderPipe->layout, 0,
-                                shaderPipe->descriptorSets, {});
+    const auto &descSets = descriptorSets[info.materialId];
+    const auto pipeLayout = pipelineLayouts[info.materialId];
+    for (const auto desSet : descSets) {
+      cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
+                                desSet, {});
     }
 
     cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,

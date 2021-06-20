@@ -114,8 +114,6 @@ struct Material {
   void *costumShaderData = nullptr; // API dependent
 };
 
-extern std::vector<Material> materials;
-
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;

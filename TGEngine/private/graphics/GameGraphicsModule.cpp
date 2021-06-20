@@ -10,8 +10,6 @@
 
 namespace tge::graphics {
 
-std::vector<Material> materials;
-
 using namespace tinygltf;
 
 inline AddressMode gltfToAPI(int in, AddressMode def) {
@@ -95,12 +93,11 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
     const Material nmMat(pipe);
     materials.push_back(nmMat);
   }
-  size_t materialFirstIndex =
-      apiLayer->pushMaterials(materials.size(), materials.data());
-  if (materialFirstIndex == -1) {
-    const Material defMat(pipe);
-    materialFirstIndex = apiLayer->pushMaterials(1, &defMat);
-  }
+  const Material defMat(pipe);
+  const size_t materialFirstIndex =
+      materials.size() != 0
+          ? apiLayer->pushMaterials(materials.size(), materials.data())
+          : apiLayer->pushMaterials(1, &defMat);
 
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
@@ -145,7 +142,7 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
 main::Error GameGraphicsModule::init() { return main::Error::NONE; }
 
-void GameGraphicsModule::destroy() { materials.clear(); }
+void GameGraphicsModule::destroy() {}
 
 uint32_t GameGraphicsModule::loadTextures(
     const std::vector<std::vector<uint8_t>> &data) {
@@ -163,13 +160,14 @@ uint32_t GameGraphicsModule::loadTextures(
                               (int *)&info.height, (int *)&info.channel, 0);
     info.size = info.width * info.height * info.channel;
     textureInfos.push_back(info);
-    if(info.channel == 3)
+    if (info.channel == 3)
       throw std::runtime_error("Texture with 3 channels not supported!");
   }
   return apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
 }
 
-uint32_t GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
+uint32_t
+GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
   std::vector<std::vector<uint8_t>> data;
   data.reserve(names.size());
   for (const auto &name : names) {

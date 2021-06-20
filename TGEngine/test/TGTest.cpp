@@ -41,8 +41,8 @@ Error err;
 
 bool testExitRequest = false;
 
-int main(int argv, char** in) {
-  auto thr = std::thread([&,rt = &exitCode]() {
+int main(int argv, char **in) {
+  auto thr = std::thread([&, rt = &exitCode]() {
     syncMutex.lock();
     testing::InitGoogleTest(&argv, in);
     *rt = RUN_ALL_TESTS();
@@ -69,11 +69,9 @@ TEST(Shader, LoadAndCompile) {
 }
 
 void defaultTestData() {
-  materials.push_back(mat);
   APILayer *apiLayer = getAPILayer();
   size_t materialOffset;
-  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(materials.size(),
-                                                           materials.data()));
+  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
   const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
                                1.0f, 0.0f, 0.2f, 1.0f,  //
                                1.0f, 1.0f, 0.2f, 1.0f,  //
@@ -131,10 +129,7 @@ void exitWaitCheck() {
 
 TEST(EngineMain, Exit) { exitWaitCheck(); }
 
-TEST(EngineMain, Restart) {
-  ASSERT_EQ(materials.size(), 0);
-  ASSERT_EQ(modules.size(), 0);
-}
+TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
 TEST(EngineMain, SamplerAndTextures) {
   tge::main::modules.push_back(new TestModule());
