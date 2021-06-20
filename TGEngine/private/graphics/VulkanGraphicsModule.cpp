@@ -18,12 +18,12 @@
 #include <unordered_set>
 #include <vulkan/vulkan.hpp>
 
+namespace tge::graphics {
+
 _CONSTEXPR20_CONTAINER std::string operator""_str(const char *chr,
                                                   std::size_t size) {
   return std::string(chr, size);
 }
-
-namespace tge::graphics {
 
 constexpr TBuiltInResource DefaultTBuiltInResource = {
     /* .MaxLights = */ 32,
@@ -172,9 +172,9 @@ private:
   SurfaceFormatKHR format;
   Format depthFormat = Format::eUndefined;
   SwapchainKHR swapchain;
-  std::vector<Image> images;
+  std::vector<Image> swapchainImages;
   RenderPass renderpass;
-  std::vector<ImageView> imageviews;
+  std::vector<ImageView> swapchainImageviews;
   std::vector<Framebuffer> framebuffer;
   CommandPool pool;
   std::vector<CommandBuffer> cmdbuffer;
@@ -620,7 +620,8 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
         const DescriptorImageInfo descImageInfo(
             sampler[texMat.samplerIndex],
-            textureImageViews[texMat.textureIndex]);
+            textureImageViews[texMat.textureIndex],
+            ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
             WriteDescriptorSet(shaderPipe->descriptorSets[0], 0, 0,
@@ -828,7 +829,8 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
 
   const auto cmd = this->cmdbuffer.back();
 
-  const CommandBufferBeginInfo beginInfo({}, {});
+  const CommandBufferBeginInfo beginInfo(
+      CommandBufferUsageFlagBits::eOneTimeSubmit, {});
   cmd.begin(beginInfo);
 
   constexpr ImageSubresourceRange range = {ImageAspectFlagBits::eColor, 0, 1, 0,
@@ -878,7 +880,7 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
     waitForImageTransition(
         cmd, ImageLayout::eUndefined, ImageLayout::eTransferDstOptimal, image,
         range, PipelineStageFlagBits::eTopOfPipe, AccessFlagBits::eNoneKHR,
-        PipelineStageFlagBits::eTransfer, AccessFlagBits::eTransferRead);
+        PipelineStageFlagBits::eTransfer, AccessFlagBits::eTransferWrite);
 
     cmd.copyBufferToImage(intermBuffer, image, ImageLayout::eTransferDstOptimal,
                           intermCopys.back());
@@ -900,10 +902,9 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   device.resetFences(commandBufferFence);
 
   for (size_t i = 0; i < textureCount; i++) {
-    std::cout << firstIndex + i << std::endl;
     const ImageViewCreateInfo imageViewCreateInfo(
         {}, textureImages[firstIndex + i], ImageViewType::e2D, format, {},
-        (ImageSubresourceRange)(range));
+        range);
     const auto imageView = device.createImageView(imageViewCreateInfo);
     textureImageViews.push_back(imageView);
   }
@@ -1100,7 +1101,7 @@ main::Error VulkanGraphicsModule::init() {
 
   swapchain = device.createSwapchainKHR(swapchainCreateInfo);
 
-  images = device.getSwapchainImagesKHR(swapchain);
+  swapchainImages = device.getSwapchainImagesKHR(swapchain);
 #pragma endregion
 
 #pragma region Depth Attachment
@@ -1176,25 +1177,25 @@ main::Error VulkanGraphicsModule::init() {
 #pragma endregion
 
 #pragma region CommandBuffer
-  imageviews.reserve(images.size());
+  swapchainImageviews.reserve(swapchainImages.size());
 
   const CommandPoolCreateInfo commandPoolCreateInfo(
       CommandPoolCreateFlagBits::eResetCommandBuffer, queueIndex);
   pool = device.createCommandPool(commandPoolCreateInfo);
 
   const CommandBufferAllocateInfo cmdBufferAllocInfo(
-      pool, CommandBufferLevel::ePrimary, (uint32_t)images.size() + 1);
+      pool, CommandBufferLevel::ePrimary, (uint32_t)swapchainImages.size() + 1);
   cmdbuffer = device.allocateCommandBuffers(cmdBufferAllocInfo);
 #pragma endregion
 
 #pragma region ImageViews and Framebuffer
-  for (auto im : images) {
+  for (auto im : swapchainImages) {
     const ImageViewCreateInfo imageviewCreateInfo(
         {}, im, ImageViewType::e2D, format.format, ComponentMapping(),
         ImageSubresourceRange(ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 
     const auto imview = device.createImageView(imageviewCreateInfo);
-    imageviews.push_back(imview);
+    swapchainImageviews.push_back(imview);
 
     const std::array attachments = {imview, depthImageView};
 
@@ -1294,7 +1295,7 @@ void VulkanGraphicsModule::destroy() {
   device.destroyCommandPool(pool);
   for (auto framebuff : framebuffer)
     device.destroyFramebuffer(framebuff);
-  for (auto imv : imageviews)
+  for (auto imv : swapchainImageviews)
     device.destroyImageView(imv);
   device.destroyRenderPass(renderpass);
   device.destroySwapchainKHR(swapchain);

@@ -41,19 +41,20 @@ Error err;
 
 bool testExitRequest = false;
 
-int main() {
-  auto thr = std::thread([rt = &exitCode]() {
+int main(int argv, char** in) {
+  auto thr = std::thread([&,rt = &exitCode]() {
     syncMutex.lock();
-    testing::InitGoogleTest();
+    testing::InitGoogleTest(&argv, in);
     *rt = RUN_ALL_TESTS();
     syncMutex.unlock();
+    testExitRequest = true;
   });
   thr.detach();
   while (!testExitRequest) {
     syncMutex.lock();
     err = start();
     syncMutex.unlock();
-    printf("TUNLOCK WAIT\n");
+    printf(" ");
   }
   std::lock_guard guard(syncMutex);
   return exitCode;
