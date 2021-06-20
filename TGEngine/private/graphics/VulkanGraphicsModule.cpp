@@ -235,15 +235,15 @@ private:
 
 inline void waitForImageTransition(
     const CommandBuffer &curBuffer, const ImageLayout oldLayout,
-    const ImageLayout newLayout, const uint32_t queueFamily, const Image image,
+    const ImageLayout newLayout, const Image image,
     const ImageSubresourceRange &subresource,
     const PipelineStageFlags srcFlags = PipelineStageFlagBits::eTopOfPipe,
     const AccessFlags srcAccess = AccessFlagBits::eNoneKHR,
     const PipelineStageFlags dstFlags = PipelineStageFlagBits::eAllGraphics,
     const AccessFlags dstAccess = AccessFlagBits::eNoneKHR) {
-  const ImageMemoryBarrier imageMemoryBarrier(srcAccess, dstAccess, oldLayout,
-                                              newLayout, queueFamily,
-                                              queueFamily, image, subresource);
+  const ImageMemoryBarrier imageMemoryBarrier(
+      srcAccess, dstAccess, oldLayout, newLayout, VK_QUEUE_FAMILY_IGNORED,
+      VK_QUEUE_FAMILY_IGNORED, image, subresource);
   curBuffer.pipelineBarrier(srcFlags, dstFlags, DependencyFlagBits::eByRegion,
                             {}, {}, imageMemoryBarrier);
 }
@@ -831,11 +831,14 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   const CommandBufferBeginInfo beginInfo({}, {});
   cmd.begin(beginInfo);
 
+  constexpr ImageSubresourceRange range = {ImageAspectFlagBits::eColor, 0, 1, 0,
+                                           1};
+  const Format format = Format::eR8G8B8A8Unorm;
+
   for (size_t i = 0; i < textureCount; i++) {
     const TextureInfo &tex = textures[i];
 
     const Extent3D ext = {tex.width, tex.height, 1};
-    const Format format = Format::eR8G8B8A8Unorm;
 
     const BufferCreateInfo intermBufferCreate({}, tex.size,
                                               BufferUsageFlagBits::eTransferSrc,
@@ -872,25 +875,19 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
                            {},
                            ext});
 
-    const ImageViewCreateInfo imageViewCreateInfo(
-        {}, image, ImageViewType::e2D, format, {},
-        {ImageAspectFlagBits::eColor, 0, 1, 0, 1});
-    const auto imageView = device.createImageView(imageViewCreateInfo);
-    textureImageViews.push_back(imageView);
-
-    waitForImageTransition(cmd, ImageLayout::eUndefined,
-                           ImageLayout::eTransferDstOptimal, queueIndex, image,
-                           imageViewCreateInfo.subresourceRange);
+    waitForImageTransition(
+        cmd, ImageLayout::eUndefined, ImageLayout::eTransferDstOptimal, image,
+        range, PipelineStageFlagBits::eTopOfPipe, AccessFlagBits::eNoneKHR,
+        PipelineStageFlagBits::eTransfer, AccessFlagBits::eTransferRead);
 
     cmd.copyBufferToImage(intermBuffer, image, ImageLayout::eTransferDstOptimal,
                           intermCopys.back());
-  }
 
-  for (size_t i = 0; i < textureCount; i++) {
-    waitForImageTransition(cmd, ImageLayout::eTransferDstOptimal,
-                           ImageLayout::eShaderReadOnlyOptimal, queueIndex,
-                           textureImages[firstIndex + i],
-                           {ImageAspectFlagBits::eColor, 0, 1, 0, 1});
+    waitForImageTransition(
+        cmd, ImageLayout::eTransferDstOptimal,
+        ImageLayout::eShaderReadOnlyOptimal, image, range,
+        PipelineStageFlagBits::eTransfer, AccessFlagBits::eTransferWrite,
+        PipelineStageFlagBits::eFragmentShader, AccessFlagBits::eShaderRead);
   }
 
   cmd.end();
@@ -902,25 +899,33 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   VERROR(result);
   device.resetFences(commandBufferFence);
 
+  for (size_t i = 0; i < textureCount; i++) {
+    std::cout << firstIndex + i << std::endl;
+    const ImageViewCreateInfo imageViewCreateInfo(
+        {}, textureImages[firstIndex + i], ImageViewType::e2D, format, {},
+        (ImageSubresourceRange)(range));
+    const auto imageView = device.createImageView(imageViewCreateInfo);
+    textureImageViews.push_back(imageView);
+  }
+
   return firstIndex;
 }
 
 #ifdef DEBUG
-VkBool32 debugMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                      VkDebugUtilsMessageTypeFlagsEXT messageTypes,
-                      const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+VkBool32 debugMessage(DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                      DebugUtilsMessageTypeFlagsEXT messageTypes,
+                      const DebugUtilsMessengerCallbackDataEXT *pCallbackData,
                       void *pUserData) {
-  if (messageSeverity == (VkDebugUtilsMessageSeverityFlagBitsEXT)
-                             DebugUtilsMessageSeverityFlagBitsEXT::eVerbose) {
-    return VK_FALSE;
+  if (messageSeverity == DebugUtilsMessageSeverityFlagBitsEXT::eVerbose) {
+    return VK_TRUE;
   }
-  std::string severity =
-      to_string((DebugUtilsMessageSeverityFlagBitsEXT)messageSeverity);
-  std::string type = to_string((DebugUtilsMessageTypeFlagBitsEXT)messageTypes);
+  std::string severity = to_string(messageSeverity);
+  std::string type = to_string(messageTypes);
 
   printf("[%s][%s]: %s\n", severity.c_str(), type.c_str(),
          pCallbackData->pMessage);
-  return VK_TRUE;
+  return !(bool)(messageSeverity |
+                 DebugUtilsMessageSeverityFlagBitsEXT::eError);
 }
 #endif
 
@@ -966,7 +971,7 @@ main::Error VulkanGraphicsModule::init() {
           FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>::allFlags,
       (DebugUtilsMessageTypeFlagsEXT)
           FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>::allFlags,
-      debugMessage);
+      (PFN_vkDebugUtilsMessengerCallbackEXT)debugMessage);
   debugMessenger = instance.createDebugUtilsMessengerEXT(
       debugUtilsMsgCreateInfo, nullptr, stat);
 #endif
