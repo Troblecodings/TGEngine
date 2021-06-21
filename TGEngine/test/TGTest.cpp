@@ -1,8 +1,10 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
+#include <fstream>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
 #include <gtest/gtest.h>
+#include <headerlibs/json.hpp>
 #include <mutex>
 #include <thread>
 
@@ -42,12 +44,13 @@ Error err;
 bool testExitRequest = false;
 
 int main(int argv, char **in) {
-  auto thr = std::thread([&, rt = &exitCode]() {
+  auto thr = std::thread([&, rt = &exitCode, exReq = &testExitRequest]() {
     syncMutex.lock();
     testing::InitGoogleTest(&argv, in);
     *rt = RUN_ALL_TESTS();
     syncMutex.unlock();
-    testExitRequest = true;
+    *exReq = true;
+    requestExit();
   });
   thr.detach();
   while (!testExitRequest) {
@@ -147,8 +150,8 @@ TEST(EngineMain, SamplerAndTextures) {
   ASSERT_THROW(getGameGraphicsModule()->loadTextures({"assets/test3c.png"}),
                std::runtime_error);
 
-  ASSERT_NO_THROW(texMat.textureIndex =
-                      getGameGraphicsModule()->loadTextures({"assets/test.png"}));
+  ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
+                      {"assets/test.png"}));
 
   const Material mat(texMat, apiLayer);
 
@@ -193,10 +196,45 @@ TEST(EngineMain, SimpleModel) {
 
   const auto data = tge::util::wholeFile("assets/Triangle.gltf");
   ASSERT_FALSE(data.empty());
-  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false, "assets"), Error::NONE);
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false, "assets"),
+            Error::NONE);
 
   syncMutex.unlock();
   waitForTime();
-  testExitRequest = true;
   exitWaitCheck();
+}
+
+TEST(EngineMain, ModelTest) {
+  const std::string path = "assets/glTF-Sample-Models/2.0/";
+  nlohmann::json js;
+  std::ifstream fstr(path + "model-index.json");
+  fstr >> js;
+  for (const auto &pthObj : js) {
+    const auto name = pthObj["name"].get<std::string>();
+    std::cout << "==================" << std::endl
+              << name << std::endl
+              << "==================" << std::endl;
+    for (const auto &pair : pthObj["variants"].items()) {
+      const auto &typname = pair.key();
+      if (typname.compare("glTF-Draco") == 0)
+        continue;
+      const std::string actualPath = path + name + "/" + typname + "/";
+      const std::string actualFile =
+          actualPath + pair.value().get<std::string>();
+
+      tge::main::modules.push_back(new TestModule());
+
+      ASSERT_EQ(init(), Error::NONE);
+
+      const auto data = tge::util::wholeFile(actualFile);
+      ASSERT_FALSE(data.empty());
+      ASSERT_EQ(getGameGraphicsModule()->loadModel(
+                    data, typname.compare("glTF-Binary") == 0, actualPath),
+                Error::NONE);
+
+      syncMutex.unlock();
+      waitForTime();
+      exitWaitCheck();
+    }
+  }
 }

@@ -1,0 +1,3 @@
+[submodule "TGEngine/test/assets/glTF-Sample-Models"]
+	path = TGEngine/test/assets/glTF-Sample-Models
+	url = https://github.com/KhronosGroup/glTF-Sample-Models
