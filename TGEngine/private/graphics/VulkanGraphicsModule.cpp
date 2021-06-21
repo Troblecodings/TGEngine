@@ -204,6 +204,8 @@ private:
   std::vector<ImageView> textureImageViews;
   std::vector<VulkanShaderPipe *> shaderPipes;
   std::vector<std::vector<DescriptorSet>> descriptorSets;
+  std::vector<DescriptorPool> descriptorPoolInfos;
+  std::vector<DescriptorSetLayout> descSetLayouts;
 
   bool isInitialiazed = false;
 
@@ -596,6 +598,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     for (const auto &l : shaderPipe->descriptorLayout) {
       const auto descL = device.createDescriptorSetLayout(l);
       descLayout.push_back(descL);
+      descSetLayouts.push_back(descL);
       for (size_t i = 0; i < l.bindingCount; i++) {
         const auto &binding = l.pBindings[i];
         descPoolSizes.push_back(
@@ -609,6 +612,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       const DescriptorPoolCreateInfo descPoolCreateInfo({}, descLayout.size(),
                                                         descPoolSizes);
       const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
+      this->descriptorPoolInfos.push_back(descPool);
 
       const DescriptorSetAllocateInfo descSetAllocInfo(descPool,
                                                        descLayout);
@@ -1272,6 +1276,10 @@ void VulkanGraphicsModule::destroy() {
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
   device.freeCommandBuffers(pool, secondaryCommandBuffer);
+  for (auto pool : descriptorPoolInfos)
+    device.destroyDescriptorPool(pool);
+  for (auto dscLayout : descSetLayouts)
+    device.destroyDescriptorSetLayout(dscLayout);
   for (auto imag : textureImages)
     device.destroyImage(imag);
   for (auto mem : textureMemorys)

@@ -136,7 +136,7 @@ TEST(EngineMain, SamplerAndTextures) {
 
   ASSERT_EQ(init(), Error::NONE);
 
-  const SamplerInfo sampler = {FilterSetting::LINEAR, FilterSetting::LINEAR,
+  const SamplerInfo sampler = {FilterSetting::NEAREST, FilterSetting::NEAREST,
                                AddressMode::REPEAT, AddressMode::REPEAT, 0};
   APILayer *apiLayer = getAPILayer();
 
