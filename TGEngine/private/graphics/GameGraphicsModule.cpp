@@ -86,7 +86,7 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
-  std::vector<std::string> test = {"test.vert", "test.frag"};
+  std::vector<std::string> test = {"assets/test.vert", "assets/test.frag"};
   const auto pipe = loadShaderPipeAndCompile(test);
   for (const auto &mat : model.materials) {
     // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
@@ -148,9 +148,10 @@ uint32_t GameGraphicsModule::loadTextures(
     const std::vector<std::vector<uint8_t>> &data) {
   std::vector<TextureInfo> textureInfos;
 
-  util::OnExit onExit([&] {
-    for (const auto &tex : textureInfos)
-      free(tex.data);
+  util::OnExit onExit([tinfos = &textureInfos] {
+    for (const auto &tex : *tinfos)
+      if (tex.data != nullptr)
+        free(tex.data);
   });
 
   for (const auto &dataIn : data) {

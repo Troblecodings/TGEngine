@@ -37,7 +37,7 @@ struct RenderInfo {
 };
 
 struct TextureInfo {
-  uint8_t* data;
+  uint8_t* data = nullptr;
   uint32_t size;
   uint32_t width;
   uint32_t height;

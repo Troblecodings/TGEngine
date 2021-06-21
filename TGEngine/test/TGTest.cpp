@@ -63,7 +63,7 @@ int main(int argv, char **in) {
 Material mat;
 
 TEST(Shader, LoadAndCompile) {
-  std::vector<std::string> test = {"testvec4.vert", "test.frag"};
+  std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
   ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
@@ -144,11 +144,11 @@ TEST(EngineMain, SamplerAndTextures) {
 
   ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
 
-  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"test3c.png"}),
+  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"assets/test3c.png"}),
                std::runtime_error);
 
   ASSERT_NO_THROW(texMat.textureIndex =
-                      getGameGraphicsModule()->loadTextures({"test.png"}));
+                      getGameGraphicsModule()->loadTextures({"assets/test.png"}));
 
   const Material mat(texMat, apiLayer);
 
@@ -191,9 +191,9 @@ TEST(EngineMain, SimpleModel) {
 
   ASSERT_EQ(init(), Error::NONE);
 
-  const auto data = tge::util::wholeFile("Triangle.gltf");
+  const auto data = tge::util::wholeFile("assets/Triangle.gltf");
   ASSERT_FALSE(data.empty());
-  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false), Error::NONE);
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false, "assets"), Error::NONE);
 
   syncMutex.unlock();
   waitForTime();

@@ -518,8 +518,8 @@ constexpr PipelineInputAssemblyStateCreateInfo
                             false); // For now constexpr
 
 const std::array shaderNames = {
-    std::vector({"testvec4.vert"_str, "test.frag"_str}),
-    std::vector({"testUV.vert"_str, "testTexture.frag"_str})};
+    std::vector({"assets/testvec4.vert"_str, "assets/test.frag"_str}),
+    std::vector({"assets/testUV.vert"_str, "assets/testTexture.frag"_str})};
 
 void *VulkanGraphicsModule::loadShader(const MaterialType type) {
   const auto idx = (size_t)type;
