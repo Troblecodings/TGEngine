@@ -53,19 +53,6 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
     printf("[GLTF][WARN]: %s\n", warning.c_str());
   }
 
-  std::vector<uint8_t *> ptr;
-  ptr.reserve(model.buffers.size());
-  std::vector<size_t> sizes;
-  sizes.reserve(model.buffers.size());
-
-  for (const auto &x : model.buffers) {
-    ptr.push_back((uint8_t *)x.data.data());
-    sizes.push_back(x.data.size());
-  }
-  const size_t dataFirstIndex =
-      apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
-                         DataType::VertexIndexData);
-
   size_t samplerIndex = 0;
   for (const auto &smplr : model.samplers) {
     const SamplerInfo samplerInfo = {
@@ -77,12 +64,21 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
   }
   samplerIndex -= model.samplers.size() - 1;
 
+  std::vector<TextureInfo> textureInfos;
+
   for (const auto &img : model.images) {
-    const auto view = img.bufferView;
-    if (view >= 0) {
-      throw std::runtime_error("Not supported!");
+    if (!img.image.empty()) {
+      const TextureInfo info{(uint8_t *)img.image.data(),
+                             (uint32_t)img.image.size(), (uint32_t)img.width,
+                             (uint32_t)img.height, (uint32_t)img.component};
+      textureInfos.push_back(info);
     }
   }
+
+  const auto textureIndex =
+      textureInfos.empty()
+          ? 0xFFFFFFFF
+          : apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
 
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
@@ -101,6 +97,33 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
+
+  std::vector<uint8_t *> ptr;
+  ptr.reserve(model.buffers.size());
+  std::vector<size_t> sizes;
+  sizes.reserve(model.buffers.size());
+
+  for (const auto &mesh : model.meshes) {
+    for (const auto &prim : mesh.primitives) {
+      const auto &indexAccesor = model.accessors[prim.indices];
+      const auto &indexView = model.bufferViews[indexAccesor.bufferView];
+      const auto &indexBuffer = model.buffers[indexView.buffer];
+      ptr.push_back((uint8_t *)indexBuffer.data.data());
+      sizes.push_back(indexBuffer.data.size());
+
+      for (const auto &attr : prim.attributes) {
+        const auto &vertAccesor = model.accessors[attr.second];
+        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
+        const auto &vertBuffer = model.buffers[indexView.buffer];
+        ptr.push_back((uint8_t *)vertBuffer.data.data());
+        sizes.push_back(vertBuffer.data.size());
+      }
+    }
+  }
+  const size_t dataFirstIndex =
+      apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
+                         DataType::VertexIndexData);
+
   for (const auto &mesh : model.meshes) {
     for (const auto &prim : mesh.primitives) {
       const auto &indexAccesor = model.accessors[prim.indices];
