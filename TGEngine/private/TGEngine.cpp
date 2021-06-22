@@ -8,9 +8,9 @@ bool exitRequest = false;
 bool isRunning = false;
 bool isInitialized = false;
 
-graphics::APILayer *usedApiLayer;
-graphics::GameGraphicsModule *gameModule;
-graphics::WindowModule *winModule;
+graphics::APILayer *usedApiLayer = nullptr;
+graphics::GameGraphicsModule *gameModule = nullptr;
+graphics::WindowModule *winModule = nullptr;
 
 Error init() {
   if (isInitialized)
@@ -56,6 +56,9 @@ Error start() {
     delete mod;
   }
   modules.clear();
+  usedApiLayer = nullptr;
+  gameModule = nullptr;
+  winModule = nullptr;
   isRunning = false;
   isInitialized = false;
   exitRequest = false;

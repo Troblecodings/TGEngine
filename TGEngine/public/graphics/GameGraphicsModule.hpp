@@ -15,6 +15,7 @@ enum class MaterialType {
     None,
     TextureOnly
 };
+constexpr MaterialType MAX_TYPE = MaterialType::TextureOnly;
 
 struct TextureMaterial {
   uint32_t textureIndex;

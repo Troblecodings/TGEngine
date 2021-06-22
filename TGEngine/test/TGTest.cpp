@@ -10,6 +10,8 @@
 
 #define DEFAULT_TIME 1
 
+#define MODEL_TEST 0
+
 bool hasInit = false;
 bool hasTick = false;
 bool hasDestroy = false;
@@ -134,6 +136,54 @@ TEST(EngineMain, Exit) { exitWaitCheck(); }
 
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
+TEST(EngineApi, GraphicsAPIChecks) {
+  APILayer *apiLayer = getAPILayer();
+  ASSERT_EQ(apiLayer, nullptr);
+  ASSERT_NO_THROW(apiLayer = getNewVulkanModule());
+  ASSERT_NE(apiLayer, nullptr);
+  const uint8_t data = 1;
+  const uint8_t *dataptr = &data;
+  const size_t size = 1;
+  ASSERT_THROW(apiLayer->pushData(1, &dataptr, &size, DataType::VertexData),
+               std::runtime_error);
+  tge::graphics::Material mat;
+  ASSERT_THROW(apiLayer->pushMaterials(1, &mat), std::runtime_error);
+
+  tge::graphics::RenderInfo renderInfo;
+  ASSERT_THROW(apiLayer->pushRender(1, &renderInfo), std::runtime_error);
+
+  tge::graphics::TextureInfo textureInfo;
+  ASSERT_THROW(apiLayer->pushTexture(1, &textureInfo), std::runtime_error);
+
+  for (size_t i = 0; i <= (size_t)MAX_TYPE; i++) {
+    ASSERT_NE(apiLayer->loadShader((MaterialType)i), nullptr);
+  }
+
+  delete apiLayer;
+
+  ASSERT_EQ(init(), Error::NONE);
+  apiLayer = getAPILayer();
+  ASSERT_NE(apiLayer, nullptr);
+
+  ASSERT_THROW(apiLayer->pushData(0, &dataptr, &size, DataType::VertexData),
+               std::runtime_error);
+  ASSERT_THROW(apiLayer->pushMaterials(0, &mat), std::runtime_error);
+  ASSERT_THROW(apiLayer->pushRender(0, &renderInfo), std::runtime_error);
+  ASSERT_THROW(apiLayer->pushTexture(0, &textureInfo), std::runtime_error);
+
+  ASSERT_THROW(apiLayer->pushData(1, nullptr, &size, DataType::VertexData),
+               std::runtime_error);
+  ASSERT_THROW(apiLayer->pushData(1, &dataptr, nullptr, DataType::VertexData),
+               std::runtime_error);
+  ASSERT_THROW(apiLayer->pushMaterials(1, nullptr), std::runtime_error);
+  ASSERT_THROW(apiLayer->pushRender(1, nullptr), std::runtime_error);
+  ASSERT_THROW(apiLayer->pushTexture(1, nullptr), std::runtime_error);
+}
+
+TEST(EngineApi, GameAPIChecks) {
+
+}
+
 TEST(EngineMain, SamplerAndTextures) {
   tge::main::modules.push_back(new TestModule());
 
@@ -204,7 +254,8 @@ TEST(EngineMain, SimpleModel) {
   exitWaitCheck();
 }
 
-TEST(EngineMain, ModelTest) {
+#if MODEL_TEST
+TEST(EngineModel, ModelTest) {
   const std::string path = "assets/glTF-Sample-Models/2.0/";
   nlohmann::json js;
   std::ifstream fstr(path + "model-index.json");
@@ -238,3 +289,4 @@ TEST(EngineMain, ModelTest) {
     }
   }
 }
+#endif
