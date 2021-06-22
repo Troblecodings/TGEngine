@@ -25,8 +25,14 @@ inline AddressMode gltfToAPI(int in, AddressMode def) {
 }
 
 inline FilterSetting gltfToAPI(int in, FilterSetting def) {
-  return (in >= 0 ? (FilterSetting)(in - TINYGLTF_TEXTURE_FILTER_NEAREST)
-                  : def);
+  switch (in) {
+  case TINYGLTF_TEXTURE_FILTER_LINEAR:
+    return FilterSetting::LINEAR;
+  case TINYGLTF_TEXTURE_FILTER_NEAREST:
+    return FilterSetting::NEAREST;
+  default:
+    return def;
+  }
 }
 
 main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
@@ -105,16 +111,18 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
   for (const auto &mesh : model.meshes) {
     for (const auto &prim : mesh.primitives) {
-      const auto &indexAccesor = model.accessors[prim.indices];
-      const auto &indexView = model.bufferViews[indexAccesor.bufferView];
-      const auto &indexBuffer = model.buffers[indexView.buffer];
-      ptr.push_back((uint8_t *)indexBuffer.data.data());
-      sizes.push_back(indexBuffer.data.size());
+      if (prim.indices >= 0) [[likely]] {
+        const auto &indexAccesor = model.accessors[prim.indices];
+        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
+        const auto &indexBuffer = model.buffers[indexView.buffer];
+        ptr.push_back((uint8_t *)indexBuffer.data.data());
+        sizes.push_back(indexBuffer.data.size());
+      }
 
       for (const auto &attr : prim.attributes) {
         const auto &vertAccesor = model.accessors[attr.second];
         const auto &vertView = model.bufferViews[vertAccesor.bufferView];
-        const auto &vertBuffer = model.buffers[indexView.buffer];
+        const auto &vertBuffer = model.buffers[vertView.buffer];
         ptr.push_back((uint8_t *)vertBuffer.data.data());
         sizes.push_back(vertBuffer.data.size());
       }
@@ -126,10 +134,6 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
   for (const auto &mesh : model.meshes) {
     for (const auto &prim : mesh.primitives) {
-      const auto &indexAccesor = model.accessors[prim.indices];
-      const auto &indexView = model.bufferViews[indexAccesor.bufferView];
-      const auto indexOffset = indexView.byteOffset + indexAccesor.byteOffset;
-
       std::vector<size_t> bufferIndicies;
       bufferIndicies.reserve(prim.attributes.size());
       std::vector<size_t> bufferOffsets;
@@ -141,21 +145,39 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
         bufferIndicies.push_back(vertView.buffer + dataFirstIndex);
         bufferOffsets.push_back(vertOffset);
       }
-      const IndexSize indextype =
-          indexView.byteStride == 4 ? IndexSize::UINT32 : IndexSize::UINT16;
 
-      const RenderInfo renderInfo = {bufferIndicies,
-                                     indexView.buffer + dataFirstIndex,
-                                     prim.material == -1
-                                         ? materialFirstIndex
-                                         : prim.material + materialFirstIndex,
-                                     indexAccesor.count,
-                                     1,
-                                     indexOffset,
-                                     indextype,
-                                     bufferOffsets};
-
-      renderInfos.push_back(renderInfo);
+      if (prim.indices >= 0) [[likely]] {
+        const auto &indexAccesor = model.accessors[prim.indices];
+        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
+        const auto indexOffset = indexView.byteOffset + indexAccesor.byteOffset;
+        const IndexSize indextype =
+            indexView.byteStride == 4 ? IndexSize::UINT32 : IndexSize::UINT16;
+        const RenderInfo renderInfo = {bufferIndicies,
+                                       indexView.buffer + dataFirstIndex,
+                                       prim.material == -1
+                                           ? materialFirstIndex
+                                           : prim.material + materialFirstIndex,
+                                       indexAccesor.count,
+                                       1,
+                                       indexOffset,
+                                       indextype,
+                                       bufferOffsets};
+        renderInfos.push_back(renderInfo);
+      } else {
+        const auto accessorID = prim.attributes.begin()->second;
+        const auto &vertAccesor = model.accessors[accessorID];
+        const RenderInfo renderInfo = {bufferIndicies,
+                                       0,
+                                       prim.material == -1
+                                           ? materialFirstIndex
+                                           : prim.material + materialFirstIndex,
+                                       0,
+                                       1,
+                                       vertAccesor.count,
+                                       IndexSize::NONE,
+                                       bufferOffsets};
+        renderInfos.push_back(renderInfo);
+      }
     }
   }
   apiLayer->pushRender(renderInfos.size(), renderInfos.data());

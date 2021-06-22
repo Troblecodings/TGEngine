@@ -24,7 +24,7 @@ struct TextureMaterial {
 
 struct Material;
 
-enum class IndexSize { UINT16, UINT32 };
+enum class IndexSize { UINT16, UINT32, NONE };
 
 struct RenderInfo {
   std::vector<size_t> vertexBuffer;

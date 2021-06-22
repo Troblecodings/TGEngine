@@ -699,13 +699,17 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
                                 desSet, {});
     }
 
-    cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
-                           (IndexType)info.indexSize);
-
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
 
-    cmdBuf.drawIndexed(info.indexCount, info.instanceCount, 0, 0, 0);
+    if (info.indexSize != IndexSize::NONE) [[likely]] {
+      cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
+                             (IndexType)info.indexSize);
+
+      cmdBuf.drawIndexed(info.indexCount, info.instanceCount, 0, 0, 0);
+    } else {
+      cmdBuf.draw(info.indexCount, info.instanceCount, 0, 0);
+    }
   }
   cmdBuf.end();
   const std::lock_guard onExitUnlock(commandBufferRecording);
