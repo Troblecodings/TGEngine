@@ -19,6 +19,6 @@ public:
   constexpr ~OnExit() { call(); }
 };
 
-std::vector<uint8_t> wholeFile(const fs::path &path);
+std::vector<char> wholeFile(const fs::path &path);
 
 } // namespace tge::util

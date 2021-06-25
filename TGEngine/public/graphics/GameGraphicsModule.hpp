@@ -124,15 +124,15 @@ public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
       : apiLayer(apiLayer), windowModule(winModule) {}
 
-  main::Error loadModel(const std::vector<uint8_t> &data,
+  main::Error loadModel(const std::vector<char> &data,
                         const bool binary, const std::string &baseDir);
 
-  main::Error loadModel(const std::vector<uint8_t> &data,
+  main::Error loadModel(const std::vector<char> &data,
                         const bool binary) {
     return loadModel(data, binary, "");
   }
 
-  uint32_t loadTextures(const std::vector<std::vector<uint8_t>> &data);
+  uint32_t loadTextures(const std::vector<std::vector<char>> &data);
 
   uint32_t loadTextures(const std::vector<std::string> &names);
 

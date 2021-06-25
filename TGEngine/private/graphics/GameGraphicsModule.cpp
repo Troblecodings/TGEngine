@@ -35,7 +35,7 @@ inline FilterSetting gltfToAPI(int in, FilterSetting def) {
   }
 }
 
-main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
+main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           const bool binary,
                                           const std::string &baseDir) {
   TinyGLTF loader;
@@ -45,9 +45,10 @@ main::Error GameGraphicsModule::loadModel(const std::vector<uint8_t> &data,
 
   const bool rst =
       binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
-                                           data.data(), data.size(), baseDir)
+                                           (const uint8_t*)data.data(),
+                                           data.size(), baseDir)
              : loader.LoadASCIIFromString(&model, &error, &warning,
-                                          (const char *)data.data(),
+                                          data.data(),
                                           data.size(), baseDir);
   if (!rst) {
     printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
@@ -190,7 +191,7 @@ main::Error GameGraphicsModule::init() { return main::Error::NONE; }
 void GameGraphicsModule::destroy() {}
 
 uint32_t GameGraphicsModule::loadTextures(
-    const std::vector<std::vector<uint8_t>> &data) {
+    const std::vector<std::vector<char>> &data) {
   std::vector<TextureInfo> textureInfos;
 
   util::OnExit onExit([tinfos = &textureInfos] {
@@ -202,7 +203,7 @@ uint32_t GameGraphicsModule::loadTextures(
   for (const auto &dataIn : data) {
     TextureInfo info;
     info.data =
-        stbi_load_from_memory(dataIn.data(), dataIn.size(), (int *)&info.width,
+        stbi_load_from_memory((stbi_uc*)dataIn.data(), dataIn.size(), (int *)&info.width,
                               (int *)&info.height, (int *)&info.channel, 0);
     info.size = info.width * info.height * info.channel;
     textureInfos.push_back(info);
@@ -214,7 +215,7 @@ uint32_t GameGraphicsModule::loadTextures(
 
 uint32_t
 GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
-  std::vector<std::vector<uint8_t>> data;
+  std::vector<std::vector<char>> data;
   data.reserve(names.size());
   for (const auto &name : names) {
     data.push_back(util::wholeFile(name));

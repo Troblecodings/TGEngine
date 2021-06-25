@@ -463,8 +463,13 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
 }
 
-VulkanShaderPipe *__implLoadShaderPipeAndCompile(
-    std::vector<std::pair<std::vector<uint8_t>, EShLanguage>> &vector) {
+struct ShaderInfo {
+  EShLanguage language;
+  std::vector<char> code;
+  std::vector<std::string> additionalCode;
+};
+
+VulkanShaderPipe *__implLoadShaderPipeAndCompile(std::vector<ShaderInfo> &vector) {
   if (vector.size() == 0)
     return nullptr;
   VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
@@ -473,15 +478,20 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
   shaderPipe->shader.reserve(vector.size());
 
   for (auto &pair : vector) {
-    const auto &data = pair.first;
-    const auto langName = pair.second;
+    const auto &data = pair.code;
+    const auto langName = pair.language;
+    const auto &additional = pair.additionalCode;
     if (data.empty()) {
       delete shaderPipe;
       return nullptr;
     }
     glslang::TShader shader(langName);
-    const auto ptr = data.data();
-    shader.setStrings((const char *const *)(&ptr), 1);
+    std::vector ptrData = {data.data()};
+    ptrData.reserve(additional.size());
+    for (const auto rev : additional)
+      ptrData.push_back(rev.data());
+
+    shader.setStrings(ptrData.data(), ptrData.size());
     shader.setEnvInput(glslang::EShSourceGlsl, langName,
                        glslang::EShClientVulkan, 100);
     shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
@@ -502,12 +512,12 @@ VulkanShaderPipe *__implLoadShaderPipeAndCompile(
 }
 
 void *loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) {
-  std::vector<std::pair<std::vector<uint8_t>, EShLanguage>> vector;
+  std::vector<ShaderInfo> vector;
   vector.reserve(shadernames.size());
   for (const auto &name : shadernames) {
     const std::string abrivation = name.substr(name.size() - 4);
     auto path = fs::path(name);
-    vector.push_back(std::pair(util::wholeFile(path), getLang(abrivation)));
+    vector.push_back({getLang(abrivation), util::wholeFile(path)});
   }
   const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
   return (uint8_t *)loadedPipes;
