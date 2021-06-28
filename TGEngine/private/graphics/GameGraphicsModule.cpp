@@ -89,8 +89,7 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
 
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
-  std::vector<std::string> test = {"assets/test.vert", "assets/test.frag"};
-  const auto pipe = loadShaderPipeAndCompile(test);
+  const auto pipe = apiLayer->loadShader(MaterialType::None);
   for (const auto &mat : model.materials) {
     // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
     const Material nmMat(pipe);

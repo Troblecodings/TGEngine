@@ -3,6 +3,7 @@
 #include <fstream>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
+#include <graphics/VulkanShaderModule.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
 #include <mutex>
@@ -69,7 +70,7 @@ Material mat;
 
 TEST(Shader, LoadAndCompile) {
   std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
-  ASSERT_NO_THROW(mat.costumShaderData = loadShaderPipeAndCompile(test));
+  ASSERT_NO_THROW(mat.costumShaderData = mainShaderModule->loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
 
