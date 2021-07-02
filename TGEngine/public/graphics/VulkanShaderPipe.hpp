@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-namespace tge::graphics {
+namespace tge::shader {
 
 using namespace vk;
 

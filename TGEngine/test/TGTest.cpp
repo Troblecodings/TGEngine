@@ -70,7 +70,7 @@ Material mat;
 
 TEST(Shader, LoadAndCompile) {
   std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
-  ASSERT_NO_THROW(mat.costumShaderData = mainShaderModule->loadShaderPipeAndCompile(test));
+  ASSERT_NO_THROW(mat.costumShaderData = tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
 

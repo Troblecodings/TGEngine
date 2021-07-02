@@ -6,8 +6,9 @@
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <vulkan/vulkan.hpp>
+#include <format>
 
-namespace tge::graphics {
+namespace tge::shader {
 
 using namespace vk;
 
@@ -368,5 +369,7 @@ void *VulkanShaderModule::loadShaderPipeAndCompile(
   const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
   return (uint8_t *)loadedPipes;
 }
+
+void 
 
 } // namespace tge::graphics

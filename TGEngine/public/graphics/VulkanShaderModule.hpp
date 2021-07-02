@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace tge::graphics {
+namespace tge::shader {
 
 class VulkanShaderModule : public tge::main::Module {
 
