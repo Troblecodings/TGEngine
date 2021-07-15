@@ -14,7 +14,7 @@ _CONSTEXPR20_CONTAINER std::string operator""_str(const char *chr,
   return std::string(chr, size);
 }
 
-_CONSTEXPR20_CONTAINER std::array shaderNames = {
+const std::array shaderNames = {
     std::vector({"assets/testvec4.vert"_str, "assets/test.frag"_str}),
     std::vector({"assets/testUV.vert"_str, "assets/testTexture.frag"_str})};
 
