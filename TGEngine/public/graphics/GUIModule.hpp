@@ -15,6 +15,8 @@ public:
   void* pool;
   void* buffer;
 
+  void (*guicallback)() = [] {};
+
   GUIModule(tge::graphics::WindowModule *winModule,
             tge::graphics::APILayer *api)
       : winModule(winModule), api(api) {}

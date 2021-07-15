@@ -334,7 +334,7 @@ __implLoadShaderPipeAndCompile(const std::vector<ShaderInfo> &vector) {
     glslang::TShader shader(langName);
     std::vector ptrData = {data.data()};
     ptrData.reserve(additional.size());
-    for (const auto rev : additional)
+    for (const auto &rev : additional)
       ptrData.push_back(rev.data());
 
     shader.setStrings(ptrData.data(), ptrData.size());

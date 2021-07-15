@@ -78,4 +78,6 @@ graphics::APILayer *getAPILayer() { return usedApiLayer; }
 
 graphics::GameGraphicsModule *getGameGraphicsModule() { return gameModule; }
 
+gui::GUIModule *getGUIModule() { return guiModule; }
+
 } // namespace tge::main

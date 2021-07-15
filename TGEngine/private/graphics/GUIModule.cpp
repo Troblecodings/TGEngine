@@ -12,18 +12,15 @@ namespace tge::gui {
 
 using namespace vk;
 
-void render(CommandBuffer buffer, RenderPass pass) {
+inline void render(CommandBuffer buffer, RenderPass pass, void (*guicallback)()) {
   ImGui_ImplVulkan_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
 
-  bool x = true;
-  ImGui::ShowDemoWindow(&x);
+  guicallback();
 
   ImGui::Render();
   ImDrawData *draw_data = ImGui::GetDrawData();
-
-  const auto inharitanceInfo = CommandBufferInheritanceInfo();
 
   const CommandBufferInheritanceInfo inheritance(pass, 0);
   const CommandBufferBeginInfo beginInfo(
@@ -109,14 +106,14 @@ main::Error GUIModule::init() {
   buffer = vmod->device.allocateCommandBuffers(allocInfo).back();
   vmod->secondaryCommandBuffer.push_back((VkCommandBuffer)buffer);
 
-  render((VkCommandBuffer)buffer, vmod->renderpass);
+  render((VkCommandBuffer)buffer, vmod->renderpass, guicallback);
 
   return main::Error::NONE;
 }
 
 void GUIModule::tick(double deltatime) {
   const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
-  render((VkCommandBuffer)this->buffer, vmod->renderpass);
+  render((VkCommandBuffer)this->buffer, vmod->renderpass, guicallback);
 }
 
 void GUIModule::destroy() {
