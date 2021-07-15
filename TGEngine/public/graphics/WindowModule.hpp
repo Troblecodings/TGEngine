@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Module.hpp"
-#include <thread>
 #include <mutex>
+#include <thread>
 
 namespace tge::graphics {
 
@@ -18,8 +18,9 @@ struct WindowProperties {
 class WindowModule : public main::Module {
 
 public:
-  void* hInstance;
-  void* hWnd;
+  void *hInstance;
+  void *hWnd;
+  void *customFn = nullptr;
   bool closeRequest = false;
   std::thread osThread;
   std::mutex osMutex;

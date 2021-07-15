@@ -1,6 +1,9 @@
 #pragma once
 
 #include <vulkan/vulkan.hpp>
+#include <string>
+#include <vector>
+#include <array>
 
 namespace tge::shader {
 

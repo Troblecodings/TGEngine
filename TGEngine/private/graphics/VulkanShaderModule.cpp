@@ -370,6 +370,4 @@ void *VulkanShaderModule::loadShaderPipeAndCompile(
   return (uint8_t *)loadedPipes;
 }
 
-void 
-
 } // namespace tge::graphics

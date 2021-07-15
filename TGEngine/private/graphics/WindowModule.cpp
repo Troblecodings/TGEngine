@@ -58,6 +58,8 @@ void windowsPoolMessages(WindowModule *winModule) {
     }
     TranslateMessage(&msg);
     DispatchMessage(&msg);
+    if (winModule->customFn != nullptr)
+      ((WNDPROC)winModule->customFn)(wnd, msg.message, msg.wParam, msg.lParam);
   }
 }
 

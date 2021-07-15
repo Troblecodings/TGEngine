@@ -1,5 +1,6 @@
 #include "../public/TGEngine.hpp"
 #include "../public/graphics/VulkanGraphicsModule.hpp"
+#include "../public/graphics/GUIModule.hpp"
 
 namespace tge::main {
 
@@ -11,6 +12,7 @@ bool isInitialized = false;
 graphics::APILayer *usedApiLayer = nullptr;
 graphics::GameGraphicsModule *gameModule = nullptr;
 graphics::WindowModule *winModule = nullptr;
+gui::GUIModule *guiModule = nullptr;
 
 Error init() {
   if (isInitialized)
@@ -22,6 +24,9 @@ Error init() {
   gameModule = new graphics::GameGraphicsModule(usedApiLayer, winModule);
   usedApiLayer->setGameGraphicsModule(gameModule);
   modules.push_back(gameModule);
+  guiModule = new gui::GUIModule(winModule, usedApiLayer);
+  modules.push_back(guiModule);
+
   for (auto mod : modules) {
     error = mod->init();
     if (error != Error::NONE)
@@ -51,9 +56,9 @@ Error start() {
     deltatime = duration_cast<duration<double>>(endpoint - startpoint).count();
     startpoint = endpoint;
   }
-  for (auto mod : modules) {
-    mod->destroy();
-    delete mod;
+  for (auto bItr = modules.rbegin(); bItr < modules.rend(); bItr++) {
+    (*bItr)->destroy();
+    delete *bItr;
   }
   modules.clear();
   usedApiLayer = nullptr;
