@@ -63,6 +63,7 @@ public:
   std::vector<DescriptorSetLayout> descSetLayouts;
 
   bool isInitialiazed = false;
+  bool exitFailed = false;
 
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;

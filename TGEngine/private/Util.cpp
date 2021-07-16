@@ -3,6 +3,8 @@
 
 namespace tge::util {
 
+bool exitRequest = false;
+
 std::vector<char> wholeFile(const fs::path &path) {
   std::ifstream inputstream(path,
                             std::ios::ate | std::ios::in | std::ios::binary);
@@ -15,5 +17,7 @@ std::vector<char> wholeFile(const fs::path &path) {
   fileData[size] = 0;
   return fileData;
 }
+
+void requestExit() { exitRequest = true; }
 
 } // namespace tge::util

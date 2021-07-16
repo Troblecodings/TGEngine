@@ -16,8 +16,6 @@ Error init();
 
 Error start();
 
-void requestExit();
-
 Error lastError();
 
 graphics::APILayer *getAPILayer();

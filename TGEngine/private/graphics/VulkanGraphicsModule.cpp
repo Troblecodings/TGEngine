@@ -1,13 +1,13 @@
 #include "../../public/graphics/VulkanGraphicsModule.hpp"
 #include "../../public/Error.hpp"
+#include "../../public/Util.hpp"
 #include "../../public/graphics/WindowModule.hpp"
 #include <array>
 #include <iostream>
 #include <mutex>
-#include "../../public/Util.hpp"
 #define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
-#include <unordered_set>
 #include "../../public/graphics/VulkanModuleDef.hpp"
+#include <unordered_set>
 
 namespace tge::graphics {
 
@@ -152,8 +152,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
       this->descriptorPoolInfos.push_back(descPool);
 
-      const DescriptorSetAllocateInfo descSetAllocInfo(descPool,
-                                                       descLayout);
+      const DescriptorSetAllocateInfo descSetAllocInfo(descPool, descLayout);
       descSet = device.allocateDescriptorSets(descSetAllocInfo);
 
       if (material.type == MaterialType::TextureOnly) {
@@ -165,10 +164,10 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
             ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
-            WriteDescriptorSet(descSet[0], 0, 0,
-                               DescriptorType::eSampler, descImageInfo),
-            WriteDescriptorSet(descSet[0], 1, 0,
-                               DescriptorType::eSampledImage, descImageInfo),
+            WriteDescriptorSet(descSet[0], 0, 0, DescriptorType::eSampler,
+                               descImageInfo),
+            WriteDescriptorSet(descSet[0], 1, 0, DescriptorType::eSampledImage,
+                               descImageInfo),
         };
         device.updateDescriptorSets(sets, {});
       }
@@ -778,6 +777,8 @@ main::Error VulkanGraphicsModule::init() {
 }
 
 void VulkanGraphicsModule::tick(double time) {
+  if (exitFailed)
+    return;
   auto nextimage =
       device.acquireNextImageKHR(swapchain, UINT64_MAX, waitSemaphore, {});
   VERROR(nextimage.result);
@@ -812,7 +813,11 @@ void VulkanGraphicsModule::tick(double time) {
 
   const PresentInfoKHR presentInfo(signalSemaphore, swapchain, nextimage.value,
                                    nullptr);
-  const Result result = queue.presentKHR(presentInfo);
+  const Result result = queue.presentKHR(&presentInfo);
+  if (result == Result::eErrorOutOfDateKHR) {
+    exitFailed = true;
+    return;
+  }
   VERROR(result);
 
   const Result waitresult =

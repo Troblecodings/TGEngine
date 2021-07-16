@@ -22,6 +22,7 @@ public:
   void *hWnd;
   void *customFn = nullptr;
   bool closeRequest = false;
+  bool closing = false;
   std::thread osThread;
   std::mutex osMutex;
 

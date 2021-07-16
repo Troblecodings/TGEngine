@@ -1,11 +1,11 @@
 #include "../public/TGEngine.hpp"
 #include "../public/graphics/VulkanGraphicsModule.hpp"
 #include "../public/graphics/GUIModule.hpp"
+#include "../public/Util.hpp"
 
 namespace tge::main {
 
 std::vector<Module *> modules;
-bool exitRequest = false;
 bool isRunning = false;
 bool isInitialized = false;
 
@@ -47,11 +47,11 @@ Error start() {
   double deltatime = 0;
   isRunning = true;
   for (;;) {
+    if (util::exitRequest || winModule->closeRequest)
+      break;
     for (auto mod : modules)
       mod->tick(deltatime);
 
-    if (exitRequest || winModule->closeRequest)
-      break;
     auto endpoint = steady_clock::now();
     deltatime = duration_cast<duration<double>>(endpoint - startpoint).count();
     startpoint = endpoint;
@@ -66,11 +66,9 @@ Error start() {
   winModule = nullptr;
   isRunning = false;
   isInitialized = false;
-  exitRequest = false;
+  util::exitRequest = false;
   return error = Error::NONE;
 }
-
-void requestExit() { exitRequest = true; }
 
 Error lastError() { return error; }
 

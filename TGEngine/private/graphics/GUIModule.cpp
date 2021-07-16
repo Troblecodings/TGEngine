@@ -39,8 +39,7 @@ main::Error GUIModule::init() {
   ImGuiIO &io = ImGui::GetIO();
   (void)io;
   ImGui::StyleColorsDark();
-
-  winModule->customFn = (void *)ImGui_ImplWin32_WndProcHandler;
+  winModule->customFn = (void*)ImGui_ImplWin32_WndProcHandler;
   const bool winInit = ImGui_ImplWin32_Init(winModule->hWnd);
   if (!winInit)
     return main::Error::COULD_NOT_CREATE_WINDOW;
@@ -117,8 +116,9 @@ void GUIModule::tick(double deltatime) {
 }
 
 void GUIModule::destroy() {
-  ImGui_ImplVulkan_Shutdown();
   const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
+  vmod->device.waitIdle();
+  ImGui_ImplVulkan_Shutdown();
   vmod->device.destroyDescriptorPool(((VkDescriptorPool)pool));
   ImGui_ImplWin32_Shutdown();
 }
