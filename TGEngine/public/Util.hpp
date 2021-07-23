@@ -21,4 +21,8 @@ public:
 
 std::vector<char> wholeFile(const fs::path &path);
 
+extern bool exitRequest;
+
+void requestExit();
+
 } // namespace tge::util

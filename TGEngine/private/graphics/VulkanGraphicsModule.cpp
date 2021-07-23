@@ -1,23 +1,17 @@
 #include "../../public/graphics/VulkanGraphicsModule.hpp"
 #include "../../public/Error.hpp"
+#include "../../public/Util.hpp"
 #include "../../public/graphics/WindowModule.hpp"
 #include <array>
 #include <iostream>
 #include <mutex>
-#ifdef WIN32
-#include <Windows.h>
-#define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
-#define VK_USE_PLATFORM_WIN32_KHR 1
-#endif // WIN32
-#include "../../public/Util.hpp"
-#include <vector>
 #define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
+#include "../../public/graphics/VulkanModuleDef.hpp"
 #include <unordered_set>
-#include <vulkan/vulkan.hpp>
-#include "../../public/graphics/VulkanShaderPipe.hpp"
-#include "../../public/graphics/VulkanShaderModule.hpp"
 
 namespace tge::graphics {
+
+using namespace tge::shader;
 
 constexpr std::array layerToEnable = {"VK_LAYER_KHRONOS_validation",
                                       "VK_LAYER_VALVE_steam_overlay",
@@ -45,82 +39,6 @@ Result verror = Result::eSuccess;
     main::error = main::Error::VULKAN_ERROR;                                   \
     printf("Vulkan error %d!", (uint32_t)verror);                              \
   }
-
-struct VulkanShaderPipe;
-
-class VulkanGraphicsModule : public APILayer {
-
-private:
-  Instance instance;
-  PhysicalDevice physicalDevice;
-  Device device;
-  SurfaceKHR surface;
-  SurfaceFormatKHR format;
-  Format depthFormat = Format::eUndefined;
-  SwapchainKHR swapchain;
-  std::vector<Image> swapchainImages;
-  RenderPass renderpass;
-  std::vector<ImageView> swapchainImageviews;
-  std::vector<Framebuffer> framebuffer;
-  CommandPool pool;
-  std::vector<CommandBuffer> cmdbuffer;
-  std::vector<Pipeline> pipelines;
-  Queue queue;
-  uint32_t queueIndex;
-  Semaphore waitSemaphore;
-  Semaphore signalSemaphore;
-  Fence commandBufferFence;
-  std::vector<ShaderModule> shaderModules;
-  uint32_t memoryTypeHostVisibleCoherent;
-  uint32_t memoryTypeDeviceLocal;
-  std::vector<Buffer> bufferList;
-  std::vector<size_t> bufferSizeList;
-  std::vector<DeviceMemory> bufferMemoryList;
-  Viewport viewport;
-  std::vector<CommandBuffer> secondaryCommandBuffer;
-  std::mutex commandBufferRecording; // protects secondaryCommandBuffer from
-                                     // memory invalidation
-  Image depthImage;
-  DeviceMemory depthImageMemory;
-  ImageView depthImageView;
-  std::vector<PipelineLayout> pipelineLayouts;
-  std::vector<Sampler> sampler;
-  std::vector<Image> textureImages;
-  std::vector<DeviceMemory> textureMemorys;
-  std::vector<ImageView> textureImageViews;
-  std::vector<VulkanShaderPipe *> shaderPipes;
-  std::vector<std::vector<DescriptorSet>> descriptorSets;
-  std::vector<DescriptorPool> descriptorPoolInfos;
-  std::vector<DescriptorSetLayout> descSetLayouts;
-
-  bool isInitialiazed = false;
-
-#ifdef DEBUG
-  DebugUtilsMessengerEXT debugMessenger;
-#endif
-
-  main::Error init() override;
-
-  void tick(double time) override;
-
-  void destroy() override;
-
-  size_t pushMaterials(const size_t materialcount,
-                       const Material *materials) override;
-
-  size_t pushData(const size_t dataCount, const uint8_t **data,
-                  const size_t *dataSizes, const DataType type) override;
-
-  void pushRender(const size_t renderInfoCount,
-                  const RenderInfo *renderInfos) override;
-
-  size_t pushSampler(const SamplerInfo &sampler) override;
-
-  size_t pushTexture(const size_t textureCount,
-                     const TextureInfo *textures) override;
-
-  void *loadShader(const MaterialType type) override;
-};
 
 inline void waitForImageTransition(
     const CommandBuffer &curBuffer, const ImageLayout oldLayout,
@@ -234,8 +152,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
       this->descriptorPoolInfos.push_back(descPool);
 
-      const DescriptorSetAllocateInfo descSetAllocInfo(descPool,
-                                                       descLayout);
+      const DescriptorSetAllocateInfo descSetAllocInfo(descPool, descLayout);
       descSet = device.allocateDescriptorSets(descSetAllocInfo);
 
       if (material.type == MaterialType::TextureOnly) {
@@ -247,10 +164,10 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
             ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
-            WriteDescriptorSet(descSet[0], 0, 0,
-                               DescriptorType::eSampler, descImageInfo),
-            WriteDescriptorSet(descSet[0], 1, 0,
-                               DescriptorType::eSampledImage, descImageInfo),
+            WriteDescriptorSet(descSet[0], 0, 0, DescriptorType::eSampler,
+                               descImageInfo),
+            WriteDescriptorSet(descSet[0], 1, 0, DescriptorType::eSampledImage,
+                               descImageInfo),
         };
         device.updateDescriptorSets(sets, {});
       }
@@ -642,7 +559,7 @@ main::Error VulkanGraphicsModule::init() {
   if (queueFamilyItr == enditr)
     return main::Error::NO_GRAPHIC_QUEUE_FOUND;
 
-  const auto queueFamilyIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
+  queueFamilyIndex = (uint32_t)std::distance(bgnitr, queueFamilyItr);
   const auto &queueFamily = *queueFamilyItr;
   std::vector<float> priorities(queueFamily.queueCount);
   std::fill(priorities.begin(), priorities.end(), 0.0f);
@@ -860,6 +777,8 @@ main::Error VulkanGraphicsModule::init() {
 }
 
 void VulkanGraphicsModule::tick(double time) {
+  if (exitFailed)
+    return;
   auto nextimage =
       device.acquireNextImageKHR(swapchain, UINT64_MAX, waitSemaphore, {});
   VERROR(nextimage.result);
@@ -894,7 +813,11 @@ void VulkanGraphicsModule::tick(double time) {
 
   const PresentInfoKHR presentInfo(signalSemaphore, swapchain, nextimage.value,
                                    nullptr);
-  const Result result = queue.presentKHR(presentInfo);
+  const Result result = queue.presentKHR(&presentInfo);
+  if (result == Result::eErrorOutOfDateKHR) {
+    exitFailed = true;
+    return;
+  }
   VERROR(result);
 
   const Result waitresult =

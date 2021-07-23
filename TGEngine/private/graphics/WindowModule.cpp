@@ -1,6 +1,7 @@
 #include "..\..\public\graphics\WindowModule.hpp"
 #include <iostream>
 #include <string>
+#include "..\..\public\Util.hpp"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -10,6 +11,10 @@ namespace tge::graphics {
 
 #ifdef WIN32
 LRESULT CALLBACK callback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+  if (Msg == WM_CLOSE) {
+    util::requestExit();
+    return 0;
+  }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
@@ -52,12 +57,10 @@ void windowsPoolMessages(WindowModule *winModule) {
   MSG msg;
   const HWND wnd = (HWND)winModule->hWnd;
   while (PeekMessage(&msg, wnd, 0, 0, PM_REMOVE)) {
-    if (msg.message == WM_CLOSE) {
-      winModule->closeRequest = true;
-      continue;
-    }
     TranslateMessage(&msg);
     DispatchMessage(&msg);
+    if (winModule->customFn != nullptr)
+      ((WNDPROC)winModule->customFn)(wnd, msg.message, msg.wParam, msg.lParam);
   }
 }
 
@@ -73,7 +76,7 @@ main::Error WindowModule::init() {
     winM->osMutex.lock();
     windowsInit(winM);
     winM->osMutex.unlock();
-    while (!winM->closeRequest) {
+    while (!winM->closing) {
       windowsPoolMessages(winM);
     }
     std::lock_guard lg(winM->osMutex);
@@ -88,7 +91,7 @@ main::Error WindowModule::init() {
 void WindowModule::tick(double deltatime) {}
 
 void WindowModule::destroy() {
-  this->closeRequest = true;
+  this->closing = true;
   std::lock_guard lg(this->osMutex);
 }
 
