@@ -81,6 +81,9 @@ public:
   size_t pushData(const size_t dataCount, const uint8_t **data,
                   const size_t *dataSizes, const DataType type) override;
 
+  void changeData(const size_t bufferIndex, const uint8_t *data,
+                  const size_t dataSizes, const size_t offset = 0) override;
+
   void pushRender(const size_t renderInfoCount,
                   const RenderInfo *renderInfos) override;
 

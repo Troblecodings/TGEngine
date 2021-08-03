@@ -349,6 +349,47 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
   return firstIndex;
 }
 
+void VulkanGraphicsModule::changeData(const size_t bufferIndex,
+                                      const uint8_t *data,
+                                      const size_t dataSizes,
+                                      const size_t offset) {
+  DEBUG_CALL_CHECK(bufferIndex < 0 || bufferIndex >= this->bufferList.size() ||
+                   data == nullptr || dataSizes == 0);
+
+  const BufferCreateInfo bufferCreateInfo({}, dataSizes,
+                                          BufferUsageFlagBits::eTransferSrc,
+                                          SharingMode::eExclusive);
+  const auto intermBuffer = device.createBuffer(bufferCreateInfo);
+  const auto memRequ = device.getBufferMemoryRequirements(intermBuffer);
+
+  const MemoryAllocateInfo allocInfo(memRequ.size,
+                                     memoryTypeHostVisibleCoherent);
+  const auto hostVisibleMemory = device.allocateMemory(allocInfo);
+  device.bindBufferMemory(intermBuffer, hostVisibleMemory, 0);
+  const auto mappedHandle =
+      device.mapMemory(hostVisibleMemory, 0, VK_WHOLE_SIZE);
+
+  memcpy(mappedHandle, data, dataSizes);
+
+  device.unmapMemory(hostVisibleMemory);
+
+  const auto cmdBuf = cmdbuffer.back();
+
+  const CommandBufferBeginInfo beginInfo(
+      CommandBufferUsageFlagBits::eOneTimeSubmit);
+  cmdBuf.begin(beginInfo);
+
+  const BufferCopy copyRegion(0, offset, dataSizes);
+
+  cmdBuf.copyBuffer(intermBuffer, this->bufferList[bufferIndex], copyRegion);
+
+  cmdBuf.end();
+
+  submitAndWait(device, queue, cmdBuf);
+  device.freeMemory(hostVisibleMemory);
+  device.destroyBuffer(intermBuffer);
+}
+
 size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
   const auto position = this->sampler.size();
   const SamplerCreateInfo samplerCreateInfo(

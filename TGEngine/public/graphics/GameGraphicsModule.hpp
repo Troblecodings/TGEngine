@@ -84,6 +84,9 @@ public:
   virtual size_t pushData(const size_t dataCount, const uint8_t **data,
                           const size_t *dataSizes, const DataType type) = 0;
 
+  virtual void changeData(const size_t bufferIndex, const uint8_t *data,
+                          const size_t dataSizes, const size_t offset = 0) = 0;
+
   virtual void pushRender(const size_t renderInfoCount,
                           const RenderInfo *renderInfos) = 0;
 
