@@ -19,6 +19,7 @@ bool hasDestroy = false;
 
 using namespace tge::main;
 using namespace tge::graphics;
+using namespace tge::util;
 
 double alltime = 0;
 std::mutex syncMutex;
@@ -127,7 +128,7 @@ TEST(EngineMain, InitAndTickTest) {
 }
 
 void exitWaitCheck() {
-  ASSERT_NO_FATAL_FAILURE(tge::main::requestExit());
+  ASSERT_NO_FATAL_FAILURE(requestExit());
   syncMutex.lock();
   ASSERT_TRUE(hasDestroy);
   ASSERT_EQ(err, Error::NONE);

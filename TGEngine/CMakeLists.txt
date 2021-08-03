@@ -78,7 +78,7 @@ add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
 add_custom_command(TARGET TGEngineTest PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/test/assets/ $<TARGET_FILE_DIR:TGEngineTest>/assets)
+                       ${CMAKE_CURRENT_SOURCE_DIR}/test/assets/ $<TARGET_FILE_DIR:TGEngineTest>/assets)
 target_link_libraries(TGEngineTest PUBLIC TGEngine gtest_main glslang SPIRV SPIRV-Tools SPIRV-Tools-opt shaderc_combined OSDependent MachineIndependent OGLCompiler SDL2 vulkan-1)
 add_test(NAME TGEngineTest COMMAND TGEngineTest)
 
