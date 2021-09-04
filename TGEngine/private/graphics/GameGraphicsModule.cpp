@@ -5,8 +5,10 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../public/Util.hpp"
 #include "../../public/graphics/VulkanGraphicsModule.hpp"
+#include "../../public/graphics/VulkanShaderPipe.hpp"
 #include "../../public/headerlibs/tiny_gltf.h"
 #include <array>
+#include <iostream>
 
 namespace tge::graphics {
 
@@ -35,9 +37,25 @@ inline FilterSetting gltfToAPI(int in, FilterSetting def) {
   }
 }
 
+inline vk::Format getFormatFromStride(uint32_t stride) {
+  switch (stride) {
+  case 4:
+    return vk::Format::eR8Unorm;
+  case 8:
+    return vk::Format::eR8G8Unorm;
+  case 12:
+    return vk::Format::eR8G8B8Unorm;
+  case 16:
+    return vk::Format::eR8G8B8A8Unorm;
+  default:
+    throw std::runtime_error("Couldn't find format");
+  }
+}
+
 main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           const bool binary,
-                                          const std::string &baseDir) {
+                                          const std::string &baseDir,
+                                          void *shaderPipe) {
   TinyGLTF loader;
   std::string error;
   std::string warning;
@@ -45,10 +63,9 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
 
   const bool rst =
       binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
-                                           (const uint8_t*)data.data(),
+                                           (const uint8_t *)data.data(),
                                            data.size(), baseDir)
-             : loader.LoadASCIIFromString(&model, &error, &warning,
-                                          data.data(),
+             : loader.LoadASCIIFromString(&model, &error, &warning, data.data(),
                                           data.size(), baseDir);
   if (!rst) {
     printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
@@ -82,24 +99,15 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
     }
   }
 
-  const auto textureIndex =
-      textureInfos.empty()
-          ? 0xFFFFFFFF
-          : apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
-
-  std::vector<Material> materials;
-  materials.reserve(model.materials.size());
-  const auto pipe = apiLayer->loadShader(MaterialType::None);
-  for (const auto &mat : model.materials) {
-    // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
-    const Material nmMat(pipe);
-    materials.push_back(nmMat);
+  if (!textureInfos.empty()) {
+    apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
+    if (model.samplers.empty()) { // default sampler
+      const SamplerInfo samplerInfo = {
+          FilterSetting::LINEAR, FilterSetting::LINEAR, AddressMode::REPEAT,
+          AddressMode::REPEAT};
+      samplerIndex = apiLayer->pushSampler(samplerInfo);
+    }
   }
-  const Material defMat(pipe);
-  const size_t materialFirstIndex =
-      materials.size() != 0
-          ? apiLayer->pushMaterials(materials.size(), materials.data())
-          : apiLayer->pushMaterials(1, &defMat);
 
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
@@ -108,6 +116,16 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
   ptr.reserve(model.buffers.size());
   std::vector<size_t> sizes;
   sizes.reserve(model.buffers.size());
+
+  auto pipe = (tge::shader::VulkanShaderPipe *)(shaderPipe == nullptr
+                                                    ? apiLayer->loadShader(
+                                                          MaterialType::None)
+                                                    : shaderPipe);
+  pipe->vertexInputAttributes.clear();
+  pipe->vertexInputBindings.clear();
+
+  const size_t dataFirstIndex = 0;     // TODO querry
+  const size_t materialFirstIndex = 0; // TODO querry
 
   for (const auto &mesh : model.meshes) {
     for (const auto &prim : mesh.primitives) {
@@ -119,31 +137,44 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
         sizes.push_back(indexBuffer.data.size());
       }
 
+      std::vector<std::tuple<int, int, int>> strides;
+      strides.reserve(prim.attributes.size());
+
       for (const auto &attr : prim.attributes) {
         const auto &vertAccesor = model.accessors[attr.second];
         const auto &vertView = model.bufferViews[vertAccesor.bufferView];
         const auto &vertBuffer = model.buffers[vertView.buffer];
-        ptr.push_back((uint8_t *)vertBuffer.data.data());
+        const auto bufferID = vertView.buffer + dataFirstIndex;
+        const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
+        strides.push_back(std::make_tuple(vertAccesor.ByteStride(vertView),
+                                          bufferID, vertOffset));
+
+        const auto ptrto = (uint8_t *)vertBuffer.data.data();
+        if (std::find(ptr.begin(), ptr.end(), ptrto) != ptr.end())
+          continue;
+        ptr.push_back(ptrto);
         sizes.push_back(vertBuffer.data.size());
       }
-    }
-  }
-  const size_t dataFirstIndex =
-      apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
-                         DataType::VertexIndexData);
 
-  for (const auto &mesh : model.meshes) {
-    for (const auto &prim : mesh.primitives) {
       std::vector<size_t> bufferIndicies;
       bufferIndicies.reserve(prim.attributes.size());
       std::vector<size_t> bufferOffsets;
       bufferOffsets.reserve(prim.attributes.size());
-      for (const auto &attr : prim.attributes) {
-        const auto &vertAccesor = model.accessors[attr.second];
-        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
-        const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
-        bufferIndicies.push_back(vertView.buffer + dataFirstIndex);
-        bufferOffsets.push_back(vertOffset);
+      std::sort(strides.begin(), strides.end(),
+                [](auto x, auto y) { return std::get<0>(x) > std::get<0>(y); });
+      uint32_t location = 0;
+      for (auto &stride : strides) {
+        const auto strid = std::get<0>(stride);
+        std::cout << strid << std::endl;
+        pipe->vertexInputAttributes.push_back(
+            vk::VertexInputAttributeDescription(location, location,
+                                                getFormatFromStride(strid)));
+        pipe->vertexInputBindings.push_back(
+            vk::VertexInputBindingDescription(location, strid));
+        location++;
+
+        bufferIndicies.push_back(std::get<1>(stride));
+        bufferOffsets.push_back(std::get<2>(stride));
       }
 
       if (prim.indices >= 0) [[likely]] {
@@ -180,6 +211,29 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
       }
     }
   }
+  pipe->inputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
+      {}, pipe->vertexInputBindings, pipe->vertexInputAttributes);
+  apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
+                     DataType::VertexIndexData);
+
+  std::vector<Material> materials;
+  materials.reserve(model.materials.size());
+  for (const auto &mat : model.materials) {
+    // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
+    Material nmMat(pipe);
+    nmMat.type = MaterialType::TextureOnly;
+    nmMat.data.textureMaterial.samplerIndex = samplerIndex;
+    nmMat.data.textureMaterial.textureIndex =
+        mat.pbrMetallicRoughness.baseColorTexture.index;
+    materials.push_back(nmMat);
+  }
+
+  if (materials.empty()) {
+    const Material defMat(pipe);
+    apiLayer->pushMaterials(1, &defMat);
+  } else {
+    apiLayer->pushMaterials(materials.size(), materials.data());
+  }
   apiLayer->pushRender(renderInfos.size(), renderInfos.data());
 
   return main::Error::NONE;
@@ -189,8 +243,8 @@ main::Error GameGraphicsModule::init() { return main::Error::NONE; }
 
 void GameGraphicsModule::destroy() {}
 
-uint32_t GameGraphicsModule::loadTextures(
-    const std::vector<std::vector<char>> &data) {
+uint32_t
+GameGraphicsModule::loadTextures(const std::vector<std::vector<char>> &data) {
   std::vector<TextureInfo> textureInfos;
 
   util::OnExit onExit([tinfos = &textureInfos] {
@@ -201,9 +255,9 @@ uint32_t GameGraphicsModule::loadTextures(
 
   for (const auto &dataIn : data) {
     TextureInfo info;
-    info.data =
-        stbi_load_from_memory((stbi_uc*)dataIn.data(), dataIn.size(), (int *)&info.width,
-                              (int *)&info.height, (int *)&info.channel, 0);
+    info.data = stbi_load_from_memory((stbi_uc *)dataIn.data(), dataIn.size(),
+                                      (int *)&info.width, (int *)&info.height,
+                                      (int *)&info.channel, 0);
     info.size = info.width * info.height * info.channel;
     textureInfos.push_back(info);
     if (info.channel == 3)

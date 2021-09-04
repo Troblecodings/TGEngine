@@ -127,8 +127,8 @@ public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
       : apiLayer(apiLayer), windowModule(winModule) {}
 
-  main::Error loadModel(const std::vector<char> &data,
-                        const bool binary, const std::string &baseDir);
+  main::Error loadModel(const std::vector<char> &data, const bool binary,
+                        const std::string &baseDir, void *shaderPipe = nullptr);
 
   main::Error loadModel(const std::vector<char> &data,
                         const bool binary) {

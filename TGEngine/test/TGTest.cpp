@@ -4,14 +4,15 @@
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
 #include <graphics/VulkanShaderModule.hpp>
+#include <graphics/VulkanShaderPipe.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (0.5f)
+#define DEFAULT_TIME (120.0f)
 
-#define MODEL_TEST 1
+#define MODEL_TEST 0
 
 bool hasInit = false;
 bool hasTick = false;
@@ -20,6 +21,8 @@ bool hasDestroy = false;
 using namespace tge::main;
 using namespace tge::graphics;
 using namespace tge::util;
+
+void exitWaitCheck();
 
 double alltime = 0;
 std::mutex syncMutex;
@@ -71,8 +74,30 @@ Material mat;
 
 TEST(Shader, LoadAndCompile) {
   std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
-  ASSERT_NO_THROW(mat.costumShaderData = tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
+  ASSERT_NO_THROW(
+      mat.costumShaderData =
+          tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
+}
+
+TEST(EngineMain, Avocado) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  std::vector<std::string> test = {"assets/avocado.vert", "assets/testTexture.frag"};
+  auto ptr = (tge::shader::VulkanShaderPipe *)
+                 tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
+
+  const auto vec = tge::util::wholeFile(
+      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(
+                vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr),
+            Error::NONE);
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
 }
 
 void defaultTestData() {

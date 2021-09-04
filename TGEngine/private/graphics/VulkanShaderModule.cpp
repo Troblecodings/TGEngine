@@ -2,9 +2,12 @@
 #include "../../public/Error.hpp"
 #include "../../public/Util.hpp"
 #include "../../public/graphics/VulkanShaderPipe.hpp"
+#define ENABLE_OPT 1
+#include <iostream>
 #include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
+#include <glslang/SPIRV/SpvTools.h>
 #include <vulkan/vulkan.hpp>
 #include <format>
 
@@ -198,6 +201,8 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
 
   shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
+  // TODO implement debug out
+  // glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
 }
 
 struct ShaderInfo {
