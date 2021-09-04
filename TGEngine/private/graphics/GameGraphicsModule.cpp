@@ -40,13 +40,13 @@ inline FilterSetting gltfToAPI(int in, FilterSetting def) {
 inline vk::Format getFormatFromStride(uint32_t stride) {
   switch (stride) {
   case 4:
-    return vk::Format::eR8Unorm;
+    return vk::Format::eR32Sfloat;
   case 8:
-    return vk::Format::eR8G8Unorm;
+    return vk::Format::eR32G32Sfloat;
   case 12:
-    return vk::Format::eR8G8B8Unorm;
+    return vk::Format::eR32G32B32Sfloat;
   case 16:
-    return vk::Format::eR8G8B8A8Unorm;
+    return vk::Format::eR32G32B32A32Sfloat;
   default:
     throw std::runtime_error("Couldn't find format");
   }
@@ -150,6 +150,11 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           bufferID, vertOffset));
 
         const auto ptrto = (uint8_t *)vertBuffer.data.data();
+                auto testptr = (vertBuffer.data.data() + 14616);
+        float fl = 0;
+        memcpy(&fl, testptr, sizeof(fl));
+        std::cout << fl << std::endl;
+
         if (std::find(ptr.begin(), ptr.end(), ptrto) != ptr.end())
           continue;
         ptr.push_back(ptrto);
