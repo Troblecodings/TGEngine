@@ -95,6 +95,14 @@ TEST(EngineMain, Avocado) {
                 vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr),
             Error::NONE);
 
+  std::array<float, 16> matrix;
+  auto dt = (uint8_t*)matrix.data();
+  const auto size = matrix.size() * sizeof(matrix[0]);
+
+  const auto dataID = getAPILayer()->pushData(1, (const uint8_t**)&dt, &size, DataType::Uniform);
+
+  getAPILayer()->bindData(dataID, 0, 2);
+
   syncMutex.unlock();
   waitForTime();
   exitWaitCheck();

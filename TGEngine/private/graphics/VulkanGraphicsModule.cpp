@@ -131,29 +131,25 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
     shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
-    std::vector<DescriptorSetLayout> descLayout;
+    DescriptorSetLayout descLayout;
+    DescriptorSet descSet;
     std::vector<DescriptorPoolSize> descPoolSizes;
-    for (const auto &l : shaderPipe->descriptorLayout) {
-      const auto descL = device.createDescriptorSetLayout(l);
-      descLayout.push_back(descL);
-      descSetLayouts.push_back(descL);
-      for (size_t i = 0; i < l.bindingCount; i++) {
-        const auto &binding = l.pBindings[i];
+
+    if (!shaderPipe->descriptorLayoutBindings.empty()) {
+      const DescriptorSetLayoutCreateInfo layoutCreate(
+          {}, shaderPipe->descriptorLayoutBindings);
+      descLayout = device.createDescriptorSetLayout(layoutCreate);
+      for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
         descPoolSizes.push_back(
             {binding.descriptorType, binding.descriptorCount});
       }
-    }
-
-    std::vector<DescriptorSet> descSet;
-
-    if (!descLayout.empty()) {
-      const DescriptorPoolCreateInfo descPoolCreateInfo({}, descLayout.size(),
-                                                        descPoolSizes);
+      const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1, descPoolSizes);
       const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
       this->descriptorPoolInfos.push_back(descPool);
 
       const DescriptorSetAllocateInfo descSetAllocInfo(descPool, descLayout);
-      descSet = device.allocateDescriptorSets(descSetAllocInfo);
+      descSet = device.allocateDescriptorSets(descSetAllocInfo)[0];
+      descriptorSets.push_back(descSet);
 
       if (material.type == MaterialType::TextureOnly) {
         const auto texMat = material.data.textureMaterial;
@@ -164,15 +160,14 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
             ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
-            WriteDescriptorSet(descSet[0], 0, 0, DescriptorType::eSampler,
+            WriteDescriptorSet(descSet, 0, 0, DescriptorType::eSampler,
                                descImageInfo),
-            WriteDescriptorSet(descSet[0], 1, 0, DescriptorType::eSampledImage,
+            WriteDescriptorSet(descSet, 1, 0, DescriptorType::eSampledImage,
                                descImageInfo),
         };
         device.updateDescriptorSets(sets, {});
       }
     }
-    descriptorSets.push_back(descSet);
 
     const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
     const auto pipeLayout = device.createPipelineLayout(layoutCreateInfo);
@@ -194,6 +189,20 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   std::copy(piperesult.value.cbegin(), piperesult.value.cend(),
             pipelines.begin() + indexOffset);
   return indexOffset;
+}
+
+void VulkanGraphicsModule::bindData(const size_t dataId,
+                                    const size_t materialId, const size_t binding) {
+  DEBUG_CALL_CHECK(dataId < 0 || materialId < 0);
+
+  const DescriptorBufferInfo descBufferInfo(bufferList[dataId]);
+  const auto descSet = descriptorSets[materialId];
+
+  const std::array sets = {
+      WriteDescriptorSet(descSet, binding, 0, DescriptorType::eUniformBuffer,
+                         {}, descBufferInfo),
+  };
+  device.updateDescriptorSets(sets, {});
 }
 
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
@@ -229,11 +238,11 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
     }
 
-    const auto &descSets = descriptorSets[info.materialId];
-    const auto pipeLayout = pipelineLayouts[info.materialId];
-    for (const auto desSet : descSets) {
+    if (descriptorSets.size() > info.materialId && info.materialId >= 0) {
+      const auto &descSet = descriptorSets[info.materialId];
+      const auto pipeLayout = pipelineLayouts[info.materialId];
       cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
-                                desSet, {});
+                                descSet, {});
     }
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
@@ -268,10 +277,19 @@ inline void submitAndWait(const Device &device, const Queue &queue,
 }
 
 inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
-  if (type == DataType::VertexIndexData)
+  switch(type){
+  case DataType::VertexIndexData:
     return BufferUsageFlagBits::eVertexBuffer |
            BufferUsageFlagBits::eIndexBuffer;
-  return (BufferUsageFlags)(64 << (uint32_t)type);
+  case DataType::Uniform:
+    return BufferUsageFlagBits::eUniformBuffer;
+  case DataType::VertexData:
+    return BufferUsageFlagBits::eVertexBuffer;
+  case DataType::IndexData:
+    return BufferUsageFlagBits::eIndexBuffer;
+  default:
+    throw std::runtime_error("Couldn't find usage flag");
+  }
 }
 
 size_t VulkanGraphicsModule::pushData(const size_t dataCount,

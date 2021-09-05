@@ -65,7 +65,7 @@ struct SamplerInfo {
 
 class GameGraphicsModule;
 
-enum class DataType { IndexData, VertexData, VertexIndexData };
+enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };
 
 class APILayer : public main::Module { // Interface
 protected:
@@ -96,6 +96,9 @@ public:
                              const TextureInfo *textures) = 0;
 
   virtual void *loadShader(const MaterialType type) = 0;
+
+  virtual void bindData(const size_t dataId, const size_t materialId,
+                        const size_t binding) = 0;
 
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };

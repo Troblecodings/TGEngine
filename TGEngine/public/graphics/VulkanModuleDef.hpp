@@ -58,7 +58,7 @@ public:
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
   std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
-  std::vector<std::vector<DescriptorSet>> descriptorSets;
+  std::vector<DescriptorSet> descriptorSets;
   std::vector<DescriptorPool> descriptorPoolInfos;
   std::vector<DescriptorSetLayout> descSetLayouts;
 
@@ -93,6 +93,10 @@ public:
                      const TextureInfo *textures) override;
 
   void *loadShader(const MaterialType type) override;
+
+  void bindData(const size_t dataId, const size_t materialId,
+                const size_t binding) override;
+
 };
 
 } // namespace tge::graphics

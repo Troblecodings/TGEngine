@@ -156,9 +156,6 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
       : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe),
         flags(flags) {
     shaderPipe->descriptorLayoutBindings.reserve(10);
-    shaderPipe->descriptorLayoutBindings.push_back({});
-    shaderPipe->descriptorLayoutBindings.back().reserve(20);
-    shaderPipe->descriptorLayout.reserve(10);
     uset.reserve(10);
   }
 
@@ -172,15 +169,7 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
       const auto desc = getDescTypeFromELF(type);
       const DescriptorSetLayoutBinding descBinding(
           quali.layoutBinding, desc.first, desc.second, flags);
-      shaderPipe->descriptorLayoutBindings.back().push_back(descBinding);
-    }
-  }
-
-  void post() {
-    const auto &vec = shaderPipe->descriptorLayoutBindings.back();
-    if (!vec.empty()) {
-      const DescriptorSetLayoutCreateInfo setLayoutCreateInfo({}, vec);
-      shaderPipe->descriptorLayout.push_back(setLayoutCreateInfo);
+      shaderPipe->descriptorLayoutBindings.push_back(descBinding);
     }
   }
 };
@@ -197,7 +186,6 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
   const auto flags = getStageFromLang(langName);
   GeneralShaderAnalizer generalAnalizer(shaderPipe, flags);
   node->traverse(&generalAnalizer);
-  generalAnalizer.post();
 
   shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);

@@ -25,8 +25,7 @@ struct VulkanShaderPipe {
   std::vector<VertexInputAttributeDescription> vertexInputAttributes;
   PipelineVertexInputStateCreateInfo inputStateCreateInfo;
   PipelineRasterizationStateCreateInfo rasterization;
-  std::vector<DescriptorSetLayoutCreateInfo> descriptorLayout;
-  std::vector<std::vector<DescriptorSetLayoutBinding>> descriptorLayoutBindings;
+  std::vector<DescriptorSetLayoutBinding> descriptorLayoutBindings;
 };
 
 } // namespace tge::graphics

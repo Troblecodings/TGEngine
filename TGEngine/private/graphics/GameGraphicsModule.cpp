@@ -52,6 +52,202 @@ inline vk::Format getFormatFromStride(uint32_t stride) {
   }
 }
 
+inline size_t loadSampler(const Model &model, APILayer *apiLayer) {
+  size_t samplerIndex = -1;
+  for (const auto &smplr : model.samplers) {
+    const SamplerInfo samplerInfo = {
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
+        gltfToAPI(smplr.wrapS, AddressMode::REPEAT),
+        gltfToAPI(smplr.wrapT, AddressMode::REPEAT)};
+    samplerIndex = apiLayer->pushSampler(samplerInfo);
+  }
+  samplerIndex -= model.samplers.size() - 1;
+
+  if (!model.images.empty()) {
+    if (model.samplers.empty()) { // default sampler
+      const SamplerInfo samplerInfo = {
+          FilterSetting::LINEAR, FilterSetting::LINEAR, AddressMode::REPEAT,
+          AddressMode::REPEAT};
+      samplerIndex = apiLayer->pushSampler(samplerInfo);
+    }
+  }
+  return samplerIndex;
+}
+
+inline size_t loadTexturesFM(const Model &model, APILayer *apiLayer) {
+  std::vector<TextureInfo> textureInfos;
+  textureInfos.reserve(model.images.size());
+  for (const auto &img : model.images) {
+    if (!img.image.empty()) [[likely]] {
+      const TextureInfo info{(uint8_t *)img.image.data(),
+                             (uint32_t)img.image.size(), (uint32_t)img.width,
+                             (uint32_t)img.height, (uint32_t)img.component};
+      textureInfos.push_back(info);
+    } else {
+      throw std::runtime_error("Not implemented!");
+    }
+  }
+  if (!textureInfos.empty())
+    return apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
+  return -1;
+}
+
+inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
+                            void *shaderPipe, const size_t sampler, const size_t texture) {
+  std::vector<Material> materials;
+  materials.reserve(model.materials.size());
+  for (const auto &mat : model.materials) {
+    const auto &pbr = mat.pbrMetallicRoughness;
+    const auto &diffuseTexture = pbr.baseColorTexture;
+
+    Material nmMat(shaderPipe);
+    nmMat.type = MaterialType::TextureOnly;
+    const auto nextSampler = model.textures[diffuseTexture.index].sampler;
+    nmMat.data.textureMaterial.samplerIndex = nextSampler < 0
+        ? sampler:(nextSampler + sampler);
+    nmMat.data.textureMaterial.textureIndex = diffuseTexture.index + texture;
+    materials.push_back(nmMat);
+  }
+
+#pragma region This is speculative
+  auto pipe = (tge::shader::VulkanShaderPipe *)(shaderPipe == nullptr
+                                                    ? apiLayer->loadShader(
+                                                          MaterialType::None)
+                                                    : shaderPipe);
+  pipe->vertexInputAttributes.clear();
+  pipe->vertexInputBindings.clear();
+
+  for (const auto &mesh : model.meshes) {
+    for (const auto &prim : mesh.primitives) {
+      std::vector<int> strides;
+      strides.reserve(prim.attributes.size());
+
+      for (const auto &attr : prim.attributes) {
+        const auto &vertAccesor = model.accessors[attr.second];
+        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
+        strides.push_back(vertAccesor.ByteStride(vertView));
+      }
+      std::sort(strides.rbegin(), strides.rend());
+
+      uint32_t location = 0;
+      for (const auto &stride : strides) {
+        pipe->vertexInputAttributes.push_back(
+            vk::VertexInputAttributeDescription(location, location,
+                                                getFormatFromStride(stride)));
+        pipe->vertexInputBindings.push_back(
+            vk::VertexInputBindingDescription(location, stride));
+        location++;
+      }
+      pipe->inputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
+          {}, pipe->vertexInputBindings, pipe->vertexInputAttributes);
+    }
+  }
+#pragma endregion
+
+  if (materials.empty()) {
+    const Material defMat(pipe);
+    apiLayer->pushMaterials(1, &defMat);
+  } else {
+    apiLayer->pushMaterials(materials.size(), materials.data());
+  }
+}
+
+inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
+  std::vector<uint8_t *> ptr;
+  ptr.reserve(model.buffers.size());
+  std::vector<size_t> sizes;
+  sizes.reserve(ptr.capacity());
+  for (const auto &mesh : model.meshes) {
+    for (const auto &prim : mesh.primitives) {
+      if (prim.indices >= 0) [[likely]] {
+        const auto &indexAccesor = model.accessors[prim.indices];
+        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
+        const auto &indexBuffer = model.buffers[indexView.buffer];
+        ptr.push_back((uint8_t *)indexBuffer.data.data());
+        sizes.push_back(indexBuffer.data.size());
+      }
+
+      for (const auto &attr : prim.attributes) {
+        const auto &vertAccesor = model.accessors[attr.second];
+        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
+        const auto &vertBuffer = model.buffers[vertView.buffer];
+
+        const auto ptrto = (uint8_t *)vertBuffer.data.data();
+        if (std::find(ptr.begin(), ptr.end(), ptrto) != ptr.end())
+          continue;
+        ptr.push_back(ptrto);
+        sizes.push_back(vertBuffer.data.size());
+      }
+    }
+  }
+  return apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
+                     DataType::VertexIndexData);
+}
+
+inline void pushRender(const Model &model, APILayer *apiLayer,
+                       const size_t dataId, const size_t materialId) {
+  std::vector<RenderInfo> renderInfos;
+  renderInfos.reserve(1000);
+  for (const auto &mesh : model.meshes) {
+    for (const auto &prim : mesh.primitives) {
+      std::vector<std::tuple<int, int, int>> strides;
+      strides.reserve(prim.attributes.size());
+
+      for (const auto &attr : prim.attributes) {
+        const auto &vertAccesor = model.accessors[attr.second];
+        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
+        const auto bufferID = vertView.buffer + dataId;
+        const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
+        strides.push_back(std::make_tuple(vertAccesor.ByteStride(vertView),
+                                          bufferID, vertOffset));
+      }
+
+      std::vector<size_t> bufferIndicies;
+      bufferIndicies.reserve(strides.size());
+      std::vector<size_t> bufferOffsets;
+      bufferOffsets.reserve(bufferIndicies.capacity());
+      for (auto &stride : strides) {
+        bufferIndicies.push_back(std::get<1>(stride));
+        bufferOffsets.push_back(std::get<2>(stride));
+      }
+
+      if (prim.indices >= 0) [[likely]] {
+        const auto &indexAccesor = model.accessors[prim.indices];
+        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
+        const auto indexOffset = indexView.byteOffset + indexAccesor.byteOffset;
+        const IndexSize indextype =
+            indexView.byteStride == 4 ? IndexSize::UINT32 : IndexSize::UINT16;
+        const RenderInfo renderInfo = {
+            bufferIndicies,
+            indexView.buffer + dataId,
+            prim.material == -1 ? materialId : prim.material + materialId,
+            indexAccesor.count,
+            1,
+            indexOffset,
+            indextype,
+            bufferOffsets};
+        renderInfos.push_back(renderInfo);
+      } else {
+        const auto accessorID = prim.attributes.begin()->second;
+        const auto &vertAccesor = model.accessors[accessorID];
+        const RenderInfo renderInfo = {
+            bufferIndicies,
+            0,
+            prim.material == -1 ? materialId : prim.material + materialId,
+            0,
+            1,
+            vertAccesor.count,
+            IndexSize::NONE,
+            bufferOffsets};
+        renderInfos.push_back(renderInfo);
+      }
+    }
+  }
+
+  apiLayer->pushRender(renderInfos.size(), renderInfos.data());
+}
+
 main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           const bool binary,
                                           const std::string &baseDir,
@@ -77,169 +273,15 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
     printf("[GLTF][WARN]: %s\n", warning.c_str());
   }
 
-  size_t samplerIndex = 0;
-  for (const auto &smplr : model.samplers) {
-    const SamplerInfo samplerInfo = {
-        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
-        gltfToAPI(smplr.minFilter, FilterSetting::LINEAR),
-        gltfToAPI(smplr.wrapS, AddressMode::REPEAT),
-        gltfToAPI(smplr.wrapT, AddressMode::REPEAT)};
-    samplerIndex = apiLayer->pushSampler(samplerInfo);
-  }
-  samplerIndex -= model.samplers.size() - 1;
+  const auto samplerId = loadSampler(model, apiLayer);
 
-  std::vector<TextureInfo> textureInfos;
+  const auto textureId = loadTexturesFM(model, apiLayer);
 
-  for (const auto &img : model.images) {
-    if (!img.image.empty()) {
-      const TextureInfo info{(uint8_t *)img.image.data(),
-                             (uint32_t)img.image.size(), (uint32_t)img.width,
-                             (uint32_t)img.height, (uint32_t)img.component};
-      textureInfos.push_back(info);
-    }
-  }
+  const auto dataId = loadDataBuffers(model, apiLayer);
 
-  if (!textureInfos.empty()) {
-    apiLayer->pushTexture(textureInfos.size(), textureInfos.data());
-    if (model.samplers.empty()) { // default sampler
-      const SamplerInfo samplerInfo = {
-          FilterSetting::LINEAR, FilterSetting::LINEAR, AddressMode::REPEAT,
-          AddressMode::REPEAT};
-      samplerIndex = apiLayer->pushSampler(samplerInfo);
-    }
-  }
+  const auto materials = loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
 
-  std::vector<RenderInfo> renderInfos;
-  renderInfos.reserve(1000);
-
-  std::vector<uint8_t *> ptr;
-  ptr.reserve(model.buffers.size());
-  std::vector<size_t> sizes;
-  sizes.reserve(model.buffers.size());
-
-  auto pipe = (tge::shader::VulkanShaderPipe *)(shaderPipe == nullptr
-                                                    ? apiLayer->loadShader(
-                                                          MaterialType::None)
-                                                    : shaderPipe);
-  pipe->vertexInputAttributes.clear();
-  pipe->vertexInputBindings.clear();
-
-  const size_t dataFirstIndex = 0;     // TODO querry
-  const size_t materialFirstIndex = 0; // TODO querry
-
-  for (const auto &mesh : model.meshes) {
-    for (const auto &prim : mesh.primitives) {
-      if (prim.indices >= 0) [[likely]] {
-        const auto &indexAccesor = model.accessors[prim.indices];
-        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
-        const auto &indexBuffer = model.buffers[indexView.buffer];
-        ptr.push_back((uint8_t *)indexBuffer.data.data());
-        sizes.push_back(indexBuffer.data.size());
-      }
-
-      std::vector<std::tuple<int, int, int>> strides;
-      strides.reserve(prim.attributes.size());
-
-      for (const auto &attr : prim.attributes) {
-        const auto &vertAccesor = model.accessors[attr.second];
-        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
-        const auto &vertBuffer = model.buffers[vertView.buffer];
-        const auto bufferID = vertView.buffer + dataFirstIndex;
-        const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
-        strides.push_back(std::make_tuple(vertAccesor.ByteStride(vertView),
-                                          bufferID, vertOffset));
-
-        const auto ptrto = (uint8_t *)vertBuffer.data.data();
-                auto testptr = (vertBuffer.data.data() + 14616);
-        float fl = 0;
-        memcpy(&fl, testptr, sizeof(fl));
-        std::cout << fl << std::endl;
-
-        if (std::find(ptr.begin(), ptr.end(), ptrto) != ptr.end())
-          continue;
-        ptr.push_back(ptrto);
-        sizes.push_back(vertBuffer.data.size());
-      }
-
-      std::vector<size_t> bufferIndicies;
-      bufferIndicies.reserve(prim.attributes.size());
-      std::vector<size_t> bufferOffsets;
-      bufferOffsets.reserve(prim.attributes.size());
-      std::sort(strides.begin(), strides.end(),
-                [](auto x, auto y) { return std::get<0>(x) > std::get<0>(y); });
-      uint32_t location = 0;
-      for (auto &stride : strides) {
-        const auto strid = std::get<0>(stride);
-        std::cout << strid << std::endl;
-        pipe->vertexInputAttributes.push_back(
-            vk::VertexInputAttributeDescription(location, location,
-                                                getFormatFromStride(strid)));
-        pipe->vertexInputBindings.push_back(
-            vk::VertexInputBindingDescription(location, strid));
-        location++;
-
-        bufferIndicies.push_back(std::get<1>(stride));
-        bufferOffsets.push_back(std::get<2>(stride));
-      }
-
-      if (prim.indices >= 0) [[likely]] {
-        const auto &indexAccesor = model.accessors[prim.indices];
-        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
-        const auto indexOffset = indexView.byteOffset + indexAccesor.byteOffset;
-        const IndexSize indextype =
-            indexView.byteStride == 4 ? IndexSize::UINT32 : IndexSize::UINT16;
-        const RenderInfo renderInfo = {bufferIndicies,
-                                       indexView.buffer + dataFirstIndex,
-                                       prim.material == -1
-                                           ? materialFirstIndex
-                                           : prim.material + materialFirstIndex,
-                                       indexAccesor.count,
-                                       1,
-                                       indexOffset,
-                                       indextype,
-                                       bufferOffsets};
-        renderInfos.push_back(renderInfo);
-      } else {
-        const auto accessorID = prim.attributes.begin()->second;
-        const auto &vertAccesor = model.accessors[accessorID];
-        const RenderInfo renderInfo = {bufferIndicies,
-                                       0,
-                                       prim.material == -1
-                                           ? materialFirstIndex
-                                           : prim.material + materialFirstIndex,
-                                       0,
-                                       1,
-                                       vertAccesor.count,
-                                       IndexSize::NONE,
-                                       bufferOffsets};
-        renderInfos.push_back(renderInfo);
-      }
-    }
-  }
-  pipe->inputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
-      {}, pipe->vertexInputBindings, pipe->vertexInputAttributes);
-  apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
-                     DataType::VertexIndexData);
-
-  std::vector<Material> materials;
-  materials.reserve(model.materials.size());
-  for (const auto &mat : model.materials) {
-    // const auto &color = mat.pbrMetallicRoughness.baseColorFactor;
-    Material nmMat(pipe);
-    nmMat.type = MaterialType::TextureOnly;
-    nmMat.data.textureMaterial.samplerIndex = samplerIndex;
-    nmMat.data.textureMaterial.textureIndex =
-        mat.pbrMetallicRoughness.baseColorTexture.index;
-    materials.push_back(nmMat);
-  }
-
-  if (materials.empty()) {
-    const Material defMat(pipe);
-    apiLayer->pushMaterials(1, &defMat);
-  } else {
-    apiLayer->pushMaterials(materials.size(), materials.data());
-  }
-  apiLayer->pushRender(renderInfos.size(), renderInfos.data());
+  pushRender(model, apiLayer, dataId, materials);
 
   return main::Error::NONE;
 }
