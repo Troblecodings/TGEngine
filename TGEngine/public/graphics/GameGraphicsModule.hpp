@@ -11,10 +11,7 @@ namespace tge::graphics {
 
 using Color = float[4];
 
-enum class MaterialType {
-    None,
-    TextureOnly
-};
+enum class MaterialType { None, TextureOnly };
 constexpr MaterialType MAX_TYPE = MaterialType::TextureOnly;
 
 struct TextureMaterial {
@@ -38,7 +35,7 @@ struct RenderInfo {
 };
 
 struct TextureInfo {
-  uint8_t* data = nullptr;
+  uint8_t *data = nullptr;
   uint32_t size;
   uint32_t width;
   uint32_t height;
@@ -61,6 +58,20 @@ struct SamplerInfo {
   AddressMode uMode;
   AddressMode vMode;
   int anisotropy = 0;
+};
+
+enum BindingType { UniformBuffer, Texture };
+
+struct BindingInfo {
+  size_t binding;
+  size_t materialId;
+  size_t dataID;
+  BindingType type;
+
+  bool operator==(const BindingInfo &bin) const {
+    return this->binding == bin.binding && this->materialId == bin.materialId &&
+           this->dataID == bin.dataID;
+  }
 };
 
 class GameGraphicsModule;
@@ -97,8 +108,7 @@ public:
 
   virtual void *loadShader(const MaterialType type) = 0;
 
-  virtual void bindData(const size_t dataId, const size_t materialId,
-                        const size_t binding) = 0;
+  virtual void bindData(const BindingInfo &info) = 0;
 
   const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 };
@@ -133,8 +143,7 @@ public:
   main::Error loadModel(const std::vector<char> &data, const bool binary,
                         const std::string &baseDir, void *shaderPipe = nullptr);
 
-  main::Error loadModel(const std::vector<char> &data,
-                        const bool binary) {
+  main::Error loadModel(const std::vector<char> &data, const bool binary) {
     return loadModel(data, binary, "");
   }
 

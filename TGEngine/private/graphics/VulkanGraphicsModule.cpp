@@ -167,6 +167,10 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
         };
         device.updateDescriptorSets(sets, {});
       }
+
+      for (const auto &bind : descSetWrite) {
+        this->bindData(bind);
+      }
     }
 
     const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
@@ -191,18 +195,29 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   return indexOffset;
 }
 
-void VulkanGraphicsModule::bindData(const size_t dataId,
-                                    const size_t materialId, const size_t binding) {
-  DEBUG_CALL_CHECK(dataId < 0 || materialId < 0);
+void VulkanGraphicsModule::bindData(const BindingInfo &info) {
+  DEBUG_CALL_CHECK(info.dataID < 0 || bufferList.size() < info.dataID);
 
-  const DescriptorBufferInfo descBufferInfo(bufferList[dataId]);
-  const auto descSet = descriptorSets[materialId];
+  const bool foundInSet = (std::find(descSetWrite.cbegin(), descSetWrite.cend(),
+                                     info) != descSetWrite.end());
+  if (descriptorSets.size() <= info.materialId) {
+    if (foundInSet)
+      return;
+    descSetWrite.push_back(info);
+  } else {
+    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID], 0, VK_WHOLE_SIZE);
+    const auto descSet = descriptorSets[info.materialId];
 
-  const std::array sets = {
-      WriteDescriptorSet(descSet, binding, 0, DescriptorType::eUniformBuffer,
-                         {}, descBufferInfo),
-  };
-  device.updateDescriptorSets(sets, {});
+    const std::array sets = {
+        WriteDescriptorSet(descSet, info.binding, 0,
+                           DescriptorType::eUniformBuffer, {}, descBufferInfo),
+    };
+    device.updateDescriptorSets(sets, {});
+    if (foundInSet) {
+      descSetWrite.erase(
+          std::remove(descSetWrite.begin(), descSetWrite.end(), info));
+    }
+  }
 }
 
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
@@ -277,7 +292,7 @@ inline void submitAndWait(const Device &device, const Queue &queue,
 }
 
 inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
-  switch(type){
+  switch (type) {
   case DataType::VertexIndexData:
     return BufferUsageFlagBits::eVertexBuffer |
            BufferUsageFlagBits::eIndexBuffer;

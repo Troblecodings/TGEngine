@@ -61,6 +61,7 @@ public:
   std::vector<DescriptorSet> descriptorSets;
   std::vector<DescriptorPool> descriptorPoolInfos;
   std::vector<DescriptorSetLayout> descSetLayouts;
+  std::vector<BindingInfo> descSetWrite;
 
   bool isInitialiazed = false;
   bool exitFailed = false;
@@ -94,8 +95,7 @@ public:
 
   void *loadShader(const MaterialType type) override;
 
-  void bindData(const size_t dataId, const size_t materialId,
-                const size_t binding) override;
+  void bindData(const BindingInfo &info) override;
 
 };
 

@@ -9,6 +9,7 @@
 #include <headerlibs/json.hpp>
 #include <mutex>
 #include <thread>
+#include <glm/glm.hpp>
 
 #define DEFAULT_TIME (120.0f)
 
@@ -85,23 +86,25 @@ TEST(EngineMain, Avocado) {
 
   ASSERT_EQ(init(), Error::NONE);
 
-  std::vector<std::string> test = {"assets/avocado.vert", "assets/testTexture.frag"};
+  std::vector<std::string> test = {"assets/avocado.vert",
+                                   "assets/testTexture.frag"};
   auto ptr = (tge::shader::VulkanShaderPipe *)
                  tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
+
+  glm::mat4 matrix;
+  auto dt = (uint8_t *)&matrix;
+  const auto size = matrix.size() * sizeof(matrix[0]);
+  const auto dataID = getAPILayer()->pushData(1, (const uint8_t **)&dt, &size,
+                                              DataType::Uniform);
+
+  const BindingInfo binfo = {2, 0, dataID, BindingType::UniformBuffer};
+  getAPILayer()->bindData(binfo);
 
   const auto vec = tge::util::wholeFile(
       "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
   ASSERT_EQ(getGameGraphicsModule()->loadModel(
                 vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr),
             Error::NONE);
-
-  std::array<float, 16> matrix;
-  auto dt = (uint8_t*)matrix.data();
-  const auto size = matrix.size() * sizeof(matrix[0]);
-
-  const auto dataID = getAPILayer()->pushData(1, (const uint8_t**)&dt, &size, DataType::Uniform);
-
-  getAPILayer()->bindData(dataID, 0, 2);
 
   syncMutex.unlock();
   waitForTime();

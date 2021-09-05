@@ -147,9 +147,9 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
 
   if (materials.empty()) {
     const Material defMat(pipe);
-    apiLayer->pushMaterials(1, &defMat);
+    return apiLayer->pushMaterials(1, &defMat);
   } else {
-    apiLayer->pushMaterials(materials.size(), materials.data());
+    return apiLayer->pushMaterials(materials.size(), materials.data());
   }
 }
 
