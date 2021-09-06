@@ -203,6 +203,8 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
                                           bufferID, vertOffset));
       }
 
+      std::sort(strides.rbegin(), strides.rend(),
+                [](auto x, auto y) { return std::get<0>(x) < std::get<0>(y); });
       std::vector<size_t> bufferIndicies;
       bufferIndicies.reserve(strides.size());
       std::vector<size_t> bufferOffsets;

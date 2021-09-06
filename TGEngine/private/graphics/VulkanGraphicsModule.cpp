@@ -99,8 +99,11 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, 1, &blendAttachment);
 
+  const StencilOpState stencil({}, {}, {}, CompareOp::eAlways);
+
   const PipelineDepthStencilStateCreateInfo pipeDepthState(
-      {}, true, true, CompareOp::eGreaterOrEqual, false, false, {}, {}, 0, 1);
+      {}, true, true, CompareOp::eGreaterOrEqual, false, false, stencil,
+      stencil, 0, 1);
 
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
@@ -205,7 +208,8 @@ void VulkanGraphicsModule::bindData(const BindingInfo &info) {
       return;
     descSetWrite.push_back(info);
   } else {
-    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID], 0, VK_WHOLE_SIZE);
+    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID], 0,
+                                              VK_WHOLE_SIZE);
     const auto descSet = descriptorSets[info.materialId];
 
     const std::array sets = {
@@ -859,7 +863,7 @@ void VulkanGraphicsModule::tick(double time) {
 
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
-    constexpr std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
+    constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
     const std::array clearValue = {ClearValue(clearColor),
                                    ClearValue(ClearDepthStencilValue(0.0f, 0))};
 

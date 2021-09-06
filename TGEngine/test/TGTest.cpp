@@ -1,6 +1,9 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
 #include <fstream>
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE 1
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
 #include <graphics/VulkanShaderModule.hpp>
@@ -9,7 +12,6 @@
 #include <headerlibs/json.hpp>
 #include <mutex>
 #include <thread>
-#include <glm/glm.hpp>
 
 #define DEFAULT_TIME (120.0f)
 
@@ -81,8 +83,33 @@ TEST(Shader, LoadAndCompile) {
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
 
+class Avocado : public tge::main::Module {
+public:
+  glm::mat4 matrix;
+
+  glm::mat4 model;
+  glm::mat4 view;
+  glm::mat4 proj;
+
+  APILayer *layer;
+  size_t buffer;
+  float rotation = 0;
+
+  void tick(double time) {
+    rotation += (float)time;
+    model = glm::translate(glm::vec3(0, 0, 100)) *
+            glm::scale(glm::vec3(10, 10, 10)) *
+            glm::rotate(rotation, glm::vec3(0, 1, 0));
+    matrix = model * view * proj;
+    layer->changeData(buffer, (const uint8_t *)&matrix, sizeof(matrix));
+  }
+};
+
 TEST(EngineMain, Avocado) {
   tge::main::modules.push_back(new TestModule());
+  Avocado* avoc = new Avocado();
+  avoc->matrix = glm::scale(glm::vec3(10, 10, 10));
+  tge::main::modules.push_back(avoc);
 
   ASSERT_EQ(init(), Error::NONE);
 
@@ -91,11 +118,21 @@ TEST(EngineMain, Avocado) {
   auto ptr = (tge::shader::VulkanShaderPipe *)
                  tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
 
-  glm::mat4 matrix;
-  auto dt = (uint8_t *)&matrix;
-  const auto size = matrix.size() * sizeof(matrix[0]);
+  const auto windowProp =
+      getGameGraphicsModule()->getWindowModule()->getWindowProperties();
+
+  avoc->proj = glm::perspective(
+      glm::radians(45.0f), (float)windowProp.width / (float)windowProp.height, 0.1f,
+      100.0f);
+  avoc->proj[1][1] *= -1;
+  avoc->view = glm::lookAt(glm::vec3(0, 3, 5), glm::vec3(0, 0, 0), glm::vec3(0, -1, 0));
+  avoc->matrix = glm::mat4(1);
+  const auto dt = (uint8_t *)&avoc->matrix;
+  const auto size = sizeof(avoc->matrix);
   const auto dataID = getAPILayer()->pushData(1, (const uint8_t **)&dt, &size,
                                               DataType::Uniform);
+  avoc->buffer = dataID;
+  avoc->layer = getAPILayer();
 
   const BindingInfo binfo = {2, 0, dataID, BindingType::UniformBuffer};
   getAPILayer()->bindData(binfo);
