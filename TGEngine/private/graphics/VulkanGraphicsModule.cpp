@@ -788,9 +788,9 @@ main::Error VulkanGraphicsModule::init() {
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
           ImageLayout::ePresentSrcKHR),
       AttachmentDescription(
-          {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eDontCare,
-          AttachmentStoreOp::eDontCare, AttachmentLoadOp::eClear,
-          AttachmentStoreOp::eStore, ImageLayout::eUndefined,
+          {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
+          AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
           ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {

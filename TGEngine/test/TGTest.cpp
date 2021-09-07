@@ -97,15 +97,15 @@ public:
 
   void tick(double time) {
     rotation += (float)time;
-    model = glm::translate(glm::vec3(0, 0, 100)) *
+    model = glm::translate(glm::vec3(0, 0, 0)) *
             glm::scale(glm::vec3(10, 10, 10)) *
             glm::rotate(rotation, glm::vec3(0, 1, 0));
-    matrix = model * view * proj;
+    matrix = proj * view * model;
     layer->changeData(buffer, (const uint8_t *)&matrix, sizeof(matrix));
   }
 };
 
-TEST(EngineMain, Avocado) {
+TEST(EngineMain, AvocadoTest) {
   tge::main::modules.push_back(new TestModule());
   Avocado* avoc = new Avocado();
   avoc->matrix = glm::scale(glm::vec3(10, 10, 10));
@@ -122,11 +122,10 @@ TEST(EngineMain, Avocado) {
       getGameGraphicsModule()->getWindowModule()->getWindowProperties();
 
   avoc->proj = glm::perspective(
-      glm::radians(45.0f), (float)windowProp.width / (float)windowProp.height, 0.1f,
+      glm::radians(45.0f), (float)windowProp.width / (float)windowProp.height, 0.01f,
       100.0f);
   avoc->proj[1][1] *= -1;
-  avoc->view = glm::lookAt(glm::vec3(0, 3, 5), glm::vec3(0, 0, 0), glm::vec3(0, -1, 0));
-  avoc->matrix = glm::mat4(1);
+  avoc->view = glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   const auto dt = (uint8_t *)&avoc->matrix;
   const auto size = sizeof(avoc->matrix);
   const auto dataID = getAPILayer()->pushData(1, (const uint8_t **)&dt, &size,

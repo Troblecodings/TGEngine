@@ -76,9 +76,7 @@ add_library (TGEngine STATIC
 
 add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
-message(${CMAKE_BINARY_DIR}/assets)
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/assets
-				   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/test/assets/
+add_custom_target(CopyAssetsToOutput SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test/assets/
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_CURRENT_SOURCE_DIR}/test/assets/ $<TARGET_FILE_DIR:TGEngineTest>/assets)
 target_link_libraries(TGEngineTest PUBLIC TGEngine gtest_main glslang SPIRV SPIRV-Tools SPIRV-Tools-opt shaderc_combined OSDependent MachineIndependent OGLCompiler SDL2 vulkan-1)

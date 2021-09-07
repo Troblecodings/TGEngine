@@ -16,6 +16,6 @@ out gl_PerVertex {
 };
 
 void main() {
-	gl_Position = vec4(POS, 1) * test.matrix;
+	gl_Position = test.matrix * vec4(POS, 1);
 	UVOUT = UV;
 }
