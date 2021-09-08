@@ -208,8 +208,8 @@ void VulkanGraphicsModule::bindData(const BindingInfo &info) {
       return;
     descSetWrite.push_back(info);
   } else {
-    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID], 0,
-                                              VK_WHOLE_SIZE);
+    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID],
+                                              info.offset, info.size);
     const auto descSet = descriptorSets[info.materialId];
 
     const std::array sets = {

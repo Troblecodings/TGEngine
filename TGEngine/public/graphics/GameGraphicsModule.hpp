@@ -4,10 +4,10 @@
 #include "../../public/Module.hpp"
 #include "WindowModule.hpp"
 #include "stdint.h"
-#include <string>
-#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <string>
+#include <vector>
 
 namespace tge::graphics {
 
@@ -69,10 +69,12 @@ struct BindingInfo {
   size_t materialId;
   size_t dataID;
   BindingType type;
+  size_t size = (~0ULL);
+  size_t offset = 0;
 
   bool operator==(const BindingInfo &bin) const {
     return this->binding == bin.binding && this->materialId == bin.materialId &&
-           this->dataID == bin.dataID;
+           this->dataID == bin.dataID && this->offset == bin.offset;
   }
 };
 
@@ -134,9 +136,9 @@ struct Material {
 };
 
 struct NodeTransform {
-  glm::vec3 translation;
-  glm::vec3 scale;
-  glm::quat rotation;
+  glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+  glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 };
 
 class GameGraphicsModule : public main::Module {
@@ -154,8 +156,7 @@ class GameGraphicsModule : public main::Module {
   size_t dataID = UINT64_MAX;
 
 public:
-  GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
-      : apiLayer(apiLayer), windowModule(winModule) {}
+  GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule);
 
   main::Error loadModel(const std::vector<char> &data, const bool binary,
                         const std::string &baseDir, void *shaderPipe = nullptr);
@@ -167,6 +168,10 @@ public:
   uint32_t loadTextures(const std::vector<std::vector<char>> &data);
 
   uint32_t loadTextures(const std::vector<std::string> &names);
+
+  size_t addNode(const size_t material,
+                 const NodeTransform &transforms = {},
+                 const size_t parent = UINT64_MAX);
 
   main::Error init() override;
 

@@ -105,7 +105,33 @@ public:
   }
 };
 
-TEST(EngineMain, AvocadoTest) {
+TEST(EngineMain, AvocadoTestOne) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  std::vector<std::string> test = {"assets/avocado.vert",
+                                   "assets/testTexture.frag"};
+  auto ptr = (tge::shader::VulkanShaderPipe *)
+                 tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
+
+  const BindingInfo binfo = {2, 0, dataID, BindingType::UniformBuffer};
+  getGameGraphicsModule()->addNode();
+
+  getAPILayer()->bindData(binfo);
+
+  const auto vec = tge::util::wholeFile(
+      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
+  ASSERT_EQ(getGameGraphicsModule()->loadModel(
+                vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr),
+            Error::NONE);
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
+TEST(EngineMain, AvocadoTestTwo) {
   tge::main::modules.push_back(new TestModule());
   Avocado* avoc = new Avocado();
   avoc->matrix = glm::scale(glm::vec3(10, 10, 10));

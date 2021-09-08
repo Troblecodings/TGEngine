@@ -1,5 +1,6 @@
 #include "..\..\public\graphics\GameGraphicsModule.hpp"
 #include "../../public/graphics/GameGraphicsModule.hpp"
+#include "..\..\public\graphics\GameGraphicsModule.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -253,6 +254,20 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
   apiLayer->pushRender(renderInfos.size(), renderInfos.data());
 }
 
+GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
+                                       WindowModule *winModule) {
+  const auto prop = winModule->getWindowProperties();
+  this->apiLayer = apiLayer;
+  this->windowModule = winModule;
+  // TODO Cleanup
+  this->projectionMatrix =
+      glm::perspective(glm::radians(45.0f),
+                       (float)prop.width / (float)prop.height, 0.01f, 100.0f);
+  this->projectionMatrix[1][1] *= -1;
+  this->viewMatrix =
+      glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+}
+
 main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           const bool binary,
                                           const std::string &baseDir,
@@ -295,7 +310,7 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
 main::Error GameGraphicsModule::init() {
   const auto size = this->node.size();
   std::vector<glm::mat4> mvps;
-  mvps.resize(size);
+  mvps.resize(100000);
   glm::mat4 projView = this->projectionMatrix * this->viewMatrix;
   for (size_t i = 0; i < size; i++) {
     const auto &transform = this->node[i];
@@ -378,6 +393,33 @@ GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
     data.push_back(util::wholeFile(name));
   }
   return loadTextures(data);
+}
+
+size_t GameGraphicsModule::addNode(const size_t material,
+                                   const NodeTransform &transform,
+                                   const size_t parent) {
+  const auto nodeID = node.size();
+  node.push_back(transform);
+
+  const auto mMatrix = glm::translate(transform.translation) *
+                       glm::scale(transform.scale) *
+                       glm::toMat4(transform.rotation);
+  if (parent < nodeID) {
+    modelMatrices.push_back(modelMatrices[parent] * mMatrix);
+    parents.push_back(parent);
+  } else {
+    modelMatrices.push_back(mMatrix);
+    parents.push_back(UINT64_MAX);
+  }
+  status.push_back(0);
+  const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
+  apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
+                       sizeof(mvp) * nodeID);
+  const BindingInfo info = {2,           material,
+                            dataID,      BindingType::UniformBuffer,
+                            sizeof(mvp), sizeof(mvp) * nodeID};
+  apiLayer->bindData(info);
+  return nodeID;
 }
 
 } // namespace tge::graphics
