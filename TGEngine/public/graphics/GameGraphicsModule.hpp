@@ -6,6 +6,8 @@
 #include "stdint.h"
 #include <string>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace tge::graphics {
 
@@ -131,10 +133,25 @@ struct Material {
   void *costumShaderData = nullptr; // API dependent
 };
 
+struct NodeTransform {
+  glm::vec3 translation;
+  glm::vec3 scale;
+  glm::quat rotation;
+};
+
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
   WindowModule *windowModule;
+
+  glm::mat4 projectionMatrix;
+  glm::mat4 viewMatrix;
+  std::vector<glm::mat4> modelMatrices;
+  std::vector<NodeTransform> node;
+  std::vector<size_t> parents;
+  std::vector<char> status; // jesus fuck not going to use a bool here
+  bool allDirty;
+  size_t dataID = UINT64_MAX;
 
 public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule)
@@ -152,6 +169,8 @@ public:
   uint32_t loadTextures(const std::vector<std::string> &names);
 
   main::Error init() override;
+
+  void tick(double time) override;
 
   void destroy() override;
 

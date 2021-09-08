@@ -1,3 +1,4 @@
+#include "..\..\public\graphics\GameGraphicsModule.hpp"
 #include "../../public/graphics/GameGraphicsModule.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
@@ -8,6 +9,7 @@
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #include "../../public/headerlibs/tiny_gltf.h"
 #include <array>
+#include <glm/gtx/transform.hpp>
 #include <iostream>
 
 namespace tge::graphics {
@@ -94,7 +96,8 @@ inline size_t loadTexturesFM(const Model &model, APILayer *apiLayer) {
 }
 
 inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
-                            void *shaderPipe, const size_t sampler, const size_t texture) {
+                            void *shaderPipe, const size_t sampler,
+                            const size_t texture) {
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
   for (const auto &mat : model.materials) {
@@ -104,8 +107,8 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     Material nmMat(shaderPipe);
     nmMat.type = MaterialType::TextureOnly;
     const auto nextSampler = model.textures[diffuseTexture.index].sampler;
-    nmMat.data.textureMaterial.samplerIndex = nextSampler < 0
-        ? sampler:(nextSampler + sampler);
+    nmMat.data.textureMaterial.samplerIndex =
+        nextSampler < 0 ? sampler : (nextSampler + sampler);
     nmMat.data.textureMaterial.textureIndex = diffuseTexture.index + texture;
     materials.push_back(nmMat);
   }
@@ -181,8 +184,8 @@ inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
       }
     }
   }
-  return apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(), sizes.data(),
-                     DataType::VertexIndexData);
+  return apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(),
+                            sizes.data(), DataType::VertexIndexData);
 }
 
 inline void pushRender(const Model &model, APILayer *apiLayer,
@@ -281,14 +284,66 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
 
   const auto dataId = loadDataBuffers(model, apiLayer);
 
-  const auto materials = loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
+  const auto materials =
+      loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
 
   pushRender(model, apiLayer, dataId, materials);
 
   return main::Error::NONE;
 }
 
-main::Error GameGraphicsModule::init() { return main::Error::NONE; }
+main::Error GameGraphicsModule::init() {
+  const auto size = this->node.size();
+  std::vector<glm::mat4> mvps;
+  mvps.resize(size);
+  glm::mat4 projView = this->projectionMatrix * this->viewMatrix;
+  for (size_t i = 0; i < size; i++) {
+    const auto &transform = this->node[i];
+    const auto parantID = this->parents[i];
+    const auto mMatrix = glm::translate(transform.translation) *
+                         glm::scale(transform.scale) *
+                         glm::toMat4(transform.rotation);
+    if (parantID < size) {
+      modelMatrices[i] = modelMatrices[parantID] * mMatrix;
+    } else {
+      modelMatrices[i] = mMatrix;
+    }
+    mvps[i] = projView * modelMatrices[i];
+  }
+  const uint8_t *mvpsPtr = (uint8_t *)mvps.data();
+  if (dataID != UINT64_MAX) {
+    apiLayer->changeData(dataID, mvpsPtr, mvps.size() * sizeof(glm::mat4));
+  } else {
+    const auto arrSize = mvps.size() * sizeof(glm::mat4);
+    apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
+  }
+  allDirty = false;
+  return main::Error::NONE;
+}
+
+void GameGraphicsModule::tick(double time) {
+  if (!allDirty) {
+    const auto size = this->node.size();
+    for (size_t i = 0; i < size; i++) {
+      if (this->status[i] == 1) {
+        const auto &transform = this->node[i];
+        const auto parantID = this->parents[i];
+        const auto mMatrix = glm::translate(transform.translation) *
+                             glm::scale(transform.scale) *
+                             glm::toMat4(transform.rotation);
+        if (parantID < size) {
+          modelMatrices[i] = modelMatrices[parantID] * mMatrix;
+        } else {
+          modelMatrices[i] = mMatrix;
+        }
+        apiLayer->changeData(dataID, (const uint8_t *)modelMatrices.data(),
+                             sizeof(glm::mat4), i * sizeof(glm::mat4));
+      }
+    }
+    return;
+  }
+  init();
+}
 
 void GameGraphicsModule::destroy() {}
 
