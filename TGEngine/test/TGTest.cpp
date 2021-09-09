@@ -221,7 +221,7 @@ TEST(EngineMain, SamplerAndTextures) {
 
   const std::array dptr = {vertData.data()};
   const std::array size = {vertData.size() * sizeof(float)};
-  size_t dataOffset;
+  size_t dataOffset = -1;
   ASSERT_NO_THROW(dataOffset =
                       apiLayer->pushData(1, (const uint8_t **)dptr.data(),
                                          size.data(), DataType::VertexData));
@@ -229,12 +229,13 @@ TEST(EngineMain, SamplerAndTextures) {
   const std::array indexData = {0, 1, 2, 2, 3, 0};
   const std::array indexdptr = {indexData.data()};
   const std::array indexsize = {indexData.size() * sizeof(int)};
-  ASSERT_NO_THROW(__dNoDiscard1 = apiLayer->pushData(
-                      1, (const uint8_t **)indexdptr.data(), indexsize.data(),
-                      DataType::IndexData));
+  size_t indexBuffer = -1;
+  ASSERT_NO_THROW(
+      indexBuffer = apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
+                                       indexsize.data(), DataType::IndexData));
 
   RenderInfo renderInfo;
-  renderInfo.indexBuffer = 1 + dataOffset;
+  renderInfo.indexBuffer = indexBuffer;
   renderInfo.materialId = materialOffset;
   renderInfo.indexCount = indexData.size();
   renderInfo.vertexBuffer.push_back(dataOffset);

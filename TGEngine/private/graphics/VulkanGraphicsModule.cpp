@@ -40,7 +40,7 @@ Result verror = Result::eSuccess;
     std::string s = to_string(verror);                                         \
     const auto file = __FILE__;                                                \
     const auto line = __LINE__;                                                \
-    printf("Vulkan error %s in %s L%d!\n", s.c_str(), file, line);              \
+    printf("Vulkan error %s in %s L%d!\n", s.c_str(), file, line);             \
   } // namespace tge::graphics
 
 inline void waitForImageTransition(
@@ -241,9 +241,7 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
 
   const CommandBufferInheritanceInfo inheritance(renderpass, 0);
   const CommandBufferBeginInfo beginInfo(
-      CommandBufferUsageFlagBits::eSimultaneousUse |
-          CommandBufferUsageFlagBits::eRenderPassContinue,
-      &inheritance);
+      CommandBufferUsageFlagBits::eRenderPassContinue, &inheritance);
   cmdBuf.begin(beginInfo);
   for (size_t i = 0; i < renderInfoCount; i++) {
     auto &info = renderInfos[i];
@@ -795,9 +793,9 @@ main::Error VulkanGraphicsModule::init() {
           ImageLayout::ePresentSrcKHR),
       AttachmentDescription(
           {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
-          AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, AttachmentLoadOp::eDontCare,
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
-          ImageLayout::ePresentSrcKHR)};
+          ImageLayout::eDepthStencilAttachmentOptimal)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
@@ -809,9 +807,17 @@ main::Error VulkanGraphicsModule::init() {
       SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
                          {}, &depthAttachment)};
 
-  const std::array subpassDependencies = {SubpassDependency(
-      0, VK_SUBPASS_EXTERNAL, PipelineStageFlagBits::eAllGraphics,
-      PipelineStageFlagBits::eTopOfPipe, (AccessFlagBits)0, (AccessFlagBits)0)};
+  const std::array subpassDependencies = {
+      SubpassDependency(VK_SUBPASS_EXTERNAL, 0,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        (AccessFlagBits)0,
+                        AccessFlagBits::eColorAttachmentWrite |
+                            AccessFlagBits::eColorAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentWrite)};
 
   const RenderPassCreateInfo renderPassCreateInfo(
       {}, attachments, subpassDescriptions, subpassDependencies);
@@ -874,8 +880,7 @@ void VulkanGraphicsModule::tick(double time) {
     const std::array clearValue = {ClearValue(clearColor),
                                    ClearValue(ClearDepthStencilValue(0.0f, 0))};
 
-    const CommandBufferBeginInfo cmdBufferBeginInfo(
-        CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+    const CommandBufferBeginInfo cmdBufferBeginInfo({}, nullptr);
     currentBuffer.begin(cmdBufferBeginInfo);
 
     const RenderPassBeginInfo renderPassBeginInfo(
@@ -890,7 +895,9 @@ void VulkanGraphicsModule::tick(double time) {
     currentBuffer.end();
   }
 
-  const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
+  const PipelineStageFlags stageFlag =
+      PipelineStageFlagBits::eColorAttachmentOutput |
+      PipelineStageFlagBits::eLateFragmentTests;
   const SubmitInfo submitInfo(waitSemaphore, stageFlag, currentBuffer,
                               signalSemaphore);
 
@@ -902,6 +909,9 @@ void VulkanGraphicsModule::tick(double time) {
   if (result == Result::eErrorOutOfDateKHR) {
     exitFailed = true;
     return;
+  }
+  if (result == Result::eErrorInitializationFailed) {
+    printf("For some reasone NV drivers seem to be hitting this error!");
   }
   VERROR(result);
 

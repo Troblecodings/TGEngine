@@ -92,7 +92,7 @@ void WindowModule::tick(double deltatime) {}
 
 void WindowModule::destroy() {
   this->closing = true;
-  std::lock_guard(this->exitMutex);
+  std::lock_guard lg(this->exitMutex);
 }
 
 WindowProperties WindowModule::getWindowProperties() {
