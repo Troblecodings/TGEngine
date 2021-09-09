@@ -93,11 +93,13 @@ public:
 
   virtual ~APILayer() {}
 
-  virtual size_t pushMaterials(const size_t materialcount,
-                               const Material *materials) = 0;
+  _NODISCARD virtual size_t pushMaterials(const size_t materialcount,
+                                          const Material *materials) = 0;
 
-  virtual size_t pushData(const size_t dataCount, const uint8_t **data,
-                          const size_t *dataSizes, const DataType type) = 0;
+  _NODISCARD virtual size_t pushData(const size_t dataCount,
+                                     const uint8_t **data,
+                                     const size_t *dataSizes,
+                                     const DataType type) = 0;
 
   virtual void changeData(const size_t bufferIndex, const uint8_t *data,
                           const size_t dataSizes, const size_t offset = 0) = 0;
@@ -105,16 +107,18 @@ public:
   virtual void pushRender(const size_t renderInfoCount,
                           const RenderInfo *renderInfos) = 0;
 
-  virtual size_t pushSampler(const SamplerInfo &sampler) = 0;
+  _NODISCARD virtual size_t pushSampler(const SamplerInfo &sampler) = 0;
 
-  virtual size_t pushTexture(const size_t textureCount,
-                             const TextureInfo *textures) = 0;
+  _NODISCARD virtual size_t pushTexture(const size_t textureCount,
+                                        const TextureInfo *textures) = 0;
 
-  virtual void *loadShader(const MaterialType type) = 0;
+  _NODISCARD virtual void *loadShader(const MaterialType type) = 0;
 
   virtual void bindData(const BindingInfo &info) = 0;
 
-  const GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
+  _NODISCARD const GameGraphicsModule *getGraphicsModule() {
+    return graphicsModule;
+  };
 };
 
 struct Material {
@@ -141,6 +145,12 @@ struct NodeTransform {
   glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 };
 
+struct NodeInfo {
+  size_t material = UINT64_MAX;
+  NodeTransform transforms = {};
+  size_t parent = UINT64_MAX;
+};
+
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
@@ -158,20 +168,20 @@ class GameGraphicsModule : public main::Module {
 public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule);
 
-  main::Error loadModel(const std::vector<char> &data, const bool binary,
-                        const std::string &baseDir, void *shaderPipe = nullptr);
+  _NODISCARD size_t loadModel(const std::vector<char> &data, const bool binary,
+                              const std::string &baseDir,
+                              void *shaderPipe = nullptr);
 
-  main::Error loadModel(const std::vector<char> &data, const bool binary) {
+  _NODISCARD size_t loadModel(const std::vector<char> &data,
+                              const bool binary) {
     return loadModel(data, binary, "");
   }
 
-  uint32_t loadTextures(const std::vector<std::vector<char>> &data);
+  _NODISCARD uint32_t loadTextures(const std::vector<std::vector<char>> &data);
 
-  uint32_t loadTextures(const std::vector<std::string> &names);
+  _NODISCARD uint32_t loadTextures(const std::vector<std::string> &names);
 
-  size_t addNode(const size_t material,
-                 const NodeTransform &transforms = {},
-                 const size_t parent = UINT64_MAX);
+  _NODISCARD size_t addNode(const NodeInfo *nodeInfos, const size_t count);
 
   main::Error init() override;
 
@@ -179,9 +189,9 @@ public:
 
   void destroy() override;
 
-  APILayer *getAPILayer() { return apiLayer; }
+  _NODISCARD APILayer *getAPILayer() { return apiLayer; }
 
-  WindowModule *getWindowModule() { return windowModule; }
+  _NODISCARD WindowModule *getWindowModule() { return windowModule; }
 };
 
 } // namespace tge::graphics

@@ -268,7 +268,7 @@ GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
       glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 }
 
-main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
+size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
                                           const bool binary,
                                           const std::string &baseDir,
                                           void *shaderPipe) {
@@ -286,7 +286,7 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
   if (!rst) {
     printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
            error.c_str(), warning.c_str());
-    return main::Error::GLTF_LOADER_ERROR;
+    return UINT64_MAX;
   }
 
   if (!warning.empty()) {
@@ -302,9 +302,13 @@ main::Error GameGraphicsModule::loadModel(const std::vector<char> &data,
   const auto materials =
       loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
 
+    // TODO PUT INTO
+  const NodeInfo nodeInfo = {materials};
+  const auto nId = addNode(&nodeInfo, 1);
+
   pushRender(model, apiLayer, dataId, materials);
 
-  return main::Error::NONE;
+  return nId;
 }
 
 main::Error GameGraphicsModule::init() {
@@ -330,7 +334,7 @@ main::Error GameGraphicsModule::init() {
     apiLayer->changeData(dataID, mvpsPtr, mvps.size() * sizeof(glm::mat4));
   } else {
     const auto arrSize = mvps.size() * sizeof(glm::mat4);
-    apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
+    dataID = apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
   }
   allDirty = false;
   return main::Error::NONE;
@@ -395,30 +399,36 @@ GameGraphicsModule::loadTextures(const std::vector<std::string> &names) {
   return loadTextures(data);
 }
 
-size_t GameGraphicsModule::addNode(const size_t material,
-                                   const NodeTransform &transform,
-                                   const size_t parent) {
+size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
+                                   const size_t count) {
   const auto nodeID = node.size();
-  node.push_back(transform);
+  node.reserve(nodeID + count);
+  for (size_t i = 0; i < count; i++) {
+    const auto nodeI = nodeInfos[i];
+    const auto nodeIndex = (nodeID + i);
+    node.push_back(nodeI.transforms);
 
-  const auto mMatrix = glm::translate(transform.translation) *
-                       glm::scale(transform.scale) *
-                       glm::toMat4(transform.rotation);
-  if (parent < nodeID) {
-    modelMatrices.push_back(modelMatrices[parent] * mMatrix);
-    parents.push_back(parent);
-  } else {
-    modelMatrices.push_back(mMatrix);
-    parents.push_back(UINT64_MAX);
+    const auto mMatrix = glm::translate(nodeI.transforms.translation) *
+                         glm::scale(nodeI.transforms.scale) *
+                         glm::toMat4(nodeI.transforms.rotation);
+    if (nodeI.parent < nodeIndex) {
+      modelMatrices.push_back(modelMatrices[nodeI.parent] * mMatrix);
+      parents.push_back(nodeI.parent);
+    } else {
+      modelMatrices.push_back(mMatrix);
+      parents.push_back(UINT64_MAX);
+    }
+    status.push_back(0);
+    if (nodeI.material != UINT64_MAX) {
+      const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
+      apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
+                           sizeof(mvp) * nodeID);
+      const BindingInfo info = {2,           nodeI.material,
+                                dataID,      BindingType::UniformBuffer,
+                                sizeof(mvp), sizeof(mvp) * nodeID};
+      apiLayer->bindData(info);
+    }
   }
-  status.push_back(0);
-  const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
-  apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
-                       sizeof(mvp) * nodeID);
-  const BindingInfo info = {2,           material,
-                            dataID,      BindingType::UniformBuffer,
-                            sizeof(mvp), sizeof(mvp) * nodeID};
-  apiLayer->bindData(info);
   return nodeID;
 }
 
