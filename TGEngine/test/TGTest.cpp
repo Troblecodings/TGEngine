@@ -186,71 +186,6 @@ TEST(EngineMain, AvocadoTestOne) {
   exitWaitCheck();
 }
 
-class Avocado : public tge::main::Module {
-public:
-  glm::mat4 matrix;
-
-  glm::mat4 model;
-  glm::mat4 view;
-  glm::mat4 proj;
-
-  APILayer *layer;
-  size_t buffer;
-  float rotation = 0;
-
-  void tick(double time) {
-    rotation += (float)time;
-    model = glm::translate(glm::vec3(0, 0, 0)) *
-            glm::scale(glm::vec3(10, 10, 10)) *
-            glm::rotate(rotation, glm::vec3(0, 1, 0));
-    matrix = proj * view * model;
-    layer->changeData(buffer, (const uint8_t *)&matrix, sizeof(matrix));
-  }
-};
-
-TEST(EngineMain, AvocadoTestTwo) {
-  tge::main::modules.push_back(new TestModule());
-  Avocado *avoc = new Avocado();
-  avoc->matrix = glm::scale(glm::vec3(10, 10, 10));
-  tge::main::modules.push_back(avoc);
-
-  ASSERT_EQ(init(), Error::NONE);
-
-  std::vector<std::string> test = {"assets/avocado.vert",
-                                   "assets/testTexture.frag"};
-  auto ptr = (tge::shader::VulkanShaderPipe *)
-                 tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
-
-  const auto windowProp =
-      getGameGraphicsModule()->getWindowModule()->getWindowProperties();
-
-  avoc->proj = glm::perspective(
-      glm::radians(45.0f), (float)windowProp.width / (float)windowProp.height,
-      0.01f, 100.0f);
-  avoc->proj[1][1] *= -1;
-  avoc->view =
-      glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-  const auto dt = (uint8_t *)&avoc->matrix;
-  const auto size = sizeof(avoc->matrix);
-  const auto dataID = getAPILayer()->pushData(1, (const uint8_t **)&dt, &size,
-                                              DataType::Uniform);
-  avoc->buffer = dataID;
-  avoc->layer = getAPILayer();
-
-  const BindingInfo binfo = {2, 0, dataID, BindingType::UniformBuffer};
-  getAPILayer()->bindData(binfo);
-
-  const auto vec = tge::util::wholeFile(
-      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
-  const auto mdlID = getGameGraphicsModule()->loadModel(
-      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
-  ASSERT_NE(mdlID, UINT64_MAX);
-
-  syncMutex.unlock();
-  waitForTime();
-  exitWaitCheck();
-}
-
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
 TEST(EngineMain, SamplerAndTextures) {
@@ -267,8 +202,8 @@ TEST(EngineMain, SamplerAndTextures) {
   ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
 
   size_t __dNoDiscard1 = 0;
-  ASSERT_ANY_THROW(__dNoDiscard1 =
-                   getGameGraphicsModule()->loadTextures({"assets/test3c.png"}));
+  ASSERT_ANY_THROW(__dNoDiscard1 = getGameGraphicsModule()->loadTextures(
+                       {"assets/test3c.png"}));
 
   ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
                       {"assets/test.png"}));
@@ -375,8 +310,7 @@ TEST(EngineApi, GraphicsAPIChecks) {
                std::runtime_error);
   ASSERT_THROW(__dNoDiscard1 = apiLayer->pushMaterials(1, nullptr),
                std::runtime_error);
-  ASSERT_THROW(apiLayer->pushRender(1, nullptr),
-               std::runtime_error);
+  ASSERT_THROW(apiLayer->pushRender(1, nullptr), std::runtime_error);
   ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(1, nullptr),
                std::runtime_error);
 }
@@ -385,7 +319,6 @@ TEST(EngineApi, GameAPIChecks) {}
 
 TEST(EngineApi, Exit) {
   syncMutex.unlock();
-  printf("Wait!");
   exitWaitCheck();
 }
 

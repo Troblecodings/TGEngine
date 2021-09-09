@@ -37,9 +37,11 @@ Result verror = Result::eSuccess;
   if (rslt != Result::eSuccess) {                                              \
     verror = rslt;                                                             \
     main::error = main::Error::VULKAN_ERROR;                                   \
-    printf("Vulkan error %s in %s %s!\n", to_string(verror).c_str(), __FILE__, \
-           __LINE__);                                                          \
-  }
+    std::string s = to_string(verror);                                         \
+    const auto file = __FILE__;                                                \
+    const auto line = __LINE__;                                                \
+    printf("Vulkan error %s in %s L%d!\n", s.c_str(), file, line);              \
+  } // namespace tge::graphics
 
 inline void waitForImageTransition(
     const CommandBuffer &curBuffer, const ImageLayout oldLayout,
@@ -855,6 +857,7 @@ main::Error VulkanGraphicsModule::init() {
 #pragma endregion
 
   this->isInitialiazed = true;
+  device.waitIdle();
   return main::Error::NONE;
 }
 
@@ -912,6 +915,7 @@ void VulkanGraphicsModule::tick(double time) {
 
 void VulkanGraphicsModule::destroy() {
   this->isInitialiazed = false;
+  device.waitIdle();
   device.destroyImageView(depthImageView);
   device.freeMemory(depthImageMemory);
   device.destroyImage(depthImage);
