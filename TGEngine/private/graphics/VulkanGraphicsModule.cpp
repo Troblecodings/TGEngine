@@ -37,7 +37,8 @@ Result verror = Result::eSuccess;
   if (rslt != Result::eSuccess) {                                              \
     verror = rslt;                                                             \
     main::error = main::Error::VULKAN_ERROR;                                   \
-    printf("Vulkan error %d!", (uint32_t)verror);                              \
+    printf("Vulkan error %s in %s %s!\n", to_string(verror).c_str(), __FILE__, \
+           __LINE__);                                                          \
   }
 
 inline void waitForImageTransition(
@@ -176,7 +177,10 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       }
     }
 
-    const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
+    descSetLayouts.push_back(descLayout);
+    const auto layoutCreateInfo = descLayout
+                                      ? PipelineLayoutCreateInfo({}, descLayout)
+                                      : PipelineLayoutCreateInfo();
     const auto pipeLayout = device.createPipelineLayout(layoutCreateInfo);
     pipelineLayouts.push_back(pipeLayout);
 

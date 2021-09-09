@@ -183,6 +183,8 @@ public:
 
   _NODISCARD size_t addNode(const NodeInfo *nodeInfos, const size_t count);
 
+  void updateTransform(const size_t nodeID, const NodeTransform &transform);
+
   main::Error init() override;
 
   void tick(double time) override;

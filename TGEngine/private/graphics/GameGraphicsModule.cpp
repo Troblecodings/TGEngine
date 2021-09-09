@@ -1,4 +1,5 @@
 #include "..\..\public\graphics\GameGraphicsModule.hpp"
+#include "..\..\public\graphics\GameGraphicsModule.hpp"
 #include "../../public/graphics/GameGraphicsModule.hpp"
 #include "..\..\public\graphics\GameGraphicsModule.hpp"
 
@@ -265,7 +266,7 @@ GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
                        (float)prop.width / (float)prop.height, 0.01f, 100.0f);
   this->projectionMatrix[1][1] *= -1;
   this->viewMatrix =
-      glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+      glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 }
 
 size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
@@ -343,10 +344,11 @@ main::Error GameGraphicsModule::init() {
 void GameGraphicsModule::tick(double time) {
   if (!allDirty) {
     const auto size = this->node.size();
+    const auto projView = this->projectionMatrix * this->viewMatrix;
     for (size_t i = 0; i < size; i++) {
-      if (this->status[i] == 1) {
+      const auto parantID = this->parents[i];
+      if (this->status[i] == 1 || (parantID < size && this->status[parantID])) {
         const auto &transform = this->node[i];
-        const auto parantID = this->parents[i];
         const auto mMatrix = glm::translate(transform.translation) *
                              glm::scale(transform.scale) *
                              glm::toMat4(transform.rotation);
@@ -355,10 +357,12 @@ void GameGraphicsModule::tick(double time) {
         } else {
           modelMatrices[i] = mMatrix;
         }
-        apiLayer->changeData(dataID, (const uint8_t *)modelMatrices.data(),
+        const auto mvp = projView * modelMatrices[i];
+        apiLayer->changeData(dataID, (const uint8_t *)&mvp,
                              sizeof(glm::mat4), i * sizeof(glm::mat4));
       }
     }
+    std::fill(status.begin(), status.end(), 0);
     return;
   }
   init();
@@ -430,6 +434,12 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
     }
   }
   return nodeID;
+}
+
+void GameGraphicsModule::updateTransform(const size_t nodeID,
+                                         const NodeTransform &transform) {
+  this->node[nodeID] = transform;
+  this->status[nodeID] = 1;
 }
 
 } // namespace tge::graphics

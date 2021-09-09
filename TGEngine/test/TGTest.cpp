@@ -13,7 +13,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (120.0f)
+#define DEFAULT_TIME (3.0f)
 
 #define MODEL_TEST 0
 
@@ -83,12 +83,83 @@ TEST(Shader, LoadAndCompile) {
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
 
+void defaultTestData() {
+  APILayer *apiLayer = getAPILayer();
+  size_t materialOffset;
+  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
+  const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
+                               1.0f, 0.0f, 0.2f, 1.0f,  //
+                               1.0f, 1.0f, 0.2f, 1.0f,  //
+                               -1.0f, 1.0f, 0.2f, 1.0f, //
+                                                        //
+                               -1.0f, 0.0f, 0.1f, 1.0f, //
+                               1.0f, 0.0f, 0.1f, 1.0f,  //
+                               1.0f, 1.0f, 0.1f, 1.0f,  //
+                               -1.0f, 1.0f, 0.1f, 1.0f};
+  const std::array dptr = {vertData.data()};
+  const std::array size = {vertData.size() * sizeof(float)};
+  size_t dataOffset;
+  ASSERT_NO_THROW(dataOffset =
+                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
+                                         size.data(), DataType::VertexData));
+
+  const std::array indexData = {0, 1, 2, 2, 3, 0};
+  const std::array indexdptr = {indexData.data()};
+  const std::array indexsize = {indexData.size() * sizeof(int)};
+  size_t __dNoDiscard1;
+  ASSERT_NO_THROW(__dNoDiscard1 = apiLayer->pushData(
+                      1, (const uint8_t **)indexdptr.data(), indexsize.data(),
+                      DataType::IndexData));
+
+  RenderInfo renderInfo;
+  renderInfo.indexBuffer = 1 + dataOffset;
+  renderInfo.materialId = materialOffset;
+  renderInfo.indexCount = indexData.size();
+  renderInfo.vertexBuffer.push_back(dataOffset);
+  ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
+}
+
+TEST(EngineMain, Start) {
+  tge::main::modules.push_back(new TestModule());
+  ASSERT_EQ(start(), Error::NOT_INITIALIZED);
+  ASSERT_EQ(init(), Error::NONE);
+
+  defaultTestData();
+
+  ASSERT_EQ(init(), Error::ALREADY_INITIALIZED);
+  syncMutex.unlock();
+}
+
+TEST(EngineMain, InitAndTickTest) {
+  ASSERT_TRUE(hasInit);
+  ASSERT_TRUE(hasTick);
+  waitForTime();
+  ASSERT_EQ(start(), Error::ALREADY_RUNNING);
+}
+
+void exitWaitCheck() {
+  ASSERT_NO_FATAL_FAILURE(requestExit());
+  syncMutex.lock();
+  ASSERT_TRUE(hasDestroy);
+  ASSERT_EQ(err, Error::NONE);
+}
+
+TEST(EngineMain, Exit) { exitWaitCheck(); }
+
 class Avocado2Test : public tge::main::Module {
 public:
   GameGraphicsModule *ggm;
   float rotation = 0;
+  size_t nodeID;
 
-  void tick(double time) { rotation += (float)time; }
+  void tick(double time) {
+    rotation += (float)time;
+    const NodeTransform transform = {
+        {},
+        glm::vec3(4, 4, 4),
+        glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
+    ggm->updateTransform(nodeID, transform);
+  }
 };
 
 TEST(EngineMain, AvocadoTestOne) {
@@ -180,69 +251,6 @@ TEST(EngineMain, AvocadoTestTwo) {
   exitWaitCheck();
 }
 
-void defaultTestData() {
-  APILayer *apiLayer = getAPILayer();
-  size_t materialOffset;
-  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
-  const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
-                               1.0f, 0.0f, 0.2f, 1.0f,  //
-                               1.0f, 1.0f, 0.2f, 1.0f,  //
-                               -1.0f, 1.0f, 0.2f, 1.0f, //
-                                                        //
-                               -1.0f, 0.0f, 0.1f, 1.0f, //
-                               1.0f, 0.0f, 0.1f, 1.0f,  //
-                               1.0f, 1.0f, 0.1f, 1.0f,  //
-                               -1.0f, 1.0f, 0.1f, 1.0f};
-  const std::array dptr = {vertData.data()};
-  const std::array size = {vertData.size() * sizeof(float)};
-  size_t dataOffset;
-  ASSERT_NO_THROW(dataOffset =
-                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
-                                         size.data(), DataType::VertexData));
-
-  const std::array indexData = {0, 1, 2, 2, 3, 0};
-  const std::array indexdptr = {indexData.data()};
-  const std::array indexsize = {indexData.size() * sizeof(int)};
-  size_t __dNoDiscard1;
-  ASSERT_NO_THROW(__dNoDiscard1 = apiLayer->pushData(
-                      1, (const uint8_t **)indexdptr.data(), indexsize.data(),
-                      DataType::IndexData));
-
-  RenderInfo renderInfo;
-  renderInfo.indexBuffer = 1 + dataOffset;
-  renderInfo.materialId = materialOffset;
-  renderInfo.indexCount = indexData.size();
-  renderInfo.vertexBuffer.push_back(dataOffset);
-  ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
-}
-
-TEST(EngineMain, Start) {
-  tge::main::modules.push_back(new TestModule());
-  ASSERT_EQ(start(), Error::NOT_INITIALIZED);
-  ASSERT_EQ(init(), Error::NONE);
-
-  defaultTestData();
-
-  ASSERT_EQ(init(), Error::ALREADY_INITIALIZED);
-  syncMutex.unlock();
-}
-
-TEST(EngineMain, InitAndTickTest) {
-  ASSERT_TRUE(hasInit);
-  ASSERT_TRUE(hasTick);
-  waitForTime();
-  ASSERT_EQ(start(), Error::ALREADY_RUNNING);
-}
-
-void exitWaitCheck() {
-  ASSERT_NO_FATAL_FAILURE(requestExit());
-  syncMutex.lock();
-  ASSERT_TRUE(hasDestroy);
-  ASSERT_EQ(err, Error::NONE);
-}
-
-TEST(EngineMain, Exit) { exitWaitCheck(); }
-
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
 TEST(EngineMain, SamplerAndTextures) {
@@ -258,10 +266,9 @@ TEST(EngineMain, SamplerAndTextures) {
 
   ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
 
-  size_t __dNoDiscard1;
-  ASSERT_THROW(__dNoDiscard1 =
-                   getGameGraphicsModule()->loadTextures({"assets/test3c.png"}),
-               std::runtime_error);
+  size_t __dNoDiscard1 = 0;
+  ASSERT_ANY_THROW(__dNoDiscard1 =
+                   getGameGraphicsModule()->loadTextures({"assets/test3c.png"}));
 
   ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
                       {"assets/test.png"}));
