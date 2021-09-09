@@ -76,10 +76,10 @@ main::Error WindowModule::init() {
     winM->osMutex.lock();
     windowsInit(winM);
     winM->osMutex.unlock();
+    std::lock_guard lg2(winM->exitMutex);
     while (!winM->closing) {
       windowsPoolMessages(winM);
     }
-    std::lock_guard lg(winM->osMutex);
     windowsDestroy(winM);
   });
   osThread.detach();
@@ -92,7 +92,7 @@ void WindowModule::tick(double deltatime) {}
 
 void WindowModule::destroy() {
   this->closing = true;
-  std::lock_guard lg(this->osMutex);
+  std::lock_guard(this->exitMutex);
 }
 
 WindowProperties WindowModule::getWindowProperties() {
