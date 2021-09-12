@@ -2,4 +2,4 @@
 
 namespace tge::shader {
 
-}
+} // namespace tge::shader

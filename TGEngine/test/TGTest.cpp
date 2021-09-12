@@ -119,6 +119,9 @@ void defaultTestData() {
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
 }
 
+TEST(Shader, ShaderGenTest) {
+}
+
 TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);

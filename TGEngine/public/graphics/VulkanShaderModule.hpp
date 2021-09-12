@@ -1,16 +1,18 @@
 #pragma once
 
-#include "../../public/Module.hpp"
+#include "../../public/graphics/GameShaderModule.hpp"
 #include <string>
 #include <vector>
 
 namespace tge::shader {
 
-class VulkanShaderModule : public tge::main::Module {
+class VulkanShaderModule : public tge::shader::ShaderAPI {
 
 public:
-  void *loadShaderPipeAndCompile(const std::vector<std::string> &shadernames);
+  ShaderPipe loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) override;
 
+  ShaderPipe createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
+                                      const size_t shaderCount) override;
 };
 
 extern VulkanShaderModule *mainShaderModule;

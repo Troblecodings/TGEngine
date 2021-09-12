@@ -1,15 +1,16 @@
-#include "../../public/graphics/VulkanShaderModule.hpp"
+#include "..\..\public\graphics\VulkanShaderModule.hpp"
 #include "../../public/Error.hpp"
 #include "../../public/Util.hpp"
+#include "../../public/graphics/VulkanShaderModule.hpp"
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
-#include <iostream>
+#include <format>
 #include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/SpvTools.h>
+#include <iostream>
 #include <vulkan/vulkan.hpp>
-#include <format>
 
 namespace tge::shader {
 
@@ -161,6 +162,7 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
 
   void visitSymbol(glslang::TIntermSymbol *symbol) {
     const auto &type = symbol->getType();
+    std::cout << type.getCompleteString() << std::endl;
     const auto &quali = type.getQualifier();
     if (quali.layoutBinding < NO_BINDING_GIVEN) {
       if (uset.contains(quali.layoutBinding))
@@ -189,8 +191,7 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
 
   shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
-  // TODO implement debug out
-  // glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
+  glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
 }
 
 struct ShaderInfo {
@@ -307,6 +308,32 @@ constexpr TBuiltInResource DefaultTBuiltInResource = {
         /* .generalConstantMatrixVectorIndexing = */ 1,
     }};
 
+glslang::TShader __implGenerateIntermediate(const ShaderInfo &pair) {
+  const auto &data = pair.code;
+  const auto langName = pair.language;
+  const auto &additional = pair.additionalCode;
+  glslang::TShader shader(langName);
+  std::vector ptrData = {data.data()};
+  ptrData.reserve(additional.size());
+  for (const auto &rev : additional)
+    ptrData.push_back(rev.data());
+
+  shader.setStrings(ptrData.data(), ptrData.size());
+  shader.setEnvInput(glslang::EShSourceGlsl, langName, glslang::EShClientVulkan,
+                     100);
+  shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
+  shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
+  if (!shader.parse(&DefaultTBuiltInResource, 460, true,
+                    EShMessages::EShMsgVulkanRules)) {
+    printf("======== Shader compile error ==========\n\n%s",
+           shader.getInfoLog());
+    const auto err = std::string("Error in ") + data.data();
+    throw std::runtime_error(err);
+  }
+  printf("%s", shader.getInfoLog());
+  return shader;
+}
+
 VulkanShaderPipe *
 __implLoadShaderPipeAndCompile(const std::vector<ShaderInfo> &vector) {
   if (vector.size() == 0)
@@ -317,40 +344,18 @@ __implLoadShaderPipeAndCompile(const std::vector<ShaderInfo> &vector) {
   shaderPipe->shader.reserve(vector.size());
 
   for (auto &pair : vector) {
-    const auto &data = pair.code;
-    const auto langName = pair.language;
-    const auto &additional = pair.additionalCode;
-    if (data.empty()) {
+    if (pair.code.empty()) {
       delete shaderPipe;
       return nullptr;
     }
-    glslang::TShader shader(langName);
-    std::vector ptrData = {data.data()};
-    ptrData.reserve(additional.size());
-    for (const auto &rev : additional)
-      ptrData.push_back(rev.data());
-
-    shader.setStrings(ptrData.data(), ptrData.size());
-    shader.setEnvInput(glslang::EShSourceGlsl, langName,
-                       glslang::EShClientVulkan, 100);
-    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
-    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
-    if (!shader.parse(&DefaultTBuiltInResource, 450, true,
-                      EShMessages::EShMsgVulkanRules)) {
-      printf("======== Shader compile error ==========\n\n%s",
-             shader.getInfoLog());
-      return nullptr;
-    }
-    printf("%s", shader.getInfoLog());
-
-    const auto interm = shader.getIntermediate();
-    __implIntermToVulkanPipe(shaderPipe, interm, langName);
+    const auto shader = __implGenerateIntermediate(pair);
+    __implIntermToVulkanPipe(shaderPipe, shader.getIntermediate(), pair.language);
   }
 
   return shaderPipe;
 }
 
-void *VulkanShaderModule::loadShaderPipeAndCompile(
+ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
     const std::vector<std::string> &shadernames) {
   std::vector<ShaderInfo> vector;
   vector.reserve(shadernames.size());
@@ -363,4 +368,38 @@ void *VulkanShaderModule::loadShaderPipeAndCompile(
   return (uint8_t *)loadedPipes;
 }
 
-} // namespace tge::graphics
+inline EShLanguage getLangFromShaderLang(const ShaderType type) {
+  switch (type) {
+  case ShaderType::FRAGMENT:
+    return EShLangFragment;
+  case ShaderType::VERTEX:
+    return EShLangVertex;
+  default:
+    throw std::runtime_error("Not implemented!");
+  };
+}
+
+ShaderPipe
+VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
+                                     const size_t shaderCount) {
+
+  auto shaderPipe = new VulkanShaderPipe();
+  for (size_t i = 0; i < shaderCount; i++) {
+    const ShaderCreateInfo &createInfo = shaderCreateInfo[i];
+    const auto lang = getLangFromShaderLang(createInfo.shaderType);
+    ShaderInfo info = {lang};
+    const auto shader = __implGenerateIntermediate(info);
+    glslang::TIntermediate *tint = shader.getIntermediate();
+    long long nexID = 0;
+    for (const auto &uniform : createInfo.unifromIO) {
+      const glslang::TString name = glslang::TString(uniform.name.c_str());
+      const glslang::TType type;
+      glslang::TIntermSymbol symb(nexID++, name, type);
+      tint->addSymbol(symb);
+    }
+    __implIntermToVulkanPipe(shaderPipe, tint, lang);
+  }
+  return shaderPipe;
+}
+
+} // namespace tge::shader
