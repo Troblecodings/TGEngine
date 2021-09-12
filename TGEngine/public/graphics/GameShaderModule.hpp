@@ -1,33 +1,34 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace tge::shader {
 
-struct UniformInputs {
+struct ShaderIO {
   std::string name;
-};
-
-struct VarInOuts {
-  std::string name;
+  size_t size;
 };
 
 enum class ShaderType { VERTEX, FRAGMENT };
 
 struct ShaderCreateInfo {
-  char *code;
-  size_t codeSize;
-  UniformInputs *uniformIn;
-  size_t uniformSize;
-  VarInOuts *varInOuts;
-  size_t varInOutSize;
+  std::vector<char> code;
+  std::vector<ShaderIO> unifromIO;
+  std::vector<ShaderIO> inputs;
+  std::vector<ShaderIO> outputs;
   ShaderType shaderType;
 };
 
+using ShaderPipe = void *;
+
 class ShaderAPI {
 
-  virtual void *createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
-                                 const size_t shaderCount) = nullptr;
+  virtual ShaderPipe
+  loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) = 0;
+
+  virtual ShaderPipe createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
+                                      const size_t shaderCount) = 0;
 };
 
 } // namespace tge::shader

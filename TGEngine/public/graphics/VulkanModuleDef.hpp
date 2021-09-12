@@ -58,9 +58,10 @@ public:
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
   std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
-  std::vector<std::vector<DescriptorSet>> descriptorSets;
+  std::vector<DescriptorSet> descriptorSets;
   std::vector<DescriptorPool> descriptorPoolInfos;
   std::vector<DescriptorSetLayout> descSetLayouts;
+  std::vector<BindingInfo> descSetWrite;
 
   bool isInitialiazed = false;
   bool exitFailed = false;
@@ -81,6 +82,9 @@ public:
   size_t pushData(const size_t dataCount, const uint8_t **data,
                   const size_t *dataSizes, const DataType type) override;
 
+  void changeData(const size_t bufferIndex, const uint8_t *data,
+                  const size_t dataSizes, const size_t offset = 0) override;
+
   void pushRender(const size_t renderInfoCount,
                   const RenderInfo *renderInfos) override;
 
@@ -90,6 +94,9 @@ public:
                      const TextureInfo *textures) override;
 
   void *loadShader(const MaterialType type) override;
+
+  void bindData(const BindingInfo &info) override;
+
 };
 
 } // namespace tge::graphics

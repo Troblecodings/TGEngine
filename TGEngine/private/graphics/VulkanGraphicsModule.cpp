@@ -37,8 +37,11 @@ Result verror = Result::eSuccess;
   if (rslt != Result::eSuccess) {                                              \
     verror = rslt;                                                             \
     main::error = main::Error::VULKAN_ERROR;                                   \
-    printf("Vulkan error %d!", (uint32_t)verror);                              \
-  }
+    std::string s = to_string(verror);                                         \
+    const auto file = __FILE__;                                                \
+    const auto line = __LINE__;                                                \
+    printf("Vulkan error %s in %s L%d!\n", s.c_str(), file, line);             \
+  } // namespace tge::graphics
 
 inline void waitForImageTransition(
     const CommandBuffer &curBuffer, const ImageLayout oldLayout,
@@ -99,8 +102,11 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, 1, &blendAttachment);
 
+  const StencilOpState stencil({}, {}, {}, CompareOp::eAlways);
+
   const PipelineDepthStencilStateCreateInfo pipeDepthState(
-      {}, true, true, CompareOp::eGreaterOrEqual, false, false, {}, {}, 0, 1);
+      {}, true, true, CompareOp::eGreaterOrEqual, false, false, stencil,
+      stencil, 0, 1);
 
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
@@ -131,29 +137,25 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
     shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
-    std::vector<DescriptorSetLayout> descLayout;
+    DescriptorSetLayout descLayout;
+    DescriptorSet descSet;
     std::vector<DescriptorPoolSize> descPoolSizes;
-    for (const auto &l : shaderPipe->descriptorLayout) {
-      const auto descL = device.createDescriptorSetLayout(l);
-      descLayout.push_back(descL);
-      descSetLayouts.push_back(descL);
-      for (size_t i = 0; i < l.bindingCount; i++) {
-        const auto &binding = l.pBindings[i];
+
+    if (!shaderPipe->descriptorLayoutBindings.empty()) {
+      const DescriptorSetLayoutCreateInfo layoutCreate(
+          {}, shaderPipe->descriptorLayoutBindings);
+      descLayout = device.createDescriptorSetLayout(layoutCreate);
+      for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
         descPoolSizes.push_back(
             {binding.descriptorType, binding.descriptorCount});
       }
-    }
-
-    std::vector<DescriptorSet> descSet;
-
-    if (!descLayout.empty()) {
-      const DescriptorPoolCreateInfo descPoolCreateInfo({}, descLayout.size(),
-                                                        descPoolSizes);
+      const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1, descPoolSizes);
       const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
       this->descriptorPoolInfos.push_back(descPool);
 
       const DescriptorSetAllocateInfo descSetAllocInfo(descPool, descLayout);
-      descSet = device.allocateDescriptorSets(descSetAllocInfo);
+      descSet = device.allocateDescriptorSets(descSetAllocInfo)[0];
+      descriptorSets.push_back(descSet);
 
       if (material.type == MaterialType::TextureOnly) {
         const auto texMat = material.data.textureMaterial;
@@ -164,17 +166,23 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
             ImageLayout::eShaderReadOnlyOptimal);
 
         const std::array sets = {
-            WriteDescriptorSet(descSet[0], 0, 0, DescriptorType::eSampler,
+            WriteDescriptorSet(descSet, 0, 0, DescriptorType::eSampler,
                                descImageInfo),
-            WriteDescriptorSet(descSet[0], 1, 0, DescriptorType::eSampledImage,
+            WriteDescriptorSet(descSet, 1, 0, DescriptorType::eSampledImage,
                                descImageInfo),
         };
         device.updateDescriptorSets(sets, {});
       }
-    }
-    descriptorSets.push_back(descSet);
 
-    const PipelineLayoutCreateInfo layoutCreateInfo({}, descLayout);
+      for (const auto &bind : descSetWrite) {
+        this->bindData(bind);
+      }
+    }
+
+    descSetLayouts.push_back(descLayout);
+    const auto layoutCreateInfo = descLayout
+                                      ? PipelineLayoutCreateInfo({}, descLayout)
+                                      : PipelineLayoutCreateInfo();
     const auto pipeLayout = device.createPipelineLayout(layoutCreateInfo);
     pipelineLayouts.push_back(pipeLayout);
 
@@ -196,6 +204,32 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   return indexOffset;
 }
 
+void VulkanGraphicsModule::bindData(const BindingInfo &info) {
+  DEBUG_CALL_CHECK(info.dataID < 0 || bufferList.size() < info.dataID);
+
+  const bool foundInSet = (std::find(descSetWrite.cbegin(), descSetWrite.cend(),
+                                     info) != descSetWrite.end());
+  if (descriptorSets.size() <= info.materialId) {
+    if (foundInSet)
+      return;
+    descSetWrite.push_back(info);
+  } else {
+    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID],
+                                              info.offset, info.size);
+    const auto descSet = descriptorSets[info.materialId];
+
+    const std::array sets = {
+        WriteDescriptorSet(descSet, info.binding, 0,
+                           DescriptorType::eUniformBuffer, {}, descBufferInfo),
+    };
+    device.updateDescriptorSets(sets, {});
+    if (foundInSet) {
+      descSetWrite.erase(
+          std::remove(descSetWrite.begin(), descSetWrite.end(), info));
+    }
+  }
+}
+
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
                                       const RenderInfo *renderInfos) {
   DEBUG_CALL_CHECK(renderInfoCount == 0 || renderInfos == nullptr);
@@ -207,9 +241,7 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
 
   const CommandBufferInheritanceInfo inheritance(renderpass, 0);
   const CommandBufferBeginInfo beginInfo(
-      CommandBufferUsageFlagBits::eSimultaneousUse |
-          CommandBufferUsageFlagBits::eRenderPassContinue,
-      &inheritance);
+      CommandBufferUsageFlagBits::eRenderPassContinue, &inheritance);
   cmdBuf.begin(beginInfo);
   for (size_t i = 0; i < renderInfoCount; i++) {
     auto &info = renderInfos[i];
@@ -229,11 +261,11 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
     }
 
-    const auto &descSets = descriptorSets[info.materialId];
-    const auto pipeLayout = pipelineLayouts[info.materialId];
-    for (const auto desSet : descSets) {
+    if (descriptorSets.size() > info.materialId && info.materialId >= 0) {
+      const auto &descSet = descriptorSets[info.materialId];
+      const auto pipeLayout = pipelineLayouts[info.materialId];
       cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
-                                desSet, {});
+                                descSet, {});
     }
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
@@ -268,10 +300,19 @@ inline void submitAndWait(const Device &device, const Queue &queue,
 }
 
 inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
-  if (type == DataType::VertexIndexData)
+  switch (type) {
+  case DataType::VertexIndexData:
     return BufferUsageFlagBits::eVertexBuffer |
            BufferUsageFlagBits::eIndexBuffer;
-  return (BufferUsageFlags)(64 << (uint32_t)type);
+  case DataType::Uniform:
+    return BufferUsageFlagBits::eUniformBuffer;
+  case DataType::VertexData:
+    return BufferUsageFlagBits::eVertexBuffer;
+  case DataType::IndexData:
+    return BufferUsageFlagBits::eIndexBuffer;
+  default:
+    throw std::runtime_error("Couldn't find usage flag");
+  }
 }
 
 size_t VulkanGraphicsModule::pushData(const size_t dataCount,
@@ -347,6 +388,47 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
     device.destroyBuffer(buf);
 
   return firstIndex;
+}
+
+void VulkanGraphicsModule::changeData(const size_t bufferIndex,
+                                      const uint8_t *data,
+                                      const size_t dataSizes,
+                                      const size_t offset) {
+  DEBUG_CALL_CHECK(bufferIndex < 0 || bufferIndex >= this->bufferList.size() ||
+                   data == nullptr || dataSizes == 0);
+
+  const BufferCreateInfo bufferCreateInfo({}, dataSizes,
+                                          BufferUsageFlagBits::eTransferSrc,
+                                          SharingMode::eExclusive);
+  const auto intermBuffer = device.createBuffer(bufferCreateInfo);
+  const auto memRequ = device.getBufferMemoryRequirements(intermBuffer);
+
+  const MemoryAllocateInfo allocInfo(memRequ.size,
+                                     memoryTypeHostVisibleCoherent);
+  const auto hostVisibleMemory = device.allocateMemory(allocInfo);
+  device.bindBufferMemory(intermBuffer, hostVisibleMemory, 0);
+  const auto mappedHandle =
+      device.mapMemory(hostVisibleMemory, 0, VK_WHOLE_SIZE);
+
+  memcpy(mappedHandle, data, dataSizes);
+
+  device.unmapMemory(hostVisibleMemory);
+
+  const auto cmdBuf = cmdbuffer.back();
+
+  const CommandBufferBeginInfo beginInfo(
+      CommandBufferUsageFlagBits::eOneTimeSubmit);
+  cmdBuf.begin(beginInfo);
+
+  const BufferCopy copyRegion(0, offset, dataSizes);
+
+  cmdBuf.copyBuffer(intermBuffer, this->bufferList[bufferIndex], copyRegion);
+
+  cmdBuf.end();
+
+  submitAndWait(device, queue, cmdBuf);
+  device.freeMemory(hostVisibleMemory);
+  device.destroyBuffer(intermBuffer);
 }
 
 size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
@@ -710,10 +792,10 @@ main::Error VulkanGraphicsModule::init() {
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
           ImageLayout::ePresentSrcKHR),
       AttachmentDescription(
-          {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eDontCare,
-          AttachmentStoreOp::eDontCare, AttachmentLoadOp::eClear,
-          AttachmentStoreOp::eStore, ImageLayout::eUndefined,
-          ImageLayout::ePresentSrcKHR)};
+          {}, depthFormat, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
+          AttachmentStoreOp::eDontCare, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
+          ImageLayout::eDepthStencilAttachmentOptimal)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
@@ -725,9 +807,17 @@ main::Error VulkanGraphicsModule::init() {
       SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
                          {}, &depthAttachment)};
 
-  const std::array subpassDependencies = {SubpassDependency(
-      0, VK_SUBPASS_EXTERNAL, PipelineStageFlagBits::eAllGraphics,
-      PipelineStageFlagBits::eTopOfPipe, (AccessFlagBits)0, (AccessFlagBits)0)};
+  const std::array subpassDependencies = {
+      SubpassDependency(VK_SUBPASS_EXTERNAL, 0,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        (AccessFlagBits)0,
+                        AccessFlagBits::eColorAttachmentWrite |
+                            AccessFlagBits::eColorAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentWrite)};
 
   const RenderPassCreateInfo renderPassCreateInfo(
       {}, attachments, subpassDescriptions, subpassDependencies);
@@ -773,6 +863,7 @@ main::Error VulkanGraphicsModule::init() {
 #pragma endregion
 
   this->isInitialiazed = true;
+  device.waitIdle();
   return main::Error::NONE;
 }
 
@@ -785,12 +876,11 @@ void VulkanGraphicsModule::tick(double time) {
 
   const auto currentBuffer = cmdbuffer[nextimage.value];
   if (1) { // For now rerecord every tick
-    constexpr std::array clearColor = {1.0f, 0.0f, 1.0f, 1.0f};
+    constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
     const std::array clearValue = {ClearValue(clearColor),
                                    ClearValue(ClearDepthStencilValue(0.0f, 0))};
 
-    const CommandBufferBeginInfo cmdBufferBeginInfo(
-        CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+    const CommandBufferBeginInfo cmdBufferBeginInfo({}, nullptr);
     currentBuffer.begin(cmdBufferBeginInfo);
 
     const RenderPassBeginInfo renderPassBeginInfo(
@@ -805,7 +895,9 @@ void VulkanGraphicsModule::tick(double time) {
     currentBuffer.end();
   }
 
-  const PipelineStageFlags stageFlag = PipelineStageFlagBits::eAllGraphics;
+  const PipelineStageFlags stageFlag =
+      PipelineStageFlagBits::eColorAttachmentOutput |
+      PipelineStageFlagBits::eLateFragmentTests;
   const SubmitInfo submitInfo(waitSemaphore, stageFlag, currentBuffer,
                               signalSemaphore);
 
@@ -817,6 +909,9 @@ void VulkanGraphicsModule::tick(double time) {
   if (result == Result::eErrorOutOfDateKHR) {
     exitFailed = true;
     return;
+  }
+  if (result == Result::eErrorInitializationFailed) {
+    printf("For some reasone NV drivers seem to be hitting this error!");
   }
   VERROR(result);
 
@@ -830,6 +925,7 @@ void VulkanGraphicsModule::tick(double time) {
 
 void VulkanGraphicsModule::destroy() {
   this->isInitialiazed = false;
+  device.waitIdle();
   device.destroyImageView(depthImageView);
   device.freeMemory(depthImageMemory);
   device.destroyImage(depthImage);

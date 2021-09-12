@@ -25,6 +25,7 @@ public:
   bool closing = false;
   std::thread osThread;
   std::mutex osMutex;
+  std::mutex exitMutex;
 
   main::Error init() override;
 

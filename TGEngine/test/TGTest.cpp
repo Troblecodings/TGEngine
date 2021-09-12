@@ -1,17 +1,21 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
 #include <fstream>
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE 1
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
 #include <graphics/VulkanShaderModule.hpp>
+#include <graphics/VulkanShaderPipe.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (0.5f)
+#define DEFAULT_TIME (3.0f)
 
-#define MODEL_TEST 1
+#define MODEL_TEST 0
 
 bool hasInit = false;
 bool hasTick = false;
@@ -20,6 +24,8 @@ bool hasDestroy = false;
 using namespace tge::main;
 using namespace tge::graphics;
 using namespace tge::util;
+
+void exitWaitCheck();
 
 double alltime = 0;
 std::mutex syncMutex;
@@ -71,7 +77,9 @@ Material mat;
 
 TEST(Shader, LoadAndCompile) {
   std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
-  ASSERT_NO_THROW(mat.costumShaderData = tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
+  ASSERT_NO_THROW(
+      mat.costumShaderData =
+          tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
   ASSERT_NE(mat.costumShaderData, nullptr);
 }
 
@@ -98,8 +106,10 @@ void defaultTestData() {
   const std::array indexData = {0, 1, 2, 2, 3, 0};
   const std::array indexdptr = {indexData.data()};
   const std::array indexsize = {indexData.size() * sizeof(int)};
-  ASSERT_NO_THROW(apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
-                                     indexsize.data(), DataType::IndexData));
+  size_t __dNoDiscard1;
+  ASSERT_NO_THROW(__dNoDiscard1 = apiLayer->pushData(
+                      1, (const uint8_t **)indexdptr.data(), indexsize.data(),
+                      DataType::IndexData));
 
   RenderInfo renderInfo;
   renderInfo.indexBuffer = 1 + dataOffset;
@@ -107,6 +117,9 @@ void defaultTestData() {
   renderInfo.indexCount = indexData.size();
   renderInfo.vertexBuffer.push_back(dataOffset);
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
+}
+
+TEST(Shader, ShaderGenTest) {
 }
 
 TEST(EngineMain, Start) {
@@ -136,6 +149,46 @@ void exitWaitCheck() {
 
 TEST(EngineMain, Exit) { exitWaitCheck(); }
 
+class Avocado2Test : public tge::main::Module {
+public:
+  GameGraphicsModule *ggm;
+  float rotation = 0;
+  size_t nodeID;
+
+  void tick(double time) {
+    rotation += (float)time;
+    const NodeTransform transform = {
+        {},
+        glm::vec3(4, 4, 4),
+        glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
+    ggm->updateTransform(nodeID, transform);
+  }
+};
+
+TEST(EngineMain, AvocadoTestOne) {
+  tge::main::modules.push_back(new TestModule());
+  Avocado2Test *av = new Avocado2Test();
+  tge::main::modules.push_back(av);
+
+  ASSERT_EQ(init(), Error::NONE);
+  av->ggm = getGameGraphicsModule();
+
+  std::vector<std::string> test = {"assets/avocado.vert",
+                                   "assets/testTexture.frag"};
+  auto ptr = (tge::shader::VulkanShaderPipe *)
+                 tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
+
+  const auto vec = tge::util::wholeFile(
+      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
+  const auto mdlID = getGameGraphicsModule()->loadModel(
+      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
+  ASSERT_NE(mdlID, UINT64_MAX);
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
 TEST(EngineMain, SamplerAndTextures) {
@@ -151,8 +204,9 @@ TEST(EngineMain, SamplerAndTextures) {
 
   ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
 
-  ASSERT_THROW(getGameGraphicsModule()->loadTextures({"assets/test3c.png"}),
-               std::runtime_error);
+  size_t __dNoDiscard1 = 0;
+  ASSERT_ANY_THROW(__dNoDiscard1 = getGameGraphicsModule()->loadTextures(
+                       {"assets/test3c.png"}));
 
   ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
                       {"assets/test.png"}));
@@ -170,7 +224,7 @@ TEST(EngineMain, SamplerAndTextures) {
 
   const std::array dptr = {vertData.data()};
   const std::array size = {vertData.size() * sizeof(float)};
-  size_t dataOffset;
+  size_t dataOffset = -1;
   ASSERT_NO_THROW(dataOffset =
                       apiLayer->pushData(1, (const uint8_t **)dptr.data(),
                                          size.data(), DataType::VertexData));
@@ -178,11 +232,13 @@ TEST(EngineMain, SamplerAndTextures) {
   const std::array indexData = {0, 1, 2, 2, 3, 0};
   const std::array indexdptr = {indexData.data()};
   const std::array indexsize = {indexData.size() * sizeof(int)};
-  ASSERT_NO_THROW(apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
-                                     indexsize.data(), DataType::IndexData));
+  size_t indexBuffer = -1;
+  ASSERT_NO_THROW(
+      indexBuffer = apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
+                                       indexsize.data(), DataType::IndexData));
 
   RenderInfo renderInfo;
-  renderInfo.indexBuffer = 1 + dataOffset;
+  renderInfo.indexBuffer = indexBuffer;
   renderInfo.materialId = materialOffset;
   renderInfo.indexCount = indexData.size();
   renderInfo.vertexBuffer.push_back(dataOffset);
@@ -200,8 +256,8 @@ TEST(EngineMain, SimpleModel) {
 
   const auto data = tge::util::wholeFile("assets/Triangle.gltf");
   ASSERT_FALSE(data.empty());
-  ASSERT_EQ(getGameGraphicsModule()->loadModel(data, false, "assets"),
-            Error::NONE);
+  ASSERT_NE(getGameGraphicsModule()->loadModel(data, false, "assets"),
+            UINT64_MAX);
 
   syncMutex.unlock();
   waitForTime();
@@ -216,16 +272,20 @@ TEST(EngineApi, GraphicsAPIChecks) {
   const uint8_t data = 1;
   const uint8_t *dataptr = &data;
   const size_t size = 1;
-  ASSERT_THROW(apiLayer->pushData(1, &dataptr, &size, DataType::VertexData),
+  size_t __dNoDiscard1;
+  ASSERT_THROW(__dNoDiscard1 =
+                   apiLayer->pushData(1, &dataptr, &size, DataType::VertexData),
                std::runtime_error);
   tge::graphics::Material mat;
-  ASSERT_THROW(apiLayer->pushMaterials(1, &mat), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushMaterials(1, &mat),
+               std::runtime_error);
 
   tge::graphics::RenderInfo renderInfo;
   ASSERT_THROW(apiLayer->pushRender(1, &renderInfo), std::runtime_error);
 
   tge::graphics::TextureInfo textureInfo;
-  ASSERT_THROW(apiLayer->pushTexture(1, &textureInfo), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(1, &textureInfo),
+               std::runtime_error);
 
   for (size_t i = 0; i <= (size_t)MAX_TYPE; i++) {
     ASSERT_NE(apiLayer->loadShader((MaterialType)i), nullptr);
@@ -237,26 +297,32 @@ TEST(EngineApi, GraphicsAPIChecks) {
   apiLayer = getAPILayer();
   ASSERT_NE(apiLayer, nullptr);
 
-  ASSERT_THROW(apiLayer->pushData(0, &dataptr, &size, DataType::VertexData),
+  ASSERT_THROW(__dNoDiscard1 =
+                   apiLayer->pushData(0, &dataptr, &size, DataType::VertexData),
                std::runtime_error);
-  ASSERT_THROW(apiLayer->pushMaterials(0, &mat), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushMaterials(0, &mat),
+               std::runtime_error);
   ASSERT_THROW(apiLayer->pushRender(0, &renderInfo), std::runtime_error);
-  ASSERT_THROW(apiLayer->pushTexture(0, &textureInfo), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(0, &textureInfo),
+               std::runtime_error);
 
-  ASSERT_THROW(apiLayer->pushData(1, nullptr, &size, DataType::VertexData),
+  ASSERT_THROW(__dNoDiscard1 =
+                   apiLayer->pushData(1, nullptr, &size, DataType::VertexData),
                std::runtime_error);
-  ASSERT_THROW(apiLayer->pushData(1, &dataptr, nullptr, DataType::VertexData),
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushData(1, &dataptr, nullptr,
+                                                  DataType::VertexData),
                std::runtime_error);
-  ASSERT_THROW(apiLayer->pushMaterials(1, nullptr), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushMaterials(1, nullptr),
+               std::runtime_error);
   ASSERT_THROW(apiLayer->pushRender(1, nullptr), std::runtime_error);
-  ASSERT_THROW(apiLayer->pushTexture(1, nullptr), std::runtime_error);
+  ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(1, nullptr),
+               std::runtime_error);
 }
 
 TEST(EngineApi, GameAPIChecks) {}
 
 TEST(EngineApi, Exit) {
   syncMutex.unlock();
-  printf("Wait!");
   exitWaitCheck();
 }
 
