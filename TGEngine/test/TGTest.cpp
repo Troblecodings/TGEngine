@@ -6,7 +6,6 @@
 #include <glm/gtx/transform.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <graphics/VulkanGraphicsModule.hpp>
-#include <graphics/VulkanShaderModule.hpp>
 #include <graphics/VulkanShaderPipe.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
@@ -73,19 +72,17 @@ int main(int argv, char **in) {
   return exitCode;
 }
 
-Material mat;
-
-TEST(Shader, LoadAndCompile) {
-  std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
-  ASSERT_NO_THROW(
-      mat.costumShaderData =
-          tge::shader::mainShaderModule->loadShaderPipeAndCompile(test));
-  ASSERT_NE(mat.costumShaderData, nullptr);
-}
-
 void defaultTestData() {
   APILayer *apiLayer = getAPILayer();
   size_t materialOffset;
+
+  std::vector<std::string> test = {"assets/testvec4.vert", "assets/test.frag"};
+  Material mat;
+  ASSERT_NO_THROW(
+      mat.costumShaderData =
+          getAPILayer()->getShaderAPI()->loadShaderPipeAndCompile(test));
+  ASSERT_NE(mat.costumShaderData, nullptr);
+
   ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
   const std::array vertData = {-1.0f, 0.0f, 0.2f, 1.0f, //
                                1.0f, 0.0f, 0.2f, 1.0f,  //
@@ -119,8 +116,7 @@ void defaultTestData() {
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
 }
 
-TEST(Shader, ShaderGenTest) {
-}
+TEST(Shader, ShaderGenTest) {}
 
 TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
@@ -175,8 +171,9 @@ TEST(EngineMain, AvocadoTestOne) {
 
   std::vector<std::string> test = {"assets/avocado.vert",
                                    "assets/testTexture.frag"};
-  auto ptr = (tge::shader::VulkanShaderPipe *)
-                 tge::shader::mainShaderModule->loadShaderPipeAndCompile(test);
+  auto ptr = (tge::shader::VulkanShaderPipe *)getAPILayer()
+                 ->getShaderAPI()
+                 ->loadShaderPipeAndCompile(test);
 
   const auto vec = tge::util::wholeFile(
       "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");

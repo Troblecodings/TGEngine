@@ -24,6 +24,7 @@ using ShaderPipe = void *;
 
 class ShaderAPI {
 
+public:
   virtual ShaderPipe
   loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) = 0;
 

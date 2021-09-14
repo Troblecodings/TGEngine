@@ -15,6 +15,4 @@ public:
                                       const size_t shaderCount) override;
 };
 
-extern VulkanShaderModule *mainShaderModule;
-
 } // namespace tge::graphics

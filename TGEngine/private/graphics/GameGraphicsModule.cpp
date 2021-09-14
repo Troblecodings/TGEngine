@@ -1,13 +1,10 @@
-#include "..\..\public\graphics\GameGraphicsModule.hpp"
-#include "..\..\public\graphics\GameGraphicsModule.hpp"
 #include "../../public/graphics/GameGraphicsModule.hpp"
-#include "..\..\public\graphics\GameGraphicsModule.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../public/Util.hpp"
-#include "../../public/graphics/VulkanGraphicsModule.hpp"
+#include "../../public/graphics/GameShaderModule.hpp"
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #include "../../public/headerlibs/tiny_gltf.h"
 #include <array>

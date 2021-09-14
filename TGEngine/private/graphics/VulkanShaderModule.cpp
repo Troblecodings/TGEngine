@@ -1,22 +1,19 @@
-#include "..\..\public\graphics\VulkanShaderModule.hpp"
+#include "../../public/graphics/VulkanShaderModule.hpp"
 #include "../../public/Error.hpp"
 #include "../../public/Util.hpp"
-#include "../../public/graphics/VulkanShaderModule.hpp"
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
 #include <format>
-#include <glslang/Include/intermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/SpvTools.h>
+#include <glslang/Include/intermediate.h>
 #include <iostream>
 #include <vulkan/vulkan.hpp>
 
 namespace tge::shader {
 
 using namespace vk;
-
-VulkanShaderModule *mainShaderModule = new VulkanShaderModule();
 
 inline EShLanguage getLang(const std::string &str) {
   if (str.compare("vert") == 0)
@@ -191,7 +188,7 @@ void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
 
   shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
   glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
-  glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
+  // glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
 }
 
 struct ShaderInfo {
@@ -308,29 +305,28 @@ constexpr TBuiltInResource DefaultTBuiltInResource = {
         /* .generalConstantMatrixVectorIndexing = */ 1,
     }};
 
-glslang::TShader __implGenerateIntermediate(const ShaderInfo &pair) {
-  const auto &data = pair.code;
+inline std::unique_ptr<glslang::TShader>
+__implGenerateIntermediate(const ShaderInfo &pair) noexcept {
   const auto langName = pair.language;
   const auto &additional = pair.additionalCode;
-  glslang::TShader shader(langName);
-  std::vector ptrData = {data.data()};
+
+  auto shader = std::make_unique<glslang::TShader>(langName);
+  std::vector ptrData = {pair.code.data()};
   ptrData.reserve(additional.size());
   for (const auto &rev : additional)
     ptrData.push_back(rev.data());
 
-  shader.setStrings(ptrData.data(), ptrData.size());
-  shader.setEnvInput(glslang::EShSourceGlsl, langName, glslang::EShClientVulkan,
-                     100);
-  shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
-  shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
-  if (!shader.parse(&DefaultTBuiltInResource, 460, true,
-                    EShMessages::EShMsgVulkanRules)) {
+  shader->setStrings(ptrData.data(), ptrData.size());
+  shader->setEnvInput(glslang::EShSourceGlsl, langName,
+                      glslang::EShClientVulkan, 100);
+  shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
+  shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
+  if (!shader->parse(&DefaultTBuiltInResource, 450, true,
+                     EShMessages::EShMsgVulkanRules)) {
     printf("======== Shader compile error ==========\n\n%s",
-           shader.getInfoLog());
-    const auto err = std::string("Error in ") + data.data();
-    throw std::runtime_error(err);
+           shader->getInfoLog());
+    return std::nullptr_t();
   }
-  printf("%s", shader.getInfoLog());
   return shader;
 }
 
@@ -349,7 +345,12 @@ __implLoadShaderPipeAndCompile(const std::vector<ShaderInfo> &vector) {
       return nullptr;
     }
     const auto shader = __implGenerateIntermediate(pair);
-    __implIntermToVulkanPipe(shaderPipe, shader.getIntermediate(), pair.language);
+    if (!shader) {
+      delete shaderPipe;
+      return nullptr;
+    }
+    __implIntermToVulkanPipe(shaderPipe, shader->getIntermediate(),
+                             pair.language);
   }
 
   return shaderPipe;
@@ -387,9 +388,9 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
   for (size_t i = 0; i < shaderCount; i++) {
     const ShaderCreateInfo &createInfo = shaderCreateInfo[i];
     const auto lang = getLangFromShaderLang(createInfo.shaderType);
-    ShaderInfo info = {lang};
+    const ShaderInfo info = {lang, createInfo.code};
     const auto shader = __implGenerateIntermediate(info);
-    glslang::TIntermediate *tint = shader.getIntermediate();
+    glslang::TIntermediate *tint = shader->getIntermediate();
     long long nexID = 0;
     for (const auto &uniform : createInfo.unifromIO) {
       const glslang::TString name = glslang::TString(uniform.name.c_str());

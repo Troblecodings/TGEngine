@@ -299,3 +299,8 @@ dependencies/deps.zip
 /TGEngine/resources/Resources.tgr
 *.spv
 /TGEngine/out
+/TGEngine/test/assets/glslangValidator.exe
+/TGEngine/graph_info.json
+/TGEngine/conaninfo.txt
+/TGEngine/conanbuildinfo.txt
+/TGEngine/conan.lock

@@ -2,6 +2,7 @@
 
 #include "../../public/Error.hpp"
 #include "../../public/Module.hpp"
+#include "GameShaderModule.hpp"
 #include "WindowModule.hpp"
 #include "stdint.h"
 #include <glm/glm.hpp>
@@ -85,6 +86,7 @@ enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };
 class APILayer : public main::Module { // Interface
 protected:
   GameGraphicsModule *graphicsModule;
+  shader::ShaderAPI *shaderAPI;
 
 public:
   void setGameGraphicsModule(GameGraphicsModule *graphicsModule) {
@@ -116,9 +118,11 @@ public:
 
   virtual void bindData(const BindingInfo &info) = 0;
 
-  _NODISCARD const GameGraphicsModule *getGraphicsModule() {
+  _NODISCARD GameGraphicsModule *getGraphicsModule() {
     return graphicsModule;
   };
+
+  _NODISCARD shader::ShaderAPI *getShaderAPI() { return this->shaderAPI; }
 };
 
 struct Material {

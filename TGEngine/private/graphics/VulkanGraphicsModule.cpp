@@ -77,7 +77,7 @@ void *VulkanGraphicsModule::loadShader(const MaterialType type) {
     shaderPipes.resize(idx + 1);
   }
   auto &vert = shaderNames[idx];
-  const auto ptr = mainShaderModule->loadShaderPipeAndCompile(vert);
+  const auto ptr = shaderAPI->loadShaderPipeAndCompile(vert);
   shaderPipes[idx] = (VulkanShaderPipe *)ptr;
   return ptr;
 }
@@ -571,6 +571,7 @@ VkBool32 debugMessage(DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 #endif
 
 main::Error VulkanGraphicsModule::init() {
+  this->shaderAPI = new VulkanShaderModule();
 #pragma region Instance
   const ApplicationInfo applicationInfo(APPLICATION_NAME, APPLICATION_VERSION,
                                         ENGINE_NAME, ENGINE_VERSION,
@@ -973,6 +974,7 @@ void VulkanGraphicsModule::destroy() {
   instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, stat);
 #endif
   instance.destroy();
+  delete shaderAPI;
 }
 
 APILayer *getNewVulkanModule() { return new VulkanGraphicsModule(); }
