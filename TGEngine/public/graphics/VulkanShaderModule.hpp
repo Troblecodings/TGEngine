@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../../public/graphics/GameShaderModule.hpp"
-#include <string>
-#include <vector>
 
 namespace tge::shader {
 

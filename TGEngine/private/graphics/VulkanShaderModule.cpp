@@ -4,10 +4,10 @@
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
 #include <format>
+#include <glslang/MachineIndependent/localintermediate.h>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/SpvTools.h>
-#include <glslang/Include/intermediate.h>
 #include <iostream>
 #include <vulkan/vulkan.hpp>
 
@@ -305,25 +305,27 @@ constexpr TBuiltInResource DefaultTBuiltInResource = {
         /* .generalConstantMatrixVectorIndexing = */ 1,
     }};
 
-inline std::unique_ptr<glslang::TShader>
+std::unique_ptr<glslang::TShader>
 __implGenerateIntermediate(const ShaderInfo &pair) noexcept {
   const auto langName = pair.language;
   const auto &additional = pair.additionalCode;
 
   auto shader = std::make_unique<glslang::TShader>(langName);
-  std::vector ptrData = {pair.code.data()};
+  std::vector<const char *> ptrData;
   ptrData.reserve(additional.size());
   for (const auto &rev : additional)
     ptrData.push_back(rev.data());
+  ptrData.push_back(pair.code.data());
 
   shader->setStrings(ptrData.data(), ptrData.size());
   shader->setEnvInput(glslang::EShSourceGlsl, langName,
                       glslang::EShClientVulkan, 100);
   shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
   shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
+
   if (!shader->parse(&DefaultTBuiltInResource, 450, true,
                      EShMessages::EShMsgVulkanRules)) {
-    printf("======== Shader compile error ==========\n\n%s",
+    printf("======== Shader compile error ==========\n\n%s\n",
            shader->getInfoLog());
     return std::nullptr_t();
   }
@@ -369,6 +371,15 @@ ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
   return (uint8_t *)loadedPipes;
 }
 
+inline std::string getTypeFromSize(const size_t t) {
+  switch (t) {
+  case 16:
+    return "vec2";
+  default:
+    throw std::runtime_error("");
+  }
+}
+
 inline EShLanguage getLangFromShaderLang(const ShaderType type) {
   switch (type) {
   case ShaderType::FRAGMENT:
@@ -383,21 +394,38 @@ inline EShLanguage getLangFromShaderLang(const ShaderType type) {
 ShaderPipe
 VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
                                      const size_t shaderCount) {
-
+  glslang::InitializeProcess();
+  util::OnExit e1(glslang::FinalizeProcess);
   auto shaderPipe = new VulkanShaderPipe();
+  // IT ISN'T PRETTY BUT IT WORKS - SOMEWHAT
   for (size_t i = 0; i < shaderCount; i++) {
     const ShaderCreateInfo &createInfo = shaderCreateInfo[i];
     const auto lang = getLangFromShaderLang(createInfo.shaderType);
-    const ShaderInfo info = {lang, createInfo.code};
+    ShaderInfo info = {lang};
+    long long nexID = 0;
+    std::ostringstream codebuff;
+    codebuff << "#version 450" << std::endl << std::endl;
+    for (const auto &input : createInfo.inputs) {
+      codebuff << "layout(location=" << nexID++ << ") in vec4 " << input.name
+               << ";" << std::endl;
+    }
+    codebuff << std::endl;
+    nexID = 0;
+    for (const auto &out : createInfo.outputs) {
+      codebuff << "layout(location=" << nexID++ << ") out vec4 " << out.name
+               << ";" << std::endl;
+    }
+    codebuff << std::endl;
+    if (lang == EShLangVertex) {
+      codebuff << "out gl_PerVertex { vec4 gl_Position; };" << std::endl;
+    }
+    codebuff << "void main() {}" << std::endl;
+    std::string code(codebuff.str());
+    std::cout << code << std::endl;
+    info.code = std::vector(code.begin(), code.end());
+    info.code.push_back('\0');
     const auto shader = __implGenerateIntermediate(info);
     glslang::TIntermediate *tint = shader->getIntermediate();
-    long long nexID = 0;
-    for (const auto &uniform : createInfo.unifromIO) {
-      const glslang::TString name = glslang::TString(uniform.name.c_str());
-      const glslang::TType type;
-      glslang::TIntermSymbol symb(nexID++, name, type);
-      tint->addSymbol(symb);
-    }
     __implIntermToVulkanPipe(shaderPipe, tint, lang);
   }
   return shaderPipe;

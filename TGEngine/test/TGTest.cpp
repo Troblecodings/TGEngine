@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (3.0f)
+#define DEFAULT_TIME (10.0f)
 
 #define MODEL_TEST 0
 
@@ -116,7 +116,64 @@ void defaultTestData() {
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
 }
 
-TEST(Shader, ShaderGenTest) {}
+class Avocado2Test : public tge::main::Module {
+public:
+  GameGraphicsModule *ggm;
+  float rotation = 0;
+  size_t nodeID;
+
+  void tick(double time) {
+    rotation += (float)time;
+    const NodeTransform transform = {
+        {},
+        glm::vec3(4, 4, 4),
+        glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
+    ggm->updateTransform(nodeID, transform);
+  }
+};
+
+TEST(ShaderCompiler, Create) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  tge::shader::ShaderCreateInfo sh;
+  std::string str("out gl_PerVertex { vec4 gl_Position; }; void main() { }");
+  sh.code = std::vector<char>(str.begin(), str.end());
+  sh.inputs.push_back({"test", 16});
+  sh.shaderType = tge::shader::ShaderType::VERTEX;
+
+  getAPILayer()->getShaderAPI()->createShaderPipe(&sh, 1);
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
+TEST(EngineMain, AvocadoTestOne) {
+  tge::main::modules.push_back(new TestModule());
+  Avocado2Test *av = new Avocado2Test();
+  tge::main::modules.push_back(av);
+
+  ASSERT_EQ(init(), Error::NONE);
+  av->ggm = getGameGraphicsModule();
+
+  std::vector<std::string> test = {"assets/avocado.vert",
+                                   "assets/testTexture.frag"};
+  auto ptr = (tge::shader::VulkanShaderPipe *)getAPILayer()
+                 ->getShaderAPI()
+                 ->loadShaderPipeAndCompile(test);
+
+  const auto vec = tge::util::wholeFile(
+      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
+  const auto mdlID = getGameGraphicsModule()->loadModel(
+      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
+  ASSERT_NE(mdlID, UINT64_MAX);
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
 
 TEST(EngineMain, Start) {
   tge::main::modules.push_back(new TestModule());
@@ -144,47 +201,6 @@ void exitWaitCheck() {
 }
 
 TEST(EngineMain, Exit) { exitWaitCheck(); }
-
-class Avocado2Test : public tge::main::Module {
-public:
-  GameGraphicsModule *ggm;
-  float rotation = 0;
-  size_t nodeID;
-
-  void tick(double time) {
-    rotation += (float)time;
-    const NodeTransform transform = {
-        {},
-        glm::vec3(4, 4, 4),
-        glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
-    ggm->updateTransform(nodeID, transform);
-  }
-};
-
-TEST(EngineMain, AvocadoTestOne) {
-  tge::main::modules.push_back(new TestModule());
-  Avocado2Test *av = new Avocado2Test();
-  tge::main::modules.push_back(av);
-
-  ASSERT_EQ(init(), Error::NONE);
-  av->ggm = getGameGraphicsModule();
-
-  std::vector<std::string> test = {"assets/avocado.vert",
-                                   "assets/testTexture.frag"};
-  auto ptr = (tge::shader::VulkanShaderPipe *)getAPILayer()
-                 ->getShaderAPI()
-                 ->loadShaderPipeAndCompile(test);
-
-  const auto vec = tge::util::wholeFile(
-      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
-  const auto mdlID = getGameGraphicsModule()->loadModel(
-      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
-  ASSERT_NE(mdlID, UINT64_MAX);
-
-  syncMutex.unlock();
-  waitForTime();
-  exitWaitCheck();
-}
 
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 

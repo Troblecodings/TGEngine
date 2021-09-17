@@ -1,9 +1,0 @@
-[requires]
-vulkan-headers/1.2.190
-glslang/11.5.0
-imgui/1.84.2
-gtest/cci.20210126
-glm/0.9.9.8
-
-[generators]
-cmake
