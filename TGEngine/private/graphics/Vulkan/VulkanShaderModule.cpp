@@ -330,6 +330,9 @@ void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
                                       : PipelineLayoutCreateInfo();
     const auto pipeLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
     vsm->pipeLayouts.push_back(pipeLayout);
+    shaderPipe->layoutID = vsm->pipeLayouts.size() - 1;
+  } else {
+    shaderPipe->layoutID == UINT64_MAX;
   }
 }
 

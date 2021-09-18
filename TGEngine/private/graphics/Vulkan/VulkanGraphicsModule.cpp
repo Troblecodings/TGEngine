@@ -133,7 +133,9 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
         &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
         &shaderPipe->rasterization, &multisampleCreateInfo, &pipeDepthState,
         &colorBlendState, {}, {}, renderpass, 0);
+    shaderAPI->addToMaterial(&material, &gpipeCreateInfo);
     pipelineCreateInfos.push_back(gpipeCreateInfo);
+    shaderPipes.push_back(shaderPipe);
   }
 
   const auto piperesult =
@@ -177,7 +179,12 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
     }
 
-    shaderAPI->addToRender(info.materialId, (void*)&cmdBuf);
+    if (info.bindingID != UINT64_MAX) {
+      shaderAPI->addToRender(info.bindingID, (void *)&cmdBuf);
+    } else {
+      const auto binding = shaderAPI->createBindings(shaderPipes[info.materialId]);
+      shaderAPI->addToRender(binding, (void *)&cmdBuf);
+    }
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
@@ -775,6 +782,7 @@ main::Error VulkanGraphicsModule::init() {
 #pragma endregion
 
   this->isInitialiazed = true;
+  this->shaderAPI->init();
   device.waitIdle();
   return main::Error::NONE;
 }
@@ -838,6 +846,7 @@ void VulkanGraphicsModule::tick(double time) {
 void VulkanGraphicsModule::destroy() {
   this->isInitialiazed = false;
   device.waitIdle();
+  this->shaderAPI->destroy();
   device.destroyImageView(depthImageView);
   device.freeMemory(depthImageMemory);
   device.destroyImage(depthImage);

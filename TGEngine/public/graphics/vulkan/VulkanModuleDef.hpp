@@ -56,6 +56,7 @@ public:
   std::vector<Image> textureImages;
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
+  std::vector<shader::ShaderPipe> shaderPipes;
 
   bool isInitialiazed = false;
   bool exitFailed = false;

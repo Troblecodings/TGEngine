@@ -23,6 +23,7 @@ struct RenderInfo {
   size_t indexOffset = 0;
   IndexSize indexSize = IndexSize::UINT32;
   std::vector<size_t> vertexOffsets;
+  size_t bindingID = UINT64_MAX;
 };
 
 struct TextureInfo {

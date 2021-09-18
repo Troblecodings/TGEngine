@@ -132,6 +132,64 @@ public:
   }
 };
 
+TEST(EngineMain, SamplerAndTextures) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  const SamplerInfo sampler = {FilterSetting::NEAREST, FilterSetting::NEAREST,
+                               AddressMode::REPEAT, AddressMode::REPEAT, 0};
+  APILayer *apiLayer = getAPILayer();
+
+  TextureMaterial texMat;
+
+  ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
+
+  size_t __dNoDiscard1 = 0;
+  ASSERT_ANY_THROW(__dNoDiscard1 = getGameGraphicsModule()->loadTextures(
+                       {"assets/test3c.png"}));
+
+  ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
+                      {"assets/test.png"}));
+
+  const Material mat(texMat, apiLayer);
+
+  size_t materialOffset;
+  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
+  const std::array vertData = {
+      0.0f, 0.0f, -1.0f, 0.0f, 0.2f, 1.0f, //
+      1.0f, 0.0f, 1.0f,  0.0f, 0.2f, 1.0f, //
+      1.0f, 1.0f, 1.0f,  1.0f, 0.2f, 1.0f, //
+      0.0f, 1.0f, -1.0f, 1.0f, 0.2f, 1.0f, //
+  };
+
+  const std::array dptr = {vertData.data()};
+  const std::array size = {vertData.size() * sizeof(float)};
+  size_t dataOffset = -1;
+  ASSERT_NO_THROW(dataOffset =
+                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
+                                         size.data(), DataType::VertexData));
+
+  const std::array indexData = {0, 1, 2, 2, 3, 0};
+  const std::array indexdptr = {indexData.data()};
+  const std::array indexsize = {indexData.size() * sizeof(int)};
+  size_t indexBuffer = -1;
+  ASSERT_NO_THROW(
+      indexBuffer = apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
+                                       indexsize.data(), DataType::IndexData));
+
+  RenderInfo renderInfo;
+  renderInfo.indexBuffer = indexBuffer;
+  renderInfo.materialId = materialOffset;
+  renderInfo.indexCount = indexData.size();
+  renderInfo.vertexBuffer.push_back(dataOffset);
+  ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
 TEST(ShaderCompiler, Create) {
   tge::main::modules.push_back(new TestModule());
 
@@ -205,63 +263,6 @@ TEST(EngineMain, Exit) { exitWaitCheck(); }
 
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
-TEST(EngineMain, SamplerAndTextures) {
-  tge::main::modules.push_back(new TestModule());
-
-  ASSERT_EQ(init(), Error::NONE);
-
-  const SamplerInfo sampler = {FilterSetting::NEAREST, FilterSetting::NEAREST,
-                               AddressMode::REPEAT, AddressMode::REPEAT, 0};
-  APILayer *apiLayer = getAPILayer();
-
-  TextureMaterial texMat;
-
-  ASSERT_NO_THROW(texMat.samplerIndex = apiLayer->pushSampler(sampler));
-
-  size_t __dNoDiscard1 = 0;
-  ASSERT_ANY_THROW(__dNoDiscard1 = getGameGraphicsModule()->loadTextures(
-                       {"assets/test3c.png"}));
-
-  ASSERT_NO_THROW(texMat.textureIndex = getGameGraphicsModule()->loadTextures(
-                      {"assets/test.png"}));
-
-  const Material mat(texMat, apiLayer);
-
-  size_t materialOffset;
-  ASSERT_NO_THROW(materialOffset = apiLayer->pushMaterials(1, &mat));
-  const std::array vertData = {
-      0.0f, 0.0f, -1.0f, 0.0f, 0.2f, 1.0f, //
-      1.0f, 0.0f, 1.0f,  0.0f, 0.2f, 1.0f, //
-      1.0f, 1.0f, 1.0f,  1.0f, 0.2f, 1.0f, //
-      0.0f, 1.0f, -1.0f, 1.0f, 0.2f, 1.0f, //
-  };
-
-  const std::array dptr = {vertData.data()};
-  const std::array size = {vertData.size() * sizeof(float)};
-  size_t dataOffset = -1;
-  ASSERT_NO_THROW(dataOffset =
-                      apiLayer->pushData(1, (const uint8_t **)dptr.data(),
-                                         size.data(), DataType::VertexData));
-
-  const std::array indexData = {0, 1, 2, 2, 3, 0};
-  const std::array indexdptr = {indexData.data()};
-  const std::array indexsize = {indexData.size() * sizeof(int)};
-  size_t indexBuffer = -1;
-  ASSERT_NO_THROW(
-      indexBuffer = apiLayer->pushData(1, (const uint8_t **)indexdptr.data(),
-                                       indexsize.data(), DataType::IndexData));
-
-  RenderInfo renderInfo;
-  renderInfo.indexBuffer = indexBuffer;
-  renderInfo.materialId = materialOffset;
-  renderInfo.indexCount = indexData.size();
-  renderInfo.vertexBuffer.push_back(dataOffset);
-  ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
-
-  syncMutex.unlock();
-  waitForTime();
-  exitWaitCheck();
-}
 
 TEST(EngineMain, SimpleModel) {
   tge::main::modules.push_back(new TestModule());
