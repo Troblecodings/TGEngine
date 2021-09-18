@@ -62,29 +62,21 @@ constexpr PipelineInputAssemblyStateCreateInfo
     inputAssemblyCreateInfo({}, PrimitiveTopology::eTriangleList,
                             false); // For now constexpr
 
-#define DEBUG_CALL_CHECK(assertion)                                            \
-  if (!this->isInitialiazed || (assertion)) {                                  \
+#define EXPECT(assertion)                                            \
+  if (!this->isInitialiazed || !(assertion)) {                                  \
     throw std::runtime_error("Debug assertion failed!");                       \
   }
 
 void *VulkanGraphicsModule::loadShader(const MaterialType type) {
   const auto idx = (size_t)type;
-  if (shaderPipes.size() > idx) {
-    const auto pipe = shaderPipes[idx];
-    if (pipe != nullptr)
-      return pipe;
-  } else {
-    shaderPipes.resize(idx + 1);
-  }
   auto &vert = shaderNames[idx];
   const auto ptr = shaderAPI->loadShaderPipeAndCompile(vert);
-  shaderPipes[idx] = (VulkanShaderPipe *)ptr;
   return ptr;
 }
 
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
                                            const Material *materials) {
-  DEBUG_CALL_CHECK(materialcount == 0 || materials == nullptr);
+  EXPECT(materialcount != 0 && materials != nullptr);
 
   const Rect2D scissor({0, 0},
                        {(uint32_t)viewport.width, (uint32_t)viewport.height});
@@ -110,7 +102,6 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
 
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
-  pipelineLayouts.reserve(materialcount + pipelineLayouts.size());
 
   for (size_t i = 0; i < materialcount; i++) {
     const auto &material = materials[i];
@@ -137,56 +128,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
     shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
 
-    DescriptorSetLayout descLayout;
-    DescriptorSet descSet;
-    std::vector<DescriptorPoolSize> descPoolSizes;
-
-    if (!shaderPipe->descriptorLayoutBindings.empty()) {
-      const DescriptorSetLayoutCreateInfo layoutCreate(
-          {}, shaderPipe->descriptorLayoutBindings);
-      descLayout = device.createDescriptorSetLayout(layoutCreate);
-      for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
-        descPoolSizes.push_back(
-            {binding.descriptorType, binding.descriptorCount});
-      }
-      const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1, descPoolSizes);
-      const auto descPool = device.createDescriptorPool(descPoolCreateInfo);
-      this->descriptorPoolInfos.push_back(descPool);
-
-      const DescriptorSetAllocateInfo descSetAllocInfo(descPool, descLayout);
-      descSet = device.allocateDescriptorSets(descSetAllocInfo)[0];
-      descriptorSets.push_back(descSet);
-
-      if (material.type == MaterialType::TextureOnly) {
-        const auto texMat = material.data.textureMaterial;
-
-        const DescriptorImageInfo descImageInfo(
-            sampler[texMat.samplerIndex],
-            textureImageViews[texMat.textureIndex],
-            ImageLayout::eShaderReadOnlyOptimal);
-
-        const std::array sets = {
-            WriteDescriptorSet(descSet, 0, 0, DescriptorType::eSampler,
-                               descImageInfo),
-            WriteDescriptorSet(descSet, 1, 0, DescriptorType::eSampledImage,
-                               descImageInfo),
-        };
-        device.updateDescriptorSets(sets, {});
-      }
-
-      for (const auto &bind : descSetWrite) {
-        this->bindData(bind);
-      }
-    }
-
-    descSetLayouts.push_back(descLayout);
-    const auto layoutCreateInfo = descLayout
-                                      ? PipelineLayoutCreateInfo({}, descLayout)
-                                      : PipelineLayoutCreateInfo();
-    const auto pipeLayout = device.createPipelineLayout(layoutCreateInfo);
-    pipelineLayouts.push_back(pipeLayout);
-
-    const GraphicsPipelineCreateInfo gpipeCreateInfo(
+    GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
         &inputAssemblyCreateInfo, {}, &pipelineViewportCreateInfo,
         &shaderPipe->rasterization, &multisampleCreateInfo, &pipeDepthState,
@@ -204,35 +146,9 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   return indexOffset;
 }
 
-void VulkanGraphicsModule::bindData(const BindingInfo &info) {
-  DEBUG_CALL_CHECK(info.dataID < 0 || bufferList.size() < info.dataID);
-
-  const bool foundInSet = (std::find(descSetWrite.cbegin(), descSetWrite.cend(),
-                                     info) != descSetWrite.end());
-  if (descriptorSets.size() <= info.materialId) {
-    if (foundInSet)
-      return;
-    descSetWrite.push_back(info);
-  } else {
-    const DescriptorBufferInfo descBufferInfo(bufferList[info.dataID],
-                                              info.offset, info.size);
-    const auto descSet = descriptorSets[info.materialId];
-
-    const std::array sets = {
-        WriteDescriptorSet(descSet, info.binding, 0,
-                           DescriptorType::eUniformBuffer, {}, descBufferInfo),
-    };
-    device.updateDescriptorSets(sets, {});
-    if (foundInSet) {
-      descSetWrite.erase(
-          std::remove(descSetWrite.begin(), descSetWrite.end(), info));
-    }
-  }
-}
-
 void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
                                       const RenderInfo *renderInfos) {
-  DEBUG_CALL_CHECK(renderInfoCount == 0 || renderInfos == nullptr);
+  EXPECT(renderInfoCount != 0 && renderInfos != nullptr);
 
   const CommandBufferAllocateInfo commandBufferAllocate(
       pool, CommandBufferLevel::eSecondary, 1);
@@ -261,12 +177,7 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
       cmdBuf.bindVertexBuffers(0, vertexBuffer, info.vertexOffsets);
     }
 
-    if (descriptorSets.size() > info.materialId && info.materialId >= 0) {
-      const auto &descSet = descriptorSets[info.materialId];
-      const auto pipeLayout = pipelineLayouts[info.materialId];
-      cmdBuf.bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
-                                descSet, {});
-    }
+    shaderAPI->addToRender(info.materialId, (void*)&cmdBuf);
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
                         pipelines[info.materialId]);
@@ -319,7 +230,7 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
                                       const uint8_t **data,
                                       const size_t *dataSizes,
                                       const DataType type) {
-  DEBUG_CALL_CHECK(dataCount == 0 || data == nullptr || dataSizes == nullptr);
+  EXPECT(dataCount != 0 && data != nullptr && dataSizes != nullptr);
 
   std::vector<DeviceMemory> tempMemory;
   tempMemory.reserve(dataCount);
@@ -394,8 +305,8 @@ void VulkanGraphicsModule::changeData(const size_t bufferIndex,
                                       const uint8_t *data,
                                       const size_t dataSizes,
                                       const size_t offset) {
-  DEBUG_CALL_CHECK(bufferIndex < 0 || bufferIndex >= this->bufferList.size() ||
-                   data == nullptr || dataSizes == 0);
+  EXPECT(bufferIndex >= 0 && bufferIndex < this->bufferList.size() &&
+                   data != nullptr && dataSizes != 0);
 
   const BufferCreateInfo bufferCreateInfo({}, dataSizes,
                                           BufferUsageFlagBits::eTransferSrc,
@@ -445,7 +356,7 @@ size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
 
 size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
                                          const TextureInfo *textures) {
-  DEBUG_CALL_CHECK(textureCount == 0 || textures == nullptr);
+  EXPECT(textureCount != 0 && textures != nullptr);
 
   const size_t firstIndex = textureImages.size();
 
@@ -571,7 +482,7 @@ VkBool32 debugMessage(DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 #endif
 
 main::Error VulkanGraphicsModule::init() {
-  this->shaderAPI = new VulkanShaderModule();
+  this->shaderAPI = new VulkanShaderModule(this);
 #pragma region Instance
   const ApplicationInfo applicationInfo(APPLICATION_NAME, APPLICATION_VERSION,
                                         ENGINE_NAME, ENGINE_VERSION,
@@ -934,10 +845,6 @@ void VulkanGraphicsModule::destroy() {
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
   device.freeCommandBuffers(pool, secondaryCommandBuffer);
-  for (auto pool : descriptorPoolInfos)
-    device.destroyDescriptorPool(pool);
-  for (auto dscLayout : descSetLayouts)
-    device.destroyDescriptorSetLayout(dscLayout);
   for (auto imag : textureImages)
     device.destroyImage(imag);
   for (auto mem : textureMemorys)
@@ -946,8 +853,6 @@ void VulkanGraphicsModule::destroy() {
     device.destroyImageView(imView);
   for (auto samp : sampler)
     device.destroySampler(samp);
-  for (auto pipeLayout : pipelineLayouts)
-    device.destroyPipelineLayout(pipeLayout);
   for (auto mem : bufferMemoryList)
     device.freeMemory(mem);
   for (auto buf : bufferList)

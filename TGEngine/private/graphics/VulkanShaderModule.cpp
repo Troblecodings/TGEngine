@@ -1,6 +1,7 @@
 #include "../../public/graphics/VulkanShaderModule.hpp"
 #include "../../public/Error.hpp"
 #include "../../public/Util.hpp"
+#include "../../public/graphics/VulkanModuleDef.hpp"
 #include "../../public/graphics/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
 #include <format>
@@ -305,6 +306,33 @@ constexpr TBuiltInResource DefaultTBuiltInResource = {
         /* .generalConstantMatrixVectorIndexing = */ 1,
     }};
 
+void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
+                          VulkanShaderModule *vsm) {
+  std::vector<DescriptorPoolSize> descPoolSizes;
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)vsm->vgm;
+
+  if (!shaderPipe->descriptorLayoutBindings.empty()) {
+    const DescriptorSetLayoutCreateInfo layoutCreate(
+        {}, shaderPipe->descriptorLayoutBindings);
+    const auto descLayout = vgm->device.createDescriptorSetLayout(layoutCreate);
+    vsm->setLayouts.push_back(descLayout);
+    for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
+      descPoolSizes.push_back(
+          {binding.descriptorType, binding.descriptorCount});
+    }
+    const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1000, descPoolSizes);
+    const auto descPool = vgm->device.createDescriptorPool(descPoolCreateInfo);
+    vsm->descPools.push_back(descPool);
+
+    const auto layoutCreateInfo = descLayout
+                                      ? PipelineLayoutCreateInfo({}, descLayout)
+                                      : PipelineLayoutCreateInfo();
+    const auto pipeLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
+    vsm->pipeLayouts.push_back(pipeLayout);
+  }
+}
+
 std::unique_ptr<glslang::TShader>
 __implGenerateIntermediate(const ShaderInfo &pair) noexcept {
   const auto langName = pair.language;
@@ -368,6 +396,7 @@ ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
     vector.push_back({getLang(abrivation), util::wholeFile(path)});
   }
   const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
+  __implCreateDescSets(loadedPipes, this);
   return (uint8_t *)loadedPipes;
 }
 
@@ -429,6 +458,124 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
     __implIntermToVulkanPipe(shaderPipe, tint, lang);
   }
   return shaderPipe;
+}
+
+size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
+  VulkanShaderPipe *shaderPipe = (VulkanShaderPipe *)pipe;
+  const auto layout = shaderPipe->layoutID;
+  std::vector<DescriptorSetLayout> layouts(count);
+  std::fill(layouts.begin(), layouts.end(), this->setLayouts[layout]);
+  const DescriptorSetAllocateInfo allocInfo(this->descPools[layout], count,
+                                            layouts.data());
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)this->vgm;
+  const auto sets = vgm->device.allocateDescriptorSets(allocInfo);
+  const auto nextID = this->descSets.size();
+  this->descSets.resize(nextID + count);
+  std::copy(sets.begin(), sets.end(), this->descSets.begin() + nextID);
+  if (defaultbindings.size() > layout) {
+    for (size_t i = 0; i < count; i++) {
+      auto &bindings = defaultbindings[layout];
+      for (auto &b : bindings)
+        b.bindingSet = nextID + i;
+      this->bindData(bindings.data(), bindings.size());
+    }
+  }
+  return nextID;
+}
+
+void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)this->vgm;
+
+  std::vector<WriteDescriptorSet> set;
+  set.reserve(count);
+  std::vector<DescriptorBufferInfo> bufferInfo;
+  bufferInfo.resize(count);
+  std::vector<DescriptorImageInfo> imgInfo;
+  imgInfo.resize(count);
+  for (size_t i = 0; i < count; i++) {
+    const auto &cinfo = info[i];
+    if (cinfo.type == BindingType::UniformBuffer) {
+      const auto &buffI = cinfo.data.buffer;
+      bufferInfo[i] = (DescriptorBufferInfo(vgm->bufferList[buffI.dataID],
+                                            buffI.offset, buffI.size));
+      set.push_back(WriteDescriptorSet(
+          descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
+          DescriptorType::eUniformBuffer, nullptr, bufferInfo.data() + i));
+    } else if (cinfo.type == BindingType::Texture ||
+               cinfo.type == BindingType::Sampler) {
+      const auto &tex = cinfo.data.texture;
+      imgInfo[i] = DescriptorImageInfo(vgm->sampler[tex.sampler],
+                                       vgm->textureImageViews[tex.texture],
+                                       ImageLayout::eShaderReadOnlyOptimal);
+      ;
+      set.push_back(WriteDescriptorSet(
+          descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
+          cinfo.type == BindingType::Texture ? DescriptorType::eSampledImage
+                                             : DescriptorType::eSampler,
+          imgInfo.data() + i));
+    }
+  }
+  vgm->device.updateDescriptorSets(set, {});
+}
+
+void VulkanShaderModule::addToRender(const size_t bindingID, void *customData) {
+  if (this->descSets.size() > bindingID && bindingID >= 0) {
+    const auto &descSet = descSets[bindingID];
+    const auto pipeLayout = pipeLayouts[bindingID];
+    ((CommandBuffer *)customData)
+        ->bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
+                             descSet, {});
+  }
+}
+
+void VulkanShaderModule::addToMaterial(const graphics::Material *material,
+                                       void *customData) {
+  using namespace tge::graphics;
+  const auto layOut =
+      ((VulkanShaderPipe *)material->costumShaderData)->layoutID;
+  ((GraphicsPipelineCreateInfo *)customData)->setLayout(pipeLayouts[layOut]);
+
+  // LEGACY
+  if (material->type == MaterialType::TextureOnly) { // Legacy support
+    graphics::VulkanGraphicsModule *vgm =
+        (graphics::VulkanGraphicsModule *)this->vgm;
+    const auto texMat = material->data.textureMaterial;
+
+    if (defaultbindings.size() <= layOut) {
+      defaultbindings.resize(layOut + 1);
+    }
+    defaultbindings[layOut] = {{0,
+                                UINT64_MAX,
+                                BindingType::Sampler,
+                                {texMat.textureIndex, texMat.samplerIndex}},
+
+                               {1,
+                                UINT64_MAX,
+                                BindingType::Texture,
+                                {texMat.textureIndex, texMat.samplerIndex}}};
+
+  }
+}
+
+void VulkanShaderModule::init() {
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)this->vgm;
+  if (!vgm->isInitialiazed)
+    throw std::runtime_error(
+        "Vulkan module not initalized, Vulkan Shader Module cannot be used!");
+}
+
+void VulkanShaderModule::destroy() {
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)this->vgm;
+  for (auto pool : descPools)
+    vgm->device.destroyDescriptorPool(pool);
+  for (auto dscLayout : setLayouts)
+    vgm->device.destroyDescriptorSetLayout(dscLayout);
+  for (auto pipeLayout : pipeLayouts)
+    vgm->device.destroyPipelineLayout(pipeLayout);
 }
 
 } // namespace tge::shader

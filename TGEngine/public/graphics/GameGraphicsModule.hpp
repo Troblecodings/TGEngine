@@ -9,20 +9,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <vector>
+#include "Material.hpp"
 
 namespace tge::graphics {
-
-using Color = float[4];
-
-enum class MaterialType { None, TextureOnly };
-constexpr MaterialType MAX_TYPE = MaterialType::TextureOnly;
-
-struct TextureMaterial {
-  uint32_t textureIndex;
-  uint32_t samplerIndex;
-};
-
-struct Material;
 
 enum class IndexSize { UINT16, UINT32, NONE };
 
@@ -63,22 +52,6 @@ struct SamplerInfo {
   int anisotropy = 0;
 };
 
-enum BindingType { UniformBuffer, Texture };
-
-struct BindingInfo {
-  size_t binding;
-  size_t materialId;
-  size_t dataID;
-  BindingType type;
-  size_t size = (~0ULL);
-  size_t offset = 0;
-
-  bool operator==(const BindingInfo &bin) const {
-    return this->binding == bin.binding && this->materialId == bin.materialId &&
-           this->dataID == bin.dataID && this->offset == bin.offset;
-  }
-};
-
 class GameGraphicsModule;
 
 enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };
@@ -94,6 +67,8 @@ public:
   }
 
   virtual ~APILayer() {}
+  
+  _NODISCARD virtual void *loadShader(const MaterialType type) = 0; // Legacy support
 
   _NODISCARD virtual size_t pushMaterials(const size_t materialcount,
                                           const Material *materials) = 0;
@@ -114,33 +89,11 @@ public:
   _NODISCARD virtual size_t pushTexture(const size_t textureCount,
                                         const TextureInfo *textures) = 0;
 
-  _NODISCARD virtual void *loadShader(const MaterialType type) = 0;
-
-  virtual void bindData(const BindingInfo &info) = 0;
-
   _NODISCARD GameGraphicsModule *getGraphicsModule() {
     return graphicsModule;
   };
 
   _NODISCARD shader::ShaderAPI *getShaderAPI() { return this->shaderAPI; }
-};
-
-struct Material {
-
-  Material(const TextureMaterial texture, APILayer *layer)
-      : type(MaterialType::TextureOnly), data({texture}) {
-    costumShaderData = layer->loadShader(type);
-  }
-
-  Material(void *costumShaderData) : costumShaderData(costumShaderData) {}
-
-  Material() = default;
-
-  MaterialType type = MaterialType::None;
-  union data {
-    TextureMaterial textureMaterial;
-  } data;
-  void *costumShaderData = nullptr; // API dependent
 };
 
 struct NodeTransform {

@@ -52,16 +52,10 @@ public:
   Image depthImage;
   DeviceMemory depthImageMemory;
   ImageView depthImageView;
-  std::vector<PipelineLayout> pipelineLayouts;
   std::vector<Sampler> sampler;
   std::vector<Image> textureImages;
   std::vector<DeviceMemory> textureMemorys;
   std::vector<ImageView> textureImageViews;
-  std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
-  std::vector<DescriptorSet> descriptorSets;
-  std::vector<DescriptorPool> descriptorPoolInfos;
-  std::vector<DescriptorSetLayout> descSetLayouts;
-  std::vector<BindingInfo> descSetWrite;
 
   bool isInitialiazed = false;
   bool exitFailed = false;
@@ -94,8 +88,6 @@ public:
                      const TextureInfo *textures) override;
 
   void *loadShader(const MaterialType type) override;
-
-  void bindData(const BindingInfo &info) override;
 
 };
 
