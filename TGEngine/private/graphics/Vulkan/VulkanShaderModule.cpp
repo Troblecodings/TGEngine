@@ -1,8 +1,8 @@
-#include "../../public/graphics/VulkanShaderModule.hpp"
-#include "../../public/Error.hpp"
-#include "../../public/Util.hpp"
-#include "../../public/graphics/VulkanModuleDef.hpp"
-#include "../../public/graphics/VulkanShaderPipe.hpp"
+#include "../../../public/graphics/vulkan/VulkanShaderModule.hpp"
+#include "../../../public/Error.hpp"
+#include "../../../public/Util.hpp"
+#include "../../../public/graphics/vulkan/VulkanModuleDef.hpp"
+#include "../../../public/graphics/vulkan/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
 #include <format>
 #include <glslang/MachineIndependent/localintermediate.h>
@@ -539,8 +539,6 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
 
   // LEGACY
   if (material->type == MaterialType::TextureOnly) { // Legacy support
-    graphics::VulkanGraphicsModule *vgm =
-        (graphics::VulkanGraphicsModule *)this->vgm;
     const auto texMat = material->data.textureMaterial;
 
     if (defaultbindings.size() <= layOut) {
@@ -549,12 +547,12 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
     defaultbindings[layOut] = {{0,
                                 UINT64_MAX,
                                 BindingType::Sampler,
-                                {texMat.textureIndex, texMat.samplerIndex}},
+                                { texMat.textureIndex, texMat.samplerIndex }},
 
                                {1,
                                 UINT64_MAX,
                                 BindingType::Texture,
-                                {texMat.textureIndex, texMat.samplerIndex}}};
+                                { texMat.textureIndex, texMat.samplerIndex }}};
 
   }
 }

@@ -1,7 +1,7 @@
 #include "../../public/graphics/GUIModule.hpp"
 #include "../../public/graphics/WindowModule.hpp"
 
-#include "../../public/graphics/VulkanModuleDef.hpp"
+#include "../../public/graphics/vulkan/VulkanModuleDef.hpp"
 #include <Windows.h>
 #include <backends/imgui_impl_vulkan.h>
 #include <backends/imgui_impl_win32.cpp>

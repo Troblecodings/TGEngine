@@ -5,10 +5,10 @@
 #define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
-#include "../../public/Module.hpp"
-#include "../../public/graphics/VulkanShaderModule.hpp"
-#include "../../public/graphics/VulkanShaderPipe.hpp"
-#include "GameGraphicsModule.hpp"
+#include "../../../public/Module.hpp"
+#include "VulkanShaderModule.hpp"
+#include "VulkanShaderPipe.hpp"
+#include "../GameGraphicsModule.hpp"
 #include <vector>
 #include <vulkan/vulkan.hpp>
 

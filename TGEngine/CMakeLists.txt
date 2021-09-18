@@ -6,7 +6,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
 add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest" DEBUG)
 
-add_compile_options("/D_ITERATOR_DEBUG_LEVEL=0" "/MD" "/EHa")
+add_compile_options("/D_ITERATOR_DEBUG_LEVEL=0" "/MD" "/EHa" "-Wno-deprecated-volatile")
 add_link_options("/ignore:4099")
 
 include(FetchContent)
@@ -37,7 +37,7 @@ link_directories("${vulkansdk_SOURCE_DIR}/Lib" "${vulkansdk_SOURCE_DIR}/Third-Pa
 add_library (TGEngine STATIC
 	# public
 	"public/TGEngine.hpp"
-	"public/graphics/VulkanGraphicsModule.hpp"
+	"public/graphics/vulkan/VulkanGraphicsModule.hpp"
 	"public/Module.hpp"
 	"public/Error.hpp"
 	"public/graphics/GameGraphicsModule.hpp"
@@ -45,17 +45,17 @@ add_library (TGEngine STATIC
 	# private
 	"private/TGEngine.cpp"
 	"private/Error.cpp"
-    "private/graphics/VulkanGraphicsModule.cpp"     
+    "private/graphics/Vulkan/VulkanGraphicsModule.cpp"     
     "private/graphics/GameGraphicsModule.cpp"
     "private/Util.cpp"
 	"private/graphics/WindowModule.cpp" 
-	"private/graphics/VulkanShaderModule.cpp" 
-	"public/graphics/VulkanShaderModule.hpp" 
-	"public/graphics/VulkanShaderPipe.hpp" 
+	"private/graphics/Vulkan/VulkanShaderModule.cpp" 
+	"public/graphics/vulkan/VulkanShaderModule.hpp" 
+	"public/graphics/vulkan/VulkanShaderPipe.hpp" 
 	"public/graphics/GameShaderModule.hpp" 
 	"private/graphics/GUIModule.cpp" 
 	"public/graphics/GUIModule.hpp" 
-	"public/graphics/VulkanModuleDef.hpp"
+	"public/graphics/vulkan/VulkanModuleDef.hpp"
 	"${imgui_SOURCE_DIR}/imconfig.h"
 	"${imgui_SOURCE_DIR}/imgui.cpp"
 	"${imgui_SOURCE_DIR}/imgui.h"
@@ -71,10 +71,10 @@ add_library (TGEngine STATIC
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h"
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.h"
-  "public/graphics/Material.hpp")
+  "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp")
 target_link_libraries(TGEngine PRIVATE glslang shaderc_combined vulkan-1)
 
-add_executable(TGEngineTest "test/TGTest.cpp"  "public/graphics/Material.hpp")
+add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
 add_custom_command(TARGET TGEngineTest PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory

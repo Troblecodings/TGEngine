@@ -1,6 +1,10 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace tge::graphics {
+
+    class APILayer;
 
 using Color = float[4];
 
@@ -14,10 +18,7 @@ struct TextureMaterial {
 
 struct Material {
 
-  Material(const TextureMaterial texture, APILayer *layer)
-      : type(MaterialType::TextureOnly), data({texture}) {
-    costumShaderData = layer->loadShader(type);
-  }
+  Material(const TextureMaterial texture, APILayer *layer);
 
   Material(void *costumShaderData) : costumShaderData(costumShaderData) {}
 

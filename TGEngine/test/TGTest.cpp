@@ -5,8 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <graphics/GameGraphicsModule.hpp>
-#include <graphics/VulkanGraphicsModule.hpp>
-#include <graphics/VulkanShaderPipe.hpp>
+#include <graphics/vulkan/VulkanGraphicsModule.hpp>
+#include <graphics/vulkan/VulkanShaderPipe.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
 #include <mutex>
@@ -138,7 +138,7 @@ TEST(ShaderCompiler, Create) {
   ASSERT_EQ(init(), Error::NONE);
 
   tge::shader::ShaderCreateInfo sh;
-  std::string str("out gl_PerVertex { vec4 gl_Position; }; void main() { }");
+  std::string str("void main() { }");
   sh.code = std::vector<char>(str.begin(), str.end());
   sh.inputs.push_back({"test", 16});
   sh.shaderType = tge::shader::ShaderType::VERTEX;
@@ -169,6 +169,7 @@ TEST(EngineMain, AvocadoTestOne) {
   const auto mdlID = getGameGraphicsModule()->loadModel(
       vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
   ASSERT_NE(mdlID, UINT64_MAX);
+  av->nodeID = mdlID;
 
   syncMutex.unlock();
   waitForTime();

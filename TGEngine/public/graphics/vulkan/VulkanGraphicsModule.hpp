@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameGraphicsModule.hpp"
+#include "../GameGraphicsModule.hpp"
 #include <vector>
 #include <array>
 #include <string>

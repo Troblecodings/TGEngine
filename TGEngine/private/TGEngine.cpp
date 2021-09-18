@@ -1,5 +1,5 @@
 #include "../public/TGEngine.hpp"
-#include "../public/graphics/VulkanGraphicsModule.hpp"
+#include "../public/graphics/vulkan/VulkanGraphicsModule.hpp"
 #include "../public/graphics/GUIModule.hpp"
 #include "../public/Util.hpp"
 

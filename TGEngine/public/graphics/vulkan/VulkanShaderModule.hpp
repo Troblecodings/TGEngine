@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../public/graphics/GameShaderModule.hpp"
+#include "../GameShaderModule.hpp"
+#include "VulkanShaderPipe.hpp"
 #include <vulkan/vulkan.hpp>
 
 namespace tge::shader {
@@ -11,10 +12,10 @@ public:
   explicit VulkanShaderModule(void *vgm) : vgm(vgm) {}
 
   void *vgm;
-  std::vector<DescriptorPool> descPools;
-  std::vector<PipelineLayout> pipeLayouts;
-  std::vector<DescriptorSetLayout> setLayouts;
-  std::vector<DescriptorSet> descSets;
+  std::vector<vk::DescriptorPool> descPools;
+  std::vector<vk::PipelineLayout> pipeLayouts;
+  std::vector<vk::DescriptorSetLayout> setLayouts;
+  std::vector<vk::DescriptorSet> descSets;
   std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
   // Legacy support
   std::vector<std::vector<BindingInfo>> defaultbindings;
@@ -32,7 +33,7 @@ public:
   void addToRender(const size_t bindingID, void *customData) override;
 
   void addToMaterial(const graphics::Material *material,
-                             void *customData) override;
+                     void *customData) override;
 
   void init() override;
 

@@ -5,7 +5,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../public/Util.hpp"
 #include "../../public/graphics/GameShaderModule.hpp"
-#include "../../public/graphics/VulkanShaderPipe.hpp"
+#include "../../public/graphics/vulkan/VulkanShaderPipe.hpp"
 #include "../../public/headerlibs/tiny_gltf.h"
 #include <array>
 #include <glm/gtx/transform.hpp>
@@ -424,10 +424,10 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
       const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
       apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
                            sizeof(mvp) * nodeID);
-      const BindingInfo info = {2,           nodeI.material,
-                                dataID,      BindingType::UniformBuffer,
-                                sizeof(mvp), sizeof(mvp) * nodeID};
-      apiLayer->bindData(info);
+      //const shader::BindingInfo info = {2,           nodeI.material,
+      //                          dataID,      BindingType::UniformBuffer,
+      //                          sizeof(mvp), sizeof(mvp) * nodeID};
+      //apiLayer->bindData(info);
     }
   }
   return nodeID;
