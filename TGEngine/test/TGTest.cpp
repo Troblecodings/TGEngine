@@ -132,6 +132,55 @@ public:
   }
 };
 
+TEST(ShaderCompiler, Create) {
+  tge::main::modules.push_back(new TestModule());
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  tge::shader::ShaderCreateInfo sh[2];
+  sh[0].__code = "gl_Position = ublock_0.mvp * test;";
+  sh[0].inputs.push_back({"test", tge::shader::IOType::VEC4, 0});
+  sh[0].outputs.push_back({"testout", tge::shader::IOType::VEC2, 0});
+  sh[0].unifromIO.push_back({"mvp", tge::shader::IOType::MAT4, 2});
+  sh[0].shaderType = tge::shader::ShaderType::VERTEX;
+
+  sh[1].__code = "color = texture(sampler2D(diffuse, samp), testin);";
+  sh[1].outputs.push_back({"color", tge::shader::IOType::VEC4, 0});
+  sh[1].inputs.push_back({"testin", tge::shader::IOType::VEC2, 1});
+  sh[1].samplerIO.push_back({"samp", tge::shader::SamplerIOType::SAMPLER, 0});
+  sh[1].samplerIO.push_back({"diffuse", tge::shader::SamplerIOType::TEXTURE, 1});
+  sh[1].shaderType = tge::shader::ShaderType::FRAGMENT;
+
+  void *__noDiscard;
+  ASSERT_NO_THROW(__noDiscard =
+                      getAPILayer()->getShaderAPI()->createShaderPipe(sh, 2));
+
+  namespace s = tge::shader;
+  sh[0].__code = "";
+  sh[0].instructions = {
+      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "ublock_0.mvp"},
+      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "test"},
+      {{0, 1}, s::IOType::VEC4, s::InstructionType::MULTIPLY, "_tmp1"},
+      {{2}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
+  };
+
+  sh[1].__code = "";
+  sh[1].instructions = {
+      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "diffuse"},
+      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "samp"},
+      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "testin"},
+      {{0, 1}, s::IOType::SAMPLER2, s::InstructionType::SAMPLER, ""},
+      {{3, 2}, s::IOType::VEC4, s::InstructionType::TEXTURE, "_tmp"},
+      {{4}, s::IOType::VEC4, s::InstructionType::SET, "color"},
+  };
+  ASSERT_NO_THROW(__noDiscard =
+                      getAPILayer()->getShaderAPI()->createShaderPipe(sh, 2));
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
 TEST(EngineMain, SamplerAndTextures) {
   tge::main::modules.push_back(new TestModule());
 
@@ -184,24 +233,6 @@ TEST(EngineMain, SamplerAndTextures) {
   renderInfo.indexCount = indexData.size();
   renderInfo.vertexBuffer.push_back(dataOffset);
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
-
-  syncMutex.unlock();
-  waitForTime();
-  exitWaitCheck();
-}
-
-TEST(ShaderCompiler, Create) {
-  tge::main::modules.push_back(new TestModule());
-
-  ASSERT_EQ(init(), Error::NONE);
-
-  tge::shader::ShaderCreateInfo sh;
-  std::string str("void main() { }");
-  sh.code = std::vector<char>(str.begin(), str.end());
-  sh.inputs.push_back({"test", 16});
-  sh.shaderType = tge::shader::ShaderType::VERTEX;
-
-  getAPILayer()->getShaderAPI()->createShaderPipe(&sh, 1);
 
   syncMutex.unlock();
   waitForTime();

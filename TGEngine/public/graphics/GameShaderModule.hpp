@@ -6,19 +6,43 @@
 
 namespace tge::shader {
 
+enum class IOType { FLOAT, VEC2, VEC3, VEC4, MAT3, MAT4, SAMPLER2 };
+
 struct ShaderIO {
   std::string name;
-  size_t size;
+  IOType iotype;
+  size_t binding;
+};
+
+enum class SamplerIOType { SAMPLER, TEXTURE };
+
+struct SamplerIO {
+  std::string name;
+  SamplerIOType iotype;
+  size_t binding;
+};
+
+enum class InstructionType {
+    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP
+};
+
+struct Instruction {
+  std::vector<size_t> inputs;
+  IOType outputType;
+  InstructionType instruciontType;
+  std::string name;
 };
 
 enum class ShaderType { VERTEX, FRAGMENT };
 
 struct ShaderCreateInfo {
-  std::vector<char> code;
+  std::string __code;
   std::vector<ShaderIO> unifromIO;
   std::vector<ShaderIO> inputs;
   std::vector<ShaderIO> outputs;
+  std::vector<SamplerIO> samplerIO;
   ShaderType shaderType;
+  std::vector<Instruction> instructions;
 };
 
 using ShaderPipe = void *;

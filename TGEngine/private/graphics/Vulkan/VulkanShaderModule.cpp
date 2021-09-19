@@ -401,12 +401,35 @@ ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
   return (uint8_t *)loadedPipes;
 }
 
-inline std::string getTypeFromSize(const size_t t) {
+inline std::string getStringFromIOType(const IOType t) {
   switch (t) {
-  case 16:
+  case IOType::FLOAT:
+    return "float";
+  case IOType::VEC2:
     return "vec2";
+  case IOType::VEC3:
+    return "vec3";
+  case IOType::VEC4:
+    return "vec4";
+  case IOType::MAT3:
+    return "mat3";
+  case IOType::MAT4:
+    return "mat4";
+  case IOType::SAMPLER2:
+    return "sampler";
   default:
-    throw std::runtime_error("");
+    throw std::runtime_error("Couldn't find string to type!");
+  }
+}
+
+inline std::string getStringFromSamplerIOType(const SamplerIOType t) {
+  switch (t) {
+  case SamplerIOType::SAMPLER:
+    return "sampler";
+  case SamplerIOType::TEXTURE:
+    return "texture2D";
+  default:
+    throw std::runtime_error("Couldn't find string to type!");
   }
 }
 
@@ -421,6 +444,70 @@ inline EShLanguage getLangFromShaderLang(const ShaderType type) {
   };
 }
 
+inline void function(const Instruction &ins,
+                     const std::vector<Instruction> &instructions,
+                     const std::string fname, std::ostringstream &stream,
+                     std::vector<std::string> names) {
+  names.push_back(ins.name);
+  stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
+         << fname << "(" << names[ins.inputs[0]];
+  for (size_t i = 1; i < ins.inputs.size(); i++) {
+    stream << ", " << names[ins.inputs[i]];
+  }
+  stream << ");" << std::endl;
+}
+
+inline void aggragteFunction(const Instruction &ins,
+                             const std::vector<Instruction> &instructions,
+                             const std::string fname,
+                             std::ostringstream &stream,
+                             std::vector<std::string> names) {
+  names.push_back(ins.name);
+  stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
+         << names[ins.inputs[0]];
+  for (size_t i = 1; i < ins.inputs.size(); i++) {
+    stream << fname << names[ins.inputs[i]];
+  }
+  stream << ";" << std::endl;
+}
+
+inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
+                                  std::ostringstream &stream) {
+  std::vector<std::string> names;
+  for (const auto &ins : instructions) {
+    switch (ins.instruciontType) {
+    case InstructionType::NOOP:
+      names.push_back(ins.name);
+      break;
+    case InstructionType::MULTIPLY:
+      aggragteFunction(ins, instructions, " * ", stream, names);
+      break;
+    case InstructionType::ADD:
+      aggragteFunction(ins, instructions, " + ", stream, names);
+      break;
+    case InstructionType::SET:
+      names.push_back(ins.name);
+      stream << ins.name << " = "
+             << instructions[ins.inputs[0]].name << ";" << std::endl;
+      break;
+    case InstructionType::TEMP:
+      names.push_back(ins.name);
+      stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = " << instructions[ins.inputs[0]].name
+             << ";" << std::endl;
+      break;
+    case InstructionType::TEXTURE:
+      function(ins, instructions, "texture", stream, names);
+      break;
+    case InstructionType::SAMPLER:
+      names.push_back("sampler2D(" + names[ins.inputs[0]] + ", " +
+                      names[ins.inputs[1]] + ")");
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 ShaderPipe
 VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
                                      const size_t shaderCount) {
@@ -432,24 +519,41 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
     const ShaderCreateInfo &createInfo = shaderCreateInfo[i];
     const auto lang = getLangFromShaderLang(createInfo.shaderType);
     ShaderInfo info = {lang};
-    long long nexID = 0;
     std::ostringstream codebuff;
     codebuff << "#version 450" << std::endl << std::endl;
     for (const auto &input : createInfo.inputs) {
-      codebuff << "layout(location=" << nexID++ << ") in vec4 " << input.name
-               << ";" << std::endl;
+      codebuff << "layout(location=" << input.binding << ") in "
+               << getStringFromIOType(input.iotype) << " " << input.name << ";"
+               << std::endl;
     }
     codebuff << std::endl;
-    nexID = 0;
     for (const auto &out : createInfo.outputs) {
-      codebuff << "layout(location=" << nexID++ << ") out vec4 " << out.name
-               << ";" << std::endl;
+      codebuff << "layout(location=" << out.binding << ") out "
+               << getStringFromIOType(out.iotype) << " " << out.name << ";"
+               << std::endl;
+    }
+    codebuff << std::endl;
+    size_t ublockID = 0;
+    for (const auto &uniform : createInfo.unifromIO) {
+      codebuff << "layout(binding=" << uniform.binding << ") uniform UBLOCK_"
+               << ublockID << " {" << std::endl
+               << getStringFromIOType(uniform.iotype) << " " << uniform.name
+               << ";} ublock_" << ublockID << ";" << std::endl;
+    }
+    codebuff << std::endl;
+    for (const auto &sampler : createInfo.samplerIO) {
+      // layout(binding = 1) uniform texture2D tex;
+      codebuff << "layout(binding=" << sampler.binding << ") uniform "
+               << getStringFromSamplerIOType(sampler.iotype) << " "
+               << sampler.name << ";" << std::endl;
     }
     codebuff << std::endl;
     if (lang == EShLangVertex) {
       codebuff << "out gl_PerVertex { vec4 gl_Position; };" << std::endl;
     }
-    codebuff << "void main() {}" << std::endl;
+    codebuff << "void main() {" << std::endl;
+    addInstructionsToCode(createInfo.instructions, codebuff);
+    codebuff << std::endl << createInfo.__code << "}" << std::endl;
     std::string code(codebuff.str());
     std::cout << code << std::endl;
     info.code = std::vector(code.begin(), code.end());
@@ -554,13 +658,12 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
     defaultbindings[layOut] = {{0,
                                 UINT64_MAX,
                                 BindingType::Sampler,
-                                { texMat.textureIndex, texMat.samplerIndex }},
+                                {texMat.textureIndex, texMat.samplerIndex}},
 
                                {1,
                                 UINT64_MAX,
                                 BindingType::Texture,
-                                { texMat.textureIndex, texMat.samplerIndex }}};
-
+                                {texMat.textureIndex, texMat.samplerIndex}}};
   }
 }
 
