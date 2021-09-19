@@ -325,14 +325,12 @@ void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
     const auto descPool = vgm->device.createDescriptorPool(descPoolCreateInfo);
     vsm->descPools.push_back(descPool);
 
-    const auto layoutCreateInfo = descLayout
-                                      ? PipelineLayoutCreateInfo({}, descLayout)
-                                      : PipelineLayoutCreateInfo();
+    const auto layoutCreateInfo = PipelineLayoutCreateInfo({}, descLayout);
     const auto pipeLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
     vsm->pipeLayouts.push_back(pipeLayout);
     shaderPipe->layoutID = vsm->pipeLayouts.size() - 1;
   } else {
-    shaderPipe->layoutID == UINT64_MAX;
+    shaderPipe->layoutID = UINT64_MAX;
   }
 }
 
@@ -466,6 +464,8 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
 size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   VulkanShaderPipe *shaderPipe = (VulkanShaderPipe *)pipe;
   const auto layout = shaderPipe->layoutID;
+  if (layout == UINT64_MAX)
+    return UINT64_MAX;
   std::vector<DescriptorSetLayout> layouts(count);
   std::fill(layouts.begin(), layouts.end(), this->setLayouts[layout]);
   const DescriptorSetAllocateInfo allocInfo(this->descPools[layout], count,
@@ -536,9 +536,13 @@ void VulkanShaderModule::addToRender(const size_t bindingID, void *customData) {
 void VulkanShaderModule::addToMaterial(const graphics::Material *material,
                                        void *customData) {
   using namespace tge::graphics;
-  const auto layOut =
-      ((VulkanShaderPipe *)material->costumShaderData)->layoutID;
-  ((GraphicsPipelineCreateInfo *)customData)->setLayout(pipeLayouts[layOut]);
+  const auto vkPipe = ((VulkanShaderPipe *)material->costumShaderData);
+  const auto layOut = vkPipe->layoutID;
+  if (layOut != UINT64_MAX) [[likely]] {
+    ((GraphicsPipelineCreateInfo *)customData)->setLayout(pipeLayouts[layOut]);
+  } else {
+    ((GraphicsPipelineCreateInfo *)customData)->setLayout(defaultLayout);
+  }
 
   // LEGACY
   if (material->type == MaterialType::TextureOnly) { // Legacy support
@@ -566,11 +570,19 @@ void VulkanShaderModule::init() {
   if (!vgm->isInitialiazed)
     throw std::runtime_error(
         "Vulkan module not initalized, Vulkan Shader Module cannot be used!");
+
+  const DescriptorSetLayoutCreateInfo layoutCreate({}, {});
+  defaultDescLayout = vgm->device.createDescriptorSetLayout(layoutCreate);
+
+  const auto layoutCreateInfo = PipelineLayoutCreateInfo({}, defaultDescLayout);
+  defaultLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
 }
 
 void VulkanShaderModule::destroy() {
   graphics::VulkanGraphicsModule *vgm =
       (graphics::VulkanGraphicsModule *)this->vgm;
+  vgm->device.destroyDescriptorSetLayout(defaultDescLayout);
+  vgm->device.destroyPipelineLayout(defaultLayout);
   for (auto pool : descPools)
     vgm->device.destroyDescriptorPool(pool);
   for (auto dscLayout : setLayouts)

@@ -68,6 +68,7 @@ constexpr PipelineInputAssemblyStateCreateInfo
   }
 
 void *VulkanGraphicsModule::loadShader(const MaterialType type) {
+  EXPECT(((size_t)type) <= (size_t)MAX_TYPE);
   const auto idx = (size_t)type;
   auto &vert = shaderNames[idx];
   const auto ptr = shaderAPI->loadShaderPipeAndCompile(vert);

@@ -113,10 +113,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
   }
 
 #pragma region This is speculative
-  auto pipe = (tge::shader::VulkanShaderPipe *)(shaderPipe == nullptr
-                                                    ? apiLayer->loadShader(
-                                                          MaterialType::None)
-                                                    : shaderPipe);
+  auto pipe = (shader::VulkanShaderPipe *)shaderPipe;
   pipe->vertexInputAttributes.clear();
   pipe->vertexInputBindings.clear();
 
@@ -191,7 +188,14 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
                        const size_t dataId, const size_t materialId) {
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
-  for (const auto &mesh : model.meshes) {
+  for (size_t i = 0; i < model.meshes.size(); i++) {
+    const auto &mesh = model.meshes[i];
+    const auto bItr = model.nodes.begin();
+    const auto eItr = model.nodes.end();
+    const auto oItr = std::find_if(
+        bItr, eItr, [idx = i](const Node &node) { return node.mesh == idx; });
+    const auto bindingID =
+        oItr != eItr ? std::distance(bItr, oItr) : UINT64_MAX;
     for (const auto &prim : mesh.primitives) {
       std::vector<std::tuple<int, int, int>> strides;
       strides.reserve(prim.attributes.size());
@@ -230,7 +234,8 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
             1,
             indexOffset,
             indextype,
-            bufferOffsets};
+            bufferOffsets,
+            bindingID};
         renderInfos.push_back(renderInfo);
       } else {
         const auto accessorID = prim.attributes.begin()->second;
@@ -243,7 +248,8 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
             1,
             vertAccesor.count,
             IndexSize::NONE,
-            bufferOffsets};
+            bufferOffsets,
+            bindingID};
         renderInfos.push_back(renderInfo);
       }
     }
@@ -262,18 +268,23 @@ GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
       glm::perspective(glm::radians(45.0f),
                        (float)prop.width / (float)prop.height, 0.01f, 100.0f);
   this->projectionMatrix[1][1] *= -1;
-  this->viewMatrix =
-      glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+  this->viewMatrix = glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0),
+                                 glm::vec3(0, 1, 0));
 }
 
 size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
-                                          const bool binary,
-                                          const std::string &baseDir,
-                                          void *shaderPipe) {
+                                     const bool binary,
+                                     const std::string &baseDir,
+                                     void *shaderPipe) {
   TinyGLTF loader;
   std::string error;
   std::string warning;
   Model model;
+
+  if (shaderPipe == nullptr) {
+    shaderPipe = (tge::shader::VulkanShaderPipe *)(apiLayer->loadShader(
+        MaterialType::None));
+  }
 
   const bool rst =
       binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
@@ -300,9 +311,43 @@ size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
   const auto materials =
       loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
 
-    // TODO PUT INTO
-  const NodeInfo nodeInfo = {materials};
-  const auto nId = addNode(&nodeInfo, 1);
+  std::vector<NodeInfo> nodeInfos = {};
+  const auto amount = model.nodes.size();
+  nodeInfos.resize(amount + 1);
+  if (amount != 0) [[likely]] {
+    const auto startID =
+        apiLayer->getShaderAPI()->createBindings(shaderPipe, amount);
+
+    const auto nextNodeID = node.size();
+    for (size_t i = 0; i < amount; i++) {
+      const auto &node = model.nodes[i];
+      const auto infoID = i + 1;
+      auto &info = nodeInfos[infoID];
+      if (!node.translation.empty()) {
+        info.transforms.translation.x = (float)node.translation[0];
+        info.transforms.translation.y = (float)node.translation[1];
+        info.transforms.translation.z = (float)node.translation[2];
+      }
+      if (!node.scale.empty()) {
+        info.transforms.scale.x = (float)node.scale[0];
+        info.transforms.scale.y = (float)node.scale[1];
+        info.transforms.scale.z = (float)node.scale[2];
+      }
+      if (!node.rotation.empty()) {
+        info.transforms.rotation =
+            glm::quat((float)node.rotation[0], (float)node.rotation[1],
+                      (float)node.rotation[2], (float)node.rotation[3]);
+      }
+      info.bindingID = startID + i;
+      for (const auto id : node.children) {
+        nodeInfos[id + 1].parent = nextNodeID + infoID;
+      }
+    }
+  } else {
+    const auto startID = apiLayer->getShaderAPI()->createBindings(shaderPipe);
+    nodeInfos[0].bindingID = startID;
+  }
+  const auto nId = addNode(nodeInfos.data(), nodeInfos.size());
 
   pushRender(model, apiLayer, dataId, materials);
 
@@ -355,8 +400,8 @@ void GameGraphicsModule::tick(double time) {
           modelMatrices[i] = mMatrix;
         }
         const auto mvp = projView * modelMatrices[i];
-        apiLayer->changeData(dataID, (const uint8_t *)&mvp,
-                             sizeof(glm::mat4), i * sizeof(glm::mat4));
+        apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(glm::mat4),
+                             i * sizeof(glm::mat4));
       }
     }
     std::fill(status.begin(), status.end(), 0);
@@ -404,6 +449,8 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
                                    const size_t count) {
   const auto nodeID = node.size();
   node.reserve(nodeID + count);
+  std::vector<shader::BindingInfo> bindings;
+  bindings.reserve(count);
   for (size_t i = 0; i < count; i++) {
     const auto nodeI = nodeInfos[i];
     const auto nodeIndex = (nodeID + i);
@@ -420,16 +467,17 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
       parents.push_back(UINT64_MAX);
     }
     status.push_back(0);
-    if (nodeI.material != UINT64_MAX) {
+    if (nodeI.bindingID != UINT64_MAX) {
       const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
       apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
                            sizeof(mvp) * nodeID);
-      //const shader::BindingInfo info = {2,           nodeI.material,
-      //                          dataID,      BindingType::UniformBuffer,
-      //                          sizeof(mvp), sizeof(mvp) * nodeID};
-      //apiLayer->bindData(info);
+      bindings.push_back({2,
+                          nodeI.bindingID,
+                          shader::BindingType::UniformBuffer,
+                          {dataID, sizeof(mvp), sizeof(mvp) * nodeID}});
     }
   }
+  apiLayer->getShaderAPI()->bindData(bindings.data(), bindings.size());
   return nodeID;
 }
 

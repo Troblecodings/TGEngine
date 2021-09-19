@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (10.0f)
+#define DEFAULT_TIME (3.0f)
 
 #define MODEL_TEST 0
 
@@ -263,7 +263,6 @@ TEST(EngineMain, Exit) { exitWaitCheck(); }
 
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
-
 TEST(EngineMain, SimpleModel) {
   tge::main::modules.push_back(new TestModule());
 
@@ -278,6 +277,8 @@ TEST(EngineMain, SimpleModel) {
   waitForTime();
   exitWaitCheck();
 }
+
+TEST(EngineApi, GameAPIChecks) {}
 
 TEST(EngineApi, GraphicsAPIChecks) {
   APILayer *apiLayer = getAPILayer();
@@ -302,8 +303,10 @@ TEST(EngineApi, GraphicsAPIChecks) {
   ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(1, &textureInfo),
                std::runtime_error);
 
+  void *__dNoDiscard2;
   for (size_t i = 0; i <= (size_t)MAX_TYPE; i++) {
-    ASSERT_NE(apiLayer->loadShader((MaterialType)i), nullptr);
+    ASSERT_THROW(__dNoDiscard2 = apiLayer->loadShader((MaterialType)i),
+                 std::runtime_error);
   }
 
   delete apiLayer;
@@ -311,6 +314,14 @@ TEST(EngineApi, GraphicsAPIChecks) {
   ASSERT_EQ(init(), Error::NONE);
   apiLayer = getAPILayer();
   ASSERT_NE(apiLayer, nullptr);
+
+  for (size_t i = 0; i <= (size_t)MAX_TYPE; i++) {
+    ASSERT_NO_THROW(__dNoDiscard2 = apiLayer->loadShader((MaterialType)i));
+  }
+
+  ASSERT_THROW(__dNoDiscard2 =
+                   apiLayer->loadShader((MaterialType)10000000000000),
+               std::runtime_error);
 
   ASSERT_THROW(__dNoDiscard1 =
                    apiLayer->pushData(0, &dataptr, &size, DataType::VertexData),
@@ -333,8 +344,6 @@ TEST(EngineApi, GraphicsAPIChecks) {
   ASSERT_THROW(__dNoDiscard1 = apiLayer->pushTexture(1, nullptr),
                std::runtime_error);
 }
-
-TEST(EngineApi, GameAPIChecks) {}
 
 TEST(EngineApi, Exit) {
   syncMutex.unlock();

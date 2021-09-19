@@ -14,8 +14,6 @@
 
 namespace tge::graphics {
 
-class GameGraphicsModule;
-
 struct NodeTransform {
   glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -23,7 +21,7 @@ struct NodeTransform {
 };
 
 struct NodeInfo {
-  size_t material = UINT64_MAX;
+  size_t bindingID = UINT64_MAX;
   NodeTransform transforms = {};
   size_t parent = UINT64_MAX;
 };

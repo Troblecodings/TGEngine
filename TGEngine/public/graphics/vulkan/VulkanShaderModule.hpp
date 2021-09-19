@@ -17,6 +17,8 @@ public:
   std::vector<vk::DescriptorSetLayout> setLayouts;
   std::vector<vk::DescriptorSet> descSets;
   std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
+  DescriptorSetLayout defaultDescLayout;
+  PipelineLayout defaultLayout;
   // Legacy support
   std::vector<std::vector<BindingInfo>> defaultbindings;
 
