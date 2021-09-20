@@ -179,7 +179,8 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "SAMP"},
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "TEX"},
           {{2, 1}, s::IOType::VEC4, s::InstructionType::SAMPLER, ""},
-          {{3, 0}, s::IOType::VEC4, s::InstructionType::TEXTURE, "COLOR"}};
+          {{3, 0}, s::IOType::VEC4, s::InstructionType::TEXTURE, "C1"},
+          {{4}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
     } else {
       createInfo[1].instructions = {
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "vec4(1, 0, 0, 1)"},
@@ -331,8 +332,13 @@ inline size_t loadNodes(const Model &model, APILayer *apiLayer,
       for (const auto id : node.children) {
         nodeInfos[id + 1].parent = nextNodeID + infoID;
       }
-      info.bindingID =
-          apiLayer->getShaderAPI()->createBindings(created[node.mesh]);
+      if (node.mesh >= 0 && created.size() > node.mesh) [[likely]] {
+        info.bindingID =
+            apiLayer->getShaderAPI()->createBindings(created[node.mesh]);
+      } else {
+        info.bindingID =
+            apiLayer->getShaderAPI()->createBindings(ggm->defaultPipe);
+      }
     }
   } else {
     const auto startID =

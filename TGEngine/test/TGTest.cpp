@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (100.0f)
+#define DEFAULT_TIME (4.0f)
 
 #define MODEL_TEST 0
 
