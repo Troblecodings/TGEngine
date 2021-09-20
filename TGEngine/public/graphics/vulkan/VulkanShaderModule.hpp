@@ -30,6 +30,9 @@ public:
 
   size_t createBindings(ShaderPipe pipe, const size_t count = 1) override;
 
+  void changeInputBindings(const ShaderPipe pipe, const size_t bindingID,
+                           const size_t buffer) override;
+
   void bindData(const BindingInfo *info, const size_t count) override;
 
   void addToRender(const size_t bindingID, void *customData) override;

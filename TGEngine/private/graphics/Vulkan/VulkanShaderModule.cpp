@@ -308,7 +308,6 @@ constexpr TBuiltInResource DefaultTBuiltInResource = {
 
 void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
                           VulkanShaderModule *vsm) {
-  std::vector<DescriptorPoolSize> descPoolSizes;
   graphics::VulkanGraphicsModule *vgm =
       (graphics::VulkanGraphicsModule *)vsm->vgm;
 
@@ -317,6 +316,7 @@ void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
         {}, shaderPipe->descriptorLayoutBindings);
     const auto descLayout = vgm->device.createDescriptorSetLayout(layoutCreate);
     vsm->setLayouts.push_back(descLayout);
+    std::vector<DescriptorPoolSize> descPoolSizes;
     for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
       descPoolSizes.push_back(
           {binding.descriptorType, binding.descriptorCount});
@@ -487,13 +487,13 @@ inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
       break;
     case InstructionType::SET:
       names.push_back(ins.name);
-      stream << ins.name << " = "
-             << instructions[ins.inputs[0]].name << ";" << std::endl;
+      stream << ins.name << " = " << instructions[ins.inputs[0]].name << ";"
+             << std::endl;
       break;
     case InstructionType::TEMP:
       names.push_back(ins.name);
-      stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = " << instructions[ins.inputs[0]].name
-             << ";" << std::endl;
+      stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
+             << instructions[ins.inputs[0]].name << ";" << std::endl;
       break;
     case InstructionType::TEXTURE:
       function(ins, instructions, "texture", stream, names);
@@ -508,6 +508,19 @@ inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
     default:
       break;
     }
+  }
+}
+
+inline uint32_t strideFromIOType(const IOType t) {
+  switch (t) {
+  case IOType::VEC2:
+    return 8;
+  case IOType::VEC3:
+    return 12;
+  case IOType::VEC4:
+    return 16;
+  default:
+    throw std::runtime_error("No stride for IOType!");
   }
 }
 
@@ -565,6 +578,30 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
     glslang::TIntermediate *tint = shader->getIntermediate();
     __implIntermToVulkanPipe(shaderPipe, tint, lang);
     __implCreateDescSets(shaderPipe, this);
+    if (createInfo.shaderType == ShaderType::VERTEX) {
+      std::sort(shaderPipe->vertexInputAttributes.begin(),
+                shaderPipe->vertexInputAttributes.end(),
+                [](auto x, auto y) { return x.location < y.location; });
+      uint32_t maxBinding = 0;
+      for (size_t i = 0; i < shaderPipe->vertexInputAttributes.size(); i++) {
+        auto &state = shaderPipe->vertexInputAttributes[i];
+        state.binding = createInfo.inputs[i].buffer;
+        if (state.binding != 0)
+            state.offset = 0;
+        if (maxBinding < state.binding)
+          maxBinding = state.binding;
+      }
+      shaderPipe->vertexInputBindings.resize(maxBinding + 1);
+      for (size_t i = 0; i < shaderPipe->vertexInputBindings.size(); i++) {
+        auto &bind = shaderPipe->vertexInputBindings[i];
+        const auto &info = createInfo.inputs[i];
+        bind.binding = info.buffer;
+        bind.stride = strideFromIOType(info.iotype);
+      }
+      shaderPipe->inputStateCreateInfo = PipelineVertexInputStateCreateInfo(
+          {}, shaderPipe->vertexInputBindings,
+          shaderPipe->vertexInputAttributes);
+    }
   }
   return shaderPipe;
 }
@@ -594,6 +631,10 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   }
   return nextID;
 }
+
+void VulkanShaderModule::changeInputBindings(const ShaderPipe pipe,
+                                             const size_t bindingID,
+                                             const size_t buffer) {}
 
 void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
   graphics::VulkanGraphicsModule *vgm =
@@ -655,7 +696,8 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
   // LEGACY
   if (material->type == MaterialType::TextureOnly) { // Legacy support
     const auto texMat = material->data.textureMaterial;
-
+    if (layOut == UINT64_MAX)
+      return;
     if (defaultbindings.size() <= layOut) {
       defaultbindings.resize(layOut + 1);
     }

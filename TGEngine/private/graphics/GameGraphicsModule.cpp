@@ -115,8 +115,8 @@ inline shader::IOType inputTypeFromGLTF(int type) {
 }
 
 inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
-                            void *shaderPipe, const size_t sampler,
-                            const size_t texture) {
+                            const size_t sampler, const size_t texture,
+                            std::vector<shader::ShaderPipe> &created) {
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
   for (const auto &mat : model.materials) {
@@ -148,7 +148,9 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     std::sort(createInfo[0].inputs.begin(), createInfo[0].inputs.end(),
               [](auto x, auto y) { return x.iotype > y.iotype; });
     for (size_t i = 0; i < createInfo[0].inputs.size(); i++) {
-      createInfo[0].inputs[i].binding = i;
+      auto &in = createInfo[0].inputs[i];
+      in.binding = i;
+      in.buffer = i;
     }
     createInfo[0].shaderType = s::ShaderType::VERTEX;
     createInfo[1].shaderType = s::ShaderType::FRAGMENT;
@@ -185,6 +187,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     };
     mat.costumShaderData =
         apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
+    created.push_back(mat.costumShaderData);
   }
 
   return apiLayer->pushMaterials(materials.size(), materials.data());
@@ -300,14 +303,12 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
 }
 
 inline size_t loadNodes(const Model &model, APILayer *apiLayer,
-                        void *shaderPipe, const size_t nextNodeID,
-                        GameGraphicsModule *ggm) {
+                        const size_t nextNodeID, GameGraphicsModule *ggm,
+                        const std::vector<shader::ShaderPipe> &created) {
   std::vector<NodeInfo> nodeInfos = {};
   const auto amount = model.nodes.size();
   nodeInfos.resize(amount + 1);
   if (amount != 0) [[likely]] {
-    const auto startID =
-        apiLayer->getShaderAPI()->createBindings(shaderPipe, amount);
     for (size_t i = 0; i < amount; i++) {
       const auto &node = model.nodes[i];
       const auto infoID = i + 1;
@@ -327,13 +328,15 @@ inline size_t loadNodes(const Model &model, APILayer *apiLayer,
             glm::quat((float)node.rotation[0], (float)node.rotation[1],
                       (float)node.rotation[2], (float)node.rotation[3]);
       }
-      info.bindingID = startID + i;
       for (const auto id : node.children) {
         nodeInfos[id + 1].parent = nextNodeID + infoID;
       }
+      info.bindingID =
+          apiLayer->getShaderAPI()->createBindings(created[node.mesh]);
     }
   } else {
-    const auto startID = apiLayer->getShaderAPI()->createBindings(shaderPipe);
+    const auto startID =
+        apiLayer->getShaderAPI()->createBindings(ggm->defaultPipe);
     nodeInfos[0].bindingID = startID;
   }
   return ggm->addNode(nodeInfos.data(), nodeInfos.size());
@@ -384,12 +387,13 @@ size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
 
   const auto dataId = loadDataBuffers(model, apiLayer);
 
+  std::vector<shader::ShaderPipe> createdShader;
   const auto materials =
       model.materials.empty()
           ? defaultMaterial
-          : loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
+          : loadMaterials(model, apiLayer, samplerId, textureId, createdShader);
 
-  const auto nId = loadNodes(model, apiLayer, shaderPipe, node.size(), this);
+  const auto nId = loadNodes(model, apiLayer, node.size(), this, createdShader);
 
   pushRender(model, apiLayer, dataId, materials, nId + 1, this->bindingID);
 
@@ -422,7 +426,7 @@ main::Error GameGraphicsModule::init() {
     dataID = apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
   }
   allDirty = false;
-  const Material defMat(apiLayer->loadShader(MaterialType::None));
+  const Material defMat(defaultPipe = apiLayer->loadShader(MaterialType::None));
   defaultMaterial = apiLayer->pushMaterials(1, &defMat);
   return main::Error::NONE;
 }

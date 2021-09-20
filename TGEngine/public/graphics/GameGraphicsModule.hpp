@@ -40,9 +40,11 @@ class GameGraphicsModule : public main::Module {
   std::vector<char> status; // jesus fuck not going to use a bool here
   bool allDirty;
   size_t dataID = UINT64_MAX;
-  size_t defaultMaterial;
 
 public:
+  size_t defaultMaterial;
+  tge::shader::ShaderPipe defaultPipe;
+
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule);
 
   _NODISCARD size_t loadModel(const std::vector<char> &data, const bool binary,

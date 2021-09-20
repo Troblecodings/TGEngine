@@ -22,6 +22,13 @@ struct SamplerIO {
   size_t binding;
 };
 
+struct ShaderBindingIO {
+  std::string name;
+  IOType iotype;
+  size_t binding;
+  size_t buffer = 0;
+};
+
 enum class InstructionType {
     NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP, VEC4CTR
 };
@@ -38,7 +45,7 @@ enum class ShaderType { VERTEX, FRAGMENT };
 struct ShaderCreateInfo {
   std::string __code;
   std::vector<ShaderIO> unifromIO;
-  std::vector<ShaderIO> inputs;
+  std::vector<ShaderBindingIO> inputs;
   std::vector<ShaderIO> outputs;
   std::vector<SamplerIO> samplerIO;
   ShaderType shaderType;
@@ -84,6 +91,8 @@ public:
 
   _NODISCARD virtual size_t createBindings(ShaderPipe pipe,
                                            const size_t count = 1) = 0;
+
+  virtual void changeInputBindings(const ShaderPipe pipe, const size_t bindingID, const size_t buffer) = 0;
 
   virtual void bindData(const BindingInfo *info, const size_t count) = 0;
 
