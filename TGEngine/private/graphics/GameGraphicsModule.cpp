@@ -236,7 +236,7 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
         bItr, eItr, [idx = i](const Node &node) { return node.mesh == idx; });
     const auto nID =
         oItr != eItr ? std::distance(bItr, oItr) + nodeID : UINT64_MAX;
-    const auto bindingID = bindings[nID];
+    const auto bID = bindings[nID];
     for (const auto &prim : mesh.primitives) {
       std::vector<std::tuple<int, int, int>> strides;
       strides.reserve(prim.attributes.size());
@@ -276,7 +276,7 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
             indexOffset,
             indextype,
             bufferOffsets,
-            bindingID};
+            bID};
         renderInfos.push_back(renderInfo);
       } else {
         const auto accessorID = prim.attributes.begin()->second;
@@ -290,7 +290,7 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
             vertAccesor.count,
             IndexSize::NONE,
             bufferOffsets,
-            bindingID};
+            bID};
         renderInfos.push_back(renderInfo);
       }
     }
