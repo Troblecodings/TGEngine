@@ -23,7 +23,7 @@ struct SamplerIO {
 };
 
 enum class InstructionType {
-    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP
+    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP, VEC4CTR
 };
 
 struct Instruction {

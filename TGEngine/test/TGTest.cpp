@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (3.0f)
+#define DEFAULT_TIME (100.0f)
 
 #define MODEL_TEST 0
 
@@ -132,6 +132,32 @@ public:
   }
 };
 
+TEST(EngineMain, AvocadoTestOne) {
+  tge::main::modules.push_back(new TestModule());
+  Avocado2Test *av = new Avocado2Test();
+  tge::main::modules.push_back(av);
+
+  ASSERT_EQ(init(), Error::NONE);
+  av->ggm = getGameGraphicsModule();
+
+  std::vector<std::string> test = {"assets/avocado.vert",
+                                   "assets/testTexture.frag"};
+  auto ptr = (tge::shader::VulkanShaderPipe *)getAPILayer()
+                 ->getShaderAPI()
+                 ->loadShaderPipeAndCompile(test);
+
+  const auto vec = tge::util::wholeFile(
+      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
+  const auto mdlID = getGameGraphicsModule()->loadModel(
+      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
+  ASSERT_NE(mdlID, UINT64_MAX);
+  av->nodeID = mdlID;
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
 TEST(ShaderCompiler, Create) {
   tge::main::modules.push_back(new TestModule());
 
@@ -233,32 +259,6 @@ TEST(EngineMain, SamplerAndTextures) {
   renderInfo.indexCount = indexData.size();
   renderInfo.vertexBuffer.push_back(dataOffset);
   ASSERT_NO_THROW(apiLayer->pushRender(1, &renderInfo));
-
-  syncMutex.unlock();
-  waitForTime();
-  exitWaitCheck();
-}
-
-TEST(EngineMain, AvocadoTestOne) {
-  tge::main::modules.push_back(new TestModule());
-  Avocado2Test *av = new Avocado2Test();
-  tge::main::modules.push_back(av);
-
-  ASSERT_EQ(init(), Error::NONE);
-  av->ggm = getGameGraphicsModule();
-
-  std::vector<std::string> test = {"assets/avocado.vert",
-                                   "assets/testTexture.frag"};
-  auto ptr = (tge::shader::VulkanShaderPipe *)getAPILayer()
-                 ->getShaderAPI()
-                 ->loadShaderPipeAndCompile(test);
-
-  const auto vec = tge::util::wholeFile(
-      "assets/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf");
-  const auto mdlID = getGameGraphicsModule()->loadModel(
-      vec, false, "assets/glTF-Sample-Models/2.0/Avocado/glTF/", ptr);
-  ASSERT_NE(mdlID, UINT64_MAX);
-  av->nodeID = mdlID;
 
   syncMutex.unlock();
   waitForTime();

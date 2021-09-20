@@ -447,7 +447,7 @@ inline EShLanguage getLangFromShaderLang(const ShaderType type) {
 inline void function(const Instruction &ins,
                      const std::vector<Instruction> &instructions,
                      const std::string fname, std::ostringstream &stream,
-                     std::vector<std::string> names) {
+                     std::vector<std::string> &names) {
   names.push_back(ins.name);
   stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
          << fname << "(" << names[ins.inputs[0]];
@@ -461,7 +461,7 @@ inline void aggragteFunction(const Instruction &ins,
                              const std::vector<Instruction> &instructions,
                              const std::string fname,
                              std::ostringstream &stream,
-                             std::vector<std::string> names) {
+                             std::vector<std::string> &names) {
   names.push_back(ins.name);
   stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
          << names[ins.inputs[0]];
@@ -501,6 +501,9 @@ inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
     case InstructionType::SAMPLER:
       names.push_back("sampler2D(" + names[ins.inputs[0]] + ", " +
                       names[ins.inputs[1]] + ")");
+      break;
+    case InstructionType::VEC4CTR:
+      function(ins, instructions, "vec4", stream, names);
       break;
     default:
       break;
@@ -561,6 +564,7 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
     const auto shader = __implGenerateIntermediate(info);
     glslang::TIntermediate *tint = shader->getIntermediate();
     __implIntermToVulkanPipe(shaderPipe, tint, lang);
+    __implCreateDescSets(shaderPipe, this);
   }
   return shaderPipe;
 }

@@ -94,6 +94,26 @@ inline size_t loadTexturesFM(const Model &model, APILayer *apiLayer) {
   return -1;
 }
 
+inline shader::IOType inputTypeFromGLTF(int type) {
+  namespace s = shader;
+  switch (type) {
+  case TINYGLTF_TYPE_VEC2:
+    return s::IOType::VEC2;
+  case TINYGLTF_TYPE_VEC3:
+    return s::IOType::VEC3;
+  case TINYGLTF_TYPE_VEC4:
+    return s::IOType::VEC4;
+  case TINYGLTF_TYPE_MAT4:
+    return s::IOType::MAT4;
+  case TINYGLTF_TYPE_MAT3:
+    return s::IOType::MAT3;
+  case TINYGLTF_TYPE_SCALAR:
+    return s::IOType::FLOAT;
+  default:
+    std::runtime_error("Type not found in GLTF translation!");
+  }
+}
+
 inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
                             void *shaderPipe, const size_t sampler,
                             const size_t texture) {
@@ -103,53 +123,71 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     const auto &pbr = mat.pbrMetallicRoughness;
     const auto &diffuseTexture = pbr.baseColorTexture;
 
-    Material nmMat(shaderPipe);
-    nmMat.type = MaterialType::TextureOnly;
-    const auto nextSampler = model.textures[diffuseTexture.index].sampler;
-    nmMat.data.textureMaterial.samplerIndex =
-        nextSampler < 0 ? sampler : (nextSampler + sampler);
-    nmMat.data.textureMaterial.textureIndex = diffuseTexture.index + texture;
+    Material nmMat;
+    if (diffuseTexture.index != -1) [[likely]] {
+      nmMat.type = MaterialType::TextureOnly;
+      const auto nextSampler = model.textures[diffuseTexture.index].sampler;
+      nmMat.data.textureMaterial.samplerIndex =
+          nextSampler < 0 ? sampler : (nextSampler + sampler);
+      nmMat.data.textureMaterial.textureIndex = diffuseTexture.index + texture;
+    } else {
+      nmMat.type = MaterialType::None;
+    }
     materials.push_back(nmMat);
   }
 
-#pragma region This is speculative
-  auto pipe = (shader::VulkanShaderPipe *)shaderPipe;
-  pipe->vertexInputAttributes.clear();
-  pipe->vertexInputBindings.clear();
-
+  namespace s = shader;
   for (const auto &mesh : model.meshes) {
-    for (const auto &prim : mesh.primitives) {
-      std::vector<int> strides;
-      strides.reserve(prim.attributes.size());
-
-      for (const auto &attr : prim.attributes) {
-        const auto &vertAccesor = model.accessors[attr.second];
-        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
-        strides.push_back(vertAccesor.ByteStride(vertView));
-      }
-      std::sort(strides.rbegin(), strides.rend());
-
-      uint32_t location = 0;
-      for (const auto &stride : strides) {
-        pipe->vertexInputAttributes.push_back(
-            vk::VertexInputAttributeDescription(location, location,
-                                                getFormatFromStride(stride)));
-        pipe->vertexInputBindings.push_back(
-            vk::VertexInputBindingDescription(location, stride));
-        location++;
-      }
-      pipe->inputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
-          {}, pipe->vertexInputBindings, pipe->vertexInputAttributes);
+    const auto &prim = mesh.primitives[0];
+    s::ShaderCreateInfo createInfo[2];
+    auto &mat = materials[prim.material];
+    for (const auto &[name, id] : prim.attributes) {
+      const auto &acc = model.accessors[id];
+      createInfo[0].inputs.push_back({name, inputTypeFromGLTF(acc.type), 0});
     }
-  }
-#pragma endregion
+    std::sort(createInfo[0].inputs.begin(), createInfo[0].inputs.end(),
+              [](auto x, auto y) { return x.iotype > y.iotype; });
+    for (size_t i = 0; i < createInfo[0].inputs.size(); i++) {
+      createInfo[0].inputs[i].binding = i;
+    }
+    createInfo[0].shaderType = s::ShaderType::VERTEX;
+    createInfo[1].shaderType = s::ShaderType::FRAGMENT;
 
-  if (materials.empty()) {
-    const Material defMat(pipe);
-    return apiLayer->pushMaterials(1, &defMat);
-  } else {
-    return apiLayer->pushMaterials(materials.size(), materials.data());
+    createInfo[0].unifromIO.push_back({"mvp", s::IOType::MAT4, 2});
+    createInfo[0].instructions = {
+        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "ublock_0.mvp"},
+        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "POSITION"},
+        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "TEXCOORD_0"},
+        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "1"},
+        {{1, 3}, s::IOType::VEC4, s::InstructionType::VEC4CTR, "_tmpVEC"},
+        {{0, 4}, s::IOType::VEC4, s::InstructionType::MULTIPLY, "_tmp1"},
+        {{5}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}};
+
+    if (mat.type == MaterialType::TextureOnly) {
+      createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, 0});
+      createInfo[0].instructions.push_back(
+          {{2}, s::IOType::VEC4, s::InstructionType::SET, "UV"});
+
+      createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
+      createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1});
+      createInfo[1].inputs.push_back({"UV", s::IOType::VEC2, 0});
+      createInfo[1].outputs.push_back({"COLOR", s::IOType::VEC4, 0});
+      createInfo[1].instructions = {
+          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "UV"},
+          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "SAMP"},
+          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "TEX"},
+          {{2, 1}, s::IOType::VEC4, s::InstructionType::SAMPLER, ""},
+          {{3, 0}, s::IOType::VEC4, s::InstructionType::TEXTURE, "COLOR"}};
+    } else {
+      createInfo[1].instructions = {
+          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "vec4(1, 0, 0, 1)"},
+          {{0}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
+    };
+    mat.costumShaderData =
+        apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
   }
+
+  return apiLayer->pushMaterials(materials.size(), materials.data());
 }
 
 inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
@@ -185,7 +223,9 @@ inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
 }
 
 inline void pushRender(const Model &model, APILayer *apiLayer,
-                       const size_t dataId, const size_t materialId) {
+                       const size_t dataId, const size_t materialId,
+                       const size_t nodeID,
+                       const std::vector<size_t> bindings) {
   std::vector<RenderInfo> renderInfos;
   renderInfos.reserve(1000);
   for (size_t i = 0; i < model.meshes.size(); i++) {
@@ -194,8 +234,9 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
     const auto eItr = model.nodes.end();
     const auto oItr = std::find_if(
         bItr, eItr, [idx = i](const Node &node) { return node.mesh == idx; });
-    const auto bindingID =
-        oItr != eItr ? std::distance(bItr, oItr) : UINT64_MAX;
+    const auto nID =
+        oItr != eItr ? std::distance(bItr, oItr) + nodeID : UINT64_MAX;
+    const auto bindingID = bindings[nID];
     for (const auto &prim : mesh.primitives) {
       std::vector<std::tuple<int, int, int>> strides;
       strides.reserve(prim.attributes.size());
@@ -258,67 +299,15 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
   apiLayer->pushRender(renderInfos.size(), renderInfos.data());
 }
 
-GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
-                                       WindowModule *winModule) {
-  const auto prop = winModule->getWindowProperties();
-  this->apiLayer = apiLayer;
-  this->windowModule = winModule;
-  // TODO Cleanup
-  this->projectionMatrix =
-      glm::perspective(glm::radians(45.0f),
-                       (float)prop.width / (float)prop.height, 0.01f, 100.0f);
-  this->projectionMatrix[1][1] *= -1;
-  this->viewMatrix = glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0),
-                                 glm::vec3(0, 1, 0));
-}
-
-size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
-                                     const bool binary,
-                                     const std::string &baseDir,
-                                     void *shaderPipe) {
-  TinyGLTF loader;
-  std::string error;
-  std::string warning;
-  Model model;
-
-  if (shaderPipe == nullptr) {
-    shaderPipe = (tge::shader::VulkanShaderPipe *)(apiLayer->loadShader(
-        MaterialType::None));
-  }
-
-  const bool rst =
-      binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
-                                           (const uint8_t *)data.data(),
-                                           data.size(), baseDir)
-             : loader.LoadASCIIFromString(&model, &error, &warning, data.data(),
-                                          data.size(), baseDir);
-  if (!rst) {
-    printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
-           error.c_str(), warning.c_str());
-    return UINT64_MAX;
-  }
-
-  if (!warning.empty()) {
-    printf("[GLTF][WARN]: %s\n", warning.c_str());
-  }
-
-  const auto samplerId = loadSampler(model, apiLayer);
-
-  const auto textureId = loadTexturesFM(model, apiLayer);
-
-  const auto dataId = loadDataBuffers(model, apiLayer);
-
-  const auto materials =
-      loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
-
+inline size_t loadNodes(const Model &model, APILayer *apiLayer,
+                        void *shaderPipe, const size_t nextNodeID,
+                        GameGraphicsModule *ggm) {
   std::vector<NodeInfo> nodeInfos = {};
   const auto amount = model.nodes.size();
   nodeInfos.resize(amount + 1);
   if (amount != 0) [[likely]] {
     const auto startID =
         apiLayer->getShaderAPI()->createBindings(shaderPipe, amount);
-
-    const auto nextNodeID = node.size();
     for (size_t i = 0; i < amount; i++) {
       const auto &node = model.nodes[i];
       const auto infoID = i + 1;
@@ -347,9 +336,62 @@ size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
     const auto startID = apiLayer->getShaderAPI()->createBindings(shaderPipe);
     nodeInfos[0].bindingID = startID;
   }
-  const auto nId = addNode(nodeInfos.data(), nodeInfos.size());
+  return ggm->addNode(nodeInfos.data(), nodeInfos.size());
+}
 
-  pushRender(model, apiLayer, dataId, materials);
+GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
+                                       WindowModule *winModule) {
+  const auto prop = winModule->getWindowProperties();
+  this->apiLayer = apiLayer;
+  this->windowModule = winModule;
+  // TODO Cleanup
+  this->projectionMatrix =
+      glm::perspective(glm::radians(45.0f),
+                       (float)prop.width / (float)prop.height, 0.01f, 100.0f);
+  this->projectionMatrix[1][1] *= -1;
+  this->viewMatrix = glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0),
+                                 glm::vec3(0, 1, 0));
+}
+
+size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
+                                     const bool binary,
+                                     const std::string &baseDir,
+                                     void *shaderPipe) {
+  TinyGLTF loader;
+  std::string error;
+  std::string warning;
+  Model model;
+
+  const bool rst =
+      binary ? loader.LoadBinaryFromMemory(&model, &error, &warning,
+                                           (const uint8_t *)data.data(),
+                                           data.size(), baseDir)
+             : loader.LoadASCIIFromString(&model, &error, &warning, data.data(),
+                                          data.size(), baseDir);
+  if (!rst) {
+    printf("[GLTF][ERR]: Loading failed\n[GLTF][ERR]: %s\n[GLTF][WARN]: %s\n",
+           error.c_str(), warning.c_str());
+    return UINT64_MAX;
+  }
+
+  if (!warning.empty()) {
+    printf("[GLTF][WARN]: %s\n", warning.c_str());
+  }
+
+  const auto samplerId = loadSampler(model, apiLayer);
+
+  const auto textureId = loadTexturesFM(model, apiLayer);
+
+  const auto dataId = loadDataBuffers(model, apiLayer);
+
+  const auto materials =
+      model.materials.empty()
+          ? defaultMaterial
+          : loadMaterials(model, apiLayer, shaderPipe, samplerId, textureId);
+
+  const auto nId = loadNodes(model, apiLayer, shaderPipe, node.size(), this);
+
+  pushRender(model, apiLayer, dataId, materials, nId + 1, this->bindingID);
 
   return nId;
 }
@@ -380,6 +422,8 @@ main::Error GameGraphicsModule::init() {
     dataID = apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
   }
   allDirty = false;
+  const Material defMat(apiLayer->loadShader(MaterialType::None));
+  defaultMaterial = apiLayer->pushMaterials(1, &defMat);
   return main::Error::NONE;
 }
 
@@ -467,7 +511,7 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
       parents.push_back(UINT64_MAX);
     }
     status.push_back(0);
-    if (nodeI.bindingID != UINT64_MAX) {
+    if (nodeI.bindingID != UINT64_MAX) [[likely]] {
       const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
       apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
                            sizeof(mvp) * nodeID);
@@ -476,6 +520,7 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
                           shader::BindingType::UniformBuffer,
                           {dataID, sizeof(mvp), sizeof(mvp) * nodeID}});
     }
+    bindingID.push_back(nodeI.bindingID);
   }
   apiLayer->getShaderAPI()->bindData(bindings.data(), bindings.size());
   return nodeID;

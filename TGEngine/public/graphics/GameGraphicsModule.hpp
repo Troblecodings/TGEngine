@@ -36,9 +36,11 @@ class GameGraphicsModule : public main::Module {
   std::vector<glm::mat4> modelMatrices;
   std::vector<NodeTransform> node;
   std::vector<size_t> parents;
+  std::vector<size_t> bindingID;
   std::vector<char> status; // jesus fuck not going to use a bool here
   bool allDirty;
   size_t dataID = UINT64_MAX;
+  size_t defaultMaterial;
 
 public:
   GameGraphicsModule(APILayer *apiLayer, WindowModule *winModule);
