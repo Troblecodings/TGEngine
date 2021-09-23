@@ -6,6 +6,11 @@
 
 namespace tge::shader {
 
+struct BindingPipeInfo {
+  size_t descSet;
+  size_t pipeline;
+};
+
 class VulkanShaderModule : public tge::shader::ShaderAPI {
 
 public:
@@ -16,6 +21,7 @@ public:
   std::vector<vk::PipelineLayout> pipeLayouts;
   std::vector<vk::DescriptorSetLayout> setLayouts;
   std::vector<vk::DescriptorSet> descSets;
+  std::vector<BindingPipeInfo> pipeInfos;
   std::vector<tge::shader::VulkanShaderPipe *> shaderPipes;
   DescriptorSetLayout defaultDescLayout;
   PipelineLayout defaultLayout;

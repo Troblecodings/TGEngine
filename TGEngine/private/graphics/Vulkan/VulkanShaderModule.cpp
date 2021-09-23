@@ -624,8 +624,10 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   if (defaultbindings.size() > layout) {
     for (size_t i = 0; i < count; i++) {
       auto &bindings = defaultbindings[layout];
-      for (auto &b : bindings)
+      for (auto &b : bindings) {
         b.bindingSet = nextID + i;
+        pipeInfos.push_back({b.bindingSet, layout});
+      }
       this->bindData(bindings.data(), bindings.size());
     }
   }
@@ -674,8 +676,9 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
 
 void VulkanShaderModule::addToRender(const size_t bindingID, void *customData) {
   if (this->descSets.size() > bindingID && bindingID >= 0) {
-    const auto &descSet = descSets[bindingID];
-    const auto pipeLayout = pipeLayouts[bindingID];
+    const auto &bInfo = pipeInfos[bindingID];
+    const auto &descSet = descSets[bInfo.descSet];
+    const auto pipeLayout = pipeLayouts[bInfo.pipeline];
     ((CommandBuffer *)customData)
         ->bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
                              descSet, {});

@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (4.0f)
+#define DEFAULT_TIME (30.0f)
 
 #define MODEL_TEST 0
 
@@ -132,6 +132,25 @@ public:
   }
 };
 
+TEST(EngineMain, TestModel) {
+  tge::main::modules.push_back(new TestModule());
+  Avocado2Test* av = new Avocado2Test();
+  tge::main::modules.push_back(av);
+
+  ASSERT_EQ(init(), Error::NONE);
+
+  const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
+  const auto mdlID =
+      getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
+  ASSERT_NE(mdlID, UINT64_MAX);
+  av->nodeID = mdlID;
+  av->ggm = getGameGraphicsModule();
+
+  syncMutex.unlock();
+  waitForTime();
+  exitWaitCheck();
+}
+
 TEST(EngineMain, AvocadoTestOne) {
   tge::main::modules.push_back(new TestModule());
   Avocado2Test *av = new Avocado2Test();
@@ -174,7 +193,8 @@ TEST(ShaderCompiler, Create) {
   sh[1].outputs.push_back({"color", tge::shader::IOType::VEC4, 0});
   sh[1].inputs.push_back({"testin", tge::shader::IOType::VEC2, 1});
   sh[1].samplerIO.push_back({"samp", tge::shader::SamplerIOType::SAMPLER, 0});
-  sh[1].samplerIO.push_back({"diffuse", tge::shader::SamplerIOType::TEXTURE, 1});
+  sh[1].samplerIO.push_back(
+      {"diffuse", tge::shader::SamplerIOType::TEXTURE, 1});
   sh[1].shaderType = tge::shader::ShaderType::FRAGMENT;
 
   void *__noDiscard;

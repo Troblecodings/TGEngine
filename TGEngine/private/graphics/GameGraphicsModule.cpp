@@ -110,7 +110,7 @@ inline shader::IOType inputTypeFromGLTF(int type) {
   case TINYGLTF_TYPE_SCALAR:
     return s::IOType::FLOAT;
   default:
-    std::runtime_error("Type not found in GLTF translation!");
+    throw std::runtime_error("Type not found in GLTF translation!");
   }
 }
 
