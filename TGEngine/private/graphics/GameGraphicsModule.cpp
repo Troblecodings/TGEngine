@@ -340,6 +340,11 @@ inline size_t loadNodes(const Model &model, APILayer *apiLayer,
             apiLayer->getShaderAPI()->createBindings(ggm->defaultPipe);
       }
     }
+    for (auto &nInfo : nodeInfos) {
+      if (nInfo.parent == UINT64_MAX) {
+        nInfo.parent = nextNodeID;
+      }
+    }
   } else {
     const auto startID =
         apiLayer->getShaderAPI()->createBindings(ggm->defaultPipe);
@@ -523,12 +528,12 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
     status.push_back(0);
     if (nodeI.bindingID != UINT64_MAX) [[likely]] {
       const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
-      apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp),
-                           sizeof(mvp) * nodeID);
+      const auto off = sizeof(mvp) * (nodeID + i);
+      apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp), off);
       bindings.push_back({2,
                           nodeI.bindingID,
                           shader::BindingType::UniformBuffer,
-                          {dataID, sizeof(mvp), sizeof(mvp) * nodeID}});
+                          {dataID, sizeof(mvp), off}});
     }
     bindingID.push_back(nodeI.bindingID);
   }

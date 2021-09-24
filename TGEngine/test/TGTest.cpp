@@ -145,9 +145,9 @@ TEST(EngineMain, TestModel) {
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
   av->ggm = getGameGraphicsModule();
-  av->scale = glm::vec3(0.5f, 0.5f, 0.5f);
+  av->scale = glm::vec3(0.1f, 0.1f, 0.1f);
   av->ggm->updateViewMatrix(
-      glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+      glm::lookAt(glm::vec3(5, 10, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 
   syncMutex.unlock();
   waitForTime();
