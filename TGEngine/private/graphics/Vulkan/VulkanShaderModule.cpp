@@ -577,7 +577,6 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
     const auto shader = __implGenerateIntermediate(info);
     glslang::TIntermediate *tint = shader->getIntermediate();
     __implIntermToVulkanPipe(shaderPipe, tint, lang);
-    __implCreateDescSets(shaderPipe, this);
     if (createInfo.shaderType == ShaderType::VERTEX) {
       std::sort(shaderPipe->vertexInputAttributes.begin(),
                 shaderPipe->vertexInputAttributes.end(),
@@ -603,6 +602,7 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
           shaderPipe->vertexInputAttributes);
     }
   }
+  __implCreateDescSets(shaderPipe, this);
   return shaderPipe;
 }
 
@@ -626,8 +626,8 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
       auto &bindings = defaultbindings[layout];
       for (auto &b : bindings) {
         b.bindingSet = nextID + i;
-        pipeInfos.push_back({b.bindingSet, layout});
       }
+      pipeInfos.push_back({nextID + i, layout});
       this->bindData(bindings.data(), bindings.size());
     }
   }

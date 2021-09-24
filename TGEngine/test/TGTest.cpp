@@ -121,12 +121,12 @@ public:
   GameGraphicsModule *ggm;
   float rotation = 0;
   size_t nodeID;
+  glm::vec3 scale = glm::vec3(4, 4, 4);
 
   void tick(double time) {
     rotation += (float)time;
     const NodeTransform transform = {
-        {},
-        glm::vec3(4, 4, 4),
+        {}, scale,
         glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
     ggm->updateTransform(nodeID, transform);
   }
@@ -145,6 +145,9 @@ TEST(EngineMain, TestModel) {
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
   av->ggm = getGameGraphicsModule();
+  av->scale = glm::vec3(0.5f, 0.5f, 0.5f);
+  av->ggm->updateViewMatrix(
+      glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 
   syncMutex.unlock();
   waitForTime();

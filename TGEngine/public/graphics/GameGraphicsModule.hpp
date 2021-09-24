@@ -2,15 +2,15 @@
 
 #include "../../public/Error.hpp"
 #include "../../public/Module.hpp"
+#include "APILayer.hpp"
 #include "GameShaderModule.hpp"
+#include "Material.hpp"
 #include "WindowModule.hpp"
 #include "stdint.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <vector>
-#include "Material.hpp"
-#include "APILayer.hpp"
 
 namespace tge::graphics {
 
@@ -63,6 +63,11 @@ public:
   _NODISCARD size_t addNode(const NodeInfo *nodeInfos, const size_t count);
 
   void updateTransform(const size_t nodeID, const NodeTransform &transform);
+
+  void updateViewMatrix(const glm::mat4 matrix) {
+    this->viewMatrix = matrix;
+    this->allDirty = true;
+  }
 
   main::Error init() override;
 

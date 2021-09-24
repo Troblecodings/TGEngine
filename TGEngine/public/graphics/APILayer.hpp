@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include "../Module.hpp"
+#include "Material.hpp"
 
 namespace tge::shader {
 class ShaderAPI;
