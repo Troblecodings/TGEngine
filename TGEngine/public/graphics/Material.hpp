@@ -4,7 +4,7 @@
 
 namespace tge::graphics {
 
-    class APILayer;
+class APILayer;
 
 using Color = float[4];
 
@@ -29,5 +29,6 @@ struct Material {
     TextureMaterial textureMaterial;
   } data;
   void *costumShaderData = nullptr; // API dependent
+  bool doubleSided = false;
 };
 } // namespace tge::graphics

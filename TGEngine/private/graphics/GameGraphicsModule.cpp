@@ -133,6 +133,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     } else {
       nmMat.type = MaterialType::None;
     }
+    nmMat.doubleSided = mat.doubleSided;
     materials.push_back(nmMat);
   }
 
@@ -199,28 +200,10 @@ inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
   ptr.reserve(model.buffers.size());
   std::vector<size_t> sizes;
   sizes.reserve(ptr.capacity());
-  for (const auto &mesh : model.meshes) {
-    for (const auto &prim : mesh.primitives) {
-      if (prim.indices >= 0) [[likely]] {
-        const auto &indexAccesor = model.accessors[prim.indices];
-        const auto &indexView = model.bufferViews[indexAccesor.bufferView];
-        const auto &indexBuffer = model.buffers[indexView.buffer];
-        ptr.push_back((uint8_t *)indexBuffer.data.data());
-        sizes.push_back(indexBuffer.data.size());
-      }
-
-      for (const auto &attr : prim.attributes) {
-        const auto &vertAccesor = model.accessors[attr.second];
-        const auto &vertView = model.bufferViews[vertAccesor.bufferView];
-        const auto &vertBuffer = model.buffers[vertView.buffer];
-
-        const auto ptrto = (uint8_t *)vertBuffer.data.data();
-        if (std::find(ptr.begin(), ptr.end(), ptrto) != ptr.end())
-          continue;
-        ptr.push_back(ptrto);
-        sizes.push_back(vertBuffer.data.size());
-      }
-    }
+  for (const auto &buffer : model.buffers) {
+    const auto ptrto = (uint8_t *)buffer.data.data();
+    ptr.push_back(ptrto);
+    sizes.push_back(buffer.data.size());
   }
   return apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(),
                             sizes.data(), DataType::VertexIndexData);
@@ -361,9 +344,8 @@ GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
   // TODO Cleanup
   this->projectionMatrix =
       glm::perspective(glm::radians(45.0f),
-                       (float)prop.width / (float)prop.height, 0.01f, 100.0f);
-  this->projectionMatrix[1][1] *= -1;
-  this->viewMatrix = glm::lookAt(glm::vec3(0, -0.5f, 1), glm::vec3(0, 0, 0),
+                       (float)prop.width / (float)prop.height, 0.1f, 100.0f);
+  this->viewMatrix = glm::lookAt(glm::vec3(0, 0.5f, 1), glm::vec3(0, 0, 0),
                                  glm::vec3(0, 1, 0));
 }
 

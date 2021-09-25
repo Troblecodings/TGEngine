@@ -62,8 +62,8 @@ constexpr PipelineInputAssemblyStateCreateInfo
     inputAssemblyCreateInfo({}, PrimitiveTopology::eTriangleList,
                             false); // For now constexpr
 
-#define EXPECT(assertion)                                            \
-  if (!this->isInitialiazed || !(assertion)) {                                  \
+#define EXPECT(assertion)                                                      \
+  if (!this->isInitialiazed || !(assertion)) {                                 \
     throw std::runtime_error("Debug assertion failed!");                       \
   }
 
@@ -95,11 +95,8 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, 1, &blendAttachment);
 
-  const StencilOpState stencil({}, {}, {}, CompareOp::eAlways);
-
   const PipelineDepthStencilStateCreateInfo pipeDepthState(
-      {}, true, true, CompareOp::eGreaterOrEqual, false, false, stencil,
-      stencil, 0, 1);
+      {}, true, true, CompareOp::eLess, false, false, {}, {}, 0, 1);
 
   std::vector<GraphicsPipelineCreateInfo> pipelineCreateInfos;
   pipelineCreateInfos.reserve(materialcount);
@@ -124,10 +121,15 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
           {}, shaderPair.second, shaderModule, "main"));
     }
 
+
+    shaderPipe->rasterization.frontFace = FrontFace::eCounterClockwise;
     shaderPipe->rasterization.lineWidth = 1;
     shaderPipe->rasterization.depthBiasEnable = false;
+    shaderPipe->rasterization.depthClampEnable = false;
     shaderPipe->rasterization.rasterizerDiscardEnable = false;
-    shaderPipe->rasterization.cullMode = CullModeFlagBits::eFront;
+    shaderPipe->rasterization.cullMode = material.doubleSided
+                                             ? CullModeFlagBits::eNone
+                                             : CullModeFlagBits::eFront;
 
     GraphicsPipelineCreateInfo gpipeCreateInfo(
         {}, shaderPipe->pipelineShaderStage, &shaderPipe->inputStateCreateInfo,
@@ -183,7 +185,8 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     if (info.bindingID != UINT64_MAX) {
       shaderAPI->addToRender(info.bindingID, (void *)&cmdBuf);
     } else {
-      const auto binding = shaderAPI->createBindings(shaderPipes[info.materialId]);
+      const auto binding =
+          shaderAPI->createBindings(shaderPipes[info.materialId]);
       shaderAPI->addToRender(binding, (void *)&cmdBuf);
     }
 
@@ -314,7 +317,7 @@ void VulkanGraphicsModule::changeData(const size_t bufferIndex,
                                       const size_t dataSizes,
                                       const size_t offset) {
   EXPECT(bufferIndex >= 0 && bufferIndex < this->bufferList.size() &&
-                   data != nullptr && dataSizes != 0);
+         data != nullptr && dataSizes != 0);
 
   const BufferCreateInfo bufferCreateInfo({}, dataSizes,
                                           BufferUsageFlagBits::eTransferSrc,
@@ -635,7 +638,7 @@ main::Error VulkanGraphicsModule::init() {
 
   const auto capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
   viewport = Viewport(0, 0, capabilities.currentExtent.width,
-                      capabilities.currentExtent.height, 0, 1);
+                      capabilities.currentExtent.height, 0, 1.0f);
 
   const auto presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
   const auto presentModesEndItr = presentModes.end();
@@ -799,7 +802,7 @@ void VulkanGraphicsModule::tick(double time) {
   if (1) { // For now rerecord every tick
     constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
     const std::array clearValue = {ClearValue(clearColor),
-                                   ClearValue(ClearDepthStencilValue(0.0f, 0))};
+                                   ClearValue(ClearDepthStencilValue(1.0f, 0))};
 
     const CommandBufferBeginInfo cmdBufferBeginInfo({}, nullptr);
     currentBuffer.begin(cmdBufferBeginInfo);
