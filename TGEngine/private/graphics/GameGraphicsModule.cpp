@@ -309,8 +309,8 @@ inline size_t loadNodes(const Model &model, APILayer *apiLayer,
       }
       if (!node.rotation.empty()) {
         info.transforms.rotation =
-            glm::quat((float)node.rotation[0], (float)node.rotation[1],
-                      (float)node.rotation[2], (float)node.rotation[3]);
+            glm::quat((float)node.rotation[3], (float)node.rotation[0],
+                      (float)node.rotation[1], (float)node.rotation[2]);
       }
       for (const auto id : node.children) {
         nodeInfos[id + 1].parent = nextNodeID + infoID;
@@ -345,6 +345,7 @@ GameGraphicsModule::GameGraphicsModule(APILayer *apiLayer,
   this->projectionMatrix =
       glm::perspective(glm::radians(45.0f),
                        (float)prop.width / (float)prop.height, 0.1f, 100.0f);
+  this->projectionMatrix[1][1] *= -1;
   this->viewMatrix = glm::lookAt(glm::vec3(0, 0.5f, 1), glm::vec3(0, 0, 0),
                                  glm::vec3(0, 1, 0));
 }

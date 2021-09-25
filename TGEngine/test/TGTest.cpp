@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (30.0f)
+#define DEFAULT_TIME (5.0f)
 
 #define MODEL_TEST 0
 
@@ -121,7 +121,7 @@ public:
   GameGraphicsModule *ggm;
   float rotation = 0;
   size_t nodeID;
-  glm::vec3 scale = glm::vec3(4, 4, 4);
+  glm::vec3 scale = glm::vec3(4, -4, 4);
 
   void tick(double time) {
     rotation += (float)time;
@@ -144,9 +144,9 @@ TEST(EngineMain, TestModel) {
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
   av->ggm = getGameGraphicsModule();
-  av->scale = glm::vec3(0.5f, -0.5f, 0.5f);
-  av->ggm->updateViewMatrix(
-      glm::lookAt(glm::vec3(5, -15, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+  av->scale = glm::vec3(0.01f, 0.01f, 0.01f);
+  //av->ggm->updateViewMatrix(
+  //    glm::lookAt(glm::vec3(5, 25, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 
   syncMutex.unlock();
   waitForTime();
