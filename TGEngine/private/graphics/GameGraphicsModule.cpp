@@ -233,7 +233,7 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
         const auto &vertView = model.bufferViews[vertAccesor.bufferView];
         const auto bufferID = vertView.buffer + dataId;
         const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
-        strides.push_back(std::make_tuple(vertAccesor.ByteStride(vertView),
+        strides.push_back(std::make_tuple(vertAccesor.type,
                                           bufferID, vertOffset));
       }
 

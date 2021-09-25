@@ -12,7 +12,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (5.0f)
+#define DEFAULT_TIME (30.0f)
 
 #define MODEL_TEST 0
 
@@ -144,7 +144,7 @@ TEST(EngineMain, TestModel) {
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
   av->ggm = getGameGraphicsModule();
-  av->scale = glm::vec3(0.01f, 0.01f, 0.01f);
+  av->scale = glm::vec3(0.02f, 0.02f, 0.02f);
   //av->ggm->updateViewMatrix(
   //    glm::lookAt(glm::vec3(5, 25, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 
