@@ -30,7 +30,7 @@ struct ShaderBindingIO {
 };
 
 enum class InstructionType {
-    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP, VEC4CTR
+    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP, VEC4CTR, DOT, NORMALIZE, CROSS, MIN, MAX, CLAMP, SUBTRACT, DIVIDE
 };
 
 struct Instruction {

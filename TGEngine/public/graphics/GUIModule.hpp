@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Module.hpp"
-#include "WindowModule.hpp"
 #include "GameGraphicsModule.hpp"
+#include "WindowModule.hpp"
 
 namespace tge::gui {
 
@@ -12,8 +12,10 @@ public:
   tge::graphics::WindowModule *winModule;
   tge::graphics::APILayer *api;
 
-  void* pool;
-  void* buffer;
+  void *pool;
+  void *buffer;
+  void *renderpass;
+  void *framebuffer;
 
   void (*guicallback)() = [] {};
 

@@ -9,6 +9,7 @@
 #include <graphics/vulkan/VulkanShaderPipe.hpp>
 #include <gtest/gtest.h>
 #include <headerlibs/json.hpp>
+#include <imgui.h>
 #include <mutex>
 #include <thread>
 
@@ -137,16 +138,22 @@ TEST(EngineMain, TestModel) {
   tge::main::modules.push_back(av);
 
   ASSERT_EQ(init(), Error::NONE);
+  av->ggm = getGameGraphicsModule();
+
+  getGUIModule()->guicallback = [] {
+    ImGui::Begin("test");
+    ImGui::End();
+  };
 
   const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
   const auto mdlID =
       getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
-  av->ggm = getGameGraphicsModule();
   av->scale = glm::vec3(0.02f, 0.02f, 0.02f);
-  //av->ggm->updateViewMatrix(
-  //    glm::lookAt(glm::vec3(5, 25, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+  // av->ggm->updateViewMatrix(
+  //    glm::lookAt(glm::vec3(5, 25, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1,
+  //    0)));
 
   syncMutex.unlock();
   waitForTime();

@@ -505,6 +505,30 @@ inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
     case InstructionType::VEC4CTR:
       function(ins, instructions, "vec4", stream, names);
       break;
+    case InstructionType::DOT:
+      function(ins, instructions, "dot", stream, names);
+      break;
+    case InstructionType::CROSS:
+      function(ins, instructions, "cross", stream, names);
+      break;
+    case InstructionType::CLAMP:
+      function(ins, instructions, "clamp", stream, names);
+      break;
+    case InstructionType::MIN:
+      function(ins, instructions, "min", stream, names);
+      break;
+    case InstructionType::MAX:
+      function(ins, instructions, "max", stream, names);
+      break;
+    case InstructionType::NORMALIZE:
+      function(ins, instructions, "normalize", stream, names);
+      break;
+    case InstructionType::SUBTRACT:
+      aggragteFunction(ins, instructions, " - ", stream, names);
+      break;
+    case InstructionType::DIVIDE:
+      aggragteFunction(ins, instructions, " / ", stream, names);
+      break;
     default:
       break;
     }

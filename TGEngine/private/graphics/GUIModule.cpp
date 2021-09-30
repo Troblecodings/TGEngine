@@ -12,7 +12,9 @@ namespace tge::gui {
 
 using namespace vk;
 
-inline void render(CommandBuffer buffer, RenderPass pass, void (*guicallback)()) {
+inline void render(CommandBuffer buffer, RenderPass pass, Framebuffer frame,
+                   void (*guicallback)(),
+                   graphics::VulkanGraphicsModule *vmod) {
   ImGui_ImplVulkan_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
@@ -22,13 +24,22 @@ inline void render(CommandBuffer buffer, RenderPass pass, void (*guicallback)())
   ImGui::Render();
   ImDrawData *draw_data = ImGui::GetDrawData();
 
-  const CommandBufferInheritanceInfo inheritance(pass, 0);
-  const CommandBufferBeginInfo beginInfo(
-      CommandBufferUsageFlagBits::eSimultaneousUse |
-          CommandBufferUsageFlagBits::eRenderPassContinue,
-      &inheritance);
+  const CommandBufferBeginInfo beginInfo;
   buffer.begin(beginInfo);
+
+  constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
+
+  const std::array clearValue = {ClearValue(clearColor),
+                                 ClearValue(ClearDepthStencilValue(0.0f, 0))};
+
+  const RenderPassBeginInfo renderPassBeginInfo(
+      pass, frame,
+      {{0, 0},
+       {(uint32_t)vmod->viewport.width, (uint32_t)vmod->viewport.height}},
+      clearValue);
+  buffer.beginRenderPass(renderPassBeginInfo, {});
   ImGui_ImplVulkan_RenderDrawData(draw_data, buffer);
+  buffer.endRenderPass();
   buffer.end();
 }
 
@@ -39,12 +50,63 @@ main::Error GUIModule::init() {
   ImGuiIO &io = ImGui::GetIO();
   (void)io;
   ImGui::StyleColorsDark();
-  winModule->customFn = (void*)ImGui_ImplWin32_WndProcHandler;
+  winModule->customFn = (void *)ImGui_ImplWin32_WndProcHandler;
   const bool winInit = ImGui_ImplWin32_Init(winModule->hWnd);
   if (!winInit)
     return main::Error::COULD_NOT_CREATE_WINDOW;
 
   const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
+
+  const std::array attachments = {
+      AttachmentDescription(
+          {}, vmod->format.format, SampleCountFlagBits::e1,
+          AttachmentLoadOp::eLoad, AttachmentStoreOp::eStore,
+          AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
+          ImageLayout::eColorAttachmentOptimal, ImageLayout::ePresentSrcKHR),
+      AttachmentDescription(
+          {}, vmod->depthFormat, SampleCountFlagBits::e1,
+          AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
+          AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
+          ImageLayout::eUndefined,
+          ImageLayout::eDepthStencilAttachmentOptimal)};
+
+  constexpr std::array colorAttachments = {
+      AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
+
+  constexpr AttachmentReference depthAttachment(
+      1, ImageLayout::eDepthStencilAttachmentOptimal);
+
+  const std::array subpassDescriptions = {
+      SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
+                         {}, &depthAttachment)};
+
+  const std::array subpassDependencies = {
+      SubpassDependency(VK_SUBPASS_EXTERNAL, 0,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        PipelineStageFlagBits::eColorAttachmentOutput |
+                            PipelineStageFlagBits::eEarlyFragmentTests,
+                        (AccessFlagBits)0,
+                        AccessFlagBits::eColorAttachmentWrite |
+                            AccessFlagBits::eColorAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentRead |
+                            AccessFlagBits::eDepthStencilAttachmentWrite)};
+
+  const RenderPassCreateInfo renderPassCreateInfo(
+      {}, attachments, subpassDescriptions, subpassDependencies);
+  this->renderpass = vmod->device.createRenderPass(renderPassCreateInfo);
+
+  framebuffer = new Framebuffer[vmod->swapchainImageviews.size()];
+
+  for (size_t i = 0; i < vmod->swapchainImageviews.size(); i++) {
+    const auto imview = vmod->swapchainImageviews[i];
+    const std::array views = {imview, vmod->textureImageViews[vmod->depthImage]};
+    const FramebufferCreateInfo framebufferCreateInfo(
+        {}, (VkRenderPass)renderpass, views, vmod->viewport.width,
+        vmod->viewport.height, 1);
+    ((Framebuffer *)framebuffer)[i] =
+        vmod->device.createFramebuffer(framebufferCreateInfo);
+  }
 
   VkDescriptorPoolSize pool_sizes[] = {
       {VK_DESCRIPTOR_TYPE_SAMPLER, 1000},
@@ -85,7 +147,7 @@ main::Error GUIModule::init() {
                                           if (rslt != VK_SUCCESS)
                                             printf("ERROR IN VK");
                                         }};
-  ImGui_ImplVulkan_Init(&instinfo, vmod->renderpass);
+  ImGui_ImplVulkan_Init(&instinfo, (VkRenderPass)this->renderpass);
 
   const auto sCmd = vmod->cmdbuffer.back();
   const auto beginInfo =
@@ -101,18 +163,21 @@ main::Error GUIModule::init() {
   ImGui_ImplVulkan_DestroyFontUploadObjects();
 
   const auto allocInfo =
-      CommandBufferAllocateInfo(vmod->pool, CommandBufferLevel::eSecondary, 1);
+      CommandBufferAllocateInfo(vmod->pool, CommandBufferLevel::ePrimary, 1);
   buffer = vmod->device.allocateCommandBuffers(allocInfo).back();
-  vmod->secondaryCommandBuffer.push_back((VkCommandBuffer)buffer);
 
-  render((VkCommandBuffer)buffer, vmod->renderpass, guicallback);
+  render((VkCommandBuffer)this->buffer, (VkRenderPass)this->renderpass,
+         ((Framebuffer *)framebuffer)[vmod->nextImage], guicallback, vmod);
+
+  vmod->primary.push_back((VkCommandBuffer)buffer);
 
   return main::Error::NONE;
 }
 
 void GUIModule::tick(double deltatime) {
-  const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
-  render((VkCommandBuffer)this->buffer, vmod->renderpass, guicallback);
+  auto vgm = (graphics::VulkanGraphicsModule *)this->api;
+  render((VkCommandBuffer)this->buffer, (VkRenderPass)this->renderpass,
+         ((Framebuffer *)framebuffer)[vgm->nextImage], guicallback, vgm);
 }
 
 void GUIModule::destroy() {
@@ -120,6 +185,11 @@ void GUIModule::destroy() {
   vmod->device.waitIdle();
   ImGui_ImplVulkan_Shutdown();
   vmod->device.destroyDescriptorPool(((VkDescriptorPool)pool));
+  vmod->device.destroyRenderPass((VkRenderPass)this->renderpass);
+  for (size_t i = 0; i < vmod->swapchainImageviews.size(); i++) {
+    vmod->device.destroyFramebuffer(((Framebuffer *)framebuffer)[i]);
+  }
+  delete[](Framebuffer *) framebuffer;
   ImGui_ImplWin32_Shutdown();
 }
 

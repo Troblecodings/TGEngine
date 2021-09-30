@@ -166,16 +166,15 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
         {{1, 3}, s::IOType::VEC4, s::InstructionType::VEC4CTR, "_tmpVEC"},
         {{0, 5}, s::IOType::VEC4, s::InstructionType::MULTIPLY, "_tmp1"},
         {{6}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}};
+    uint32_t offset0 = 8;
 
     uint32_t nextID = 0;
+    uint32_t offset1 = 0;
 
-    if (prim.attributes.contains("NORMAL")) {
-      createInfo[0].outputs.push_back({"NORMAL_OUT", s::IOType::VEC3, nextID});
-      createInfo[1].inputs.push_back({"NORMAL_IN", s::IOType::VEC3, nextID});
-      createInfo[0].instructions.push_back(
-          {{4}, s::IOType::VEC4, s::InstructionType::SET, "NORMAL_OUT"});
-      nextID++;
-    }
+    createInfo[1].outputs.push_back({"COLOR", s::IOType::VEC4, 0});
+    createInfo[1].outputs.push_back({"NORMAL", s::IOType::VEC4, 1});
+    createInfo[1].outputs.push_back({"ROUGHNESS", s::IOType::FLOAT, 2});
+    createInfo[1].outputs.push_back({"METALLIC", s::IOType::FLOAT, 3});
 
     if (mat.type == MaterialType::TextureOnly) {
       createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, nextID});
@@ -185,7 +184,6 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
       createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
       createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1});
       createInfo[1].inputs.push_back({"UV", s::IOType::VEC2, nextID});
-      createInfo[1].outputs.push_back({"COLOR", s::IOType::VEC4, 0});
       createInfo[1].instructions = {
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "UV"},
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "SAMP"},
@@ -194,11 +192,17 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
           {{3, 0}, s::IOType::VEC4, s::InstructionType::TEXTURE, "C1"},
           {{4}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
       nextID++;
+      offset1 = 6;
     } else {
       createInfo[1].instructions = {
           {{}, s::IOType::VEC4, s::InstructionType::NOOP, "vec4(1, 0, 0, 1)"},
           {{0}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
+      offset1 = 2;
     };
+
+    createInfo[1].__code =
+        "NORMAL = vec4(1, 1, 1, 1);\nROUGHNESS = 0;\nMETALLIC = 0;\n";
+
     mat.costumShaderData =
         apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
     created.push_back(mat.costumShaderData);
@@ -245,8 +249,8 @@ inline void pushRender(const Model &model, APILayer *apiLayer,
         const auto &vertView = model.bufferViews[vertAccesor.bufferView];
         const auto bufferID = vertView.buffer + dataId;
         const auto vertOffset = vertView.byteOffset + vertAccesor.byteOffset;
-        strides.push_back(std::make_tuple(vertAccesor.type,
-                                          bufferID, vertOffset));
+        strides.push_back(
+            std::make_tuple(vertAccesor.type, bufferID, vertOffset));
       }
 
       std::sort(strides.rbegin(), strides.rend(),

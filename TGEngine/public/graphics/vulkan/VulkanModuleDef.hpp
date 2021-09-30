@@ -6,9 +6,9 @@
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif // WIN32
 #include "../../../public/Module.hpp"
+#include "../GameGraphicsModule.hpp"
 #include "VulkanShaderModule.hpp"
 #include "VulkanShaderPipe.hpp"
-#include "../GameGraphicsModule.hpp"
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
@@ -49,14 +49,20 @@ public:
   std::vector<CommandBuffer> secondaryCommandBuffer;
   std::mutex commandBufferRecording; // protects secondaryCommandBuffer from
                                      // memory invalidation
-  Image depthImage;
-  DeviceMemory depthImageMemory;
-  ImageView depthImageView;
   std::vector<Sampler> sampler;
   std::vector<Image> textureImages;
-  std::vector<DeviceMemory> textureMemorys;
+  std::vector<std::tuple<DeviceMemory, size_t>> textureMemorys;
   std::vector<ImageView> textureImageViews;
   std::vector<shader::ShaderPipe> shaderPipes;
+  std::vector<CommandBuffer> primary = {CommandBuffer()};
+
+  size_t depthImage;
+  size_t albedoImage;
+  size_t normalImage;
+  size_t roughnessImage;
+  size_t metallicImage;
+
+  uint32_t nextImage = 0;
 
   bool isInitialiazed = false;
   bool exitFailed = false;
@@ -89,7 +95,6 @@ public:
                      const TextureInfo *textures) override;
 
   void *loadShader(const MaterialType type) override;
-
 };
 
 } // namespace tge::graphics
