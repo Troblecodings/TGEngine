@@ -1,4 +1,5 @@
-#version 460
+#version 450
+#extension GL_KHR_vulkan_glsl: enable
 
 layout(binding=0) uniform sampler samp;
 layout(binding=1) uniform texture2D tex;

@@ -34,7 +34,7 @@ enum class InstructionType {
 };
 
 struct Instruction {
-  std::vector<size_t> inputs;
+  std::vector<std::string> inputs;
   IOType outputType;
   InstructionType instruciontType;
   std::string name;
@@ -54,7 +54,7 @@ struct ShaderCreateInfo {
 
 using ShaderPipe = void *;
 
-enum BindingType { UniformBuffer, Texture, Sampler };
+enum BindingType { UniformBuffer, Texture, Sampler, InputAttachment };
 
 struct BufferBindingData {
   size_t dataID;

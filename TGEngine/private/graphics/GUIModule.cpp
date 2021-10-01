@@ -62,23 +62,13 @@ main::Error GUIModule::init() {
           {}, vmod->format.format, SampleCountFlagBits::e1,
           AttachmentLoadOp::eLoad, AttachmentStoreOp::eStore,
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eColorAttachmentOptimal, ImageLayout::ePresentSrcKHR),
-      AttachmentDescription(
-          {}, vmod->depthFormat, SampleCountFlagBits::e1,
-          AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
-          AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eUndefined,
-          ImageLayout::eDepthStencilAttachmentOptimal)};
+          ImageLayout::eColorAttachmentOptimal, ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};
 
-  constexpr AttachmentReference depthAttachment(
-      1, ImageLayout::eDepthStencilAttachmentOptimal);
-
   const std::array subpassDescriptions = {
-      SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
-                         {}, &depthAttachment)};
+      SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments)};
 
   const std::array subpassDependencies = {
       SubpassDependency(VK_SUBPASS_EXTERNAL, 0,
@@ -100,9 +90,8 @@ main::Error GUIModule::init() {
 
   for (size_t i = 0; i < vmod->swapchainImageviews.size(); i++) {
     const auto imview = vmod->swapchainImageviews[i];
-    const std::array views = {imview, vmod->textureImageViews[vmod->depthImage]};
     const FramebufferCreateInfo framebufferCreateInfo(
-        {}, (VkRenderPass)renderpass, views, vmod->viewport.width,
+        {}, (VkRenderPass)renderpass, imview, vmod->viewport.width,
         vmod->viewport.height, 1);
     ((Framebuffer *)framebuffer)[i] =
         vmod->device.createFramebuffer(framebufferCreateInfo);

@@ -135,12 +135,15 @@ getDescTypeFromELF(const glslang::TType &type) {
   const auto count = type.isArray() ? type.getOuterArraySize() : 1;
   if (type.getBasicType() == glslang::TBasicType::EbtSampler) {
     const auto sampler = type.getSampler();
+    if (sampler.isImageClass() && sampler.isSubpass())
+      return std::pair(DescriptorType::eInputAttachment, count);
     if (sampler.isPureSampler() || sampler.isCombined())
       return std::pair(DescriptorType::eSampler, count);
     return std::pair(DescriptorType::eSampledImage, count);
   } else if (type.getBasicType() == glslang::TBasicType::EbtBlock) {
     return std::pair(DescriptorType::eUniformBuffer, count);
   }
+  std::cout << type.getQualifier().layoutAttachment << " <- Attachment";
   throw std::runtime_error("Descriptor could not be found for: " +
                            std::string(type.getCompleteString()));
 }
@@ -446,13 +449,11 @@ inline EShLanguage getLangFromShaderLang(const ShaderType type) {
 
 inline void function(const Instruction &ins,
                      const std::vector<Instruction> &instructions,
-                     const std::string fname, std::ostringstream &stream,
-                     std::vector<std::string> &names) {
-  names.push_back(ins.name);
+                     const std::string fname, std::ostringstream &stream) {
   stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-         << fname << "(" << names[ins.inputs[0]];
+         << fname << "(" << ins.inputs[0];
   for (size_t i = 1; i < ins.inputs.size(); i++) {
-    stream << ", " << names[ins.inputs[i]];
+    stream << ", " << ins.inputs[i];
   }
   stream << ");" << std::endl;
 }
@@ -460,74 +461,65 @@ inline void function(const Instruction &ins,
 inline void aggragteFunction(const Instruction &ins,
                              const std::vector<Instruction> &instructions,
                              const std::string fname,
-                             std::ostringstream &stream,
-                             std::vector<std::string> &names) {
-  names.push_back(ins.name);
+                             std::ostringstream &stream) {
   stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-         << names[ins.inputs[0]];
+         << ins.inputs[0];
   for (size_t i = 1; i < ins.inputs.size(); i++) {
-    stream << fname << names[ins.inputs[i]];
+    stream << fname << ins.inputs[i];
   }
   stream << ";" << std::endl;
 }
 
 inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
                                   std::ostringstream &stream) {
-  std::vector<std::string> names;
   for (const auto &ins : instructions) {
     switch (ins.instruciontType) {
     case InstructionType::NOOP:
-      names.push_back(ins.name);
       break;
     case InstructionType::MULTIPLY:
-      aggragteFunction(ins, instructions, " * ", stream, names);
+      aggragteFunction(ins, instructions, " * ", stream);
       break;
     case InstructionType::ADD:
-      aggragteFunction(ins, instructions, " + ", stream, names);
+      aggragteFunction(ins, instructions, " + ", stream);
       break;
     case InstructionType::SET:
-      names.push_back(ins.name);
-      stream << ins.name << " = " << instructions[ins.inputs[0]].name << ";"
-             << std::endl;
+      stream << ins.name << " = " << ins.inputs[0] << ";" << std::endl;
       break;
     case InstructionType::TEMP:
-      names.push_back(ins.name);
       stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-             << instructions[ins.inputs[0]].name << ";" << std::endl;
+             << ins.inputs[0] << ";" << std::endl;
       break;
     case InstructionType::TEXTURE:
-      function(ins, instructions, "texture", stream, names);
+      function(ins, instructions, "texture", stream);
       break;
     case InstructionType::SAMPLER:
-      names.push_back("sampler2D(" + names[ins.inputs[0]] + ", " +
-                      names[ins.inputs[1]] + ")");
       break;
     case InstructionType::VEC4CTR:
-      function(ins, instructions, "vec4", stream, names);
+      function(ins, instructions, "vec4", stream);
       break;
     case InstructionType::DOT:
-      function(ins, instructions, "dot", stream, names);
+      function(ins, instructions, "dot", stream);
       break;
     case InstructionType::CROSS:
-      function(ins, instructions, "cross", stream, names);
+      function(ins, instructions, "cross", stream);
       break;
     case InstructionType::CLAMP:
-      function(ins, instructions, "clamp", stream, names);
+      function(ins, instructions, "clamp", stream);
       break;
     case InstructionType::MIN:
-      function(ins, instructions, "min", stream, names);
+      function(ins, instructions, "min", stream);
       break;
     case InstructionType::MAX:
-      function(ins, instructions, "max", stream, names);
+      function(ins, instructions, "max", stream);
       break;
     case InstructionType::NORMALIZE:
-      function(ins, instructions, "normalize", stream, names);
+      function(ins, instructions, "normalize", stream);
       break;
     case InstructionType::SUBTRACT:
-      aggragteFunction(ins, instructions, " - ", stream, names);
+      aggragteFunction(ins, instructions, " - ", stream);
       break;
     case InstructionType::DIVIDE:
-      aggragteFunction(ins, instructions, " / ", stream, names);
+      aggragteFunction(ins, instructions, " / ", stream);
       break;
     default:
       break;
@@ -610,7 +602,7 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
         auto &state = shaderPipe->vertexInputAttributes[i];
         state.binding = createInfo.inputs[i].buffer;
         if (state.binding != 0)
-            state.offset = 0;
+          state.offset = 0;
         if (maxBinding < state.binding)
           maxBinding = state.binding;
       }
@@ -674,25 +666,32 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
   imgInfo.resize(count);
   for (size_t i = 0; i < count; i++) {
     const auto &cinfo = info[i];
-    if (cinfo.type == BindingType::UniformBuffer) {
+    switch (cinfo.type) {
+    case BindingType::UniformBuffer: {
       const auto &buffI = cinfo.data.buffer;
       bufferInfo[i] = (DescriptorBufferInfo(vgm->bufferList[buffI.dataID],
                                             buffI.offset, buffI.size));
       set.push_back(WriteDescriptorSet(
           descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
           DescriptorType::eUniformBuffer, nullptr, bufferInfo.data() + i));
-    } else if (cinfo.type == BindingType::Texture ||
-               cinfo.type == BindingType::Sampler) {
+    } break;
+    case BindingType::Texture:
+    case BindingType::Sampler:
+    case BindingType::InputAttachment: {
       const auto &tex = cinfo.data.texture;
       imgInfo[i] = DescriptorImageInfo(vgm->sampler[tex.sampler],
                                        vgm->textureImageViews[tex.texture],
                                        ImageLayout::eShaderReadOnlyOptimal);
-      ;
       set.push_back(WriteDescriptorSet(
           descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
           cinfo.type == BindingType::Texture ? DescriptorType::eSampledImage
-                                             : DescriptorType::eSampler,
+          : (cinfo.type == BindingType::InputAttachment)
+              ? DescriptorType::eInputAttachment
+              : DescriptorType::eSampler,
           imgInfo.data() + i));
+    } break;
+    default:
+      throw std::runtime_error("Can not find descriptor type in bind data!");
     }
   }
   vgm->device.updateDescriptorSets(set, {});

@@ -158,50 +158,64 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
 
     createInfo[0].unifromIO.push_back({"mvp", s::IOType::MAT4, 2});
     createInfo[0].instructions = {
-        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "ublock_0.mvp"},
-        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "POSITION"},
-        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "TEXCOORD_0"},
-        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "1"},
-        {{}, s::IOType::VEC4, s::InstructionType::NOOP, "NORMAL"},
-        {{1, 3}, s::IOType::VEC4, s::InstructionType::VEC4CTR, "_tmpVEC"},
-        {{0, 5}, s::IOType::VEC4, s::InstructionType::MULTIPLY, "_tmp1"},
-        {{6}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}};
-    uint32_t offset0 = 8;
+        {{"POSITION", "1"},
+         s::IOType::VEC4,
+         s::InstructionType::VEC4CTR,
+         "_tmpVEC"},
+        {{"ublock_0.mvp", "_tmpVEC"},
+         s::IOType::VEC4,
+         s::InstructionType::MULTIPLY,
+         "_tmp1"},
+        {{"_tmp1"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}};
 
     uint32_t nextID = 0;
-    uint32_t offset1 = 0;
 
-    createInfo[1].outputs.push_back({"COLOR", s::IOType::VEC4, 0});
-    createInfo[1].outputs.push_back({"NORMAL", s::IOType::VEC4, 1});
-    createInfo[1].outputs.push_back({"ROUGHNESS", s::IOType::FLOAT, 2});
-    createInfo[1].outputs.push_back({"METALLIC", s::IOType::FLOAT, 3});
+    createInfo[1].outputs = {{"COLOR", s::IOType::VEC4, 0},
+                             {"NORMAL", s::IOType::VEC4, 1},
+                             {"ROUGHNESS", s::IOType::FLOAT, 2},
+                             {"METALLIC", s::IOType::FLOAT, 3}};
 
     if (mat.type == MaterialType::TextureOnly) {
       createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, nextID});
       createInfo[0].instructions.push_back(
-          {{2}, s::IOType::VEC4, s::InstructionType::SET, "UV"});
+          {{"TEXCOORD_0"}, s::IOType::VEC4, s::InstructionType::SET, "UV"});
 
       createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
       createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1});
       createInfo[1].inputs.push_back({"UV", s::IOType::VEC2, nextID});
       createInfo[1].instructions = {
-          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "UV"},
-          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "SAMP"},
-          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "TEX"},
-          {{2, 1}, s::IOType::VEC4, s::InstructionType::SAMPLER, ""},
-          {{3, 0}, s::IOType::VEC4, s::InstructionType::TEXTURE, "C1"},
-          {{4}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
+          {{"sampler2D(TEX, SAMP)", "UV"},
+           s::IOType::VEC4,
+           s::InstructionType::TEXTURE,
+           "C1"},
+          {{"C1"}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
       nextID++;
-      offset1 = 6;
     } else {
-      createInfo[1].instructions = {
-          {{}, s::IOType::VEC4, s::InstructionType::NOOP, "vec4(1, 0, 0, 1)"},
-          {{0}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
-      offset1 = 2;
+      createInfo[1].instructions = {{{"vec4(1, 0, 0, 1)"},
+                                     s::IOType::VEC4,
+                                     s::InstructionType::SET,
+                                     "COLOR"}};
     };
 
-    createInfo[1].__code =
-        "NORMAL = vec4(1, 1, 1, 1);\nROUGHNESS = 0;\nMETALLIC = 0;\n";
+    if (prim.attributes.contains("NORMAL")) {
+      createInfo[0].outputs.push_back({"NORMALOUT", s::IOType::VEC3, nextID});
+      createInfo[1].inputs.push_back({"NORMALIN", s::IOType::VEC3, nextID});
+      createInfo[0].instructions.push_back(
+          {{"NORMAL"}, s::IOType::VEC3, s::InstructionType::SET, "NORMALOUT"});
+      createInfo[1].instructions.push_back({{"NORMALIN", "1"},
+                                            s::IOType::VEC4,
+                                            s::InstructionType::VEC4CTR,
+                                            "_temp"});
+    } else {
+      createInfo[1].instructions.push_back({{"1", "1", "1", "1"},
+                                            s::IOType::VEC4,
+                                            s::InstructionType::VEC4CTR,
+                                            "_temp"});
+    }
+    createInfo[1].instructions.push_back(
+        {{"_temp"}, s::IOType::VEC3, s::InstructionType::SET, "NORMAL"});
+
+    createInfo[1].__code = "ROUGHNESS = 0;\nMETALLIC = 0;\n";
 
     mat.costumShaderData =
         apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);

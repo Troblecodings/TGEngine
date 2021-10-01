@@ -551,6 +551,43 @@ VkBool32 debugMessage(DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 }
 #endif
 
+inline void createLightPass(VulkanGraphicsModule *vgm) {
+
+  const auto sapi = vgm->getShaderAPI();
+
+  const auto pipe = (VulkanShaderPipe *)sapi->loadShaderPipeAndCompile(
+      {"assets/lightPass.frag"});
+  const auto binding = sapi->createBindings(pipe, 1);
+
+  const auto &shaderPair = pipe->shader[0];
+  const auto &shaderData = shaderPair.first;
+
+  const ShaderModuleCreateInfo shaderModuleCreateInfo(
+      {}, shaderData.size() * sizeof(uint32_t), shaderData.data());
+  const auto shaderModule =
+      vgm->device.createShaderModule(shaderModuleCreateInfo);
+  vgm->shaderModules.push_back(shaderModule);
+  pipe->pipelineShaderStage.push_back(PipelineShaderStageCreateInfo(
+      {}, shaderPair.second, shaderModule, "main"));
+
+  const Rect2D sic = {
+      {0, 0}, {(uint32_t)vgm->viewport.width, (uint32_t)vgm->viewport.height}};
+
+  const PipelineVertexInputStateCreateInfo visci;
+  const PipelineViewportStateCreateInfo vsci({}, vgm->viewport, sic);
+  const PipelineRasterizationStateCreateInfo rsci;
+  const PipelineMultisampleStateCreateInfo msci;
+  const PipelineColorBlendStateCreateInfo cbsci;
+
+  GraphicsPipelineCreateInfo graphicsPipeline(
+      {}, pipe->pipelineShaderStage, &visci, &inputAssemblyCreateInfo, {},
+      &vsci, &rsci, &msci, {}, &cbsci, {}, {}, vgm->renderpass, 1);
+  Material mat(pipe);
+  sapi->addToMaterial(&mat, &graphicsPipeline);
+
+  vgm->device.createGraphicsPipeline({}, graphicsPipeline);
+}
+
 main::Error VulkanGraphicsModule::init() {
   this->shaderAPI = new VulkanShaderModule(this);
 #pragma region Instance
@@ -776,22 +813,27 @@ main::Error VulkanGraphicsModule::init() {
           {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
           AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
-          ImageLayout::ePresentSrcKHR),
+          ImageLayout::eSharedPresentKHR),
       AttachmentDescription(
           {}, intImageInfo[2].format, SampleCountFlagBits::e1,
           AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eUndefined, ImageLayout::eColorAttachmentOptimal),
+          ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
       AttachmentDescription(
           {}, intImageInfo[3].format, SampleCountFlagBits::e1,
           AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eUndefined, ImageLayout::eColorAttachmentOptimal),
+          ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
       AttachmentDescription(
           {}, intImageInfo[4].format, SampleCountFlagBits::e1,
           AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eUndefined, ImageLayout::eColorAttachmentOptimal)};
+          ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
+      AttachmentDescription(
+          {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
+          AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
+          AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
+          ImageLayout::eSharedPresentKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(1, ImageLayout::eColorAttachmentOptimal),
@@ -799,24 +841,35 @@ main::Error VulkanGraphicsModule::init() {
       AttachmentReference(3, ImageLayout::eColorAttachmentOptimal),
       AttachmentReference(4, ImageLayout::eColorAttachmentOptimal)};
 
+  constexpr std::array inputAttachments = {
+      AttachmentReference(1, ImageLayout::eShaderReadOnlyOptimal),
+      AttachmentReference(2, ImageLayout::eShaderReadOnlyOptimal),
+      AttachmentReference(3, ImageLayout::eShaderReadOnlyOptimal),
+      AttachmentReference(4, ImageLayout::eShaderReadOnlyOptimal)};
+
+  constexpr std::array colorAttachmentsSubpass1 = {
+      AttachmentReference(5, ImageLayout::eColorAttachmentOptimal)};
+
   constexpr AttachmentReference depthAttachment(
       0, ImageLayout::eDepthStencilAttachmentOptimal);
 
   const std::array subpassDescriptions = {
       SubpassDescription({}, PipelineBindPoint::eGraphics, {}, colorAttachments,
-                         {}, &depthAttachment)};
+                         {}, &depthAttachment),
+      SubpassDescription({}, PipelineBindPoint::eGraphics, inputAttachments,
+                         colorAttachmentsSubpass1)};
+
+  const auto frag1 = PipelineStageFlagBits::eColorAttachmentOutput |
+                     PipelineStageFlagBits::eEarlyFragmentTests;
+
+  const auto frag2 = AccessFlagBits::eColorAttachmentWrite |
+                     AccessFlagBits::eColorAttachmentRead |
+                     AccessFlagBits::eDepthStencilAttachmentRead |
+                     AccessFlagBits::eDepthStencilAttachmentWrite;
 
   const std::array subpassDependencies = {
-      SubpassDependency(VK_SUBPASS_EXTERNAL, 0,
-                        PipelineStageFlagBits::eColorAttachmentOutput |
-                            PipelineStageFlagBits::eEarlyFragmentTests,
-                        PipelineStageFlagBits::eColorAttachmentOutput |
-                            PipelineStageFlagBits::eEarlyFragmentTests,
-                        (AccessFlagBits)0,
-                        AccessFlagBits::eColorAttachmentWrite |
-                            AccessFlagBits::eColorAttachmentRead |
-                            AccessFlagBits::eDepthStencilAttachmentRead |
-                            AccessFlagBits::eDepthStencilAttachmentWrite)};
+      SubpassDependency(0, 1, frag1, frag1, frag2, frag2),
+      SubpassDependency(1, VK_SUBPASS_EXTERNAL, frag1, frag1, frag2, frag2)};
 
   const RenderPassCreateInfo renderPassCreateInfo(
       {}, attachments, subpassDescriptions, subpassDependencies);
@@ -844,13 +897,19 @@ main::Error VulkanGraphicsModule::init() {
     const auto imview = device.createImageView(imageviewCreateInfo);
     swapchainImageviews.push_back(imview);
 
+    std::array<ImageView, attachments.size()> images;
+    std::copy(textureImageViews.begin() + imageFirstIndex,
+              textureImageViews.begin() + imageFirstIndex + intImageInfo.size(),
+              images.begin());
+    images.back() = imview;
+
     const FramebufferCreateInfo framebufferCreateInfo(
-        {}, renderpass, intImageInfo.size(),
-        textureImageViews.data() + imageFirstIndex, viewport.width,
-        viewport.height, 1);
+        {}, renderpass, images, viewport.width, viewport.height, 1);
     framebuffer.push_back(device.createFramebuffer(framebufferCreateInfo));
   }
 #pragma endregion
+
+  createLightPass(this);
 
 #pragma region Vulkan Mutex
   const FenceCreateInfo fenceCreateInfo;
@@ -889,6 +948,11 @@ void VulkanGraphicsModule::tick(double time) {
                                   SubpassContents::eSecondaryCommandBuffers);
     const std::lock_guard onExitUnlock(commandBufferRecording);
     currentBuffer.executeCommands(secondaryCommandBuffer);
+
+    currentBuffer.nextSubpass(SubpassContents::eInline);
+
+    // TODO Descriptors and draw
+
     currentBuffer.endRenderPass();
     currentBuffer.end();
   }

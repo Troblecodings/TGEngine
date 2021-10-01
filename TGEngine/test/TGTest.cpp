@@ -213,20 +213,17 @@ TEST(ShaderCompiler, Create) {
   namespace s = tge::shader;
   sh[0].__code = "";
   sh[0].instructions = {
-      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "ublock_0.mvp"},
-      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "test"},
-      {{0, 1}, s::IOType::VEC4, s::InstructionType::MULTIPLY, "_tmp1"},
-      {{2}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
+      {{"ublock_0.mvp", "test"},
+       s::IOType::VEC4,
+       s::InstructionType::MULTIPLY,
+       "_tmp1"},
+      {{"_tmp1"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}
   };
 
   sh[1].__code = "";
   sh[1].instructions = {
-      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "diffuse"},
-      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "samp"},
-      {{}, s::IOType::VEC4, s::InstructionType::NOOP, "testin"},
-      {{0, 1}, s::IOType::SAMPLER2, s::InstructionType::SAMPLER, ""},
-      {{3, 2}, s::IOType::VEC4, s::InstructionType::TEXTURE, "_tmp"},
-      {{4}, s::IOType::VEC4, s::InstructionType::SET, "color"},
+      {{"sampler2D(diffuse, samp)", "testin"}, s::IOType::VEC4, s::InstructionType::TEXTURE, "_tmp"},
+      {{"_tmp"}, s::IOType::VEC4, s::InstructionType::SET, "color"}
   };
   ASSERT_NO_THROW(__noDiscard =
                       getAPILayer()->getShaderAPI()->createShaderPipe(sh, 2));
