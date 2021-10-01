@@ -637,13 +637,17 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   const auto nextID = this->descSets.size();
   this->descSets.resize(nextID + count);
   std::copy(sets.begin(), sets.end(), this->descSets.begin() + nextID);
+
+  for (size_t i = 0; i < count; i++) {
+    pipeInfos.push_back({nextID + i, layout});
+  }
+
   if (defaultbindings.size() > layout) {
     for (size_t i = 0; i < count; i++) {
       auto &bindings = defaultbindings[layout];
       for (auto &b : bindings) {
         b.bindingSet = nextID + i;
       }
-      pipeInfos.push_back({nextID + i, layout});
       this->bindData(bindings.data(), bindings.size());
     }
   }
@@ -679,7 +683,7 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
     case BindingType::Sampler:
     case BindingType::InputAttachment: {
       const auto &tex = cinfo.data.texture;
-      imgInfo[i] = DescriptorImageInfo(vgm->sampler[tex.sampler],
+      imgInfo[i] = DescriptorImageInfo(tex.sampler == UINT64_MAX ? vk::Sampler():vgm->sampler[tex.sampler],
                                        vgm->textureImageViews[tex.texture],
                                        ImageLayout::eShaderReadOnlyOptimal);
       set.push_back(WriteDescriptorSet(
@@ -698,7 +702,7 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
 }
 
 void VulkanShaderModule::addToRender(const size_t bindingID, void *customData) {
-  if (this->descSets.size() > bindingID && bindingID >= 0) {
+  if (this->pipeInfos.size() > bindingID && bindingID >= 0) {
     const auto &bInfo = pipeInfos[bindingID];
     const auto &descSet = descSets[bInfo.descSet];
     const auto pipeLayout = pipeLayouts[bInfo.pipeline];

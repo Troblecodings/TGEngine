@@ -381,6 +381,7 @@ struct InternalImageInfo {
   Format format;
   Extent2D ex;
   ImageUsageFlags usage = ImageUsageFlagBits::eColorAttachment;
+  SampleCountFlagBits sampleCount = SampleCountFlagBits::e1;
 };
 
 inline size_t
@@ -394,7 +395,7 @@ createInternalImages(VulkanGraphicsModule *vgm,
   for (const auto &img : imagesIn) {
     const ImageCreateInfo depthImageCreateInfo(
         {}, ImageType::e2D, img.format, {img.ex.width, img.ex.height, 1}, 1, 1,
-        SampleCountFlagBits::e1, ImageTiling::eOptimal, img.usage);
+        img.sampleCount, ImageTiling::eOptimal, img.usage);
     const auto depthImage = vgm->device.createImage(depthImageCreateInfo);
 
     const MemoryRequirements imageMemReq =
@@ -556,36 +557,69 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   const auto sapi = vgm->getShaderAPI();
 
   const auto pipe = (VulkanShaderPipe *)sapi->loadShaderPipeAndCompile(
-      {"assets/lightPass.frag"});
-  const auto binding = sapi->createBindings(pipe, 1);
+      {"assets/lightPass.vert", "assets/lightPass.frag"});
+  vgm->lightBindings = sapi->createBindings(pipe, 1);
 
-  const auto &shaderPair = pipe->shader[0];
-  const auto &shaderData = shaderPair.first;
+  const std::array bindingInfos = {
+      BindingInfo{0,
+                  vgm->lightBindings,
+                  BindingType::InputAttachment,
+                  {vgm->albedoImage, UINT64_MAX}},
+      BindingInfo{1,
+                  vgm->lightBindings,
+                  BindingType::InputAttachment,
+                  {vgm->normalImage, UINT64_MAX}},
+      BindingInfo{2,
+                  vgm->lightBindings,
+                  BindingType::InputAttachment,
+                  {vgm->roughnessImage, UINT64_MAX}},
+      BindingInfo{3,
+                  vgm->lightBindings,
+                  BindingType::InputAttachment,
+                  {vgm->metallicImage, UINT64_MAX}}};
 
-  const ShaderModuleCreateInfo shaderModuleCreateInfo(
-      {}, shaderData.size() * sizeof(uint32_t), shaderData.data());
-  const auto shaderModule =
-      vgm->device.createShaderModule(shaderModuleCreateInfo);
-  vgm->shaderModules.push_back(shaderModule);
-  pipe->pipelineShaderStage.push_back(PipelineShaderStageCreateInfo(
-      {}, shaderPair.second, shaderModule, "main"));
+  sapi->bindData(bindingInfos.data(), bindingInfos.size());
+
+  for (const auto &shaderPair : pipe->shader) {
+    const auto &shaderData = shaderPair.first;
+
+    const ShaderModuleCreateInfo shaderModuleCreateInfo(
+        {}, shaderData.size() * sizeof(uint32_t), shaderData.data());
+    const auto shaderModule =
+        vgm->device.createShaderModule(shaderModuleCreateInfo);
+    vgm->shaderModules.push_back(shaderModule);
+    pipe->pipelineShaderStage.push_back(PipelineShaderStageCreateInfo(
+        {}, shaderPair.second, shaderModule, "main"));
+  }
 
   const Rect2D sic = {
       {0, 0}, {(uint32_t)vgm->viewport.width, (uint32_t)vgm->viewport.height}};
 
   const PipelineVertexInputStateCreateInfo visci;
   const PipelineViewportStateCreateInfo vsci({}, vgm->viewport, sic);
-  const PipelineRasterizationStateCreateInfo rsci;
+  const PipelineRasterizationStateCreateInfo rsci(
+      {}, false, false, {}, {}, {}, false, 0.0f, 0.0f, 0.0f, 1.0f);
   const PipelineMultisampleStateCreateInfo msci;
-  const PipelineColorBlendStateCreateInfo cbsci;
+
+  constexpr std::array blendAttachment = {PipelineColorBlendAttachmentState(
+      true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
+      BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
+      (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags)};
+
+  const PipelineColorBlendStateCreateInfo colorBlendState(
+      {}, false, LogicOp::eOr, blendAttachment);
 
   GraphicsPipelineCreateInfo graphicsPipeline(
       {}, pipe->pipelineShaderStage, &visci, &inputAssemblyCreateInfo, {},
-      &vsci, &rsci, &msci, {}, &cbsci, {}, {}, vgm->renderpass, 1);
-  Material mat(pipe);
-  sapi->addToMaterial(&mat, &graphicsPipeline);
+      &vsci, &rsci, &msci, {}, &colorBlendState, nullptr, nullptr,
+      vgm->renderpass, 1);
+  vgm->lightMat = Material(pipe);
+  sapi->addToMaterial(&vgm->lightMat, &graphicsPipeline);
 
-  vgm->device.createGraphicsPipeline({}, graphicsPipeline);
+  const auto gp = vgm->device.createGraphicsPipeline({}, graphicsPipeline);
+  VERROR(gp.result)
+  vgm->lightPipe = vgm->pipelines.size();
+  vgm->pipelines.push_back(gp.value);
 }
 
 main::Error VulkanGraphicsModule::init() {
@@ -833,7 +867,7 @@ main::Error VulkanGraphicsModule::init() {
           {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
           AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
-          ImageLayout::eSharedPresentKHR)};
+          ImageLayout::eColorAttachmentOptimal)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(1, ImageLayout::eColorAttachmentOptimal),
@@ -933,9 +967,12 @@ void VulkanGraphicsModule::tick(double time) {
   const auto currentBuffer = cmdbuffer[this->nextImage];
   if (1) { // For now rerecord every tick
     constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
-    const std::array clearValue = {
-        ClearValue(ClearDepthStencilValue(1.0f, 0)), ClearValue(clearColor),
-        ClearValue(clearColor), ClearValue(clearColor), ClearValue(clearColor)};
+    const std::array clearValue = {ClearValue(ClearDepthStencilValue(1.0f, 0)),
+                                   ClearValue(clearColor),
+                                   ClearValue(clearColor),
+                                   ClearValue(clearColor),
+                                   ClearValue(clearColor),
+                                   ClearValue(clearColor)};
 
     const CommandBufferBeginInfo cmdBufferBeginInfo({}, nullptr);
     currentBuffer.begin(cmdBufferBeginInfo);
@@ -951,7 +988,12 @@ void VulkanGraphicsModule::tick(double time) {
 
     currentBuffer.nextSubpass(SubpassContents::eInline);
 
-    // TODO Descriptors and draw
+    currentBuffer.bindPipeline(PipelineBindPoint::eGraphics,
+                               pipelines[lightPipe]);
+
+    getShaderAPI()->addToRender(lightBindings, (CommandBuffer *)&currentBuffer);
+
+    currentBuffer.draw(3, 1, 0, 0);
 
     currentBuffer.endRenderPass();
     currentBuffer.end();

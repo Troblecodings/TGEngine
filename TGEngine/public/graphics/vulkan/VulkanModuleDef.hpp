@@ -62,6 +62,10 @@ public:
   size_t roughnessImage;
   size_t metallicImage;
 
+  size_t lightPipe;
+  size_t lightBindings;
+  Material lightMat;
+
   uint32_t nextImage = 0;
 
   bool isInitialiazed = false;

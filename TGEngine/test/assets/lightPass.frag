@@ -11,5 +11,7 @@ layout(location=0) out vec4 colorout;
 void main() {
     vec3 color = subpassLoad(ALBEDO).rgb;
     vec3 normal = subpassLoad(NORMAL).rgb;
-    colorout = vec4(color, 1);
+    vec3 lightPos = vec3(10, 10, 10);
+    float multiplier = dot(normalize(normal), normalize(lightPos));
+    colorout = vec4(color * multiplier, 1);
 }
