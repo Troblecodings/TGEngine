@@ -558,6 +558,7 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
 
   const auto pipe = (VulkanShaderPipe *)sapi->loadShaderPipeAndCompile(
       {"assets/lightPass.vert", "assets/lightPass.frag"});
+  vgm->shaderPipes.push_back(pipe);
   vgm->lightBindings = sapi->createBindings(pipe, 1);
 
   const std::array bindingInfos = {
@@ -957,6 +958,12 @@ main::Error VulkanGraphicsModule::init() {
   this->isInitialiazed = true;
   this->shaderAPI->init();
   device.waitIdle();
+
+  auto nextimage =
+      device.acquireNextImageKHR(swapchain, UINT64_MAX, waitSemaphore, {});
+  VERROR(nextimage.result);
+  this->nextImage = nextimage.value;
+
   return main::Error::NONE;
 }
 
