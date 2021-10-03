@@ -71,6 +71,12 @@ public:
   bool isInitialiazed = false;
   bool exitFailed = false;
 
+  struct Lights {
+    glm::vec4 lights[50];
+    int lightCount;
+  } lights;
+
+
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
 #endif

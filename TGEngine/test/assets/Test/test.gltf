@@ -56,7 +56,7 @@
             ],
             "translation" : [
                 -4.592345237731934,
-                13.560012817382812,
+                13.569999694824219,
                 -3.2338063716888428
             ]
         },
@@ -447,7 +447,7 @@
         {
             "bufferView" : 17,
             "componentType" : 5126,
-            "count" : 103,
+            "count" : 104,
             "max" : [
                 1,
                 1,
@@ -463,13 +463,13 @@
         {
             "bufferView" : 18,
             "componentType" : 5126,
-            "count" : 103,
+            "count" : 104,
             "type" : "VEC3"
         },
         {
             "bufferView" : 19,
             "componentType" : 5126,
-            "count" : 103,
+            "count" : 104,
             "type" : "VEC2"
         },
         {
@@ -567,23 +567,23 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 1236,
+            "byteLength" : 1248,
             "byteOffset" : 193864
         },
         {
             "buffer" : 0,
-            "byteLength" : 1236,
-            "byteOffset" : 195100
+            "byteLength" : 1248,
+            "byteOffset" : 195112
         },
         {
             "buffer" : 0,
-            "byteLength" : 824,
-            "byteOffset" : 196336
+            "byteLength" : 832,
+            "byteOffset" : 196360
         },
         {
             "buffer" : 0,
             "byteLength" : 312,
-            "byteOffset" : 197160
+            "byteOffset" : 197192
         }
     ],
     "samplers" : [
@@ -594,7 +594,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 197472,
+            "byteLength" : 197504,
             "uri" : "test.bin"
         }
     ]

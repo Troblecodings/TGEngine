@@ -41,7 +41,7 @@ public:
 
   void bindData(const BindingInfo *info, const size_t count) override;
 
-  void addToRender(const size_t bindingID, void *customData) override;
+  void addToRender(const size_t* bindingID, const size_t size, void *customData) override;
 
   void addToMaterial(const graphics::Material *material,
                      void *customData) override;

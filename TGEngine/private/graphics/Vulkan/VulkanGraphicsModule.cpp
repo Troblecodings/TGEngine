@@ -195,11 +195,11 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     }
 
     if (info.bindingID != UINT64_MAX) {
-      shaderAPI->addToRender(info.bindingID, (void *)&cmdBuf);
+      shaderAPI->addToRender(&info.bindingID, 1, (void *)&cmdBuf);
     } else {
       const auto binding =
           shaderAPI->createBindings(shaderPipes[info.materialId]);
-      shaderAPI->addToRender(binding, (void *)&cmdBuf);
+      shaderAPI->addToRender(&binding, 1, (void *)&cmdBuf);
     }
 
     cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
@@ -561,6 +561,14 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   vgm->shaderPipes.push_back(pipe);
   vgm->lightBindings = sapi->createBindings(pipe, 1);
 
+  vgm->lights.lightCount = 2;
+  vgm->lights.lights[0] = glm::vec4(4, 4, 4, 0.6f);
+  vgm->lights.lights[1] = glm::vec4(-10, 0, 3, 0.5f);
+
+  auto ptr = (const uint8_t*)&vgm->lights;
+  auto sizeOfLight = sizeof(vgm->lights);
+  const auto dataID = vgm->pushData(1, &ptr, &sizeOfLight, DataType::Uniform);
+
   const std::array bindingInfos = {
       BindingInfo{0,
                   vgm->lightBindings,
@@ -577,7 +585,11 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
       BindingInfo{3,
                   vgm->lightBindings,
                   BindingType::InputAttachment,
-                  {vgm->metallicImage, UINT64_MAX}}};
+                  {vgm->metallicImage, UINT64_MAX}},
+      BindingInfo{4,
+                  vgm->lightBindings,
+                  BindingType::UniformBuffer,
+                  {dataID, VK_WHOLE_SIZE, 0}}};
 
   sapi->bindData(bindingInfos.data(), bindingInfos.size());
 
@@ -600,6 +612,7 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   const PipelineViewportStateCreateInfo vsci({}, vgm->viewport, sic);
   const PipelineRasterizationStateCreateInfo rsci(
       {}, false, false, {}, {}, {}, false, 0.0f, 0.0f, 0.0f, 1.0f);
+
   const PipelineMultisampleStateCreateInfo msci;
 
   constexpr std::array blendAttachment = {PipelineColorBlendAttachmentState(
@@ -826,8 +839,8 @@ main::Error VulkanGraphicsModule::init() {
            ImageUsageFlagBits::eInputAttachment},
       {Format::eR32Sfloat, ext,
        ImageUsageFlagBits::eColorAttachment |
-           ImageUsageFlagBits::eInputAttachment},
-  };
+           ImageUsageFlagBits::eInputAttachment}};
+
   const auto imageFirstIndex = createInternalImages(this, intImageInfo);
   depthImage = imageFirstIndex;
   albedoImage = imageFirstIndex + 1;
@@ -944,8 +957,6 @@ main::Error VulkanGraphicsModule::init() {
   }
 #pragma endregion
 
-  createLightPass(this);
-
 #pragma region Vulkan Mutex
   const FenceCreateInfo fenceCreateInfo;
   commandBufferFence = device.createFence(fenceCreateInfo);
@@ -958,6 +969,8 @@ main::Error VulkanGraphicsModule::init() {
   this->isInitialiazed = true;
   this->shaderAPI->init();
   device.waitIdle();
+
+  createLightPass(this);
 
   auto nextimage =
       device.acquireNextImageKHR(swapchain, UINT64_MAX, waitSemaphore, {});
@@ -998,7 +1011,9 @@ void VulkanGraphicsModule::tick(double time) {
     currentBuffer.bindPipeline(PipelineBindPoint::eGraphics,
                                pipelines[lightPipe]);
 
-    getShaderAPI()->addToRender(lightBindings, (CommandBuffer *)&currentBuffer);
+    const std::array lights = {lightBindings};
+    getShaderAPI()->addToRender(lights.data(), lights.size(),
+                                (CommandBuffer *)&currentBuffer);
 
     currentBuffer.draw(3, 1, 0, 0);
 

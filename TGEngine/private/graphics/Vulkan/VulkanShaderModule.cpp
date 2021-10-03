@@ -683,9 +683,10 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
     case BindingType::Sampler:
     case BindingType::InputAttachment: {
       const auto &tex = cinfo.data.texture;
-      imgInfo[i] = DescriptorImageInfo(tex.sampler == UINT64_MAX ? vk::Sampler():vgm->sampler[tex.sampler],
-                                       vgm->textureImageViews[tex.texture],
-                                       ImageLayout::eShaderReadOnlyOptimal);
+      imgInfo[i] = DescriptorImageInfo(
+          tex.sampler == UINT64_MAX ? vk::Sampler() : vgm->sampler[tex.sampler],
+          vgm->textureImageViews[tex.texture],
+          ImageLayout::eShaderReadOnlyOptimal);
       set.push_back(WriteDescriptorSet(
           descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
           cinfo.type == BindingType::Texture ? DescriptorType::eSampledImage
@@ -701,15 +702,22 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
   vgm->device.updateDescriptorSets(set, {});
 }
 
-void VulkanShaderModule::addToRender(const size_t bindingID, void *customData) {
-  if (this->pipeInfos.size() > bindingID && bindingID >= 0) {
-    const auto &bInfo = pipeInfos[bindingID];
-    const auto &descSet = descSets[bInfo.descSet];
-    const auto pipeLayout = pipeLayouts[bInfo.pipeline];
-    ((CommandBuffer *)customData)
-        ->bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0,
-                             descSet, {});
+void VulkanShaderModule::addToRender(const size_t *bids, const size_t size,
+                                     void *customData) {
+  std::vector<DescriptorSet> sets;
+  PipelineLayout pipeLayout;
+  for (size_t i = 0; i < size; i++) {
+    const auto bindingID = bids[i];
+    if (this->pipeInfos.size() > bindingID && bindingID >= 0) {
+      const auto &bInfo = pipeInfos[bindingID];
+      const auto descSet = descSets[bInfo.descSet];
+      pipeLayout = pipeLayouts[bInfo.pipeline];
+      sets.push_back(descSet);
+    }
   }
+  ((CommandBuffer *)customData)
+      ->bindDescriptorSets(PipelineBindPoint::eGraphics, pipeLayout, 0, sets,
+                           {});
 }
 
 void VulkanShaderModule::addToMaterial(const graphics::Material *material,

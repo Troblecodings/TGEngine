@@ -30,7 +30,22 @@ struct ShaderBindingIO {
 };
 
 enum class InstructionType {
-    NOOP, MULTIPLY, ADD, TEXTURE, SAMPLER, SET, TEMP, VEC4CTR, DOT, NORMALIZE, CROSS, MIN, MAX, CLAMP, SUBTRACT, DIVIDE
+  NOOP,
+  MULTIPLY,
+  ADD,
+  TEXTURE,
+  SAMPLER,
+  SET,
+  TEMP,
+  VEC4CTR,
+  DOT,
+  NORMALIZE,
+  CROSS,
+  MIN,
+  MAX,
+  CLAMP,
+  SUBTRACT,
+  DIVIDE
 };
 
 struct Instruction {
@@ -92,11 +107,14 @@ public:
   _NODISCARD virtual size_t createBindings(ShaderPipe pipe,
                                            const size_t count = 1) = 0;
 
-  virtual void changeInputBindings(const ShaderPipe pipe, const size_t bindingID, const size_t buffer) = 0;
+  virtual void changeInputBindings(const ShaderPipe pipe,
+                                   const size_t bindingID,
+                                   const size_t buffer) = 0;
 
   virtual void bindData(const BindingInfo *info, const size_t count) = 0;
 
-  virtual void addToRender(const size_t bindingID, void *customData) = 0;
+  virtual void addToRender(const size_t *bindingID, const size_t size,
+                           void *customData) = 0;
 
   virtual void addToMaterial(const graphics::Material *material,
                              void *customData) = 0;
