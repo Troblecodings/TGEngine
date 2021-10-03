@@ -87,23 +87,14 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
   const PipelineMultisampleStateCreateInfo multisampleCreateInfo(
       {}, SampleCountFlagBits::e1, false, 1);
 
-  constexpr std::array blendAttachment = {
-      PipelineColorBlendAttachmentState(
-          true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
-          BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
-          (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags),
-      PipelineColorBlendAttachmentState(
-          true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
-          BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
-          (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags),
-      PipelineColorBlendAttachmentState(
-          true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
-          BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
-          (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags),
-      PipelineColorBlendAttachmentState(
-          true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
-          BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
-          (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags)};
+  const auto pDefaultState = PipelineColorBlendAttachmentState(
+      true, BlendFactor::eSrcAlpha, BlendFactor::eOneMinusSrcAlpha,
+      BlendOp::eAdd, BlendFactor::eOne, BlendFactor::eZero, BlendOp::eAdd,
+      (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags);
+
+  const std::array blendAttachment = {pDefaultState, pDefaultState,
+                                          pDefaultState, pDefaultState,
+                                          pDefaultState};
 
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, blendAttachment);
@@ -562,10 +553,10 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   vgm->lightBindings = sapi->createBindings(pipe, 1);
 
   vgm->lights.lightCount = 2;
-  vgm->lights.lights[0] = glm::vec4(4, 4, 4, 0.6f);
-  vgm->lights.lights[1] = glm::vec4(-10, 0, 3, 0.5f);
+  vgm->lights.lights[0] = Light(glm::vec3(4, 4, 4), glm::vec3(1, 1, 1), 0.6f);
+  vgm->lights.lights[1] = Light(glm::vec3(-10, 4, 4), glm::vec3(1, 0, 0), 0.6f);
 
-  auto ptr = (const uint8_t*)&vgm->lights;
+  auto ptr = (const uint8_t *)&vgm->lights;
   auto sizeOfLight = sizeof(vgm->lights);
   const auto dataID = vgm->pushData(1, &ptr, &sizeOfLight, DataType::Uniform);
 
@@ -586,6 +577,10 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
                   vgm->lightBindings,
                   BindingType::InputAttachment,
                   {vgm->metallicImage, UINT64_MAX}},
+      BindingInfo{5,
+                  vgm->lightBindings,
+                  BindingType::InputAttachment,
+                  {vgm->position, UINT64_MAX}},
       BindingInfo{4,
                   vgm->lightBindings,
                   BindingType::UniformBuffer,
@@ -839,6 +834,9 @@ main::Error VulkanGraphicsModule::init() {
            ImageUsageFlagBits::eInputAttachment},
       {Format::eR32Sfloat, ext,
        ImageUsageFlagBits::eColorAttachment |
+           ImageUsageFlagBits::eInputAttachment},
+      {Format::eR8G8B8A8Snorm, ext,
+       ImageUsageFlagBits::eColorAttachment |
            ImageUsageFlagBits::eInputAttachment}};
 
   const auto imageFirstIndex = createInternalImages(this, intImageInfo);
@@ -847,6 +845,7 @@ main::Error VulkanGraphicsModule::init() {
   normalImage = imageFirstIndex + 2;
   roughnessImage = imageFirstIndex + 3;
   metallicImage = imageFirstIndex + 4;
+  position = imageFirstIndex + 5;
 #pragma endregion
 
 #pragma region Renderpass
@@ -878,6 +877,11 @@ main::Error VulkanGraphicsModule::init() {
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
           ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
       AttachmentDescription(
+          {}, intImageInfo[5].format, SampleCountFlagBits::e1,
+          AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
+          AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
+          ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
+      AttachmentDescription(
           {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
           AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
@@ -887,16 +891,18 @@ main::Error VulkanGraphicsModule::init() {
       AttachmentReference(1, ImageLayout::eColorAttachmentOptimal),
       AttachmentReference(2, ImageLayout::eColorAttachmentOptimal),
       AttachmentReference(3, ImageLayout::eColorAttachmentOptimal),
-      AttachmentReference(4, ImageLayout::eColorAttachmentOptimal)};
+      AttachmentReference(4, ImageLayout::eColorAttachmentOptimal),
+      AttachmentReference(5, ImageLayout::eColorAttachmentOptimal)};
 
   constexpr std::array inputAttachments = {
       AttachmentReference(1, ImageLayout::eShaderReadOnlyOptimal),
       AttachmentReference(2, ImageLayout::eShaderReadOnlyOptimal),
       AttachmentReference(3, ImageLayout::eShaderReadOnlyOptimal),
-      AttachmentReference(4, ImageLayout::eShaderReadOnlyOptimal)};
+      AttachmentReference(4, ImageLayout::eShaderReadOnlyOptimal),
+      AttachmentReference(5, ImageLayout::eShaderReadOnlyOptimal)};
 
   constexpr std::array colorAttachmentsSubpass1 = {
-      AttachmentReference(5, ImageLayout::eColorAttachmentOptimal)};
+      AttachmentReference(6, ImageLayout::eColorAttachmentOptimal)};
 
   constexpr AttachmentReference depthAttachment(
       0, ImageLayout::eDepthStencilAttachmentOptimal);
@@ -988,6 +994,7 @@ void VulkanGraphicsModule::tick(double time) {
   if (1) { // For now rerecord every tick
     constexpr std::array clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
     const std::array clearValue = {ClearValue(ClearDepthStencilValue(1.0f, 0)),
+                                   ClearValue(clearColor),
                                    ClearValue(clearColor),
                                    ClearValue(clearColor),
                                    ClearValue(clearColor),

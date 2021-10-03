@@ -16,6 +16,18 @@ namespace tge::graphics {
 
 using namespace vk;
 
+struct Light {
+  glm::vec3 pos;
+  glm::vec3 color;
+  float __alignment = 0;
+  float intensity;
+
+  Light() = default;
+
+  Light(glm::vec3 pos, glm::vec3 color, float intensity)
+      : pos(pos), color(color), intensity(intensity) {}
+};
+
 class VulkanGraphicsModule : public APILayer {
 
 public:
@@ -61,6 +73,7 @@ public:
   size_t normalImage;
   size_t roughnessImage;
   size_t metallicImage;
+  size_t position;
 
   size_t lightPipe;
   size_t lightBindings;
@@ -72,7 +85,7 @@ public:
   bool exitFailed = false;
 
   struct Lights {
-    glm::vec4 lights[50];
+    Light lights[50];
     int lightCount;
   } lights;
 

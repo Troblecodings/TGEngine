@@ -166,14 +166,20 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
          s::IOType::VEC4,
          s::InstructionType::MULTIPLY,
          "_tmp1"},
-        {{"_tmp1"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"}};
+        {{"_tmp1"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
+        {{"_tmp1.xyz"}, s::IOType::VEC4, s::InstructionType::SET, "POSOUT"}};
 
     uint32_t nextID = 0;
 
     createInfo[1].outputs = {{"COLOR", s::IOType::VEC4, 0},
                              {"NORMAL", s::IOType::VEC4, 1},
                              {"ROUGHNESS", s::IOType::FLOAT, 2},
-                             {"METALLIC", s::IOType::FLOAT, 3}};
+                             {"METALLIC", s::IOType::FLOAT, 3},
+                             {"POSOUT", s::IOType::VEC4, 4}};
+
+    createInfo[0].outputs.push_back({"POSOUT", s::IOType::VEC3, nextID});
+    createInfo[1].inputs.push_back({"POSIN", s::IOType::VEC3, nextID});
+    nextID++;
 
     if (mat.type == MaterialType::TextureOnly) {
       createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, nextID});
@@ -188,13 +194,21 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
            s::IOType::VEC4,
            s::InstructionType::TEXTURE,
            "C1"},
-          {{"C1"}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"}};
+          {{"C1"}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"},
+          {{"vec4(POSIN, 1)"},
+           s::IOType::VEC4,
+           s::InstructionType::SET,
+           "POSOUT"}};
       nextID++;
     } else {
       createInfo[1].instructions = {{{"vec4(1, 0, 0, 1)"},
                                      s::IOType::VEC4,
                                      s::InstructionType::SET,
-                                     "COLOR"}};
+                                     "COLOR"},
+                                    {{"vec4(POSIN, 1)"},
+                                     s::IOType::VEC4,
+                                     s::InstructionType::SET,
+                                     "POSOUT"}};
     };
 
     if (prim.attributes.contains("NORMAL")) {
@@ -206,6 +220,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
                                             s::IOType::VEC4,
                                             s::InstructionType::VEC4CTR,
                                             "_temp"});
+      nextID++;
     } else {
       createInfo[1].instructions.push_back({{"1", "1", "1", "1"},
                                             s::IOType::VEC4,
