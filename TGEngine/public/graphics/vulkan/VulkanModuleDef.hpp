@@ -18,8 +18,8 @@ using namespace vk;
 
 struct Light {
   glm::vec3 pos;
-  glm::vec3 color;
   float __alignment = 0;
+  glm::vec3 color;
   float intensity;
 
   Light() = default;

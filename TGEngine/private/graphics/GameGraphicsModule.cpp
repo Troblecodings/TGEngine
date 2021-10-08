@@ -156,17 +156,22 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     createInfo[0].shaderType = s::ShaderType::VERTEX;
     createInfo[1].shaderType = s::ShaderType::FRAGMENT;
 
-    createInfo[0].unifromIO.push_back({"mvp", s::IOType::MAT4, 2});
+    createInfo[0].unifromIO.push_back({"model", s::IOType::MAT4, 2});
+    createInfo[0].unifromIO.push_back({"vp", s::IOType::MAT4, 3});
     createInfo[0].instructions = {
         {{"POSITION", "1"},
          s::IOType::VEC4,
          s::InstructionType::VEC4CTR,
          "_tmpVEC"},
-        {{"ublock_0.mvp", "_tmpVEC"},
+        {{"ublock_0.model", "_tmpVEC"},
          s::IOType::VEC4,
          s::InstructionType::MULTIPLY,
          "_tmp1"},
-        {{"_tmp1"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
+        {{"ublock_1.vp", "_tmp1"},
+         s::IOType::VEC4,
+         s::InstructionType::MULTIPLY,
+         "_tmp2"},
+        {{"_tmp2"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
         {{"_tmp1.xyz"}, s::IOType::VEC4, s::InstructionType::SET, "POSOUT"}};
 
     uint32_t nextID = 0;
@@ -441,9 +446,8 @@ size_t GameGraphicsModule::loadModel(const std::vector<char> &data,
 
 main::Error GameGraphicsModule::init() {
   const auto size = this->node.size();
-  std::vector<glm::mat4> mvps;
-  mvps.resize(100000);
   glm::mat4 projView = this->projectionMatrix * this->viewMatrix;
+  modelMatrices.reserve(UINT16_MAX);
   for (size_t i = 0; i < size; i++) {
     const auto &transform = this->node[i];
     const auto parantID = this->parents[i];
@@ -455,46 +459,40 @@ main::Error GameGraphicsModule::init() {
     } else {
       modelMatrices[i] = mMatrix;
     }
-    mvps[i] = projView * modelMatrices[i];
   }
-  const uint8_t *mvpsPtr = (uint8_t *)mvps.data();
-  if (dataID != UINT64_MAX) {
-    apiLayer->changeData(dataID, mvpsPtr, mvps.size() * sizeof(glm::mat4));
-  } else {
-    const auto arrSize = mvps.size() * sizeof(glm::mat4);
-    dataID = apiLayer->pushData(1, &mvpsPtr, &arrSize, DataType::Uniform);
-  }
-  allDirty = false;
+
+  std::array mvpsPtr = {(const uint8_t *)modelMatrices.data(),
+                        (const uint8_t *)&projView};
+  std::array arrSize = {UINT16_MAX * sizeof(glm::mat4), sizeof(glm::mat4)};
+  dataID = apiLayer->pushData(mvpsPtr.size(), mvpsPtr.data(), arrSize.data(),
+                              DataType::Uniform);
   const Material defMat(defaultPipe = apiLayer->loadShader(MaterialType::None));
   defaultMaterial = apiLayer->pushMaterials(1, &defMat);
   return main::Error::NONE;
 }
 
 void GameGraphicsModule::tick(double time) {
-  if (!allDirty) {
-    const auto size = this->node.size();
-    const auto projView = this->projectionMatrix * this->viewMatrix;
-    for (size_t i = 0; i < size; i++) {
-      const auto parantID = this->parents[i];
-      if (this->status[i] == 1 || (parantID < size && this->status[parantID])) {
-        const auto &transform = this->node[i];
-        const auto mMatrix = glm::translate(transform.translation) *
-                             glm::scale(transform.scale) *
-                             glm::toMat4(transform.rotation);
-        if (parantID < size) {
-          modelMatrices[i] = modelMatrices[parantID] * mMatrix;
-        } else {
-          modelMatrices[i] = mMatrix;
-        }
-        const auto mvp = projView * modelMatrices[i];
-        apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(glm::mat4),
-                             i * sizeof(glm::mat4));
+  const auto size = this->node.size();
+  const auto projView = this->projectionMatrix * this->viewMatrix;
+  apiLayer->changeData(dataID + 1, (const uint8_t *)&projView,
+                       sizeof(glm::mat4));
+  for (size_t i = 0; i < size; i++) {
+    const auto parantID = this->parents[i];
+    if (this->status[i] == 1 || (parantID < size && this->status[parantID])) {
+      const auto &transform = this->node[i];
+      const auto mMatrix = glm::translate(transform.translation) *
+                           glm::scale(transform.scale) *
+                           glm::toMat4(transform.rotation);
+      if (parantID < size) {
+        modelMatrices[i] = modelMatrices[parantID] * mMatrix;
+      } else {
+        modelMatrices[i] = mMatrix;
       }
+      apiLayer->changeData(dataID, (const uint8_t *)&modelMatrices[i],
+                           sizeof(glm::mat4), i * sizeof(glm::mat4));
     }
-    std::fill(status.begin(), status.end(), 0);
-    return;
   }
-  init();
+  std::fill(begin(this->status), end(this->status), 0);
 }
 
 void GameGraphicsModule::destroy() {}
@@ -555,13 +553,17 @@ size_t GameGraphicsModule::addNode(const NodeInfo *nodeInfos,
     }
     status.push_back(0);
     if (nodeI.bindingID != UINT64_MAX) [[likely]] {
-      const auto mvp = projectionMatrix * viewMatrix * modelMatrices[nodeID];
+      const auto mvp = modelMatrices[nodeID];
       const auto off = sizeof(mvp) * (nodeID + i);
       apiLayer->changeData(dataID, (const uint8_t *)&mvp, sizeof(mvp), off);
       bindings.push_back({2,
                           nodeI.bindingID,
                           shader::BindingType::UniformBuffer,
                           {dataID, sizeof(mvp), off}});
+      bindings.push_back({3,
+                          nodeI.bindingID,
+                          shader::BindingType::UniformBuffer,
+                          {dataID + 1, sizeof(mvp), 0}});
     }
     bindingID.push_back(nodeI.bindingID);
   }

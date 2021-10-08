@@ -83,7 +83,7 @@ public:
 
   virtual void pushRender(const size_t renderInfoCount,
                           const RenderInfo *renderInfos) = 0;
-
+   
   _NODISCARD virtual size_t pushSampler(const SamplerInfo &sampler) = 0;
 
   _NODISCARD virtual size_t pushTexture(const size_t textureCount,

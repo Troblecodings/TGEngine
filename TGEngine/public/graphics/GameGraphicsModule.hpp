@@ -38,7 +38,6 @@ class GameGraphicsModule : public main::Module {
   std::vector<size_t> parents;
   std::vector<size_t> bindingID;
   std::vector<char> status; // jesus fuck not going to use a bool here
-  bool allDirty;
   size_t dataID = UINT64_MAX;
 
 public:
@@ -64,9 +63,10 @@ public:
 
   void updateTransform(const size_t nodeID, const NodeTransform &transform);
 
-  void updateViewMatrix(const glm::mat4 matrix) {
-    this->viewMatrix = matrix;
-    this->allDirty = true;
+  void updateViewMatrix(const glm::mat4 matrix) { this->viewMatrix = matrix; }
+
+  void updateCameraMatrix(const glm::mat4 matrix) {
+    this->projectionMatrix = matrix;
   }
 
   main::Error init() override;

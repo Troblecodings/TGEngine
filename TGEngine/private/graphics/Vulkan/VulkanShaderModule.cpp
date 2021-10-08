@@ -571,6 +571,7 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
                << ublockID << " {" << std::endl
                << getStringFromIOType(uniform.iotype) << " " << uniform.name
                << ";} ublock_" << ublockID << ";" << std::endl;
+      ublockID++;
     }
     codebuff << std::endl;
     for (const auto &sampler : createInfo.samplerIO) {

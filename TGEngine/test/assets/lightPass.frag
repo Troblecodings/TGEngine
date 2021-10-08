@@ -22,14 +22,14 @@ layout(location=0) out vec4 colorout;
 
 void main() {
     vec3 color = subpassLoad(ALBEDO).rgb;
-    vec3 normal = subpassLoad(NORMAL).rgb;
+    vec3 normal = normalize(subpassLoad(NORMAL).rgb);
     vec3 pos = subpassLoad(POSITION).rgb;
     vec3 multiplier = vec3(0.08f, 0.08f, 0.08f);
     for(int x = 0; x < lights.lightCount; x++) {
         Light lightInfo = lights.light[x];
         vec3 l = normalize(lightInfo.pos);
-        float refl = abs(dot(normal, l));
-        multiplier += lightInfo.color * refl * lightInfo.intensity;
+        float refl = dot(normal, l);
+        multiplier += lightInfo.color * (refl * lightInfo.intensity);
     }
     colorout = vec4(color * multiplier, 1);
 }
