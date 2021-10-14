@@ -436,6 +436,11 @@ namespace tge::graphics
           {}, depthImage, ImageViewType::e2D, img.format, {}, subresourceRange);
       vgm->textureImages.push_back(depthImage);
 
+      const auto rest = wholeSize % imageMemReq.alignment;
+      if (rest != 0) {
+        wholeSize += imageMemReq.alignment - rest;
+      }
+
       memorys.push_back(std::make_tuple(depthImageViewCreateInfo, wholeSize));
       wholeSize += imageMemReq.size;
     }
