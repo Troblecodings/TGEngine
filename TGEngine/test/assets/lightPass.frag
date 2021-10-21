@@ -23,7 +23,7 @@ void main() {
     vec3 color = subpassLoad(ALBEDO).rgb;
     vec3 normal = normalize(subpassLoad(NORMAL).rgb);
     vec3 pos = subpassLoad(POSITION).rgb;
-    vec2 metallic = subpassLoad(ROUGHNESS_METALLIC).rg;
+    vec2 roughnessMetallic = subpassLoad(ROUGHNESS_METALLIC).rg;
 
     vec3 multiplier = vec3(0.05f, 0.05f, 0.05f);
     for(int x = 0; x < lights.lightCount; x++) {

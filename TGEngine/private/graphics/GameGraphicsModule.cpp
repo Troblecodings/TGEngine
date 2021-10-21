@@ -119,6 +119,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
                             std::vector<shader::ShaderPipe> &created) {
   std::vector<Material> materials;
   materials.reserve(model.materials.size());
+  std::vector<glm::vec2> roughnessMetallicFactors;
   for (const auto &mat : model.materials) {
     const auto &pbr = mat.pbrMetallicRoughness;
     const auto &diffuseTexture = pbr.baseColorTexture;
@@ -133,6 +134,8 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     } else {
       nmMat.type = MaterialType::None;
     }
+    roughnessMetallicFactors.push_back(glm::vec2(pbr.roughnessFactor, pbr.metallicFactor));
+
     nmMat.doubleSided = mat.doubleSided;
     materials.push_back(nmMat);
   }
@@ -178,7 +181,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
 
     createInfo[1].outputs = {{"COLOR", s::IOType::VEC4, 0},
                              {"NORMAL", s::IOType::VEC4, 1},
-                             {"ROUGHNESSMETALLIC", s::IOType::VEC2, 2},
+                             {"ROUGHNESSMETALLIC", s::IOType::VEC4, 2},
                              {"POSOUT", s::IOType::VEC4, 3}};
 
     createInfo[0].outputs.push_back({"POSOUT", s::IOType::VEC3, nextID});
@@ -231,10 +234,16 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
                                             s::InstructionType::VEC4CTR,
                                             "_temp"});
     }
+
     createInfo[1].instructions.push_back(
         {{"_temp"}, s::IOType::VEC3, s::InstructionType::SET, "NORMAL"});
-
-    createInfo[1].__code = "ROUGHNESSMETALLIC = vec2(0, 0);";
+    const auto roughnessMetallic = roughnessMetallicFactors[prim.material];
+    createInfo[1].instructions.push_back(
+        {{std::string("vec4(") + std::to_string(roughnessMetallic.r) + ", " +
+          std::to_string(roughnessMetallic.g) + ", 1.0f, 1.0f)"},
+         s::IOType::VEC3,
+         s::InstructionType::SET,
+         "ROUGHNESSMETALLIC"});
 
     mat.costumShaderData =
         apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
