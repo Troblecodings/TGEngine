@@ -178,9 +178,8 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
 
     createInfo[1].outputs = {{"COLOR", s::IOType::VEC4, 0},
                              {"NORMAL", s::IOType::VEC4, 1},
-                             {"ROUGHNESS", s::IOType::FLOAT, 2},
-                             {"METALLIC", s::IOType::FLOAT, 3},
-                             {"POSOUT", s::IOType::VEC4, 4}};
+                             {"ROUGHNESSMETALLIC", s::IOType::VEC2, 2},
+                             {"POSOUT", s::IOType::VEC4, 3}};
 
     createInfo[0].outputs.push_back({"POSOUT", s::IOType::VEC3, nextID});
     createInfo[1].inputs.push_back({"POSIN", s::IOType::VEC3, nextID});
@@ -235,7 +234,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     createInfo[1].instructions.push_back(
         {{"_temp"}, s::IOType::VEC3, s::InstructionType::SET, "NORMAL"});
 
-    createInfo[1].__code = "ROUGHNESS = 0;\nMETALLIC = 0;\n";
+    createInfo[1].__code = "ROUGHNESSMETALLIC = vec2(0, 0);";
 
     mat.costumShaderData =
         apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);

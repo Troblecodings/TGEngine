@@ -99,8 +99,7 @@ namespace tge::graphics
         (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags);
 
     const std::array blendAttachment = {pDefaultState, pDefaultState,
-                                        pDefaultState, pDefaultState,
-                                        pDefaultState};
+                                        pDefaultState, pDefaultState};
 
     const PipelineColorBlendStateCreateInfo colorBlendState(
         {}, false, LogicOp::eClear, blendAttachment);
@@ -615,12 +614,8 @@ namespace tge::graphics
         BindingInfo{2,
                     vgm->lightBindings,
                     BindingType::InputAttachment,
-                    {vgm->roughnessImage, UINT64_MAX}},
+                    {vgm->roughnessMetallicImage, UINT64_MAX}},
         BindingInfo{3,
-                    vgm->lightBindings,
-                    BindingType::InputAttachment,
-                    {vgm->metallicImage, UINT64_MAX}},
-        BindingInfo{5,
                     vgm->lightBindings,
                     BindingType::InputAttachment,
                     {vgm->position, UINT64_MAX}},
@@ -880,10 +875,7 @@ namespace tge::graphics
         {Format::eR8G8B8A8Snorm, ext,
          ImageUsageFlagBits::eColorAttachment |
              ImageUsageFlagBits::eInputAttachment},
-        {Format::eR32Sfloat, ext,
-         ImageUsageFlagBits::eColorAttachment |
-             ImageUsageFlagBits::eInputAttachment},
-        {Format::eR32Sfloat, ext,
+        {Format::eR8G8Snorm, ext,
          ImageUsageFlagBits::eColorAttachment |
              ImageUsageFlagBits::eInputAttachment},
         {Format::eR8G8B8A8Snorm, ext,
@@ -894,9 +886,8 @@ namespace tge::graphics
     depthImage = imageFirstIndex;
     albedoImage = imageFirstIndex + 1;
     normalImage = imageFirstIndex + 2;
-    roughnessImage = imageFirstIndex + 3;
-    metallicImage = imageFirstIndex + 4;
-    position = imageFirstIndex + 5;
+    roughnessMetallicImage = imageFirstIndex + 3;
+    position = imageFirstIndex + 4;
 #pragma endregion
 
 #pragma region Renderpass
@@ -928,11 +919,6 @@ namespace tge::graphics
             AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
             ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
         AttachmentDescription(
-            {}, intImageInfo[5].format, SampleCountFlagBits::e1,
-            AttachmentLoadOp::eClear, AttachmentStoreOp::eDontCare,
-            AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-            ImageLayout::eUndefined, ImageLayout::eSharedPresentKHR),
-        AttachmentDescription(
             {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
             AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
             AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
@@ -942,18 +928,16 @@ namespace tge::graphics
         AttachmentReference(1, ImageLayout::eColorAttachmentOptimal),
         AttachmentReference(2, ImageLayout::eColorAttachmentOptimal),
         AttachmentReference(3, ImageLayout::eColorAttachmentOptimal),
-        AttachmentReference(4, ImageLayout::eColorAttachmentOptimal),
-        AttachmentReference(5, ImageLayout::eColorAttachmentOptimal)};
+        AttachmentReference(4, ImageLayout::eColorAttachmentOptimal)};
 
     constexpr std::array inputAttachments = {
         AttachmentReference(1, ImageLayout::eShaderReadOnlyOptimal),
         AttachmentReference(2, ImageLayout::eShaderReadOnlyOptimal),
         AttachmentReference(3, ImageLayout::eShaderReadOnlyOptimal),
-        AttachmentReference(4, ImageLayout::eShaderReadOnlyOptimal),
-        AttachmentReference(5, ImageLayout::eShaderReadOnlyOptimal)};
+        AttachmentReference(4, ImageLayout::eShaderReadOnlyOptimal)};
 
     constexpr std::array colorAttachmentsSubpass1 = {
-        AttachmentReference(6, ImageLayout::eColorAttachmentOptimal)};
+        AttachmentReference(5, ImageLayout::eColorAttachmentOptimal)};
 
     constexpr AttachmentReference depthAttachment(
         0, ImageLayout::eDepthStencilAttachmentOptimal);

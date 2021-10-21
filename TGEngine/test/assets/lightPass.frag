@@ -3,9 +3,8 @@
 
 layout(input_attachment_index=0, set=0, binding = 0) uniform subpassInput ALBEDO;
 layout(input_attachment_index=1, set=0, binding = 1) uniform subpassInput NORMAL;
-layout(input_attachment_index=2, set=0, binding = 2) uniform subpassInput ROUGHNESS;
-layout(input_attachment_index=3, set=0, binding = 3) uniform subpassInput METALLIC;
-layout(input_attachment_index=4, set=0, binding = 5) uniform subpassInput POSITION;
+layout(input_attachment_index=2, set=0, binding = 2) uniform subpassInput ROUGHNESS_METALLIC;
+layout(input_attachment_index=3, set=0, binding = 3) uniform subpassInput POSITION;
 
 struct Light {
     vec3 pos;
@@ -24,12 +23,15 @@ void main() {
     vec3 color = subpassLoad(ALBEDO).rgb;
     vec3 normal = normalize(subpassLoad(NORMAL).rgb);
     vec3 pos = subpassLoad(POSITION).rgb;
-    vec3 multiplier = vec3(0.08f, 0.08f, 0.08f);
+    vec2 metallic = subpassLoad(ROUGHNESS_METALLIC).rg;
+
+    vec3 multiplier = vec3(0.05f, 0.05f, 0.05f);
     for(int x = 0; x < lights.lightCount; x++) {
         Light lightInfo = lights.light[x];
-        vec3 l = normalize(lightInfo.pos);
+        vec3 diff = pos - lightInfo.pos;
+        vec3 l = normalize(diff);
         float refl = dot(normal, l);
-        multiplier += lightInfo.color * (refl * lightInfo.intensity);
+        multiplier += lightInfo.color * refl * lightInfo.intensity;
     }
     colorout = vec4(color * multiplier, 1);
 }

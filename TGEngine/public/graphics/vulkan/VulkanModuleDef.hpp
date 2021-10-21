@@ -71,8 +71,7 @@ public:
   size_t depthImage;
   size_t albedoImage;
   size_t normalImage;
-  size_t roughnessImage;
-  size_t metallicImage;
+  size_t roughnessMetallicImage;
   size_t position;
 
   size_t lightPipe;
