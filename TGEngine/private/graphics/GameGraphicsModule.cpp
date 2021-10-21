@@ -263,7 +263,8 @@ inline size_t loadDataBuffers(const Model &model, APILayer *apiLayer) {
     ptr.push_back(ptrto);
     sizes.push_back(buffer.data.size());
   }
-  return apiLayer->pushData(ptr.size(), (const uint8_t **)ptr.data(),
+
+  return apiLayer->pushData(ptr.size(), ptr.data(),
                             sizes.data(), DataType::VertexIndexData);
 }
 

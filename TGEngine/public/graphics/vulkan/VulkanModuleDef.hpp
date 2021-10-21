@@ -16,18 +16,6 @@ namespace tge::graphics {
 
 using namespace vk;
 
-struct Light {
-  glm::vec3 pos;
-  float __alignment = 0;
-  glm::vec3 color;
-  float intensity;
-
-  Light() = default;
-
-  Light(glm::vec3 pos, glm::vec3 color, float intensity)
-      : pos(pos), color(color), intensity(intensity) {}
-};
-
 class VulkanGraphicsModule : public APILayer {
 
 public:
@@ -74,6 +62,7 @@ public:
   size_t roughnessMetallicImage;
   size_t position;
 
+  size_t lightData;
   size_t lightPipe;
   size_t lightBindings;
   Material lightMat;
@@ -88,7 +77,6 @@ public:
     int lightCount;
   } lights;
 
-
 #ifdef DEBUG
   DebugUtilsMessengerEXT debugMessenger;
 #endif
@@ -102,10 +90,10 @@ public:
   size_t pushMaterials(const size_t materialcount,
                        const Material *materials) override;
 
-  size_t pushData(const size_t dataCount, const uint8_t **data,
+  size_t pushData(const size_t dataCount, void *data,
                   const size_t *dataSizes, const DataType type) override;
 
-  void changeData(const size_t bufferIndex, const uint8_t *data,
+  void changeData(const size_t bufferIndex, const void *data,
                   const size_t dataSizes, const size_t offset = 0) override;
 
   void pushRender(const size_t renderInfoCount,
@@ -115,6 +103,9 @@ public:
 
   size_t pushTexture(const size_t textureCount,
                      const TextureInfo *textures) override;
+
+  size_t pushLights(const size_t lightCount, const Light *lights,
+                    const size_t offset = 0) override;
 
   void *loadShader(const MaterialType type) override;
 };

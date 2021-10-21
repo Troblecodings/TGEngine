@@ -1,9 +1,10 @@
 #pragma once
 
-#include <stdint.h>
-#include <vector>
 #include "../Module.hpp"
 #include "Material.hpp"
+#include <glm/glm.hpp>
+#include <stdint.h>
+#include <vector>
 
 namespace tge::shader {
 class ShaderAPI;
@@ -53,6 +54,18 @@ struct SamplerInfo {
   int anisotropy = 0;
 };
 
+struct Light {
+  glm::vec3 pos;
+  float __alignment = 0;
+  glm::vec3 color;
+  float intensity;
+
+  Light() = default;
+
+  Light(glm::vec3 pos, glm::vec3 color, float intensity)
+      : pos(pos), color(color), intensity(intensity) {}
+};
+
 enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };
 
 class APILayer : public main::Module { // Interface
@@ -73,21 +86,29 @@ public:
   _NODISCARD virtual size_t pushMaterials(const size_t materialcount,
                                           const Material *materials) = 0;
 
-  _NODISCARD virtual size_t pushData(const size_t dataCount,
-                                     const uint8_t **data,
+  _NODISCARD virtual size_t pushData(const size_t dataCount, void *data,
                                      const size_t *dataSizes,
                                      const DataType type) = 0;
 
-  virtual void changeData(const size_t bufferIndex, const uint8_t *data,
+  virtual void changeData(const size_t bufferIndex, const void *data,
                           const size_t dataSizes, const size_t offset = 0) = 0;
+
+  void changeData(const size_t bufferIndex, void* data, const size_t dataSizes,
+      const size_t offset = 0) {
+    changeData(bufferIndex, (const void *)data, dataSizes, offset);
+  }
 
   virtual void pushRender(const size_t renderInfoCount,
                           const RenderInfo *renderInfos) = 0;
-   
+
   _NODISCARD virtual size_t pushSampler(const SamplerInfo &sampler) = 0;
 
   _NODISCARD virtual size_t pushTexture(const size_t textureCount,
                                         const TextureInfo *textures) = 0;
+
+  _NODISCARD virtual size_t pushLights(const size_t lightCount,
+                                       const Light *lights,
+                                       const size_t offset = 0) = 0;
 
   _NODISCARD GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 

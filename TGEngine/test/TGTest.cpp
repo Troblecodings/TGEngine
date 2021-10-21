@@ -13,7 +13,7 @@
 #include <mutex>
 #include <thread>
 
-#define DEFAULT_TIME (30.0f)
+#define DEFAULT_TIME (120.0f)
 
 #define MODEL_TEST 0
 
@@ -132,16 +132,47 @@ public:
   }
 };
 
+class TableTest : public tge::main::Module {
+public:
+  GameGraphicsModule *ggm;
+  float rotation = 0;
+  size_t nodeID;
+  glm::vec3 scale = glm::vec3(4, -4, 4);
+  Light light = Light({10, 5, 0}, {1, 1, 1}, 0.5f);
+  bool rotate = true;
+
+  void tick(double time) {
+    if (rotate) {
+      rotation += (float)time;
+      const NodeTransform transform = {
+          {}, scale, glm::toQuat(glm::rotate(rotation, glm::vec3(0, 1, 0)))};
+      ggm->updateTransform(nodeID, transform);
+    }
+    ggm->getAPILayer()->pushLights(1, &light);
+  }
+};
+
+float *__tmp;
+float *__r;
+bool *__rotate;
+
 TEST(EngineMain, TestModel) {
   tge::main::modules.push_back(new TestModule());
-  Avocado2Test *av = new Avocado2Test();
+  TableTest *av = new TableTest();
   tge::main::modules.push_back(av);
 
   ASSERT_EQ(init(), Error::NONE);
   av->ggm = getGameGraphicsModule();
+  
+  __tmp = &av->light.intensity;
+  __r = &av->light.pos.x;
+  __rotate = &av->rotate;
 
   getGUIModule()->guicallback = [] {
     ImGui::Begin("test");
+    ImGui::SliderFloat("Light intensity", __tmp, 0.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat3("Light pos", __r, -10.0f, 10.0f, "%.3f");
+    ImGui::Checkbox("Rotate", __rotate);
     ImGui::End();
   };
 
@@ -151,9 +182,6 @@ TEST(EngineMain, TestModel) {
   ASSERT_NE(mdlID, UINT64_MAX);
   av->nodeID = mdlID;
   av->scale = glm::vec3(0.02f, 0.02f, 0.02f);
-  // av->ggm->updateViewMatrix(
-  //    glm::lookAt(glm::vec3(5, 25, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1,
-  //    0)));
 
   syncMutex.unlock();
   waitForTime();

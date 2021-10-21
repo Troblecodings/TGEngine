@@ -93,8 +93,7 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
       (ColorComponentFlags)FlagTraits<ColorComponentFlagBits>::allFlags);
 
   const std::array blendAttachment = {pDefaultState, pDefaultState,
-                                      pDefaultState,
-                                      pDefaultState};
+                                      pDefaultState, pDefaultState};
 
   const PipelineColorBlendStateCreateInfo colorBlendState(
       {}, false, LogicOp::eClear, blendAttachment);
@@ -240,8 +239,7 @@ inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
   }
 }
 
-size_t VulkanGraphicsModule::pushData(const size_t dataCount,
-                                      const uint8_t **data,
+size_t VulkanGraphicsModule::pushData(const size_t dataCount, void *data,
                                       const size_t *dataSizes,
                                       const DataType type) {
   EXPECT(dataCount != 0 && data != nullptr && dataSizes != nullptr);
@@ -266,7 +264,7 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
 
   for (size_t i = 0; i < dataCount; i++) {
     const auto size = dataSizes[i];
-    const auto dataptr = data[i];
+    const auto dataptr = ((const uint8_t **)data)[i];
 
     const BufferCreateInfo bufferCreateInfo(
         {}, size, BufferUsageFlagBits::eTransferSrc, SharingMode::eExclusive);
@@ -316,8 +314,7 @@ size_t VulkanGraphicsModule::pushData(const size_t dataCount,
 }
 
 void VulkanGraphicsModule::changeData(const size_t bufferIndex,
-                                      const uint8_t *data,
-                                      const size_t dataSizes,
+                                      const void *data, const size_t dataSizes,
                                       const size_t offset) {
   EXPECT(bufferIndex >= 0 && bufferIndex < this->bufferList.size() &&
          data != nullptr && dataSizes != 0);
@@ -530,6 +527,16 @@ size_t VulkanGraphicsModule::pushTexture(const size_t textureCount,
   return firstIndex;
 }
 
+size_t VulkanGraphicsModule::pushLights(const size_t lightCount,
+                                        const Light *lights,
+                                        const size_t offset) {
+  EXPECT(lightCount + offset < 50 && lights != nullptr);
+  this->lights.lightCount = offset + lightCount;
+  std::copy(lights, lights + lightCount, this->lights.lights + offset);
+  changeData(lightData, &this->lights, sizeof(this->lights));
+  return this->lights.lightCount;
+}
+
 #ifdef DEBUG
 VkBool32 debugMessage(DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                       DebugUtilsMessageTypeFlagsEXT messageTypes,
@@ -557,13 +564,9 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   vgm->shaderPipes.push_back(pipe);
   vgm->lightBindings = sapi->createBindings(pipe, 1);
 
-  vgm->lights.lightCount = 1;
-  vgm->lights.lights[0] = Light(glm::vec3(4, 4, 4), glm::vec3(1, 1, 1), 0.2f);
-  vgm->lights.lights[1] = Light(glm::vec3(-10, 4, 4), glm::vec3(1, 1, 1), 0.4f);
-
-  auto ptr = (const uint8_t *)&vgm->lights;
+  auto ptr = &vgm->lights;
   auto sizeOfLight = sizeof(vgm->lights);
-  const auto dataID = vgm->pushData(1, &ptr, &sizeOfLight, DataType::Uniform);
+  vgm->lightData = vgm->pushData(1, &ptr, &sizeOfLight, DataType::Uniform);
 
   const std::array bindingInfos = {
       BindingInfo{0,
@@ -585,7 +588,7 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
       BindingInfo{4,
                   vgm->lightBindings,
                   BindingType::UniformBuffer,
-                  {dataID, VK_WHOLE_SIZE, 0}}};
+                  {vgm->lightData, VK_WHOLE_SIZE, 0}}};
 
   sapi->bindData(bindingInfos.data(), bindingInfos.size());
 
