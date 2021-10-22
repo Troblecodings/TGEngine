@@ -20,6 +20,7 @@ struct SamplerIO {
   std::string name;
   SamplerIOType iotype;
   size_t binding;
+  size_t size = 1;
 };
 
 struct ShaderBindingIO {
@@ -90,6 +91,7 @@ struct BindingInfo {
     BufferBindingData buffer;
     TextureBindingData texture;
   } data;
+  size_t arrayID = 0;
 };
 
 class ShaderAPI {

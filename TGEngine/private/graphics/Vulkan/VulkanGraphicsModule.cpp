@@ -64,7 +64,8 @@ constexpr PipelineInputAssemblyStateCreateInfo
 
 #define EXPECT(assertion)                                                      \
   if (!this->isInitialiazed || !(assertion)) {                                 \
-    throw std::runtime_error("Debug assertion failed!");                       \
+    throw std::runtime_error(std::string("Debug assertion failed! ") +         \
+                             __FILE__ + " L" + std::to_string(__LINE__));                      \
   }
 
 void *VulkanGraphicsModule::loadShader(const MaterialType type) {

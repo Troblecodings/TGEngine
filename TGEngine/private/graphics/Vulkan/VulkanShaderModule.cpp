@@ -578,7 +578,11 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
       // layout(binding = 1) uniform texture2D tex;
       codebuff << "layout(binding=" << sampler.binding << ") uniform "
                << getStringFromSamplerIOType(sampler.iotype) << " "
-               << sampler.name << ";" << std::endl;
+               << sampler.name;
+      if (sampler.size > 1) {
+        codebuff << "[" << sampler.size << "]";
+      }
+      codebuff << ";" << std::endl;
     }
     codebuff << std::endl;
     if (lang == EShLangVertex) {
@@ -643,15 +647,26 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
     pipeInfos.push_back({nextID + i, layout});
   }
 
+  std::vector<BindingInfo> bInfo;
   if (defaultbindings.size() > layout) {
+    auto &bindings = defaultbindings[layout];
     for (size_t i = 0; i < count; i++) {
-      auto &bindings = defaultbindings[layout];
+      const auto nID = nextID + i;
       for (auto &b : bindings) {
-        b.bindingSet = nextID + i;
+        b.bindingSet = nID;
+        bInfo.push_back(b);
       }
-      this->bindData(bindings.data(), bindings.size());
     }
   }
+
+  for (size_t i = 0; i < count; i++) {
+    const auto nID = nextID + i;
+    for (size_t i = 0; i < vgm->textureImages.size(); i++) {
+      bInfo.push_back({1, nID, BindingType::Texture, {i, UINT64_MAX}, i});
+    }
+  }
+
+  this->bindData(bInfo.data(), bInfo.size());
   return nextID;
 }
 
@@ -686,10 +701,11 @@ void VulkanShaderModule::bindData(const BindingInfo *info, const size_t count) {
       const auto &tex = cinfo.data.texture;
       imgInfo[i] = DescriptorImageInfo(
           tex.sampler == UINT64_MAX ? vk::Sampler() : vgm->sampler[tex.sampler],
-          vgm->textureImageViews[tex.texture],
+          tex.texture == UINT64_MAX ? vk::ImageView()
+                                    : vgm->textureImageViews[tex.texture],
           ImageLayout::eShaderReadOnlyOptimal);
       set.push_back(WriteDescriptorSet(
-          descSets[cinfo.bindingSet], cinfo.binding, 0, 1,
+          descSets[cinfo.bindingSet], cinfo.binding, cinfo.arrayID, 1,
           cinfo.type == BindingType::Texture ? DescriptorType::eSampledImage
           : (cinfo.type == BindingType::InputAttachment)
               ? DescriptorType::eInputAttachment
@@ -743,11 +759,6 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
     defaultbindings[layOut] = {{0,
                                 UINT64_MAX,
                                 BindingType::Sampler,
-                                {texMat.textureIndex, texMat.samplerIndex}},
-
-                               {1,
-                                UINT64_MAX,
-                                BindingType::Texture,
                                 {texMat.textureIndex, texMat.samplerIndex}}};
   }
 }

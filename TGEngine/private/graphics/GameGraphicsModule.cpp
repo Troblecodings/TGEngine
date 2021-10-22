@@ -188,16 +188,17 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     createInfo[1].inputs.push_back({"POSIN", s::IOType::VEC3, nextID});
     nextID++;
 
+    createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
+    createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1, 255});
+
     if (mat.type == MaterialType::TextureOnly) {
       createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, nextID});
       createInfo[0].instructions.push_back(
           {{"TEXCOORD_0"}, s::IOType::VEC4, s::InstructionType::SET, "UV"});
 
-      createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
-      createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1});
       createInfo[1].inputs.push_back({"UV", s::IOType::VEC2, nextID});
       createInfo[1].instructions = {
-          {{"sampler2D(TEX, SAMP)", "UV"},
+          {{std::string("sampler2D(TEX[") + std::to_string(mat.data.textureMaterial.textureIndex) + "], SAMP)", "UV"},
            s::IOType::VEC4,
            s::InstructionType::TEXTURE,
            "C1"},

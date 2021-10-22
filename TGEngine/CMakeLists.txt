@@ -71,14 +71,14 @@ add_library (TGEngine STATIC
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h"
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.h"
-  "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp")
+  "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp" )
 target_link_libraries(TGEngine PRIVATE glslang shaderc_combined vulkan-1)
 
 add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
-add_custom_command(TARGET TGEngineTest PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/test/assets/ $<TARGET_FILE_DIR:TGEngineTest>/assets)
+#add_custom_command(TARGET TGEngineTest PRE_BUILD
+#                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#                       ${CMAKE_SOURCE_DIR}/test/assets/ $<TARGET_FILE_DIR:TGEngineTest>/assets)
 target_link_libraries(TGEngineTest PUBLIC TGEngine gtest_main)
 add_test(NAME TGEngineTest COMMAND TGEngineTest)
 
