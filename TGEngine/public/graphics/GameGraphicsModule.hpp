@@ -69,6 +69,11 @@ public:
     this->projectionMatrix = matrix;
   }
 
+  void updateScale(const size_t nodeID, const glm::vec3 scale) {
+    this->node[nodeID].scale = scale;
+    this->status[nodeID] = 1;
+  }
+
   main::Error init() override;
 
   void tick(double time) override;

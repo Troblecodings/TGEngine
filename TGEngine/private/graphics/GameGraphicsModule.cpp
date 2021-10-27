@@ -222,8 +222,12 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
     if (prim.attributes.contains("NORMAL")) {
       createInfo[0].outputs.push_back({"NORMALOUT", s::IOType::VEC3, nextID});
       createInfo[1].inputs.push_back({"NORMALIN", s::IOType::VEC3, nextID});
+      createInfo[0].instructions.push_back({{"vec4(NORMAL, 1)", "ublock_0.model"},
+                                            s::IOType::VEC4,
+                                            s::InstructionType::MULTIPLY,
+                                            "_tempNorm"});
       createInfo[0].instructions.push_back(
-          {{"NORMAL"}, s::IOType::VEC3, s::InstructionType::SET, "NORMALOUT"});
+          {{"_tempNorm.xyz"}, s::IOType::VEC3, s::InstructionType::SET, "NORMALOUT"});
       createInfo[1].instructions.push_back({{"NORMALIN", "1"},
                                             s::IOType::VEC4,
                                             s::InstructionType::VEC4CTR,

@@ -28,7 +28,7 @@ void main() {
     vec3 multiplier = vec3(0.05f, 0.05f, 0.05f);
     for(int x = 0; x < lights.lightCount; x++) {
         Light lightInfo = lights.light[x];
-        vec3 diff = pos - lightInfo.pos;
+        vec3 diff = lightInfo.pos - pos;
         vec3 l = normalize(diff);
         float refl = dot(normal, l);
         multiplier += lightInfo.color * refl * lightInfo.intensity;

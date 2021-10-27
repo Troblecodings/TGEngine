@@ -650,23 +650,30 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   std::vector<BindingInfo> bInfo;
   if (defaultbindings.size() > layout) {
     auto &bindings = defaultbindings[layout];
-    for (size_t i = 0; i < count; i++) {
-      const auto nID = nextID + i;
-      for (auto &b : bindings) {
-        b.bindingSet = nID;
-        bInfo.push_back(b);
+    if (!bindings.empty()) {
+      for (size_t i = 0; i < count; i++) {
+        const auto nID = nextID + i;
+        for (auto &b : bindings) {
+          b.bindingSet = nID;
+          bInfo.push_back(b);
+        }
       }
+      for (size_t i = 0; i < count; i++) {
+        const auto nID = nextID + i;
+        for (size_t i = 0; i < 5; i++) {
+          bInfo.push_back({1, nID, BindingType::Texture, {5, UINT64_MAX}, i});
+        }
+        for (size_t i = 5; i < vgm->textureImages.size(); i++) {
+          bInfo.push_back({1, nID, BindingType::Texture, {i, UINT64_MAX}, i});
+        }
+        for (size_t i = vgm->textureImages.size(); i < 255; i++) {
+          bInfo.push_back({1, nID, BindingType::Texture, {5, UINT64_MAX}, i});
+        }
+      }
+
+      this->bindData(bInfo.data(), bInfo.size());
     }
   }
-
-  for (size_t i = 0; i < count; i++) {
-    const auto nID = nextID + i;
-    for (size_t i = 0; i < vgm->textureImages.size(); i++) {
-      bInfo.push_back({1, nID, BindingType::Texture, {i, UINT64_MAX}, i});
-    }
-  }
-
-  this->bindData(bInfo.data(), bInfo.size());
   return nextID;
 }
 
