@@ -65,7 +65,7 @@ constexpr PipelineInputAssemblyStateCreateInfo
 #define EXPECT(assertion)                                                      \
   if (!this->isInitialiazed || !(assertion)) {                                 \
     throw std::runtime_error(std::string("Debug assertion failed! ") +         \
-                             __FILE__ + " L" + std::to_string(__LINE__));                      \
+                             __FILE__ + " L" + std::to_string(__LINE__));      \
   }
 
 void *VulkanGraphicsModule::loadShader(const MaterialType type) {
@@ -669,19 +669,23 @@ main::Error VulkanGraphicsModule::init() {
   this->instance = createInstance(createInfo);
 
 #ifdef DEBUG
-  DispatchLoaderDynamic stat;
-  stat.vkCreateDebugUtilsMessengerEXT =
-      (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-          instance, "vkCreateDebugUtilsMessengerEXT");
-  const DebugUtilsMessengerCreateInfoEXT debugUtilsMsgCreateInfo(
-      {},
-      (DebugUtilsMessageSeverityFlagsEXT)
-          FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>::allFlags,
-      (DebugUtilsMessageTypeFlagsEXT)
-          FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>::allFlags,
-      (PFN_vkDebugUtilsMessengerCallbackEXT)debugMessage);
-  debugMessenger = instance.createDebugUtilsMessengerEXT(
-      debugUtilsMsgCreateInfo, nullptr, stat);
+  if (std::find_if(begin(extensionEnabled), end(extensionEnabled), [](auto x) {
+        return strcmp(x, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0;
+      }) != end(extensionEnabled)) {
+    DispatchLoaderDynamic stat;
+    stat.vkCreateDebugUtilsMessengerEXT =
+        (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance, "vkCreateDebugUtilsMessengerEXT");
+    const DebugUtilsMessengerCreateInfoEXT debugUtilsMsgCreateInfo(
+        {},
+        (DebugUtilsMessageSeverityFlagsEXT)
+            FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>::allFlags,
+        (DebugUtilsMessageTypeFlagsEXT)
+            FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>::allFlags,
+        (PFN_vkDebugUtilsMessengerCallbackEXT)debugMessage);
+    debugMessenger = instance.createDebugUtilsMessengerEXT(
+        debugUtilsMsgCreateInfo, nullptr, stat);
+  }
 #endif
 #pragma endregion
 
@@ -1094,11 +1098,13 @@ void VulkanGraphicsModule::destroy() {
   device.destroy();
   instance.destroySurfaceKHR(surface);
 #ifdef DEBUG
-  DispatchLoaderDynamic stat;
-  stat.vkDestroyDebugUtilsMessengerEXT =
-      (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-          instance, "vkDestroyDebugUtilsMessengerEXT");
-  instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, stat);
+  if (debugMessenger) {
+    DispatchLoaderDynamic stat;
+    stat.vkDestroyDebugUtilsMessengerEXT =
+        (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance, "vkDestroyDebugUtilsMessengerEXT");
+    instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, stat);
+  }
 #endif
   instance.destroy();
   delete shaderAPI;

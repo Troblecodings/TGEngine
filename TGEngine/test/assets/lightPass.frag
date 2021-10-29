@@ -29,7 +29,7 @@ void main() {
     for(int x = 0; x < lights.lightCount; x++) {
         Light lightInfo = lights.light[x];
         vec3 diff = lightInfo.pos - pos;
-        vec3 l = normalize(diff);
+        vec3 l = normalize(lightInfo.pos);
         float refl = dot(normal, l);
         multiplier += lightInfo.color * refl * lightInfo.intensity;
     }

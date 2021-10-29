@@ -26,6 +26,10 @@ struct NodeInfo {
   size_t parent = UINT64_MAX;
 };
 
+inline glm::mat4 generateFPMatrix(glm::vec3 eyepos, glm::vec3 direction) {
+  return glm::lookAt(eyepos + direction, eyepos, glm::vec3(0, 1, 0));
+}
+
 class GameGraphicsModule : public main::Module {
 
   APILayer *apiLayer;
@@ -63,10 +67,12 @@ public:
 
   void updateTransform(const size_t nodeID, const NodeTransform &transform);
 
-  void updateViewMatrix(const glm::mat4 matrix) { this->viewMatrix = matrix; }
+  void updateViewMatrix(const glm::mat4 matrix) {
+    this->projectionMatrix = matrix;
+  }
 
   void updateCameraMatrix(const glm::mat4 matrix) {
-    this->projectionMatrix = matrix;
+    this->viewMatrix = matrix;
   }
 
   void updateScale(const size_t nodeID, const glm::vec3 scale) {
