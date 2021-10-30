@@ -10,7 +10,7 @@
 
 namespace tge::main {
 
-extern std::vector<Module *> modules;
+extern std::vector<Module *> lateModules;
 
 Error init();
 

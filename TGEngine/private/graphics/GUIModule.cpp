@@ -62,7 +62,7 @@ main::Error GUIModule::init() {
           {}, vmod->format.format, SampleCountFlagBits::e1,
           AttachmentLoadOp::eLoad, AttachmentStoreOp::eStore,
           AttachmentLoadOp::eDontCare, AttachmentStoreOp::eDontCare,
-          ImageLayout::eColorAttachmentOptimal, ImageLayout::ePresentSrcKHR)};
+          ImageLayout::eUndefined, ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(0, ImageLayout::eColorAttachmentOptimal)};

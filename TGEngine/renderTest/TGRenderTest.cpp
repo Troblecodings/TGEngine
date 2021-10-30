@@ -1,5 +1,6 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
+#include <graphics/GUIModule.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <graphics/GameGraphicsModule.hpp>
@@ -36,7 +37,9 @@ bool *__rotate;
 
 int main() {
   TableTest *av = new TableTest();
-  tge::main::modules.push_back(av);
+  tge::main::lateModules.push_back(av);
+  tge::gui::GUIModule* gui = new tge::gui::GUIModule(getGameGraphicsModule()->getWindowModule(), getAPILayer());
+  tge::main::lateModules.push_back(gui);
 
   const auto res = init();
   if (res != Error::NONE) {
@@ -50,7 +53,7 @@ int main() {
   __r = &av->pos.x;
   __rotate = &av->rotate;
 
-  getGUIModule()->guicallback = [] {
+  gui->guicallback = [] {
     ImGui::Begin("test");
     ImGui::SliderFloat3("Dir", __tmp, -1.0f, 1.0f, "%.3f");
     ImGui::SliderFloat3("Position", __r, -1.0f, 4.0f, "%.3f");

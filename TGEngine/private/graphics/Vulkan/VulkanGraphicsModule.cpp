@@ -885,7 +885,7 @@ main::Error VulkanGraphicsModule::init() {
           {}, format.format, SampleCountFlagBits::e1, AttachmentLoadOp::eClear,
           AttachmentStoreOp::eStore, AttachmentLoadOp::eDontCare,
           AttachmentStoreOp::eDontCare, ImageLayout::eUndefined,
-          ImageLayout::eColorAttachmentOptimal)};
+          ImageLayout::ePresentSrcKHR)};
 
   constexpr std::array colorAttachments = {
       AttachmentReference(1, ImageLayout::eColorAttachmentOptimal),

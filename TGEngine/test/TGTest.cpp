@@ -98,9 +98,9 @@ float *__r;
 bool *__rotate;
 
 TEST(EngineMain, TestModel) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
   TableTest *av = new TableTest();
-  tge::main::modules.push_back(av);
+  tge::main::lateModules.push_back(av);
 
   ASSERT_EQ(init(), Error::NONE);
   av->ggm = getGameGraphicsModule();
@@ -189,9 +189,9 @@ public:
 };
 
 TEST(EngineMain, AvocadoTestOne) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
   Avocado2Test *av = new Avocado2Test();
-  tge::main::modules.push_back(av);
+  tge::main::lateModules.push_back(av);
 
   ASSERT_EQ(init(), Error::NONE);
   av->ggm = getGameGraphicsModule();
@@ -215,7 +215,7 @@ TEST(EngineMain, AvocadoTestOne) {
 }
 
 TEST(ShaderCompiler, Create) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
 
   ASSERT_EQ(init(), Error::NONE);
 
@@ -262,7 +262,7 @@ TEST(ShaderCompiler, Create) {
 }
 
 TEST(EngineMain, SamplerAndTextures) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
 
   ASSERT_EQ(init(), Error::NONE);
 
@@ -320,7 +320,7 @@ TEST(EngineMain, SamplerAndTextures) {
 }
 
 TEST(EngineMain, Start) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
   ASSERT_EQ(start(), Error::NOT_INITIALIZED);
   ASSERT_EQ(init(), Error::NONE);
 
@@ -349,7 +349,7 @@ TEST(EngineMain, Exit) { exitWaitCheck(); }
 TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
 
 TEST(EngineMain, SimpleModel) {
-  tge::main::modules.push_back(new TestModule());
+  tge::main::lateModules.push_back(new TestModule());
 
   ASSERT_EQ(init(), Error::NONE);
 
@@ -454,7 +454,7 @@ TEST(EngineModel, ModelTest) {
       const std::string actualFile =
           actualPath + pair.value().get<std::string>();
 
-      tge::main::modules.push_back(new TestModule());
+      tge::main::lateModules.push_back(new TestModule());
 
       ASSERT_EQ(init(), Error::NONE);
 

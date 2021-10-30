@@ -6,13 +6,13 @@
 namespace tge::main {
 
 std::vector<Module *> modules;
+std::vector<Module *> lateModules;
 bool isRunning = false;
 bool isInitialized = false;
 
 graphics::APILayer *usedApiLayer = nullptr;
 graphics::GameGraphicsModule *gameModule = nullptr;
 graphics::WindowModule *winModule = nullptr;
-gui::GUIModule *guiModule = nullptr;
 
 Error init() {
   if (isInitialized)
@@ -24,8 +24,11 @@ Error init() {
   gameModule = new graphics::GameGraphicsModule(usedApiLayer, winModule);
   usedApiLayer->setGameGraphicsModule(gameModule);
   modules.push_back(gameModule);
-  guiModule = new gui::GUIModule(winModule, usedApiLayer);
-  modules.push_back(guiModule);
+
+  for (const auto m : lateModules) {
+    modules.push_back(m);
+  }
+  lateModules.clear();
 
   for (auto mod : modules) {
     error = mod->init();
@@ -75,7 +78,5 @@ Error lastError() { return error; }
 graphics::APILayer *getAPILayer() { return usedApiLayer; }
 
 graphics::GameGraphicsModule *getGameGraphicsModule() { return gameModule; }
-
-gui::GUIModule *getGUIModule() { return guiModule; }
 
 } // namespace tge::main
