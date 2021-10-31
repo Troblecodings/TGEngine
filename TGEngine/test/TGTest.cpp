@@ -109,14 +109,6 @@ TEST(EngineMain, TestModel) {
   __r = &av->light.pos.x;
   __rotate = &av->rotate;
 
-  getGUIModule()->guicallback = [] {
-    ImGui::Begin("test");
-    ImGui::SliderFloat("Light intensity", __tmp, 0.0f, 1.0f, "%.3f");
-    ImGui::SliderFloat3("Light pos", __r, -10.0f, 10.0f, "%.3f");
-    ImGui::Checkbox("Rotate", __rotate);
-    ImGui::End();
-  };
-
   const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
   const auto mdlID =
       getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
@@ -346,7 +338,7 @@ void exitWaitCheck() {
 
 TEST(EngineMain, Exit) { exitWaitCheck(); }
 
-TEST(EngineMain, Restart) { ASSERT_EQ(modules.size(), 0); }
+TEST(EngineMain, Restart) { ASSERT_EQ(lateModules.size(), 0); }
 
 TEST(EngineMain, SimpleModel) {
   tge::main::lateModules.push_back(new TestModule());

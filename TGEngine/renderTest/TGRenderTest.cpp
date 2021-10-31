@@ -1,8 +1,8 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
-#include <graphics/GUIModule.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <graphics/GUIModule.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <imgui.h>
 
@@ -31,15 +31,35 @@ public:
   }
 };
 
-float *__tmp;
-float *__r;
-bool *__rotate;
+class TestRenderGUI : public tge::gui::GUIModule {
+
+public:
+  float *__tmp;
+  float *__r;
+  bool *__rotate;
+
+  float *lightPos;
+
+  void renderGUI() {
+    ImGui::Begin("test");
+    ImGui::SliderFloat3("Dir", __tmp, -1.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat3("Position", __r, -1.0f, 4.0f, "%.3f");
+    ImGui::SliderFloat3("Light Pos", lightPos, -5, 5, "%.3f");
+    ImGui::Checkbox("Rotate", __rotate);
+    ImGui::End();
+  }
+};
 
 int main() {
   TableTest *av = new TableTest();
   tge::main::lateModules.push_back(av);
-  tge::gui::GUIModule* gui = new tge::gui::GUIModule(getGameGraphicsModule()->getWindowModule(), getAPILayer());
+  TestRenderGUI *gui = new TestRenderGUI();
   tge::main::lateModules.push_back(gui);
+
+  gui->__tmp = &av->direction.x;
+  gui->__r = &av->pos.x;
+  gui->__rotate = &av->rotate;
+  gui->lightPos = &av->light.pos.x;
 
   const auto res = init();
   if (res != Error::NONE) {
@@ -48,18 +68,6 @@ int main() {
   }
 
   av->ggm = getGameGraphicsModule();
-
-  __tmp = &av->direction.x;
-  __r = &av->pos.x;
-  __rotate = &av->rotate;
-
-  gui->guicallback = [] {
-    ImGui::Begin("test");
-    ImGui::SliderFloat3("Dir", __tmp, -1.0f, 1.0f, "%.3f");
-    ImGui::SliderFloat3("Position", __r, -1.0f, 4.0f, "%.3f");
-    ImGui::Checkbox("Rotate", __rotate);
-    ImGui::End();
-  };
 
   const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
   const auto mdlID =

@@ -7,19 +7,23 @@
 #include <backends/imgui_impl_win32.cpp>
 #include <backends/imgui_impl_win32.h>
 #include <imgui.h>
+#include "../../public/TGEngine.hpp"
 
 namespace tge::gui {
 
 using namespace vk;
 
-inline void render(CommandBuffer buffer, RenderPass pass, Framebuffer frame,
-                   void (*guicallback)(),
-                   graphics::VulkanGraphicsModule *vmod) {
+inline void render(gui::GUIModule* gmod) {
+  const CommandBuffer buffer = (VkCommandBuffer)gmod->buffer;
+  const RenderPass pass = (VkRenderPass)gmod->renderpass;
+  auto vgm = (graphics::VulkanGraphicsModule *)main::getAPILayer();
+  const Framebuffer frame = ((Framebuffer *)gmod->framebuffer)[vgm->nextImage];
+
   ImGui_ImplVulkan_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
 
-  guicallback();
+  gmod->renderGUI();
 
   ImGui::Render();
   ImDrawData *draw_data = ImGui::GetDrawData();
@@ -34,8 +38,7 @@ inline void render(CommandBuffer buffer, RenderPass pass, Framebuffer frame,
 
   const RenderPassBeginInfo renderPassBeginInfo(
       pass, frame,
-      {{0, 0},
-       {(uint32_t)vmod->viewport.width, (uint32_t)vmod->viewport.height}},
+      {{0, 0}, {(uint32_t)vgm->viewport.width, (uint32_t)vgm->viewport.height}},
       clearValue);
   buffer.beginRenderPass(renderPassBeginInfo, {});
   ImGui_ImplVulkan_RenderDrawData(draw_data, buffer);
@@ -45,6 +48,8 @@ inline void render(CommandBuffer buffer, RenderPass pass, Framebuffer frame,
 
 main::Error GUIModule::init() {
 
+  auto winModule = main::getGameGraphicsModule()->getWindowModule();
+  auto api = main::getAPILayer();
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
@@ -55,7 +60,7 @@ main::Error GUIModule::init() {
   if (!winInit)
     return main::Error::COULD_NOT_CREATE_WINDOW;
 
-  const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
+  const auto vmod = (graphics::VulkanGraphicsModule *)api;
 
   const std::array attachments = {
       AttachmentDescription(
@@ -155,8 +160,7 @@ main::Error GUIModule::init() {
       CommandBufferAllocateInfo(vmod->pool, CommandBufferLevel::ePrimary, 1);
   buffer = vmod->device.allocateCommandBuffers(allocInfo).back();
 
-  render((VkCommandBuffer)this->buffer, (VkRenderPass)this->renderpass,
-         ((Framebuffer *)framebuffer)[vmod->nextImage], guicallback, vmod);
+  render(this);
 
   vmod->primary.push_back((VkCommandBuffer)buffer);
 
@@ -164,13 +168,11 @@ main::Error GUIModule::init() {
 }
 
 void GUIModule::tick(double deltatime) {
-  auto vgm = (graphics::VulkanGraphicsModule *)this->api;
-  render((VkCommandBuffer)this->buffer, (VkRenderPass)this->renderpass,
-         ((Framebuffer *)framebuffer)[vgm->nextImage], guicallback, vgm);
+  render(this);
 }
 
 void GUIModule::destroy() {
-  const auto vmod = (graphics::VulkanGraphicsModule *)this->api;
+  const auto vmod = (graphics::VulkanGraphicsModule *)main::getAPILayer();
   vmod->device.waitIdle();
   ImGui_ImplVulkan_Shutdown();
   vmod->device.destroyDescriptorPool(((VkDescriptorPool)pool));
