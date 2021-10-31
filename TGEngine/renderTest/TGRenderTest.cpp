@@ -1,7 +1,7 @@
 #include <TGEngine.hpp>
 #include <Util.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtx/rotate_vector.hpp> 
 #include <graphics/GUIModule.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <imgui.h>
@@ -22,10 +22,10 @@ public:
   void tick(double time) {
     if (rotate) {
       rotation += (float)time;
-      const auto vec =
-          glm::vec4(pos, 1) * glm::rotate(rotation, glm::vec3(0, 1, 0));
       ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
-      ggm->updateCameraMatrix(generateFPMatrix(pos, direction));
+      auto dir  = glm::rotate(glm::vec3(1, 1, 1), direction.x, glm::vec3(1, 0, 0));
+      dir = glm::rotate(dir, direction.x, glm::vec3(0, 0, 1));
+      ggm->updateCameraMatrix(glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
     }
     ggm->getAPILayer()->pushLights(1, &light);
   }
@@ -42,8 +42,8 @@ public:
 
   void renderGUI() {
     ImGui::Begin("test");
-    ImGui::SliderFloat3("Dir", __tmp, -1.0f, 1.0f, "%.3f");
-    ImGui::SliderFloat3("Position", __r, -1.0f, 4.0f, "%.3f");
+    ImGui::SliderFloat3("Dir", __tmp, -2.0f, 2.0f, "%.3f");
+    ImGui::SliderFloat3("Position", __r, -4.0f, 4.0f, "%.3f");
     ImGui::SliderFloat3("Light Pos", lightPos, -5, 5, "%.3f");
     ImGui::Checkbox("Rotate", __rotate);
     ImGui::End();

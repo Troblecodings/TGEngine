@@ -7,6 +7,7 @@
 #include "Material.hpp"
 #include "WindowModule.hpp"
 #include "stdint.h"
+#include <glm/geometric.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <string>
@@ -25,10 +26,6 @@ struct NodeInfo {
   NodeTransform transforms = {};
   size_t parent = UINT64_MAX;
 };
-
-inline glm::mat4 generateFPMatrix(glm::vec3 eyepos, glm::vec3 direction) {
-  return glm::lookAt(eyepos + direction, eyepos, glm::vec3(0, 1, 0));
-}
 
 class GameGraphicsModule : public main::Module {
 
@@ -71,9 +68,7 @@ public:
     this->projectionMatrix = matrix;
   }
 
-  void updateCameraMatrix(const glm::mat4 matrix) {
-    this->viewMatrix = matrix;
-  }
+  void updateCameraMatrix(const glm::mat4 matrix) { this->viewMatrix = matrix; }
 
   void updateScale(const size_t nodeID, const glm::vec3 scale) {
     this->node[nodeID].scale = scale;
