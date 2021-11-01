@@ -71,7 +71,7 @@ add_library (TGEngine STATIC
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h"
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.h"
-  "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp" )
+  "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp"  "public/IO/IOModule.hpp" "private/IO/IOModule.cpp")
 target_link_libraries(TGEngine PRIVATE glslang shaderc_combined vulkan-1)
 
 add_executable(TGEngineTest "test/TGTest.cpp")

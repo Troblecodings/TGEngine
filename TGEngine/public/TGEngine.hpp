@@ -3,7 +3,6 @@
 #include "Error.hpp"
 #include "Module.hpp"
 #include "graphics/GameGraphicsModule.hpp"
-
 #include <chrono>
 #include <vector>
 

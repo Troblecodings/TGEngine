@@ -55,7 +55,7 @@ main::Error GUIModule::init() {
   ImGuiIO &io = ImGui::GetIO();
   (void)io;
   ImGui::StyleColorsDark();
-  winModule->customFn = (void *)ImGui_ImplWin32_WndProcHandler;
+  winModule->customFn.push_back((void *)ImGui_ImplWin32_WndProcHandler);
   const bool winInit = ImGui_ImplWin32_Init(winModule->hWnd);
   if (!winInit)
     return main::Error::COULD_NOT_CREATE_WINDOW;

@@ -1,7 +1,8 @@
+#include <IO/IOModule.hpp>
 #include <TGEngine.hpp>
 #include <Util.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp> 
+#include <glm/gtx/rotate_vector.hpp>
 #include <graphics/GUIModule.hpp>
 #include <graphics/GameGraphicsModule.hpp>
 #include <imgui.h>
@@ -23,9 +24,11 @@ public:
     if (rotate) {
       rotation += (float)time;
       ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
-      auto dir  = glm::rotate(glm::vec3(1, 1, 1), direction.x, glm::vec3(1, 0, 0));
-      dir = glm::rotate(dir, direction.x, glm::vec3(0, 0, 1));
-      ggm->updateCameraMatrix(glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
+      auto dir =
+          glm::rotate(glm::vec3(1, 1, 1), direction.x, glm::vec3(1, 0, 0));
+      dir = glm::rotate(dir, direction.y, glm::vec3(0, 0, 1));
+      ggm->updateCameraMatrix(
+          glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
     }
     ggm->getAPILayer()->pushLights(1, &light);
   }
@@ -50,11 +53,33 @@ public:
   }
 };
 
+class TestIOMode : public tge::io::IOModule {
+public:
+  TableTest *tt;
+  int x;
+  int y;
+
+  TestIOMode(TableTest *tt) : tt(tt) {}
+
+  void mouseEvent(const tge::io::MouseEvent event) { 
+    tt->direction.x -= (event.x - x) * 0.01;
+    tt->direction.y += (event.y - y) * 0.01;
+    x = event.x;
+    y = event.y;
+  }
+
+  void keyboardEvent(const tge::io::KeyboardEvent event) {
+    printf("KeyboardEvent %i", event.signal);
+  }
+};
+
 int main() {
   TableTest *av = new TableTest();
   tge::main::lateModules.push_back(av);
   TestRenderGUI *gui = new TestRenderGUI();
   tge::main::lateModules.push_back(gui);
+  TestIOMode *iotest = new TestIOMode(av);
+  tge::main::lateModules.push_back(iotest);
 
   gui->__tmp = &av->direction.x;
   gui->__r = &av->pos.x;

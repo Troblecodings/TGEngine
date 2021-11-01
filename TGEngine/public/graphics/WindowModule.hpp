@@ -20,7 +20,7 @@ class WindowModule : public main::Module {
 public:
   void *hInstance;
   void *hWnd;
-  void *customFn = nullptr;
+  std::vector<void *> customFn;
   bool closeRequest = false;
   bool closing = false;
   std::thread osThread;

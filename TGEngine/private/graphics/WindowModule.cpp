@@ -59,8 +59,8 @@ void windowsPoolMessages(WindowModule *winModule) {
   while (PeekMessage(&msg, wnd, 0, 0, PM_REMOVE)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
-    if (winModule->customFn != nullptr)
-      ((WNDPROC)winModule->customFn)(wnd, msg.message, msg.wParam, msg.lParam);
+    for(const auto fun : winModule->customFn)
+      ((WNDPROC)fun)(wnd, msg.message, msg.wParam, msg.lParam);
   }
 }
 
