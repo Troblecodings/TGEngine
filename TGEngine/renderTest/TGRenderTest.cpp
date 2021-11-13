@@ -22,13 +22,8 @@ public:
 
   void tick(double time) {
     if (rotate) {
-      rotation += (float)time;
       ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
-      auto dir =
-          glm::rotate(glm::vec3(1, 1, 1), direction.x, glm::vec3(1, 0, 0));
-      dir = glm::rotate(dir, direction.y, glm::vec3(0, 0, 1));
-      ggm->updateCameraMatrix(
-          glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
+      ggm->updateCameraMatrix(glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
     }
     ggm->getAPILayer()->pushLights(1, &light);
   }
@@ -68,8 +63,7 @@ public:
     y = event.y;
   }
 
-  void keyboardEvent(const tge::io::KeyboardEvent event) {
-    printf("KeyboardEvent %i", event.signal);
+  void keyboardEvent(const tge::io::KeyboardEvent event) { 
   }
 };
 
