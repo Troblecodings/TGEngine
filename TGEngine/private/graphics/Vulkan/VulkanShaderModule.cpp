@@ -627,6 +627,24 @@ VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
   return shaderPipe;
 }
 
+void VulkanShaderModule::updateAllTextures() {
+  std::vector<BindingInfo> bInfo;
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)this->vgm;
+  for (auto nID : textureDesc) {
+    for (size_t i = 0; i < 5; i++) {
+      bInfo.push_back({1, nID, BindingType::Texture, {5, UINT64_MAX}, i});
+    }
+    for (size_t i = 5; i < vgm->textureImages.size(); i++) {
+      bInfo.push_back({1, nID, BindingType::Texture, {i, UINT64_MAX}, i});
+    }
+    for (size_t i = vgm->textureImages.size(); i < 255; i++) {
+      bInfo.push_back({1, nID, BindingType::Texture, {5, UINT64_MAX}, i});
+    }
+  }
+  this->bindData(bInfo.data(), bInfo.size());
+}
+
 size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
   VulkanShaderPipe *shaderPipe = (VulkanShaderPipe *)pipe;
   const auto layout = shaderPipe->layoutID;
@@ -660,6 +678,7 @@ size_t VulkanShaderModule::createBindings(ShaderPipe pipe, const size_t count) {
       }
       for (size_t i = 0; i < count; i++) {
         const auto nID = nextID + i;
+        textureDesc.push_back(nID);
         for (size_t i = 0; i < 5; i++) {
           bInfo.push_back({1, nID, BindingType::Texture, {5, UINT64_MAX}, i});
         }

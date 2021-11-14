@@ -43,6 +43,13 @@ Result verror = Result::eSuccess;
     printf("Vulkan error %s in %s L%d!\n", s.c_str(), file, line);             \
   } // namespace tge::graphics
 
+struct InternalImageInfo {
+  Format format;
+  Extent2D ex;
+  ImageUsageFlags usage = ImageUsageFlagBits::eColorAttachment;
+  SampleCountFlagBits sampleCount = SampleCountFlagBits::e1;
+};
+
 inline void waitForImageTransition(
     const CommandBuffer &curBuffer, const ImageLayout oldLayout,
     const ImageLayout newLayout, const Image image,
@@ -74,6 +81,20 @@ void *VulkanGraphicsModule::loadShader(const MaterialType type) {
   auto &vert = shaderNames[idx];
   const auto ptr = shaderAPI->loadShaderPipeAndCompile(vert);
   return ptr;
+}
+
+inline void submitAndWait(const Device &device, const Queue &queue,
+                          const CommandBuffer &cmdBuf) {
+  const FenceCreateInfo fenceCreateInfo;
+  const auto fence = device.createFence(fenceCreateInfo);
+
+  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
+  queue.submit(submitInfo, fence);
+
+  const Result result = device.waitForFences(fence, true, UINT64_MAX);
+  VERROR(result);
+
+  device.destroyFence(fence);
 }
 
 size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
@@ -144,26 +165,45 @@ size_t VulkanGraphicsModule::pushMaterials(const size_t materialcount,
     shaderPipes.push_back(shaderPipe);
   }
 
+  const auto indexOffset = pipelines.size();
   const auto piperesult =
       device.createGraphicsPipelines({}, pipelineCreateInfos);
   VERROR(piperesult.result);
-  const auto indexOffset = pipelines.size();
   pipelines.resize(indexOffset + piperesult.value.size());
   std::copy(piperesult.value.cbegin(), piperesult.value.cend(),
             pipelines.begin() + indexOffset);
+
+  for (auto &pInfo : pipelineCreateInfos) {
+    pInfo.renderPass = lightRenderpass;
+  }
+
+  const auto piperesult2 =
+      device.createGraphicsPipelines({}, pipelineCreateInfos);
+  VERROR(piperesult2.result);
+  lightMapPipelines.resize(indexOffset + piperesult.value.size());
+  std::copy(piperesult2.value.cbegin(), piperesult2.value.cend(),
+            lightMapPipelines.begin() + indexOffset);
+
   return indexOffset;
 }
 
-void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
-                                      const RenderInfo *renderInfos) {
-  EXPECT(renderInfoCount != 0 && renderInfos != nullptr);
-
+template <bool lightMaps = false>
+void __pushRender(VulkanGraphicsModule *vgm, const size_t renderInfoCount,
+                  const RenderInfo *renderInfos) {
   const CommandBufferAllocateInfo commandBufferAllocate(
-      pool, CommandBufferLevel::eSecondary, 1);
-  const CommandBuffer cmdBuf =
-      device.allocateCommandBuffers(commandBufferAllocate).back();
+      vgm->pool, CommandBufferLevel::eSecondary, 1);
 
-  const CommandBufferInheritanceInfo inheritance(renderpass, 0);
+  const auto cmdBuf =
+      vgm->device.allocateCommandBuffers(commandBufferAllocate).back();
+  const auto passes = ([&]() {
+    if constexpr (lightMaps) {
+      return vgm->lightRenderpass;
+    } else {
+      return vgm->renderpass;
+    }
+  })();
+
+  const CommandBufferInheritanceInfo inheritance(passes, 0);
   const CommandBufferBeginInfo beginInfo(
       CommandBufferUsageFlagBits::eRenderPassContinue, &inheritance);
   cmdBuf.begin(beginInfo);
@@ -174,7 +214,7 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     vertexBuffer.reserve(info.vertexBuffer.size());
 
     for (auto vertId : info.vertexBuffer) {
-      vertexBuffer.push_back(bufferList[vertId]);
+      vertexBuffer.push_back(vgm->bufferList[vertId]);
     }
 
     if (info.vertexOffsets.size() == 0) {
@@ -186,19 +226,24 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     }
 
     if (info.bindingID != UINT64_MAX) {
-      shaderAPI->addToRender(&info.bindingID, 1, (void *)&cmdBuf);
+      vgm->shaderAPI->addToRender(&info.bindingID, 1, (void *)&cmdBuf);
     } else {
       const auto binding =
-          shaderAPI->createBindings(shaderPipes[info.materialId]);
-      shaderAPI->addToRender(&binding, 1, (void *)&cmdBuf);
+          vgm->shaderAPI->createBindings(vgm->shaderPipes[info.materialId]);
+      vgm->shaderAPI->addToRender(&binding, 1, (void *)&cmdBuf);
     }
 
-    cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
-                        pipelines[info.materialId]);
+    if constexpr (lightMaps) {
+      cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
+                          vgm->lightMapPipelines[info.materialId]);
+    } else {
+      cmdBuf.bindPipeline(PipelineBindPoint::eGraphics,
+                          vgm->pipelines[info.materialId]);
+    }
 
     if (info.indexSize != IndexSize::NONE) [[likely]] {
-      cmdBuf.bindIndexBuffer(bufferList[info.indexBuffer], info.indexOffset,
-                             (IndexType)info.indexSize);
+      cmdBuf.bindIndexBuffer(vgm->bufferList[info.indexBuffer],
+                             info.indexOffset, (IndexType)info.indexSize);
 
       cmdBuf.drawIndexed(info.indexCount, info.instanceCount, 0, 0, 0);
     } else {
@@ -206,22 +251,23 @@ void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
     }
   }
   cmdBuf.end();
-  const std::lock_guard onExitUnlock(commandBufferRecording);
-  secondaryCommandBuffer.push_back(cmdBuf);
+  const std::lock_guard onExitUnlock(vgm->commandBufferRecording);
+
+  if constexpr (lightMaps) {
+    vgm->lightCommandBuffer.push_back(cmdBuf);
+  } else {
+    vgm->secondaryCommandBuffer.push_back(cmdBuf);
+  }
 }
 
-inline void submitAndWait(const Device &device, const Queue &queue,
-                          const CommandBuffer &cmdBuf) {
-  const FenceCreateInfo fenceCreateInfo;
-  const auto fence = device.createFence(fenceCreateInfo);
-
-  const SubmitInfo submitInfo({}, {}, cmdBuf, {});
-  queue.submit(submitInfo, fence);
-
-  const Result result = device.waitForFences(fence, true, UINT64_MAX);
-  VERROR(result);
-
-  device.destroyFence(fence);
+void VulkanGraphicsModule::pushRender(const size_t renderInfoCount,
+                                      const RenderInfo *renderInfos) {
+  EXPECT(renderInfoCount != 0 && renderInfos != nullptr);
+  for (size_t i = 0; i < renderInfoCount; i++) {
+    this->renderInfos.push_back(renderInfos[i]);
+  }
+  __pushRender<true>(this, renderInfoCount, renderInfos);
+  __pushRender<false>(this, renderInfoCount, renderInfos);
 }
 
 inline BufferUsageFlags getUsageFlagsFromDataType(const DataType type) {
@@ -366,13 +412,6 @@ size_t VulkanGraphicsModule::pushSampler(const SamplerInfo &sampler) {
   return position;
 }
 
-struct InternalImageInfo {
-  Format format;
-  Extent2D ex;
-  ImageUsageFlags usage = ImageUsageFlagBits::eColorAttachment;
-  SampleCountFlagBits sampleCount = SampleCountFlagBits::e1;
-};
-
 inline size_t
 createInternalImages(VulkanGraphicsModule *vgm,
                      const std::vector<InternalImageInfo> &imagesIn) {
@@ -391,13 +430,12 @@ createInternalImages(VulkanGraphicsModule *vgm,
         vgm->device.getImageMemoryRequirements(depthImage);
 
     const ImageAspectFlags aspect =
-        ((img.usage & ImageUsageFlagBits::eColorAttachment ||
-          img.usage & ImageUsageFlagBits::eSampled)
-             ? ImageAspectFlagBits::eColor
-             : (ImageAspectFlagBits)0) |
         (img.usage & ImageUsageFlagBits::eDepthStencilAttachment
              ? ImageAspectFlagBits::eDepth
-             : (ImageAspectFlagBits)0);
+             : (((img.usage & ImageUsageFlagBits::eColorAttachment ||
+                  img.usage & ImageUsageFlagBits::eSampled)
+                     ? ImageAspectFlagBits::eColor
+                     : (ImageAspectFlagBits)0)));
     const ImageSubresourceRange subresourceRange(aspect, 0, 1, 0, 1);
 
     const ImageViewCreateInfo depthImageViewCreateInfo(
@@ -634,6 +672,66 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   VERROR(gp.result)
   vgm->lightPipe = vgm->pipelines.size();
   vgm->pipelines.push_back(gp.value);
+}
+
+size_t VulkanGraphicsModule::generateLightMaps(const size_t count,
+                                               const LightMap *lightMaps) {
+  std::vector<InternalImageInfo> imageInfos;
+  imageInfos.resize(count);
+
+  const Extent2D extent(500, 500);
+  for (size_t i = 0; i < count; i++) {
+    const auto &lightMap = lightMaps[i];
+    imageInfos[i].ex = extent;
+    imageInfos[i].format = this->depthFormat;
+    imageInfos[i].sampleCount = SampleCountFlagBits::e1;
+    imageInfos[i].usage = ImageUsageFlagBits::eDepthStencilAttachment |
+                          ImageUsageFlagBits::eSampled;
+  }
+  const auto images = createInternalImages(this, imageInfos);
+
+  const auto cmd = cmdbuffer.back();
+
+  const CommandBufferBeginInfo beginInfo(
+      CommandBufferUsageFlagBits::eOneTimeSubmit);
+  cmd.begin(beginInfo);
+
+  std::vector<Framebuffer> cFrameBuffers;
+  for (size_t i = 0; i < count; i++) {
+    const FramebufferCreateInfo cFrameBufferCI(
+        {}, lightRenderpass, this->textureImageViews[images + i], extent.width,
+        extent.height, 1);
+    const auto cFrameBuffer = device.createFramebuffer(cFrameBufferCI);
+    cFrameBuffers.push_back(cFrameBuffer);
+
+    const ClearValue cValue(ClearDepthStencilValue(1.0f, 0));
+    const RenderPassBeginInfo renderpassBegin(lightRenderpass, cFrameBuffer,
+                                              {{0, 0}, extent}, cValue);
+    cmd.beginRenderPass(renderpassBegin,
+                        SubpassContents::eSecondaryCommandBuffers);
+
+    cmd.executeCommands(lightCommandBuffer);
+
+    cmd.endRenderPass();
+  }
+
+  constexpr ImageSubresourceRange range(ImageAspectFlagBits::eDepth, 0, 1, 0,
+                                        1);
+
+  for (size_t i = 0; i < count; i++) {
+    waitForImageTransition(cmd, ImageLayout::eDepthAttachmentOptimal,
+                           ImageLayout::eShaderReadOnlyOptimal,
+                           this->textureImages[images + i], range);
+  }
+
+  cmd.end();
+
+  submitAndWait(device, queue, cmd);
+  this->shaderAPI->updateAllTextures();
+  this->secondaryCommandBuffer.clear();
+  __pushRender(this, this->renderInfos.size(), this->renderInfos.data());
+
+  return 0;
 }
 
 main::Error VulkanGraphicsModule::init() {
@@ -923,6 +1021,16 @@ main::Error VulkanGraphicsModule::init() {
       SubpassDependency(0, 1, frag1, frag1, frag2, frag2),
       SubpassDependency(1, VK_SUBPASS_EXTERNAL, frag1, frag1, frag2, frag2)};
 
+  const SubpassDescription lightMapsSubpass({}, PipelineBindPoint::eGraphics,
+                                            {}, {}, {}, &depthAttachment);
+
+  const SubpassDependency lightMapsDep(0, VK_SUBPASS_EXTERNAL, frag1, frag1,
+                                       frag2, frag2);
+
+  const RenderPassCreateInfo lightMapPassCreateInfo(
+      {}, attachments[0], lightMapsSubpass, lightMapsDep);
+  lightRenderpass = device.createRenderPass(lightMapPassCreateInfo);
+
   const RenderPassCreateInfo renderPassCreateInfo(
       {}, attachments, subpassDescriptions, subpassDependencies);
   renderpass = device.createRenderPass(renderPassCreateInfo);
@@ -1064,7 +1172,8 @@ void VulkanGraphicsModule::destroy() {
   this->isInitialiazed = false;
   device.waitIdle();
   this->shaderAPI->destroy();
-  device.destroyFence(commandBufferFence);
+  for (const auto pipe : this->lightMapPipelines)
+    device.destroyPipeline(pipe);
   device.destroySemaphore(waitSemaphore);
   device.destroySemaphore(signalSemaphore);
   device.freeCommandBuffers(pool, secondaryCommandBuffer);

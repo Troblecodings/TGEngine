@@ -20,12 +20,23 @@ public:
   Light light = Light({10, 5, 0}, {1, 1, 1}, 0.5f);
   bool rotate = false;
 
+  tge::main::Error init() {
+    ggm = getGameGraphicsModule();
+    auto api = ggm->getAPILayer();
+    api->pushLights(1, &light);
+    const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
+    nodeID = getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
+    ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
+    const LightMap map = {light};
+    api->generateLightMaps(1, &map);
+    return tge::main::Error::NONE;
+  }
+
   void tick(double time) {
     if (rotate) {
-      ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
-      ggm->updateCameraMatrix(glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
+      ggm->updateCameraMatrix(
+          glm::lookAt(pos, pos - direction, glm::vec3(0, 1, 0)));
     }
-    ggm->getAPILayer()->pushLights(1, &light);
   }
 };
 
@@ -56,14 +67,35 @@ public:
 
   TestIOMode(TableTest *tt) : tt(tt) {}
 
-  void mouseEvent(const tge::io::MouseEvent event) { 
-    tt->direction.x -= (event.x - x) * 0.01;
-    tt->direction.y += (event.y - y) * 0.01;
+  void mouseEvent(const tge::io::MouseEvent event) {
+    tt->direction.x -= (event.x - x) * 0.01f;
+    tt->direction.y += (event.y - y) * 0.01f;
     x = event.x;
     y = event.y;
   }
 
-  void keyboardEvent(const tge::io::KeyboardEvent event) { 
+  void keyboardEvent(const tge::io::KeyboardEvent event) {
+    float xf = 0;
+    float yf = 0;
+    switch (event.signal) {
+    case 'W':
+      xf = 0.1f;
+      break;
+    case 'A':
+      yf = 0.1f;
+      break;
+    case 'S':
+      xf = -0.1f;
+      break;
+    case 'D':
+      yf = -0.1f;
+      break;
+    case tge::io::KC_F8:
+      tt->rotate = !tt->rotate;
+    default:
+      break;
+    }
+    tt->pos += glm::vec3(xf, 0, yf);
   }
 };
 
@@ -86,16 +118,9 @@ int main() {
     return -1;
   }
 
-  av->ggm = getGameGraphicsModule();
-
-  const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
-  const auto mdlID =
-      getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
-  av->nodeID = mdlID;
-
   const auto startRes = start();
   if (startRes != Error::NONE) {
-    printf("Error in init!");
+    printf("Error in start!");
     return -1;
   }
 

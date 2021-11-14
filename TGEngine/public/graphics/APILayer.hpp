@@ -66,14 +66,17 @@ struct Light {
       : pos(pos), color(color), intensity(intensity) {}
 };
 
+struct LightMap {
+  Light light;
+};
+
 enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };
 
 class APILayer : public main::Module { // Interface
-protected:
+public:
   GameGraphicsModule *graphicsModule;
   shader::ShaderAPI *shaderAPI;
 
-public:
   void setGameGraphicsModule(GameGraphicsModule *graphicsModule) {
     this->graphicsModule = graphicsModule;
   }
@@ -109,6 +112,10 @@ public:
   _NODISCARD virtual size_t pushLights(const size_t lightCount,
                                        const Light *lights,
                                        const size_t offset = 0) = 0;
+
+    _NODISCARD virtual size_t generateLightMaps(const size_t count,
+                                       const LightMap *lightMaps) = 0;
+
 
   _NODISCARD GameGraphicsModule *getGraphicsModule() { return graphicsModule; };
 

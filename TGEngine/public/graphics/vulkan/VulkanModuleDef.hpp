@@ -28,11 +28,13 @@ public:
   SwapchainKHR swapchain;
   std::vector<Image> swapchainImages;
   RenderPass renderpass;
+  RenderPass lightRenderpass;
   std::vector<ImageView> swapchainImageviews;
   std::vector<Framebuffer> framebuffer;
   CommandPool pool;
   std::vector<CommandBuffer> cmdbuffer;
   std::vector<Pipeline> pipelines;
+  std::vector<Pipeline> lightMapPipelines;
   Queue queue;
   uint32_t queueFamilyIndex;
   uint32_t queueIndex;
@@ -47,6 +49,7 @@ public:
   std::vector<DeviceMemory> bufferMemoryList;
   Viewport viewport;
   std::vector<CommandBuffer> secondaryCommandBuffer;
+  std::vector<CommandBuffer> lightCommandBuffer;
   std::mutex commandBufferRecording; // protects secondaryCommandBuffer from
                                      // memory invalidation
   std::vector<Sampler> sampler;
@@ -55,6 +58,7 @@ public:
   std::vector<ImageView> textureImageViews;
   std::vector<shader::ShaderPipe> shaderPipes;
   std::vector<CommandBuffer> primary = {CommandBuffer()};
+  std::vector<RenderInfo> renderInfos;
 
   size_t depthImage;
   size_t albedoImage;
@@ -108,6 +112,9 @@ public:
                     const size_t offset = 0) override;
 
   void *loadShader(const MaterialType type) override;
+
+  size_t generateLightMaps(const size_t count,
+                           const LightMap *lightMaps) override;
 };
 
 } // namespace tge::graphics

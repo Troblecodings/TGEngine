@@ -113,6 +113,8 @@ public:
                                    const size_t bindingID,
                                    const size_t buffer) = 0;
 
+  virtual void updateAllTextures() = 0;
+
   virtual void bindData(const BindingInfo *info, const size_t count) = 0;
 
   virtual void addToRender(const size_t *bindingID, const size_t size,

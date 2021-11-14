@@ -17,6 +17,7 @@ public:
   explicit VulkanShaderModule(void *vgm) : vgm(vgm) {}
 
   void *vgm;
+  std::vector<size_t> textureDesc;
   std::vector<vk::DescriptorPool> descPools;
   std::vector<vk::PipelineLayout> pipeLayouts;
   std::vector<vk::DescriptorSetLayout> setLayouts;
@@ -27,6 +28,8 @@ public:
   PipelineLayout defaultLayout;
   // Legacy support
   std::vector<std::vector<BindingInfo>> defaultbindings;
+
+  void updateAllTextures() override;
 
   ShaderPipe loadShaderPipeAndCompile(
       const std::vector<std::string> &shadernames) override;
