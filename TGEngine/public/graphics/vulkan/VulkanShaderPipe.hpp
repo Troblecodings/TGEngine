@@ -8,15 +8,11 @@
 namespace tge::shader {
 
 using namespace vk;
-
-_CONSTEXPR20_CONTAINER std::string operator""_str(const char *chr,
-                                                  std::size_t size) {
-  return std::string(chr, size);
-}
+using namespace std::string_literals;
 
 const std::array shaderNames = {
-    std::vector({"assets/testvec4.vert"_str, "assets/test.frag"_str}),
-    std::vector({"assets/testUV.vert"_str, "assets/testTexture.frag"_str})};
+    std::vector({"assets/testvec4.vert"s, "assets/test.frag"s}),
+    std::vector({"assets/testUV.vert"s, "assets/testTexture.frag"s})};
 
 struct VulkanShaderPipe {
   std::vector<std::pair<std::vector<uint32_t>, ShaderStageFlagBits>> shader;
