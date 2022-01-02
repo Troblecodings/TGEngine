@@ -5,37 +5,17 @@
 #include "../../../public/graphics/vulkan/VulkanShaderPipe.hpp"
 #define ENABLE_OPT 1
 #include <format>
-#include <glslang/MachineIndependent/localintermediate.h>
-#include <glslang/Public/ShaderLang.h>
-#include <glslang/SPIRV/GlslangToSpv.h>
-#include <glslang/SPIRV/SpvTools.h>
 #include <iostream>
 #include <vulkan/vulkan.hpp>
+#undef ERROR
+#include <ShaderPermute.hpp>
 
 namespace tge::shader {
 
 using namespace vk;
 
-inline EShLanguage getLang(const std::string &str) {
-  if (str.compare("vert") == 0)
-    return EShLanguage::EShLangVertex;
-  if (str.compare("frag") == 0)
-    return EShLanguage::EShLangFragment;
-  throw std::runtime_error(std::string("Couldn't find EShLanguage for ") + str);
-}
-
-inline ShaderStageFlagBits getStageFromLang(const EShLanguage lang) {
-  switch (lang) {
-  case EShLanguage::EShLangVertex:
-    return ShaderStageFlagBits::eVertex;
-  case EShLanguage::EShLangFragment:
-    return ShaderStageFlagBits::eFragment;
-  default:
-    throw std::runtime_error(
-        std::string("Couldn't find ShaderStageFlagBits for EShLanguage ") +
-        std::to_string(lang));
-  }
-}
+#define NO_BINDING_GIVEN 65535
+#define NO_LAYOUT_GIVEN 4095
 
 inline Format getFormatFromElf(const glslang::TType &format) {
   if (format.isVector() &&
@@ -66,9 +46,6 @@ inline uint32_t getSizeFromFormat(const Format format) {
                              to_string(format));
   }
 }
-
-#define NO_BINDING_GIVEN 65535
-#define NO_LAYOUT_GIVEN 4095
 
 struct VertexShaderAnalizer : public glslang::TIntermTraverser {
 
@@ -177,346 +154,20 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
   }
 };
 
-void __implIntermToVulkanPipe(VulkanShaderPipe *shaderPipe,
-                              const glslang::TIntermediate *interm,
-                              const EShLanguage langName) {
-  const auto node = interm->getTreeRoot();
-  if (langName == EShLangVertex) {
-    VertexShaderAnalizer analizer(shaderPipe);
-    node->traverse(&analizer);
-    analizer.post();
-  }
-  const auto flags = getStageFromLang(langName);
-  GeneralShaderAnalizer generalAnalizer(shaderPipe, flags);
-  node->traverse(&generalAnalizer);
-
-  shaderPipe->shader.push_back(std::pair(std::vector<uint32_t>(), flags));
-  glslang::GlslangToSpv(*interm, shaderPipe->shader.back().first);
-  // glslang::SpirvToolsDisassemble(std::cout, shaderPipe->shader.back().first);
-}
-
 struct ShaderInfo {
   EShLanguage language;
   std::vector<char> code;
   std::vector<std::string> additionalCode;
 };
 
-void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
-                          VulkanShaderModule *vsm) {
-  graphics::VulkanGraphicsModule *vgm =
-      (graphics::VulkanGraphicsModule *)vsm->vgm;
-
-  if (!shaderPipe->descriptorLayoutBindings.empty()) {
-    const DescriptorSetLayoutCreateInfo layoutCreate(
-        {}, shaderPipe->descriptorLayoutBindings);
-    const auto descLayout = vgm->device.createDescriptorSetLayout(layoutCreate);
-    vsm->setLayouts.push_back(descLayout);
-    std::vector<DescriptorPoolSize> descPoolSizes;
-    for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
-      descPoolSizes.push_back(
-          {binding.descriptorType, binding.descriptorCount});
-    }
-    const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1000, descPoolSizes);
-    const auto descPool = vgm->device.createDescriptorPool(descPoolCreateInfo);
-    vsm->descPools.push_back(descPool);
-
-    const auto layoutCreateInfo = PipelineLayoutCreateInfo({}, descLayout);
-    const auto pipeLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
-    vsm->pipeLayouts.push_back(pipeLayout);
-    shaderPipe->layoutID = vsm->pipeLayouts.size() - 1;
-  } else {
-    shaderPipe->layoutID = UINT64_MAX;
-  }
-}
-
-std::unique_ptr<glslang::TShader>
-__implGenerateIntermediate(const ShaderInfo &pair) noexcept {
-  const auto langName = pair.language;
-  const auto &additional = pair.additionalCode;
-
-  auto shader = std::make_unique<glslang::TShader>(langName);
-  std::vector<const char *> ptrData;
-  ptrData.reserve(additional.size());
-  for (const auto &rev : additional)
-    ptrData.push_back(rev.data());
-  ptrData.push_back(pair.code.data());
-
-  shader->setStrings(ptrData.data(), ptrData.size());
-  shader->setEnvInput(glslang::EShSourceGlsl, langName,
-                      glslang::EShClientVulkan, 100);
-  shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
-  shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
-
-  if (!shader->parse(&DefaultTBuiltInResource, 450, true,
-                     EShMessages::EShMsgVulkanRules)) {
-    printf("======== Shader compile error ==========\n\n%s\n",
-           shader->getInfoLog());
-    return std::nullptr_t();
-  }
-  return shader;
-}
-
-VulkanShaderPipe *
-__implLoadShaderPipeAndCompile(const std::vector<ShaderInfo> &vector) {
-  if (vector.size() == 0)
-    return nullptr;
-  VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
-  glslang::InitializeProcess();
-  util::OnExit e1(glslang::FinalizeProcess);
-  shaderPipe->shader.reserve(vector.size());
-
-  for (auto &pair : vector) {
-    if (pair.code.empty()) {
-      delete shaderPipe;
-      return nullptr;
-    }
-    const auto shader = __implGenerateIntermediate(pair);
-    if (!shader) {
-      delete shaderPipe;
-      return nullptr;
-    }
-    __implIntermToVulkanPipe(shaderPipe, shader->getIntermediate(),
-                             pair.language);
-  }
-
-  return shaderPipe;
-}
-
 ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
     const std::vector<std::string> &shadernames) {
-  std::vector<ShaderInfo> vector;
-  vector.reserve(shadernames.size());
-  for (const auto &name : shadernames) {
-    const std::string abrivation = name.substr(name.size() - 4);
-    auto path = fs::path(name);
-    vector.push_back({getLang(abrivation), util::wholeFile(path)});
-  }
-  const auto loadedPipes = __implLoadShaderPipeAndCompile(vector);
-  __implCreateDescSets(loadedPipes, this);
-  return (uint8_t *)loadedPipes;
-}
 
-inline std::string getStringFromIOType(const IOType t) {
-  switch (t) {
-  case IOType::FLOAT:
-    return "float";
-  case IOType::VEC2:
-    return "vec2";
-  case IOType::VEC3:
-    return "vec3";
-  case IOType::VEC4:
-    return "vec4";
-  case IOType::MAT3:
-    return "mat3";
-  case IOType::MAT4:
-    return "mat4";
-  case IOType::SAMPLER2:
-    return "sampler";
-  default:
-    throw std::runtime_error("Couldn't find string to type!");
-  }
-}
-
-inline std::string getStringFromSamplerIOType(const SamplerIOType t) {
-  switch (t) {
-  case SamplerIOType::SAMPLER:
-    return "sampler";
-  case SamplerIOType::TEXTURE:
-    return "texture2D";
-  default:
-    throw std::runtime_error("Couldn't find string to type!");
-  }
-}
-
-inline EShLanguage getLangFromShaderLang(const ShaderType type) {
-  switch (type) {
-  case ShaderType::FRAGMENT:
-    return EShLangFragment;
-  case ShaderType::VERTEX:
-    return EShLangVertex;
-  default:
-    throw std::runtime_error("Not implemented!");
-  };
-}
-
-inline void function(const Instruction &ins,
-                     const std::vector<Instruction> &instructions,
-                     const std::string fname, std::ostringstream &stream) {
-  stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-         << fname << "(" << ins.inputs[0];
-  for (size_t i = 1; i < ins.inputs.size(); i++) {
-    stream << ", " << ins.inputs[i];
-  }
-  stream << ");" << std::endl;
-}
-
-inline void aggragteFunction(const Instruction &ins,
-                             const std::vector<Instruction> &instructions,
-                             const std::string fname,
-                             std::ostringstream &stream) {
-  stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-         << ins.inputs[0];
-  for (size_t i = 1; i < ins.inputs.size(); i++) {
-    stream << fname << ins.inputs[i];
-  }
-  stream << ";" << std::endl;
-}
-
-inline void addInstructionsToCode(const std::vector<Instruction> &instructions,
-                                  std::ostringstream &stream) {
-  for (const auto &ins : instructions) {
-    switch (ins.instruciontType) {
-    case InstructionType::NOOP:
-      break;
-    case InstructionType::MULTIPLY:
-      aggragteFunction(ins, instructions, " * ", stream);
-      break;
-    case InstructionType::ADD:
-      aggragteFunction(ins, instructions, " + ", stream);
-      break;
-    case InstructionType::SET:
-      stream << ins.name << " = " << ins.inputs[0] << ";" << std::endl;
-      break;
-    case InstructionType::TEMP:
-      stream << getStringFromIOType(ins.outputType) << " " << ins.name << " = "
-             << ins.inputs[0] << ";" << std::endl;
-      break;
-    case InstructionType::TEXTURE:
-      function(ins, instructions, "texture", stream);
-      break;
-    case InstructionType::SAMPLER:
-      break;
-    case InstructionType::VEC4CTR:
-      function(ins, instructions, "vec4", stream);
-      break;
-    case InstructionType::DOT:
-      function(ins, instructions, "dot", stream);
-      break;
-    case InstructionType::CROSS:
-      function(ins, instructions, "cross", stream);
-      break;
-    case InstructionType::CLAMP:
-      function(ins, instructions, "clamp", stream);
-      break;
-    case InstructionType::MIN:
-      function(ins, instructions, "min", stream);
-      break;
-    case InstructionType::MAX:
-      function(ins, instructions, "max", stream);
-      break;
-    case InstructionType::NORMALIZE:
-      function(ins, instructions, "normalize", stream);
-      break;
-    case InstructionType::SUBTRACT:
-      aggragteFunction(ins, instructions, " - ", stream);
-      break;
-    case InstructionType::DIVIDE:
-      aggragteFunction(ins, instructions, " / ", stream);
-      break;
-    default:
-      break;
-    }
-  }
-}
-
-inline uint32_t strideFromIOType(const IOType t) {
-  switch (t) {
-  case IOType::VEC2:
-    return 8;
-  case IOType::VEC3:
-    return 12;
-  case IOType::VEC4:
-    return 16;
-  default:
-    throw std::runtime_error("No stride for IOType!");
-  }
 }
 
 ShaderPipe
 VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
                                      const size_t shaderCount) {
-  glslang::InitializeProcess();
-  util::OnExit e1(glslang::FinalizeProcess);
-  auto shaderPipe = new VulkanShaderPipe();
-  // IT ISN'T PRETTY BUT IT WORKS - SOMEWHAT
-  for (size_t i = 0; i < shaderCount; i++) {
-    const ShaderCreateInfo &createInfo = shaderCreateInfo[i];
-    const auto lang = getLangFromShaderLang(createInfo.shaderType);
-    ShaderInfo info = {lang};
-    std::ostringstream codebuff;
-    codebuff << "#version 450" << std::endl << std::endl;
-    for (const auto &input : createInfo.inputs) {
-      codebuff << "layout(location=" << input.binding << ") in "
-               << getStringFromIOType(input.iotype) << " " << input.name << ";"
-               << std::endl;
-    }
-    codebuff << std::endl;
-    for (const auto &out : createInfo.outputs) {
-      codebuff << "layout(location=" << out.binding << ") out "
-               << getStringFromIOType(out.iotype) << " " << out.name << ";"
-               << std::endl;
-    }
-    codebuff << std::endl;
-    size_t ublockID = 0;
-    for (const auto &uniform : createInfo.unifromIO) {
-      codebuff << "layout(binding=" << uniform.binding << ") uniform UBLOCK_"
-               << ublockID << " {" << std::endl
-               << getStringFromIOType(uniform.iotype) << " " << uniform.name
-               << ";} ublock_" << ublockID << ";" << std::endl;
-      ublockID++;
-    }
-    codebuff << std::endl;
-    for (const auto &sampler : createInfo.samplerIO) {
-      // layout(binding = 1) uniform texture2D tex;
-      codebuff << "layout(binding=" << sampler.binding << ") uniform "
-               << getStringFromSamplerIOType(sampler.iotype) << " "
-               << sampler.name;
-      if (sampler.size > 1) {
-        codebuff << "[" << sampler.size << "]";
-      }
-      codebuff << ";" << std::endl;
-    }
-    codebuff << std::endl;
-    if (lang == EShLangVertex) {
-      codebuff << "out gl_PerVertex { vec4 gl_Position; };" << std::endl;
-    }
-    codebuff << "void main() {" << std::endl;
-    addInstructionsToCode(createInfo.instructions, codebuff);
-    codebuff << std::endl << createInfo.__code << "}" << std::endl;
-    std::string code(codebuff.str());
-    std::cout << code << std::endl;
-    info.code = std::vector(code.begin(), code.end());
-    info.code.push_back('\0');
-    const auto shader = __implGenerateIntermediate(info);
-    glslang::TIntermediate *tint = shader->getIntermediate();
-    __implIntermToVulkanPipe(shaderPipe, tint, lang);
-    if (createInfo.shaderType == ShaderType::VERTEX) {
-      std::sort(shaderPipe->vertexInputAttributes.begin(),
-                shaderPipe->vertexInputAttributes.end(),
-                [](auto x, auto y) { return x.location < y.location; });
-      uint32_t maxBinding = 0;
-      for (size_t i = 0; i < shaderPipe->vertexInputAttributes.size(); i++) {
-        auto &state = shaderPipe->vertexInputAttributes[i];
-        state.binding = createInfo.inputs[i].buffer;
-        if (state.binding != 0)
-          state.offset = 0;
-        if (maxBinding < state.binding)
-          maxBinding = state.binding;
-      }
-      shaderPipe->vertexInputBindings.resize(maxBinding + 1);
-      for (size_t i = 0; i < shaderPipe->vertexInputBindings.size(); i++) {
-        auto &bind = shaderPipe->vertexInputBindings[i];
-        const auto &info = createInfo.inputs[i];
-        bind.binding = info.buffer;
-        bind.stride = strideFromIOType(info.iotype);
-      }
-      shaderPipe->inputStateCreateInfo = PipelineVertexInputStateCreateInfo(
-          {}, shaderPipe->vertexInputBindings,
-          shaderPipe->vertexInputAttributes);
-    }
-  }
-  __implCreateDescSets(shaderPipe, this);
-  return shaderPipe;
 }
 
 void VulkanShaderModule::updateAllTextures() {

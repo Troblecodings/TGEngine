@@ -79,6 +79,7 @@ add_library (TGEngine STATIC
     "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.h"
   "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp"  "public/IO/IOModule.hpp" "private/IO/IOModule.cpp")
 target_link_libraries(TGEngine PRIVATE glslang SPIRV vulkan-1)
+target_include_directories(TGEngine PUBLIC ${permute_SOURCE_DIR}/ShaderPermute)
 
 add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
