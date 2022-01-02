@@ -39,9 +39,9 @@ class GameGraphicsModule : public main::Module {
   std::vector<size_t> parents;
   std::vector<size_t> bindingID;
   std::vector<char> status; // jesus fuck not going to use a bool here
-  size_t dataID = UINT64_MAX;
 
 public:
+  size_t dataID = UINT64_MAX;
   size_t defaultMaterial;
   tge::shader::ShaderPipe defaultPipe;
 

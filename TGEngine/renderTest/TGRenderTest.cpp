@@ -27,7 +27,7 @@ public:
     const auto vec = tge::util::wholeFile("assets/Test/test.gltf");
     nodeID = getGameGraphicsModule()->loadModel(vec, false, "assets/Test/");
     ggm->updateScale(nodeID, glm::vec3(0.2f, 0.2f, 0.2f));
-    const LightMap map = {light};
+    const LightMap map = {light.pos, glm::vec3(1.0f, 0.0f, 1.0f)};
     api->generateLightMaps(1, &map);
     return tge::main::Error::NONE;
   }

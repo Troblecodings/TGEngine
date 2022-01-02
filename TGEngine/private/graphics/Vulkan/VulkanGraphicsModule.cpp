@@ -681,7 +681,6 @@ size_t VulkanGraphicsModule::generateLightMaps(const size_t count,
 
   const Extent2D extent(500, 500);
   for (size_t i = 0; i < count; i++) {
-    const auto &lightMap = lightMaps[i];
     imageInfos[i].ex = extent;
     imageInfos[i].format = this->depthFormat;
     imageInfos[i].sampleCount = SampleCountFlagBits::e1;
@@ -692,19 +691,30 @@ size_t VulkanGraphicsModule::generateLightMaps(const size_t count,
 
   const auto cmd = cmdbuffer.back();
 
-  const CommandBufferBeginInfo beginInfo(
-      CommandBufferUsageFlagBits::eOneTimeSubmit);
-  cmd.begin(beginInfo);
-
   std::vector<Framebuffer> cFrameBuffers;
   for (size_t i = 0; i < count; i++) {
-    const FramebufferCreateInfo cFrameBufferCI(
-        {}, lightRenderpass, this->textureImageViews[images + i], extent.width,
-        extent.height, 1);
+    const auto &lightMap = lightMaps[i];
+
+    const auto projView =
+        glm::perspective(glm::radians(70.0f), 1.0f, 0.1f, 100.0f) *
+        glm::lookAt(lightMap.lightPos, lightMap.lightPos - lightMap.direction,
+                    glm::vec3(0, 1, 0));
+
+    this->changeData(this->getGraphicsModule()->dataID + 1, (const uint8_t *)&projView, sizeof(glm::mat4));
+
+    const CommandBufferBeginInfo beginInfo(
+        CommandBufferUsageFlagBits::eOneTimeSubmit);
+    cmd.begin(beginInfo);
+
+    const std::array views = {this->textureImageViews[images + i],
+                              this->textureImageViews[albedoImage]};
+    const FramebufferCreateInfo cFrameBufferCI({}, lightRenderpass, views,
+                                               extent.width, extent.height, 1);
     const auto cFrameBuffer = device.createFramebuffer(cFrameBufferCI);
     cFrameBuffers.push_back(cFrameBuffer);
 
-    const ClearValue cValue(ClearDepthStencilValue(1.0f, 0));
+    const std::array cValue = {ClearValue(ClearDepthStencilValue(1.0f, 0)),
+                               ClearValue()};
     const RenderPassBeginInfo renderpassBegin(lightRenderpass, cFrameBuffer,
                                               {{0, 0}, extent}, cValue);
     cmd.beginRenderPass(renderpassBegin,
@@ -713,20 +723,18 @@ size_t VulkanGraphicsModule::generateLightMaps(const size_t count,
     cmd.executeCommands(lightCommandBuffer);
 
     cmd.endRenderPass();
-  }
 
-  constexpr ImageSubresourceRange range(ImageAspectFlagBits::eDepth, 0, 1, 0,
-                                        1);
+    constexpr ImageSubresourceRange range(ImageAspectFlagBits::eDepth, 0, 1, 0,
+                                          1);
 
-  for (size_t i = 0; i < count; i++) {
     waitForImageTransition(cmd, ImageLayout::eDepthAttachmentOptimal,
                            ImageLayout::eShaderReadOnlyOptimal,
                            this->textureImages[images + i], range);
+    cmd.end();
+
+    submitAndWait(device, queue, cmd);
   }
 
-  cmd.end();
-
-  submitAndWait(device, queue, cmd);
   this->shaderAPI->updateAllTextures();
   this->secondaryCommandBuffer.clear();
   __pushRender(this, this->renderInfos.size(), this->renderInfos.data());
@@ -1022,13 +1030,14 @@ main::Error VulkanGraphicsModule::init() {
       SubpassDependency(1, VK_SUBPASS_EXTERNAL, frag1, frag1, frag2, frag2)};
 
   const SubpassDescription lightMapsSubpass({}, PipelineBindPoint::eGraphics,
-                                            {}, {}, {}, &depthAttachment);
+                                            {}, colorAttachments[0], {},
+                                            &depthAttachment);
 
   const SubpassDependency lightMapsDep(0, VK_SUBPASS_EXTERNAL, frag1, frag1,
                                        frag2, frag2);
 
   const RenderPassCreateInfo lightMapPassCreateInfo(
-      {}, attachments[0], lightMapsSubpass, lightMapsDep);
+      {}, 2, attachments.data(), 1, &lightMapsSubpass, 1, &lightMapsDep);
   lightRenderpass = device.createRenderPass(lightMapPassCreateInfo);
 
   const RenderPassCreateInfo renderPassCreateInfo(

@@ -9,7 +9,7 @@ namespace tge::shader {
 
 using namespace vk;
 
-_CONSTEXPR20_CONTAINER std::string operator""_str(const char *chr,
+constexpr std::string operator""_str(const char *chr,
                                                   std::size_t size) {
   return std::string(chr, size);
 }

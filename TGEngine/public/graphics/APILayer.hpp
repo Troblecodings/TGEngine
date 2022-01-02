@@ -67,7 +67,8 @@ struct Light {
 };
 
 struct LightMap {
-  Light light;
+  glm::vec3 lightPos;
+  glm::vec3 direction;
 };
 
 enum class DataType { IndexData, VertexData, VertexIndexData, Uniform };

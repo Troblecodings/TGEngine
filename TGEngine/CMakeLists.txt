@@ -1,13 +1,14 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
 project ("TGEngine")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
 add_compile_definitions(ENGINE_NAME="TGEngine" ENGINE_VERSION=8388608 APPLICATION_NAME="TGEngineTest" DEBUG)
 
-add_compile_options("/D_ITERATOR_DEBUG_LEVEL=0" "/MD" "/EHa" "-Wno-deprecated-volatile")
-add_link_options("/ignore:4099")
+
+#add_compile_options("/D_ITERATOR_DEBUG_LEVEL=0" "/MD" "/EHa" "-Wno-deprecated-volatile")
+#add_link_options("/ignore:4099")
 
 include(FetchContent)
 FETCHCONTENT_DECLARE(
@@ -26,13 +27,18 @@ FETCHCONTENT_DECLARE(
 	imgui
 	URL https://github.com/ocornut/imgui/archive/refs/tags/v1.83.zip
 )
+FETCHCONTENT_DECLARE(
+	permute
+	URL https://github.com/MrTroble/ShaderPermute/archive/refs/heads/master.zip
+)
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FETCHCONTENT_MAKEAVAILABLE(googletest)
 FETCHCONTENT_MAKEAVAILABLE(vulkansdk)
 FETCHCONTENT_MAKEAVAILABLE(imgui)
+FETCHCONTENT_MAKEAVAILABLE(permute)
 include_directories("${vulkansdk_SOURCE_DIR}/Include" "${vulkansdk_SOURCE_DIR}/Third-Party/Include" "${imgui_SOURCE_DIR}")
-link_directories("${vulkansdk_SOURCE_DIR}/Lib" "${vulkansdk_SOURCE_DIR}/Third-Party/Bin")
+link_directories("${vulkansdk_SOURCE_DIR}/Lib")
 
 add_library (TGEngine STATIC
 	# public
@@ -72,7 +78,7 @@ add_library (TGEngine STATIC
 	"${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.h"
   "public/graphics/Material.hpp" "public/graphics/APILayer.hpp" "private/graphics/Material.cpp"  "public/IO/IOModule.hpp" "private/IO/IOModule.cpp")
-target_link_libraries(TGEngine PRIVATE glslang shaderc_combined vulkan-1)
+target_link_libraries(TGEngine PRIVATE glslang SPIRV vulkan-1)
 
 add_executable(TGEngineTest "test/TGTest.cpp")
 target_include_directories(TGEngineTest PUBLIC "public")
