@@ -7,8 +7,6 @@
 #include <format>
 #include <iostream>
 #include <vulkan/vulkan.hpp>
-#undef ERROR
-#include <ShaderPermute.hpp>
 
 namespace tge::shader {
 
@@ -47,15 +45,15 @@ inline uint32_t getSizeFromFormat(const Format format) {
   }
 }
 
-struct VertexShaderAnalizer : public glslang::TIntermTraverser {
+struct VertexShaderAnalizer : public permute::ShaderTraverser {
 
   VulkanShaderPipe *shaderPipe;
+  std::unordered_set<size_t> ioVars;
 
   VertexShaderAnalizer(VulkanShaderPipe *pipe)
-      : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe) {
+      : shaderPipe(pipe) {
     ioVars.reserve(10);
   }
-  std::unordered_set<size_t> ioVars;
 
   void visitSymbol(glslang::TIntermSymbol *symbol) {
     const auto &qualifier = symbol->getQualifier();
@@ -75,7 +73,7 @@ struct VertexShaderAnalizer : public glslang::TIntermTraverser {
     }
   }
 
-  void post() {
+  void postProcess() {
     const auto beginItr = shaderPipe->vertexInputAttributes.begin();
     const auto endItr = shaderPipe->vertexInputAttributes.end();
 
@@ -105,6 +103,10 @@ struct VertexShaderAnalizer : public glslang::TIntermTraverser {
         shaderPipe->vertexInputAttributes.size(),
         shaderPipe->vertexInputAttributes.data());
   }
+
+  bool isValid(const permute::GlslSettings &settings) {
+    return settings.shaderType == EShLanguage::EShLangVertex;
+  }
 };
 
 inline std::pair<DescriptorType, uint32_t>
@@ -125,15 +127,14 @@ getDescTypeFromELF(const glslang::TType &type) {
                            std::string(type.getCompleteString()));
 }
 
-struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
+struct GeneralShaderAnalizer : public permute::ShaderTraverser {
 
   VulkanShaderPipe *shaderPipe;
-  const ShaderStageFlags flags;
+  ShaderStageFlagBits flags;
   std::unordered_set<uint32_t> uset;
 
-  GeneralShaderAnalizer(VulkanShaderPipe *pipe, ShaderStageFlags flags)
-      : glslang::TIntermTraverser(false, true, false), shaderPipe(pipe),
-        flags(flags) {
+  GeneralShaderAnalizer(VulkanShaderPipe *pipe)
+      : shaderPipe(pipe), flags(ShaderStageFlagBits::eVertex) {
     shaderPipe->descriptorLayoutBindings.reserve(10);
     uset.reserve(10);
   }
@@ -152,6 +153,13 @@ struct GeneralShaderAnalizer : public glslang::TIntermTraverser {
       shaderPipe->descriptorLayoutBindings.push_back(descBinding);
     }
   }
+
+  void postProcess() {};
+
+  bool isValid(const permute::GlslSettings &settings) {
+    this->flags = (ShaderStageFlagBits)settings.shaderType;
+    return true;
+  };
 };
 
 struct ShaderInfo {
@@ -161,13 +169,66 @@ struct ShaderInfo {
 };
 
 ShaderPipe VulkanShaderModule::loadShaderPipeAndCompile(
-    const std::vector<std::string> &shadernames) {
-
+    const std::vector<std::string> &shadernames,
+    const std::vector<std::string> &dependencies) {
+  std::vector<ShaderCreateInfo> shaderInfos;
+  for (const auto &name : shadernames) {
+    const auto glsl = permute::fromFile<permute::PermuteGLSL>(name);
+    shaderInfos.push_back(glsl);
+  }
+  return createShaderPipe(shaderInfos.data(), shaderInfos.size(), dependencies);
 }
 
-ShaderPipe
-VulkanShaderModule::createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
-                                     const size_t shaderCount) {
+void __implCreateDescSets(VulkanShaderPipe *shaderPipe,
+                          VulkanShaderModule *vsm) {
+  graphics::VulkanGraphicsModule *vgm =
+      (graphics::VulkanGraphicsModule *)vsm->vgm;
+
+  if (!shaderPipe->descriptorLayoutBindings.empty()) {
+    const DescriptorSetLayoutCreateInfo layoutCreate(
+        {}, shaderPipe->descriptorLayoutBindings);
+    const auto descLayout = vgm->device.createDescriptorSetLayout(layoutCreate);
+    vsm->setLayouts.push_back(descLayout);
+    std::vector<DescriptorPoolSize> descPoolSizes;
+    for (const auto &binding : shaderPipe->descriptorLayoutBindings) {
+      descPoolSizes.push_back(
+          {binding.descriptorType, binding.descriptorCount});
+    }
+    const DescriptorPoolCreateInfo descPoolCreateInfo({}, 1000, descPoolSizes);
+    const auto descPool = vgm->device.createDescriptorPool(descPoolCreateInfo);
+    vsm->descPools.push_back(descPool);
+
+    const auto layoutCreateInfo = PipelineLayoutCreateInfo({}, descLayout);
+    const auto pipeLayout = vgm->device.createPipelineLayout(layoutCreateInfo);
+    vsm->pipeLayouts.push_back(pipeLayout);
+    shaderPipe->layoutID = vsm->pipeLayouts.size() - 1;
+  } else {
+    shaderPipe->layoutID = UINT64_MAX;
+  }
+}
+
+ShaderPipe VulkanShaderModule::createShaderPipe(
+    ShaderCreateInfo *shaderCreateInfo, const size_t shaderCount,
+    const std::vector<std::string> &dependencies) {
+  VulkanShaderPipe *shaderPipe = new VulkanShaderPipe();
+  shaderPipe->shader.reserve(shaderCount);
+
+  GeneralShaderAnalizer gsa(shaderPipe);
+  VertexShaderAnalizer vsa(shaderPipe);
+  permute::traverser.push_back(&gsa);
+  permute::traverser.push_back(&vsa);
+
+  util::OnExit e([p = &permute::traverser]() { p->clear(); });
+
+  for (size_t i = 0; i < shaderCount; i++) {
+    auto &perm = shaderCreateInfo[i];
+
+    if (perm.generate(dependencies)) {
+      const auto &bin = perm.getBinary();
+      shaderPipe->shader.push_back({bin, gsa.flags});
+    }
+  }
+  return shaderPipe;
 }
 
 void VulkanShaderModule::updateAllTextures() {
@@ -333,6 +394,8 @@ void VulkanShaderModule::addToMaterial(const graphics::Material *material,
 }
 
 void VulkanShaderModule::init() {
+  glslang::InitializeProcess();
+
   graphics::VulkanGraphicsModule *vgm =
       (graphics::VulkanGraphicsModule *)this->vgm;
   if (!vgm->isInitialiazed)
@@ -347,6 +410,7 @@ void VulkanShaderModule::init() {
 }
 
 void VulkanShaderModule::destroy() {
+  glslang::FinalizeProcess();
   graphics::VulkanGraphicsModule *vgm =
       (graphics::VulkanGraphicsModule *)this->vgm;
   vgm->device.destroyDescriptorSetLayout(defaultDescLayout);

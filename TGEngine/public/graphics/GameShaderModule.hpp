@@ -3,70 +3,14 @@
 #include "Material.hpp"
 #include <string>
 #include <vector>
+#undef ERROR
+#include "../headerlibs/json.hpp"
+#define SPR_NO_JSON_HPP_INCLUDE 1
+#include <ShaderPermute.hpp>
 
 namespace tge::shader {
 
-enum class IOType { FLOAT, VEC2, VEC3, VEC4, MAT3, MAT4, SAMPLER2 };
-
-struct ShaderIO {
-  std::string name;
-  IOType iotype;
-  size_t binding;
-};
-
-enum class SamplerIOType { SAMPLER, TEXTURE };
-
-struct SamplerIO {
-  std::string name;
-  SamplerIOType iotype;
-  size_t binding;
-  size_t size = 1;
-};
-
-struct ShaderBindingIO {
-  std::string name;
-  IOType iotype;
-  size_t binding;
-  size_t buffer = 0;
-};
-
-enum class InstructionType {
-  NOOP,
-  MULTIPLY,
-  ADD,
-  TEXTURE,
-  SAMPLER,
-  SET,
-  TEMP,
-  VEC4CTR,
-  DOT,
-  NORMALIZE,
-  CROSS,
-  MIN,
-  MAX,
-  CLAMP,
-  SUBTRACT,
-  DIVIDE
-};
-
-struct Instruction {
-  std::vector<std::string> inputs;
-  IOType outputType;
-  InstructionType instruciontType;
-  std::string name;
-};
-
-enum class ShaderType { VERTEX, FRAGMENT };
-
-struct ShaderCreateInfo {
-  std::string __code;
-  std::vector<ShaderIO> unifromIO;
-  std::vector<ShaderBindingIO> inputs;
-  std::vector<ShaderIO> outputs;
-  std::vector<SamplerIO> samplerIO;
-  ShaderType shaderType;
-  std::vector<Instruction> instructions;
-};
+using ShaderCreateInfo = permute::Permute<permute::PermuteGLSL>;
 
 using ShaderPipe = void *;
 
@@ -99,12 +43,14 @@ class ShaderAPI {
 public:
   virtual ~ShaderAPI() {}
 
-  _NODISCARD virtual ShaderPipe
-  loadShaderPipeAndCompile(const std::vector<std::string> &shadernames) = 0;
+  _NODISCARD virtual ShaderPipe loadShaderPipeAndCompile(
+      const std::vector<std::string> &shadernames,
+      const std::vector<std::string> &dependencies = {}) = 0;
 
   _NODISCARD virtual ShaderPipe
-  createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
-                   const size_t shaderCount) = 0;
+  createShaderPipe(ShaderCreateInfo *shaderCreateInfo,
+                   const size_t shaderCount,
+                   const std::vector<std::string> &dependencies = {}) = 0;
 
   _NODISCARD virtual size_t createBindings(ShaderPipe pipe,
                                            const size_t count = 1) = 0;

@@ -94,26 +94,6 @@ inline size_t loadTexturesFM(const Model &model, APILayer *apiLayer) {
   return -1;
 }
 
-inline shader::IOType inputTypeFromGLTF(int type) {
-  namespace s = shader;
-  switch (type) {
-  case TINYGLTF_TYPE_VEC2:
-    return s::IOType::VEC2;
-  case TINYGLTF_TYPE_VEC3:
-    return s::IOType::VEC3;
-  case TINYGLTF_TYPE_VEC4:
-    return s::IOType::VEC4;
-  case TINYGLTF_TYPE_MAT4:
-    return s::IOType::MAT4;
-  case TINYGLTF_TYPE_MAT3:
-    return s::IOType::MAT3;
-  case TINYGLTF_TYPE_SCALAR:
-    return s::IOType::FLOAT;
-  default:
-    throw std::runtime_error("Type not found in GLTF translation!");
-  }
-}
-
 inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
                             const size_t sampler, const size_t texture,
                             std::vector<shader::ShaderPipe> &created) {
@@ -144,115 +124,7 @@ inline size_t loadMaterials(const Model &model, APILayer *apiLayer,
   for (const auto &mesh : model.meshes) {
     const auto &prim = mesh.primitives[0];
     s::ShaderCreateInfo createInfo[2];
-    auto &mat = materials[prim.material];
-    for (const auto &[name, id] : prim.attributes) {
-      const auto &acc = model.accessors[id];
-      createInfo[0].inputs.push_back({name, inputTypeFromGLTF(acc.type), 0});
-    }
-    std::sort(createInfo[0].inputs.begin(), createInfo[0].inputs.end(),
-              [](auto x, auto y) { return x.iotype > y.iotype; });
-    for (size_t i = 0; i < createInfo[0].inputs.size(); i++) {
-      auto &in = createInfo[0].inputs[i];
-      in.binding = i;
-      in.buffer = i;
-    }
-    createInfo[0].shaderType = s::ShaderType::VERTEX;
-    createInfo[1].shaderType = s::ShaderType::FRAGMENT;
-
-    createInfo[0].unifromIO.push_back({"model", s::IOType::MAT4, 2});
-    createInfo[0].unifromIO.push_back({"vp", s::IOType::MAT4, 3});
-    createInfo[0].instructions = {
-        {{"POSITION", "1"},
-         s::IOType::VEC4,
-         s::InstructionType::VEC4CTR,
-         "_tmpVEC"},
-        {{"ublock_0.model", "_tmpVEC"},
-         s::IOType::VEC4,
-         s::InstructionType::MULTIPLY,
-         "_tmp1"},
-        {{"ublock_1.vp", "_tmp1"},
-         s::IOType::VEC4,
-         s::InstructionType::MULTIPLY,
-         "_tmp2"},
-        {{"_tmp2"}, s::IOType::VEC4, s::InstructionType::SET, "gl_Position"},
-        {{"_tmp1.xyz"}, s::IOType::VEC4, s::InstructionType::SET, "POSOUT"}};
-
-    uint32_t nextID = 0;
-
-    createInfo[1].outputs = {{"COLOR", s::IOType::VEC4, 0},
-                             {"NORMAL", s::IOType::VEC4, 1},
-                             {"ROUGHNESSMETALLIC", s::IOType::VEC4, 2},
-                             {"POSOUT", s::IOType::VEC4, 3}};
-
-    createInfo[0].outputs.push_back({"POSOUT", s::IOType::VEC3, nextID});
-    createInfo[1].inputs.push_back({"POSIN", s::IOType::VEC3, nextID});
-    nextID++;
-
-    createInfo[1].samplerIO.push_back({"SAMP", s::SamplerIOType::SAMPLER, 0});
-    createInfo[1].samplerIO.push_back({"TEX", s::SamplerIOType::TEXTURE, 1, 255});
-
-    if (mat.type == MaterialType::TextureOnly) {
-      createInfo[0].outputs.push_back({"UV", s::IOType::VEC2, nextID});
-      createInfo[0].instructions.push_back(
-          {{"TEXCOORD_0"}, s::IOType::VEC4, s::InstructionType::SET, "UV"});
-
-      createInfo[1].inputs.push_back({"UV", s::IOType::VEC2, nextID});
-      createInfo[1].instructions = {
-          {{std::string("sampler2D(TEX[") + std::to_string(mat.data.textureMaterial.textureIndex) + "], SAMP)", "UV"},
-           s::IOType::VEC4,
-           s::InstructionType::TEXTURE,
-           "C1"},
-          {{"C1"}, s::IOType::VEC4, s::InstructionType::SET, "COLOR"},
-          {{"vec4(POSIN, 1)"},
-           s::IOType::VEC4,
-           s::InstructionType::SET,
-           "POSOUT"}};
-      nextID++;
-    } else {
-      createInfo[1].instructions = {{{"vec4(1, 0, 0, 1)"},
-                                     s::IOType::VEC4,
-                                     s::InstructionType::SET,
-                                     "COLOR"},
-                                    {{"vec4(POSIN, 1)"},
-                                     s::IOType::VEC4,
-                                     s::InstructionType::SET,
-                                     "POSOUT"}};
-    };
-
-    if (prim.attributes.contains("NORMAL")) {
-      createInfo[0].outputs.push_back({"NORMALOUT", s::IOType::VEC3, nextID});
-      createInfo[1].inputs.push_back({"NORMALIN", s::IOType::VEC3, nextID});
-      createInfo[0].instructions.push_back({{"vec4(NORMAL, 1)", "ublock_0.model"},
-                                            s::IOType::VEC4,
-                                            s::InstructionType::MULTIPLY,
-                                            "_tempNorm"});
-      createInfo[0].instructions.push_back(
-          {{"_tempNorm.xyz"}, s::IOType::VEC3, s::InstructionType::SET, "NORMALOUT"});
-      createInfo[1].instructions.push_back({{"NORMALIN", "1"},
-                                            s::IOType::VEC4,
-                                            s::InstructionType::VEC4CTR,
-                                            "_temp"});
-      nextID++;
-    } else {
-      createInfo[1].instructions.push_back({{"1", "1", "1", "1"},
-                                            s::IOType::VEC4,
-                                            s::InstructionType::VEC4CTR,
-                                            "_temp"});
-    }
-
-    createInfo[1].instructions.push_back(
-        {{"_temp"}, s::IOType::VEC3, s::InstructionType::SET, "NORMAL"});
-    const auto roughnessMetallic = roughnessMetallicFactors[prim.material];
-    createInfo[1].instructions.push_back(
-        {{std::string("vec4(") + std::to_string(roughnessMetallic.r) + ", " +
-          std::to_string(roughnessMetallic.g) + ", 1.0f, 1.0f)"},
-         s::IOType::VEC3,
-         s::InstructionType::SET,
-         "ROUGHNESSMETALLIC"});
-
-    mat.costumShaderData =
-        apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
-    created.push_back(mat.costumShaderData);
+    apiLayer->getShaderAPI()->createShaderPipe(createInfo, 2);
   }
 
   return apiLayer->pushMaterials(materials.size(), materials.data());

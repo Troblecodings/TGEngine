@@ -32,10 +32,13 @@ public:
   void updateAllTextures() override;
 
   ShaderPipe loadShaderPipeAndCompile(
-      const std::vector<std::string> &shadernames) override;
+      const std::vector<std::string> &shadernames,
+      const std::vector<std::string> &dependencies = {}) override;
 
-  ShaderPipe createShaderPipe(const ShaderCreateInfo *shaderCreateInfo,
-                              const size_t shaderCount) override;
+  ShaderPipe
+  createShaderPipe(ShaderCreateInfo *shaderCreateInfo,
+                   const size_t shaderCount,
+                   const std::vector<std::string> &dependencies = {}) override;
 
   size_t createBindings(ShaderPipe pipe, const size_t count = 1) override;
 
@@ -44,7 +47,8 @@ public:
 
   void bindData(const BindingInfo *info, const size_t count) override;
 
-  void addToRender(const size_t* bindingID, const size_t size, void *customData) override;
+  void addToRender(const size_t *bindingID, const size_t size,
+                   void *customData) override;
 
   void addToMaterial(const graphics::Material *material,
                      void *customData) override;
