@@ -111,8 +111,6 @@ public:
   size_t pushLights(const size_t lightCount, const Light *lights,
                     const size_t offset = 0) override;
 
-  void *loadShader(const MaterialType type) override;
-
   size_t generateLightMaps(const size_t count,
                            const LightMap *lightMaps) override;
 };

@@ -75,14 +75,6 @@ constexpr PipelineInputAssemblyStateCreateInfo
                              __FILE__ + " L" + std::to_string(__LINE__));      \
   }
 
-void *VulkanGraphicsModule::loadShader(const MaterialType type) {
-  EXPECT(((size_t)type) <= (size_t)MAX_TYPE);
-  const auto idx = (size_t)type;
-  auto &vert = shaderNames[idx];
-  const auto ptr = shaderAPI->loadShaderPipeAndCompile(vert);
-  return ptr;
-}
-
 inline void submitAndWait(const Device &device, const Queue &queue,
                           const CommandBuffer &cmdBuf) {
   const FenceCreateInfo fenceCreateInfo;
@@ -599,7 +591,7 @@ inline void createLightPass(VulkanGraphicsModule *vgm) {
   const auto sapi = vgm->getShaderAPI();
 
   const auto pipe = (VulkanShaderPipe *)sapi->loadShaderPipeAndCompile(
-      {"assets/lightPass.vert", "assets/lightPass.frag"});
+      {"assets/lightPassVert.json", "assets/lightPassFrag.json"});
   vgm->shaderPipes.push_back(pipe);
   vgm->lightBindings = sapi->createBindings(pipe, 1);
 

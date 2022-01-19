@@ -352,7 +352,9 @@ main::Error GameGraphicsModule::init() {
   std::array arrSize = {UINT16_MAX * sizeof(glm::mat4), sizeof(glm::mat4)};
   dataID = apiLayer->pushData(mvpsPtr.size(), mvpsPtr.data(), arrSize.data(),
                               DataType::Uniform);
-  const Material defMat(defaultPipe = apiLayer->loadShader(MaterialType::None));
+  const Material defMat(defaultPipe =
+                            apiLayer->getShaderAPI()->loadShaderPipeAndCompile(
+                                {"testvec4.json", "testvec4.json"}));
   defaultMaterial = apiLayer->pushMaterials(1, &defMat);
   return main::Error::NONE;
 }

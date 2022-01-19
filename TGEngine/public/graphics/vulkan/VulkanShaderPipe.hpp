@@ -8,11 +8,6 @@
 namespace tge::shader {
 
 using namespace vk;
-using namespace std::string_literals;
-
-const std::array shaderNames = {
-    std::vector({"assets/testvec4.vert"s, "assets/test.frag"s}),
-    std::vector({"assets/testUV.vert"s, "assets/testTexture.frag"s})};
 
 struct VulkanShaderPipe {
   std::vector<std::pair<std::vector<uint32_t>, ShaderStageFlagBits>> shader;

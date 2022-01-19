@@ -84,9 +84,6 @@ public:
 
   virtual ~APILayer() {}
 
-  _NODISCARD virtual void *
-  loadShader(const MaterialType type) = 0; // Legacy support
-
   _NODISCARD virtual size_t pushMaterials(const size_t materialcount,
                                           const Material *materials) = 0;
 
